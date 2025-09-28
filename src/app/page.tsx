@@ -15,9 +15,7 @@ export default function Home() {
       <FeaturedDrinks />
       <ActivePromotions />
       <div className="w-full bg-secondary">
-        <Separator className="bg-transparent" />
         <OutletFinder />
-        <Separator className="bg-transparent" />
       </div>
       <FranchiseTeaser />
       <div className="bg-background">
