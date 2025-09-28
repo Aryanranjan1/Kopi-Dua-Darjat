@@ -13,11 +13,7 @@ const navItems: NavItem[] = [
   { title: 'Home', href: '/' },
   { title: 'Menu', href: '/menu' },
   { title: 'Outlets', href: '/outlets' },
-  { title: 'Promotions', href: '/promotions' },
   { title: 'Franchise', href: '/franchise' },
-  { title: 'About', href: '/about' },
-  { title: 'Blog', href: '/blog' },
-  { title: 'Contact', href: '/contact' },
 ];
 
 export default function SiteHeader() {
