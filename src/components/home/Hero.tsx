@@ -8,7 +8,7 @@ export default function Hero() {
   const heroImage = PlaceHolderImages.find((img) => img.id === 'hero-background');
 
   return (
-    <section className="relative h-[70vh] min-h-[450px] max-h-[600px] w-full">
+    <section className="relative h-screen w-full">
       {heroImage && (
         <Image
           src={heroImage.imageUrl}
