@@ -1,3 +1,94 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-background",
+      "description": "A warm, inviting photo of the cafe interior or a close-up of coffee being poured.",
+      "imageUrl": "https://images.unsplash.com/photo-1726873800099-53f5496281e0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjYWZlJTIwaW50ZXJpb3J8ZW58MHx8fHwxNzU5MDAzODM4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cafe interior"
+    },
+    {
+      "id": "drink-darjat",
+      "description": "Signature Darjat coffee.",
+      "imageUrl": "https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjb2ZmZWUlMjBkcmlua3xlbnwwfHx8fDE3NTkwNjY5MjF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "coffee drink"
+    },
+    {
+      "id": "drink-matcha",
+      "description": "Artisanal matcha latte.",
+      "imageUrl": "https://images.unsplash.com/photo-1631679263367-9095fca628de?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtYXRjaGElMjBsYXR0ZXxlbnwwfHx8fDE3NTg5NjYwNTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "matcha latte"
+    },
+    {
+      "id": "drink-bottled",
+      "description": "Bottled coffee series.",
+      "imageUrl": "https://images.unsplash.com/photo-1719936224687-eb66dc011a99?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxib3R0bGVkJTIwY29mZmVlfGVufDB8fHx8MTc1OTA2NjkyMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "bottled coffee"
+    },
+    {
+      "id": "promotion-banner",
+      "description": "Banner for a current promotion.",
+      "imageUrl": "https://images.unsplash.com/photo-1690983325788-a0d5aaffa5b1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjb2ZmZWUlMjBwcm9tb3Rpb258ZW58MHx8fHwxNzU5MDY2OTIxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "coffee promotion"
+    },
+    {
+      "id": "outlet-map",
+      "description": "A map showing outlet locations.",
+      "imageUrl": "https://images.unsplash.com/photo-1476385822777-70eabacbd41f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjaXR5JTIwbWFwfGVufDB8fHx8MTc1ODk3NjgzMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "city map"
+    },
+    {
+      "id": "franchise-teaser",
+      "description": "Image for the franchise teaser section.",
+      "imageUrl": "https://images.unsplash.com/photo-1449247666642-264389f5f5b1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxzbWFsbCUyMGJ1c2luZXNzfGVufDB8fHx8MTc1OTA2NjkyMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "small business"
+    },
+    {
+      "id": "blog-post-1",
+      "description": "Image for the first blog post.",
+      "imageUrl": "https://images.unsplash.com/photo-1607681034540-2c46cc71896d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjb2ZmZWUlMjBiZWFuc3xlbnwwfHx8fDE3NTkwNDg5NjR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "coffee beans"
+    },
+    {
+      "id": "blog-post-2",
+      "description": "Image for the second blog post.",
+      "imageUrl": "https://images.unsplash.com/photo-1563311977-d285756282dc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxsYXR0ZSUyMGFydHxlbnwwfHx8fDE3NTkwMzg3ODR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "latte art"
+    },
+    {
+      "id": "blog-post-3",
+      "description": "Image for the third blog post.",
+      "imageUrl": "https://images.unsplash.com/photo-1690700668983-c730d30a6bdd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjYWZlJTIwc3RvcmVmcm9udHxlbnwwfHx8fDE3NTg5OTc2NDV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cafe storefront"
+    },
+    {
+      "id": "founder-hadi",
+      "description": "Photo of founder Hadi.",
+      "imageUrl": "https://images.unsplash.com/photo-1567324216289-97cc4134f626?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwb3J0cmFpdCUyMG1hbnxlbnwwfHx8fDE3NTkwMjQxOTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "portrait man"
+    },
+    {
+      "id": "founder-azad",
+      "description": "Photo of founder Azad.",
+      "imageUrl": "https://images.unsplash.com/photo-1661170489141-fc9128eeae92?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxwb3J0cmFpdCUyMG1hbiUyMHNtaWxlfGVufDB8fHx8MTc1OTA2NjkyMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "portrait man smile"
+    },
+    {
+      "id": "brand-timeline",
+      "description": "Image representing brand growth or history.",
+      "imageUrl": "https://images.unsplash.com/photo-1511081692775-05d0f180a065?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjb2ZmZWUlMjBzaG9wfGVufDB8fHx8MTc1OTAyOTkzN3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "coffee shop"
+    },
+    {
+      "id": "brewing-method",
+      "description": "Image showing traditional coffee brewing.",
+      "imageUrl": "https://images.unsplash.com/photo-1586848384751-aa8f7ee302c7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjb2ZmZWUlMjBicmV3aW5nfGVufDB8fHx8MTc1OTA2NjkyMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "coffee brewing"
+    },
+    {
+      "id": "franchise-hero",
+      "description": "Hero image for franchise page",
+      "imageUrl": "https://images.unsplash.com/photo-1594392174535-eb4b1043dad3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y2FmZSUyMG93bmVyfGVufDB8fHx8MTc1OTA2NjkyMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cafe owner"
+    }
+  ]
 }
