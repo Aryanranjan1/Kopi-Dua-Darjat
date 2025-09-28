@@ -9,12 +9,24 @@ import { Button } from '@/components/ui/button';
 import { MobileNav } from '@/components/layout/MobileNav';
 import { Coffee, Menu, MapPin } from 'lucide-react';
 
-const navItems: NavItem[] = [
+const desktopNavItems: NavItem[] = [
   { title: 'Home', href: '/' },
   { title: 'Menu', href: '/menu' },
   { title: 'Outlets', href: '/outlets' },
   { title: 'Franchise', href: '/franchise' },
 ];
+
+const allNavItems: NavItem[] = [
+    { title: 'Home', href: '/' },
+    { title: 'Menu', href: '/menu' },
+    { title: 'Outlets', href: '/outlets' },
+    { title: 'Promotions', href: '/promotions' },
+    { title: 'Franchise', href: '/franchise' },
+    { title: 'About', href: '/about' },
+    { title: 'Blog', href: '/blog' },
+    { title: 'Contact', href: '/contact' },
+  ];
+  
 
 export default function SiteHeader() {
   const pathname = usePathname();
@@ -35,7 +47,7 @@ export default function SiteHeader() {
             </span>
           </Link>
           <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
-            {navItems.map((item) => (
+            {desktopNavItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -65,12 +77,12 @@ export default function SiteHeader() {
             </Button>
           </div>
         </div>
-        <MobileNav
-          isOpen={isMobileMenuOpen}
-          setIsOpen={setIsMobileMenuOpen}
-          navItems={navItems}
-        />
       </header>
+      <MobileNav
+        isOpen={isMobileMenuOpen}
+        setIsOpen={setIsMobileMenuOpen}
+        navItems={allNavItems}
+      />
        <div className="md:hidden fixed bottom-4 right-4 z-50">
          <Button asChild size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground rounded-full shadow-lg">
            <Link href="/outlets">
