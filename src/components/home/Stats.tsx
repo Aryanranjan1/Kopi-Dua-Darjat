@@ -35,7 +35,7 @@ export default function Stats() {
           {stats.map((stat, index) => (
             <div key={index} className="flex flex-col items-center">
               <stat.icon className="w-10 h-10 text-accent" />
-              <p className="mt-2 text-3xl font-bold text-primary">{stat.value}</p>
+              <p className="mt-2 text-3xl font-bold font-headline text-primary">{stat.value}</p>
               <h3 className="text-lg font-semibold text-foreground">{stat.label}</h3>
               <p className="text-sm text-muted-foreground">{stat.description}</p>
             </div>

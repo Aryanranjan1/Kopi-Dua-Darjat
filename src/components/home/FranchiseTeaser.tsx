@@ -18,7 +18,7 @@ export default function FranchiseTeaser() {
                     src={teaserImage.imageUrl}
                     alt={teaserImage.description}
                     fill
-                    className="object-cover rounded-lg shadow-2xl"
+                    className="object-cover rounded-xl shadow-2xl"
                     data-ai-hint={teaserImage.imageHint}
                 />
             )}

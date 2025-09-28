@@ -29,7 +29,7 @@ export default function OutletFinder() {
             </Button>
           </div>
           <div className="lg:col-span-3">
-            <Card className="overflow-hidden shadow-lg">
+            <Card className="overflow-hidden shadow-lg rounded-xl">
                 {mapImage && (
                     <div className="relative aspect-[4/3]">
                         <Image

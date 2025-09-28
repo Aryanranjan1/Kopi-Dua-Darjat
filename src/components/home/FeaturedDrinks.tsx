@@ -39,7 +39,7 @@ export default function FeaturedDrinks() {
                 return (
                   <CarouselItem key={drink.id} className="md:basis-1/2 lg:basis-1/3">
                     <div className="p-1">
-                      <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                      <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 rounded-xl">
                         <CardHeader className="p-0">
                           {drinkImage && (
                             <div className="aspect-[4/5] relative w-full">

@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Loader2, Sparkles } from 'lucide-react';
+import { useEffect, useRef } from 'react';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -30,18 +31,24 @@ function SubmitButton() {
 }
 
 export default function BrandStoryGeneratorForm() {
-  const initialState: BrandStoryState = { message: null, errors: {} };
+  const initialState: BrandStoryState = { message: null, errors: {}, brandStory: null };
   const [state, dispatch] = useFormState(generateBrandStoryAction, initialState);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    if (state.message === 'success') {
+      formRef.current?.reset();
+    }
+  }, [state.message]);
 
   return (
-    <form action={dispatch} className="space-y-6">
+    <form ref={formRef} action={dispatch} className="space-y-6">
       <div className="space-y-2">
         <Label htmlFor="publicationType">Publication Type</Label>
         <Input
           id="publicationType"
           name="publicationType"
           placeholder="e.g., 'magazine', 'blog', 'social media'"
-          required
         />
         {state.errors?.publicationType && (
           <p className="text-sm text-destructive">
@@ -56,7 +63,7 @@ export default function BrandStoryGeneratorForm() {
         <Alert variant="destructive">
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>
-            There was a problem generating the brand story. Please try again.
+            {state.message || 'There was a problem generating the brand story. Please try again.'}
           </AlertDescription>
         </Alert>
       )}

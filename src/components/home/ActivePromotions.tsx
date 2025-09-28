@@ -22,7 +22,7 @@ export default function ActivePromotions() {
             </p>
         </div>
 
-        <Card className="overflow-hidden shadow-lg border-2 border-accent/50">
+        <Card className="overflow-hidden shadow-lg border-2 border-accent/50 rounded-xl">
           <div className="grid md:grid-cols-2">
             <div className="relative min-h-[300px] md:min-h-full">
               {promoImage && (

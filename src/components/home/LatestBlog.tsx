@@ -23,7 +23,7 @@ export default function LatestBlog() {
           {blogPosts.map((post) => {
             const postImage = PlaceHolderImages.find((img) => img.id === post.imageUrl);
             return (
-              <Card key={post.id} className="flex flex-col overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+              <Card key={post.id} className="flex flex-col overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 rounded-xl">
                 {postImage && (
                   <CardHeader className="p-0">
                     <div className="relative aspect-video">

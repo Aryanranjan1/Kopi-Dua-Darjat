@@ -54,7 +54,7 @@ export default function SiteHeader() {
           ))}
         </nav>
         <div className="flex flex-1 items-center justify-end space-x-4">
-          <Button asChild className="hidden md:inline-flex" variant="ghost">
+          <Button asChild className="hidden md:inline-flex" variant="outline">
             <Link href="/franchise/apply">Apply Now</Link>
           </Button>
           <Button

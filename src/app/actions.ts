@@ -33,13 +33,16 @@ export async function generateBrandStoryAction(
   try {
     const result = await generateBrandStory({ publicationType: validatedFields.data.publicationType });
     return {
+      ...prevState,
       message: 'success',
       brandStory: result.brandStory,
     };
   } catch (error) {
     console.error(error);
     return {
-      message: 'An error occurred while generating the brand story.',
+      ...prevState,
+      message: 'error',
+      brandStory: null,
     };
   }
 }
