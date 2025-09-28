@@ -56,14 +56,8 @@ export default function FeaturedDrinks() {
                         <CardContent className="p-6">
                           <CardTitle className="font-headline text-2xl text-primary">{drink.name}</CardTitle>
                           <CardDescription className="mt-2 h-10">{drink.description}</CardDescription>
+                           <p className="text-lg font-semibold text-primary mt-2">RM{drink.price.toFixed(2)}</p>
                         </CardContent>
-                        <CardFooter className="p-6 pt-0">
-                          <Button asChild variant="ghost" className="text-accent hover:text-accent">
-                            <Link href={`/menu#${drink.slug}`}>
-                              Learn More <ArrowRight className="ml-2 h-4 w-4" />
-                            </Link>
-                          </Button>
-                        </CardFooter>
                       </Card>
                     </div>
                   </CarouselItem>
@@ -73,6 +67,13 @@ export default function FeaturedDrinks() {
             <CarouselPrevious className="hidden sm:flex" />
             <CarouselNext className="hidden sm:flex" />
           </Carousel>
+        </div>
+        <div className="mt-8">
+            <Button asChild size="lg">
+                <Link href="/menu">
+                    See Full Menu <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+            </Button>
         </div>
       </div>
     </section>
