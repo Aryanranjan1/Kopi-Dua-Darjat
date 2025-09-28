@@ -28,21 +28,16 @@ export default function FranchiseTeaser() {
           </div>
           <div className="text-center md:text-left">
             <h2 className="font-headline text-4xl font-bold">
-              Be Part of Our Family
+              Berminat jadi rakan niaga?
             </h2>
             <p className="mt-4 text-lg max-w-prose text-primary-foreground/80">
-              Join a fast-growing Malaysian brand and bring the taste of Kopi Dua Darjat to your community. We provide full training, SOPs, and marketing support.
+              Pelaburan kopi yang terbukti menguntungkan. Join a fast-growing Malaysian brand and bring the taste of Kopi Dua Darjat to your community.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
               <Button size="lg" asChild className="bg-accent hover:bg-accent/90 text-accent-foreground">
                 <Link href="/franchise">
-                  Become a Partner
+                  Learn More
                   <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
-              <Button size="lg" variant="outline" asChild className="border-primary-foreground text-primary-foreground bg-transparent hover:bg-primary-foreground/10">
-                <Link href="/franchise/apply">
-                  Apply Now
                 </Link>
               </Button>
             </div>
