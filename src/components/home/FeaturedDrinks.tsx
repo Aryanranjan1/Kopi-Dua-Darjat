@@ -1,93 +1,89 @@
-'use client';
+"use client";
 
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { featuredDrinks } from '@/lib/data';
+import { featuredDrinks as allFeaturedDrinks } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { ArrowRight } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function FeaturedDrinks() {
-  const mainDrink = featuredDrinks.find((d) => d.id === '1');
-  const otherDrinks = featuredDrinks.filter((d) => d.id !== '1');
+  const [drinks, setDrinks] = useState(allFeaturedDrinks);
 
-  const mainDrinkImage = mainDrink
-    ? PlaceHolderImages.find((img) => img.id === mainDrink.image)
-    : undefined;
-  const otherDrinkImages = otherDrinks.map((drink) =>
-    PlaceHolderImages.find((img) => img.id === drink.image)
-  );
+  const handleSelectDrink = (id: string) => {
+    setDrinks((prevDrinks) => {
+      const selectedIndex = prevDrinks.findIndex((d) => d.id === id);
+      if (selectedIndex <= 0) return prevDrinks; // Already main or not found
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-        delayChildren: 0.1,
-      },
-    },
+      const newOrder = [...prevDrinks];
+      const [selectedDrink] = newOrder.splice(selectedIndex, 1);
+      newOrder.unshift(selectedDrink);
+
+      // To move the old main drink to the end, we can do this:
+      const [newMain, ...rest] = newOrder;
+      const oldMain = prevDrinks[0];
+      const finalRest = rest.filter(d => d.id !== oldMain.id);
+      finalRest.push(oldMain);
+      
+      return [newMain, ...finalRest];
+    });
   };
 
-  const itemVariants = {
+  const cycleDrinks = useCallback(() => {
+    setDrinks((prevDrinks) => {
+      const newOrder = [...prevDrinks];
+      const first = newOrder.shift();
+      if(first) newOrder.push(first);
+      return newOrder;
+    });
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      cycleDrinks();
+    }, 5000); // Autoplay every 5 seconds
+    return () => clearInterval(interval);
+  }, [cycleDrinks]);
+
+  const mainDrink = drinks[0];
+  const otherDrinks = drinks.slice(1);
+
+  const mainDrinkImage = PlaceHolderImages.find((img) => img.id === mainDrink.image);
+
+  const textVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        ease: 'easeOut',
-      },
-    },
-  };
-
-  const imageVariants = {
-    hidden: { opacity: 0, scale: 0.8, y: 50 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      y: 0,
-      transition: {
-        duration: 0.8,
-        ease: [0.6, -0.05, 0.01, 0.99],
-      },
-    },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } },
+    exit: { opacity: 0, y: -20, transition: { duration: 0.3, ease: 'easeIn' } },
   };
 
   return (
     <section className="overflow-hidden bg-background py-24 sm:py-32">
-      <motion.div
-        className="container mx-auto px-4"
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
-      >
+      <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 items-center gap-16 md:grid-cols-2">
           {/* Left Column: Text Content */}
-          <div className="text-center md:text-left">
-            <motion.h2
-              variants={itemVariants}
-              className="font-headline text-4xl font-normal text-muted-foreground md:text-5xl"
-            >
-              It's not just Kopi.
-            </motion.h2>
-            <motion.h1
-              variants={itemVariants}
-              className="font-headline text-5xl font-bold text-primary md:text-6xl"
-            >
-              It's Dua Darjat.
-            </motion.h1>
-            <motion.p
-              variants={itemVariants}
-              className="mx-auto mt-6 max-w-md text-base text-muted-foreground md:mx-0"
-            >
-              Since 2020, our passion has been about quality and heritage. We ethically
-              source the finest local coffee beans and roast them with great care.
-              Our passion for coffee is rivaled only by our love of sharing it.
-            </motion.p>
-            <motion.div variants={itemVariants} className="mt-8">
+          <div className="text-center md:text-left h-60 md:h-80 flex flex-col justify-center">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={mainDrink.id}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                variants={textVariants}
+              >
+                <h2 className="font-headline text-4xl font-normal text-muted-foreground md:text-5xl">
+                  {mainDrink.tags[0] || "It's not just Kopi."}
+                </h2>
+                <h1 className="font-headline text-5xl font-bold text-primary md:text-6xl">
+                  {mainDrink.name}
+                </h1>
+                <p className="mx-auto mt-6 max-w-md text-base text-muted-foreground md:mx-0">
+                  {mainDrink.description}
+                </p>
+              </motion.div>
+            </AnimatePresence>
+            <motion.div initial={{opacity: 0}} animate={{opacity: 1}} transition={{delay: 0.5}} className="mt-8">
               <Button asChild size="lg">
                 <Link href="/menu">
                   View Full Menu <ArrowRight className="ml-2 h-4 w-4" />
@@ -97,51 +93,62 @@ export default function FeaturedDrinks() {
           </div>
 
           {/* Right Column: Images */}
-          <div className="relative flex h-full min-h-[50vh] items-center justify-center">
+          <div className="relative flex h-full min-h-[50vh] flex-col items-center justify-center">
             {/* Main Drink Image */}
-            {mainDrinkImage && (
-              <motion.div
-                variants={imageVariants}
-                className="relative z-10 aspect-[4/5] w-[70%] max-w-sm drop-shadow-2xl"
-              >
-                <Image
-                  src={mainDrinkImage.imageUrl}
-                  alt={mainDrink?.name || 'Signature Drink'}
-                  fill
-                  className="object-contain"
-                  data-ai-hint={mainDrinkImage.imageHint}
-                  priority
-                />
-              </motion.div>
-            )}
+            <AnimatePresence>
+              {mainDrinkImage && (
+                <motion.div
+                  key={mainDrink.id}
+                  initial={{ opacity: 0, y: -50, scale: 0.7 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 100, scale: 0.5 }}
+                  transition={{ duration: 0.6, ease: [0.6, -0.05, 0.01, 0.99] }}
+                  className="relative z-10 aspect-[4/5] w-[70%] max-w-sm drop-shadow-2xl"
+                >
+                  <Image
+                    src={mainDrinkImage.imageUrl}
+                    alt={mainDrink.name}
+                    fill
+                    className="object-contain"
+                    data-ai-hint={mainDrinkImage.imageHint}
+                    priority
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Other Drink Images */}
-            <motion.div
-              variants={containerVariants}
-              className="absolute bottom-[-20px] z-20 flex w-full justify-center gap-4"
-            >
-              {otherDrinkImages.map(
-                (img, index) =>
-                  img && (
+            <div className="absolute bottom-[-40px] z-20 flex w-full justify-center gap-2 md:gap-4">
+              <AnimatePresence>
+                {otherDrinks.map((drink, index) => {
+                  const img = PlaceHolderImages.find((i) => i.id === drink.image);
+                  if (!img) return null;
+                  return (
                     <motion.div
-                      key={img.id}
-                      variants={imageVariants}
-                      className="relative h-28 w-24 cursor-pointer transition-transform duration-300 hover:scale-110 hover:z-30 md:h-36 md:w-32"
+                      key={drink.id}
+                      layout
+                      initial={{ opacity: 0, scale: 0.5 }}
+                      animate={{ opacity: 1, scale: 1, rotate: index === 0 ? -5 : index === 2 ? 5 : 0 }}
+                      exit={{ opacity: 0, scale: 0.3 }}
+                      transition={{ duration: 0.5, ease: 'easeInOut' }}
+                      onClick={() => handleSelectDrink(drink.id)}
+                      className="relative h-24 w-20 md:h-28 md:w-24 cursor-pointer drop-shadow-xl transition-transform duration-300 hover:scale-110 hover:!rotate-0 hover:z-30"
                     >
                       <Image
                         src={img.imageUrl}
-                        alt={otherDrinks[index].name}
+                        alt={drink.name}
                         fill
-                        className="object-contain drop-shadow-xl"
+                        className="object-contain"
                         data-ai-hint={img.imageHint}
                       />
                     </motion.div>
-                  )
-              )}
-            </motion.div>
+                  );
+                })}
+              </AnimatePresence>
+            </div>
           </div>
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }

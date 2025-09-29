@@ -28,6 +28,12 @@
       "linkUrl": "https://www.youtube.com/watch?v=LXb3EKWsInQ"
     },
     {
+      "id": "drink-macchiato",
+      "description": "Caramel Macchiato.",
+      "imageUrl": "https://images.unsplash.com/photo-1571360623348-39d1283a88dd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjYXJhbWVsJTIwbWFjY2hpYXRvfGVufDB8fHx8MTc1OTY5MjM2Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "caramel macchiato"
+    },
+    {
       "id": "promotion-banner",
       "description": "Banner for a current promotion.",
       "imageUrl": "https://images.unsplash.com/photo-1690983325788-a0d5aaffa5b1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjb2ZmZWUlMjBwcm9tb3Rpb258ZW58MHx8fHwxNzU5MDY2OTIxfDA&ixlib=rb-4.1.0&q=80&w=1080",
@@ -66,7 +72,7 @@
     {
       "id": "founder-hadi",
       "description": "Photo of founder Hadi.",
-      "imageUrl": "https://images.unsplash.com/photo-1567324216289-97cc4134f626?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwb3J0cmFpdCUyMG1hbnxlbnwwfHx8fDE3NTkwMjQxOTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1567324216289-97cc4134f626?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwb3J0cmFpdCUyMG1hbnxlbnwwfHx8fDE3NTkwMjQxOTh8MA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "portrait man"
     },
     {
@@ -84,7 +90,7 @@
     {
       "id": "brewing-method",
       "description": "Image showing traditional coffee brewing.",
-      "imageUrl": "https://images.unsplash.com/photo-1586848384751-aa8f7ee302c7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjb2ZmZWUlMjBicmV3aW5nfGVufDB8fHx8MTc1OTA2NjkyMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1586848384751-aa8f7ee302c7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjb2ZmZWUlMjBicmV3aW5nfGVufDB8fHx8MTc1OTA2NjkyMXww&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "coffee brewing"
     },
     {
