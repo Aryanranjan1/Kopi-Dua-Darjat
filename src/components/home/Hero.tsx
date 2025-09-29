@@ -79,19 +79,6 @@ export default function Hero() {
           </div>
         </div>
       </div>
-      
-       {/* Stats and Curve */}
-      <div className="absolute bottom-0 left-0 w-full h-auto">
-        <div
-          className="absolute bottom-0 left-0 w-full h-32 md:h-48 bg-background [clip-path:ellipse(100%_100%_at_50%_100%)]"
-          aria-hidden="true"
-        ></div>
-        <div className="relative container mx-auto px-4">
-            <div className="md:w-[60%]">
-              <Stats />
-            </div>
-        </div>
-      </div>
     </section>
   );
 }
