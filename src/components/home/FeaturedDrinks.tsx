@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useCallback } from 'react';
@@ -63,7 +64,7 @@ export default function FeaturedDrinks() {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 items-center gap-16 md:grid-cols-2">
           {/* Left Column: Text Content */}
-          <div className="text-center md:text-left h-60 md:h-80 flex flex-col justify-center">
+          <div className="text-center md:text-left h-80 flex flex-col justify-center">
             <AnimatePresence mode="wait">
               <motion.div
                 key={mainDrink.id}
@@ -71,6 +72,7 @@ export default function FeaturedDrinks() {
                 animate="visible"
                 exit="exit"
                 variants={textVariants}
+                className="h-48"
               >
                 <h2 className="font-headline text-4xl font-normal text-muted-foreground md:text-5xl">
                   {mainDrink.tags[0] || "It's not just Kopi."}
@@ -99,9 +101,9 @@ export default function FeaturedDrinks() {
               {mainDrinkImage && (
                 <motion.div
                   key={mainDrink.id}
-                  initial={{ opacity: 0, y: -50, scale: 0.7 }}
+                  initial={{ opacity: 0, y: -50, scale: 0.8 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 100, scale: 0.5 }}
+                  exit={{ opacity: 0, y: 50, scale: 0.8 }}
                   transition={{ duration: 0.6, ease: [0.6, -0.05, 0.01, 0.99] }}
                   className="relative z-10 aspect-[4/5] w-[70%] max-w-sm drop-shadow-2xl"
                 >
@@ -118,7 +120,7 @@ export default function FeaturedDrinks() {
             </AnimatePresence>
 
             {/* Other Drink Images */}
-            <div className="absolute bottom-[-40px] z-20 flex w-full justify-center gap-2 md:gap-4">
+            <div className="absolute bottom-[-60px] z-20 flex w-full justify-center gap-1 md:gap-2">
               <AnimatePresence>
                 {otherDrinks.map((drink, index) => {
                   const img = PlaceHolderImages.find((i) => i.id === drink.image);
@@ -128,11 +130,12 @@ export default function FeaturedDrinks() {
                       key={drink.id}
                       layout
                       initial={{ opacity: 0, scale: 0.5 }}
-                      animate={{ opacity: 1, scale: 1, rotate: index === 0 ? -5 : index === 2 ? 5 : 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.3 }}
                       transition={{ duration: 0.5, ease: 'easeInOut' }}
                       onClick={() => handleSelectDrink(drink.id)}
-                      className="relative h-24 w-20 md:h-28 md:w-24 cursor-pointer drop-shadow-xl transition-transform duration-300 hover:scale-110 hover:!rotate-0 hover:z-30"
+                      className="relative h-20 w-16 md:h-24 md:w-20 cursor-pointer drop-shadow-xl transition-transform duration-300 hover:scale-110 hover:!rotate-0 hover:z-30"
+                      style={{ transform: `rotate(${index === 0 ? -8 : index === 2 ? 8 : 0}deg)` }}
                     >
                       <Image
                         src={img.imageUrl}
