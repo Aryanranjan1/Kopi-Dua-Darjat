@@ -117,7 +117,7 @@ export default function FeaturedDrinks() {
                 exit={{ opacity: 0, scale: 0.3 }}
                 transition={{ duration: 0.5, ease: 'easeInOut' }}
                 onClick={() => handleSelectDrink(drink.id)}
-                className="relative h-24 w-20 cursor-pointer transition-transform duration-300 hover:scale-110 hover:!rotate-0 hover:z-30"
+                className="relative h-20 w-16 cursor-pointer transition-transform duration-300 hover:scale-110 hover:!rotate-0 hover:z-30"
                 style={{ transform: `rotate(${index === 0 ? -8 : index === 2 ? 8 : 0}deg)` }}
               >
                 <Image
