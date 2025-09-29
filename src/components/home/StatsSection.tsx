@@ -11,7 +11,7 @@ export default function StatsSection() {
             <Stats />
         </div>
       </div>
-      <div className="hidden md:block absolute top-1/2 -translate-y-1/2 right-0 w-[30%]">
+      <div className="hidden md:block absolute -top-1/4 right-5 w-[30%]">
         {statsImage && (
             <div className="aspect-square relative rounded-xl overflow-hidden shadow-2xl">
                 <Image
