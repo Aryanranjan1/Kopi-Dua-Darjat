@@ -18,10 +18,10 @@ export default function SiteFooter() {
                 Kopi Dua Darjat
               </span>
             </Link>
-            <p className="mt-4 text-muted-foreground">
-              Antara Warisan & Artisan.
+            <p className="mt-4 text-sm text-muted-foreground">
+              Antara Warisan & Artisan. Experience the perfect blend of heritage and artisan coffee, crafted with passion and served with warmth.
             </p>
-            <div className="flex space-x-4 mt-4">
+            <div className="flex space-x-4 mt-6">
               <Link href="#" className="text-muted-foreground hover:text-primary">
                 <Facebook className="h-6 w-6" />
               </Link>
@@ -38,6 +38,7 @@ export default function SiteFooter() {
               Explore
             </h3>
             <ul className="mt-4 space-y-2">
+              <li><Link href="/" className="text-muted-foreground hover:text-primary">Home</Link></li>
               <li><Link href="/about" className="text-muted-foreground hover:text-primary">Our Story</Link></li>
               <li><Link href="/menu" className="text-muted-foreground hover:text-primary">Menu</Link></li>
               <li><Link href="/outlets" className="text-muted-foreground hover:text-primary">Outlets</Link></li>
@@ -50,6 +51,7 @@ export default function SiteFooter() {
             </h3>
             <ul className="mt-4 space-y-2">
               <li><Link href="/franchise" className="text-muted-foreground hover:text-primary">Franchise</Link></li>
+              <li><Link href="/franchise/apply" className="text-muted-foreground hover:text-primary">Apply Now</Link></li>
               <li><Link href="/blog" className="text-muted-foreground hover:text-primary">Blog</Link></li>
               <li><Link href="/contact" className="text-muted-foreground hover:text-primary">Contact Us</Link></li>
             </ul>
@@ -59,9 +61,9 @@ export default function SiteFooter() {
               Legal
             </h3>
             <ul className="mt-4 space-y-2">
+              <li><Link href="/faq" className="text-muted-foreground hover:text-primary">FAQ</Link></li>
               <li><Link href="/privacy" className="text-muted-foreground hover:text-primary">Privacy Policy</Link></li>
               <li><Link href="/terms" className="text-muted-foreground hover:text-primary">Terms of Service</Link></li>
-              <li><Link href="/faq" className="text-muted-foreground hover:text-primary">FAQ</Link></li>
             </ul>
           </div>
         </div>
