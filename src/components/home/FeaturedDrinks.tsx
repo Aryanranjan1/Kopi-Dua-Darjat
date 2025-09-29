@@ -51,7 +51,7 @@ export default function FeaturedDrinks() {
   };
 
   return (
-    <section className="relative overflow-hidden bg-background py-24 sm:py-32">
+    <section className="relative overflow-hidden py-24 sm:py-32">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 items-center gap-16 md:grid-cols-2">
           {/* Left Column: Text Content */}
