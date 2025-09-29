@@ -9,7 +9,7 @@
     {
       "id": "hero-coffee-cup",
       "description": "A photorealistic image of a coffee cup with saucer, leaves, and beans, on a transparent background.",
-      "imageUrl": "https://storage.googleapis.com/aai-web-samples/public/kopi-hero-cup.png",
+      "imageUrl": "https://images.unsplash.com/photo-1494314671902-399b18174975?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxN3x8Y29mZmVlfGVufDB8fHx8MTc1OTExNTIyNXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "coffee cup"
     },
     {
