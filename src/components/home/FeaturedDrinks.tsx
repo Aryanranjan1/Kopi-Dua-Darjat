@@ -44,7 +44,6 @@ export default function FeaturedDrinks() {
 
   const mainDrink = drinks[0];
   const otherDrinks = drinks.slice(1);
-  const staticDrink = allFeaturedDrinks[0]; // For static text
 
   const mainDrinkImage = PlaceHolderImages.find((img) => img.id === mainDrink.image);
 
@@ -62,13 +61,13 @@ export default function FeaturedDrinks() {
           <div className="text-center md:text-left h-80 flex flex-col justify-center">
             <div className="h-48">
               <h2 className="font-headline text-4xl font-normal text-muted-foreground md:text-5xl">
-                {staticDrink.tags[0] || "It's not just Kopi."}
+                It's not just Kopi.
               </h2>
               <h1 className="font-headline text-5xl font-bold text-primary md:text-6xl">
-                {staticDrink.name}
+                It's Dua Darjat.
               </h1>
               <p className="mx-auto mt-6 max-w-md text-base text-muted-foreground md:mx-0">
-                {staticDrink.description}
+                Since 2020, our passion has been about quality and heritage. We ethically source the finest local coffee beans and roast them with great care. Our passion for coffee is rivaled only by our love of sharing it.
               </p>
             </div>
             <div className="mt-8">
