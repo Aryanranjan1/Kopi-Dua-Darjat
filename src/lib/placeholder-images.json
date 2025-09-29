@@ -125,6 +125,24 @@
       "description": "An inviting image of a person reading a newsletter on a tablet while enjoying coffee.",
       "imageUrl": "https://images.unsplash.com/photo-1521791136064-7986c2920216?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxuZXdzbGV0dGVyfGVufDB8fHx8fDE3NTkzODIxNjd8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "newsletter"
+    },
+    {
+      "id": "testimonial-1",
+      "description": "Portrait of a happy male franchisee.",
+      "imageUrl": "https://images.unsplash.com/photo-1557862921-37829c790f19?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwb3J0cmFpdCUyMG1hbiUyMGhhcHB5fGVufDB8fHx8MTc1OTQ1NjcwOHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "happy man"
+    },
+    {
+      "id": "testimonial-2",
+      "description": "Portrait of a confident female entrepreneur.",
+      "imageUrl": "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxwb3J0cmFpdCUyMHdvbWFuJTIwc21pbGluZ3xlbnwwfHx8fDE3NTk0NTY3MDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "smiling woman"
+    },
+    {
+      "id": "testimonial-3",
+      "description": "Portrait of a thoughtful male business owner.",
+      "imageUrl": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxwb3J0cmFpdCUyMG1hbnxlbnwwfHx8fDE3NTkwMjQxOTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "portrait man"
     }
   ]
 }

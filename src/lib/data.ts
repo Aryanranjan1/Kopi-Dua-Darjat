@@ -1,4 +1,4 @@
-import type { Drink, Outlet, Promotion, BlogPost } from './types';
+import type { Drink, Outlet, Promotion, BlogPost, Testimonial } from './types';
 
 export const featuredDrinks: Drink[] = [
   {
@@ -111,3 +111,27 @@ export const blogPosts: BlogPost[] = [
     tags: ['Franchise', 'Business'],
   },
 ];
+
+export const testimonials: Testimonial[] = [
+    {
+      id: '1',
+      quote: 'Joining Kopi Dua Darjat was the best business decision I\'ve ever made. The support from the central team is unmatched.',
+      name: 'Ahmad Faizal',
+      designation: 'Franchisee, KDD Bangi',
+      image: 'testimonial-1',
+    },
+    {
+      id: '2',
+      quote: 'The brand recognition is incredible. Customers love the coffee, and my outlet has been profitable since month one.',
+      name: 'Siti Nurhaliza',
+      designation: 'Franchisee, KDD Kajang',
+      image: 'testimonial-2',
+    },
+    {
+      id: '3',
+      quote: 'I always wanted to own a café. Kopi Dua Darjat made that dream a reality with a low-cost, high-return model.',
+      name: 'Ravi Chandran',
+      designation: 'Franchisee, KDD Putrajaya',
+      image: 'testimonial-3',
+    },
+  ];

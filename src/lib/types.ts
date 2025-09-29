@@ -45,3 +45,11 @@ export type BlogPost = {
   publishDate: string;
   tags: string[];
 };
+
+export type Testimonial = {
+  id: string;
+  quote: string;
+  name: string;
+  designation: string;
+  image: string;
+};

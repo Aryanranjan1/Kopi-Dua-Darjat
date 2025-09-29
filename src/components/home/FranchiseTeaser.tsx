@@ -1,26 +1,16 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
-import Image from 'next/image';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { CircularTestimonials } from '@/components/home/CircularTestimonials';
+import { testimonials } from '@/lib/data';
 
 export default function FranchiseTeaser() {
-    const franchiseImage = PlaceHolderImages.find((img) => img.id === 'franchise-teaser');
-
   return (
     <section className="bg-primary text-primary-foreground py-24 sm:py-32">
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
-            <div className="relative aspect-square max-w-md mx-auto w-full">
-                {franchiseImage && (
-                <Image
-                    src={franchiseImage.imageUrl}
-                    alt={franchiseImage.description}
-                    fill
-                    className="object-cover rounded-2xl shadow-xl"
-                    data-ai-hint={franchiseImage.imageHint}
-                />
-                )}
+            <div className="w-full flex items-center justify-center">
+                <CircularTestimonials testimonials={testimonials} autoplay={true} />
             </div>
           <div className="text-center md:text-left">
             <h2 className="font-headline text-4xl font-bold">
