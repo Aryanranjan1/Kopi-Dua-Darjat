@@ -8,7 +8,7 @@ export default function Hero() {
   const heroImage = PlaceHolderImages.find((img) => img.id === 'hero-coffee-cup');
 
   return (
-    <section className="relative w-full min-h-screen text-primary-foreground overflow-hidden">
+    <section className="relative w-full min-h-screen text-primary-foreground flex flex-col justify-between overflow-hidden">
       {/* Background Video */}
       <div className="absolute inset-0 z-[-2]">
         <video
@@ -24,8 +24,8 @@ export default function Hero() {
       {/* Gradient Overlay */}
       <div className="absolute inset-0 z-[-1] bg-gradient-to-r from-black/60 via-black/30 to-transparent"></div>
       
-      <div className="container mx-auto px-4 h-full">
-        <div className="grid md:grid-cols-5 items-center h-full min-h-screen pt-20 md:pt-0">
+      <div className="container mx-auto px-4 h-full flex-1">
+        <div className="grid md:grid-cols-5 items-center h-full min-h-[calc(100vh-200px)] pt-20 md:pt-0">
           
           {/* Mobile Image */}
           <div className="md:hidden col-span-5 flex justify-center -mt-16">
@@ -80,7 +80,7 @@ export default function Hero() {
       </div>
       
        {/* Stats and Curve */}
-      <div className="absolute bottom-0 left-0 w-full h-auto">
+      <div className="relative md:absolute bottom-0 left-0 w-full h-auto">
         <div
           className="absolute bottom-0 left-0 w-full h-32 md:h-48 bg-background [clip-path:ellipse(100%_100%_at_50%_100%)]"
           aria-hidden="true"
