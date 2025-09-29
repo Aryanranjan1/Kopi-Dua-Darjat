@@ -87,7 +87,7 @@ export default function FeaturedDrinks() {
                   animate="visible"
                   exit="exit"
                   variants={imageVariants}
-                  className="relative z-10 aspect-[4/5] w-[70%] max-w-sm"
+                  className="relative z-10 aspect-[4/5] w-[70%] max-w-sm -rotate-[25deg]"
                 >
                   <Image
                     src={mainDrink.image}
@@ -118,14 +118,13 @@ export default function FeaturedDrinks() {
                 exit={{ opacity: 0, scale: 0.3 }}
                 transition={{ duration: 0.5, ease: 'easeInOut' }}
                 onClick={() => handleSelectDrink(drink.id)}
-                className="relative h-20 w-16 md:h-24 md:w-20 cursor-pointer transition-transform duration-300 hover:scale-110 hover:!rotate-0 hover:z-30"
+                className="relative h-24 w-20 cursor-pointer transition-transform duration-300 hover:scale-110 hover:!rotate-0 hover:z-30"
                 style={{ transform: `rotate(${index === 0 ? -8 : index === 2 ? 8 : 0}deg)` }}
               >
                 <Image
                   src={drink.image}
                   alt={drink.name}
-                  width={80}
-                  height={100}
+                  fill
                   className="object-contain drop-shadow-xl"
                 />
               </motion.div>
