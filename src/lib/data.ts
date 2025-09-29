@@ -51,6 +51,8 @@ export const outlets: Outlet[] = [
         address: '123 Jalan Reko, Kajang, Selangor',
         hours: '8:00 AM - 10:00 PM',
         city: 'Kajang',
+        lat: 2.9935,
+        lng: 101.7874,
         isOpenNow: true,
     },
     {
@@ -60,6 +62,8 @@ export const outlets: Outlet[] = [
         address: '456 Bandar Baru Bangi, Selangor',
         hours: '8:00 AM - 10:00 PM',
         city: 'Bangi',
+        lat: 2.9555,
+        lng: 101.7616,
         isOpenNow: true,
     },
     {
@@ -69,6 +73,8 @@ export const outlets: Outlet[] = [
         address: '789 Presint 15, Putrajaya',
         hours: '9:00 AM - 9:00 PM',
         city: 'Putrajaya',
+        lat: 2.9264,
+        lng: 101.6964,
         isOpenNow: false,
     },
 ];

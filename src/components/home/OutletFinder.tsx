@@ -1,14 +1,10 @@
-import Image from 'next/image';
 import Link from 'next/link';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { MapPin } from 'lucide-react';
+import InteractiveMap from './InteractiveMap';
 
 export default function OutletFinder() {
-  const mapImage = PlaceHolderImages.find((img) => img.id === 'outlet-map');
-  
   return (
     <section className="py-16">
       <div className="container mx-auto px-4">
@@ -29,26 +25,8 @@ export default function OutletFinder() {
             </Button>
           </div>
           <div className="lg:col-span-3">
-            <Card className="overflow-hidden shadow-lg rounded-xl">
-                {mapImage && (
-                    <div className="relative aspect-[4/3]">
-                        <Image
-                            src={mapImage.imageUrl}
-                            alt={mapImage.description}
-                            fill
-                            className="object-cover"
-                            data-ai-hint={mapImage.imageHint}
-                        />
-                         <div className="absolute inset-0 bg-black/10 flex items-center justify-center">
-                            <Link href="/outlets">
-                                <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground scale-110 shadow-2xl">
-                                    <MapPin className="mr-2 h-5 w-5" />
-                                    Launch Interactive Map
-                                </Button>
-                            </Link>
-                         </div>
-                    </div>
-                )}
+            <Card className="overflow-hidden shadow-lg rounded-xl aspect-[4/3]">
+              <InteractiveMap />
             </Card>
           </div>
         </div>

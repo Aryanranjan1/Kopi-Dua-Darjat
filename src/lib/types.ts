@@ -22,6 +22,8 @@ export type Outlet = {
   address: string;
   hours: string;
   city: string;
+  lat: number;
+  lng: number;
   isOpenNow: boolean;
 };
 
