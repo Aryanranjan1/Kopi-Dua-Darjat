@@ -6,7 +6,7 @@ export const featuredDrinks: Drink[] = [
     name: 'Kopi Darjat',
     slug: 'kopi-darjat',
     price: 4.5,
-    image: 'drink-darjat',
+    image: '/image/a.png',
     description: 'Our signature blend, a perfect harmony of bold and smooth, representing our heritage.',
     tags: ['Darjat', 'Signature'],
     isFeatured: true,
@@ -16,7 +16,7 @@ export const featuredDrinks: Drink[] = [
     name: 'Artisan Matcha',
     slug: 'artisan-matcha',
     price: 6.0,
-    image: 'drink-matcha',
+    image: '/image/b.png',
     description: 'Stone-ground matcha from Niko Neko, whisked to perfection for a vibrant taste.',
     tags: ['Non-Coffee', 'Artisan'],
     isFeatured: true,
@@ -26,7 +26,7 @@ export const featuredDrinks: Drink[] = [
     name: 'Bottled Series',
     slug: 'bottled-series',
     price: 5.0,
-    image: 'drink-bottled',
+    image: '/image/c.png',
     description: 'Your favorite Kopi Dua Darjat drinks, ready to go whenever you are.',
     tags: ['On-the-Go', 'Bottled'],
     isFeatured: true,
@@ -36,7 +36,7 @@ export const featuredDrinks: Drink[] = [
     name: 'Caramel Macchiato',
     slug: 'caramel-macchiato',
     price: 5.5,
-    image: 'drink-macchiato',
+    image: '/image/d.png',
     description: 'A creamy, classic favorite with a sweet caramel drizzle and a bold espresso shot.',
     tags: ['Sweet', 'Classic'],
     isFeatured: true,
@@ -145,4 +145,5 @@ export const testimonials: Testimonial[] = [
       image: 'testimonial-3',
     },
   ];
+
 

@@ -16,7 +16,7 @@ export default function Home() {
       
       <div className="absolute top-[88vh] right-[50px] w-[30vw] aspect-square z-30 hidden md:block transform -translate-y-1/2">
         <Image
-          src="/images/coffee.png"
+          src="/image/coffee.png"
           alt="Artisan coffee"
           fill
           className="object-cover rounded-xl shadow-2xl"

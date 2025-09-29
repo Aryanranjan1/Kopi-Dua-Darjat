@@ -6,7 +6,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { featuredDrinks as allFeaturedDrinks } from '@/lib/data';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -45,8 +44,6 @@ export default function FeaturedDrinks() {
   const mainDrink = drinks[0];
   const otherDrinks = drinks.slice(1);
 
-  const mainDrinkImage = PlaceHolderImages.find((img) => img.id === mainDrink.image);
-
   const imageVariants = {
     hidden: { opacity: 0, x: 100, y: -100, scale: 0.8, rotate: 15 },
     visible: { opacity: 1, x: 0, y: 0, scale: 1, rotate: 0, transition: { duration: 0.7, ease: 'easeInOut' } },
@@ -83,7 +80,7 @@ export default function FeaturedDrinks() {
           <div className="relative flex h-full min-h-[50vh] flex-col items-center justify-center">
             {/* Main Drink Image */}
             <AnimatePresence mode="wait">
-              {mainDrinkImage && (
+              {mainDrink && (
                 <motion.div
                   key={mainDrink.id}
                   initial="hidden"
@@ -93,11 +90,11 @@ export default function FeaturedDrinks() {
                   className="relative z-10 aspect-[4/5] w-[70%] max-w-sm"
                 >
                   <Image
-                    src={mainDrinkImage.imageUrl}
+                    src={mainDrink.image}
                     alt={mainDrink.name}
-                    fill
+                    width={400}
+                    height={500}
                     className="object-contain drop-shadow-2xl"
-                    data-ai-hint={mainDrinkImage.imageHint}
                     priority
                   />
                 </motion.div>
@@ -111,8 +108,7 @@ export default function FeaturedDrinks() {
       <div className="absolute bottom-12 left-0 right-0 z-20 flex w-full justify-center gap-1 md:gap-2">
         <AnimatePresence>
           {otherDrinks.map((drink, index) => {
-            const img = PlaceHolderImages.find((i) => i.id === drink.image);
-            if (!img) return null;
+            if (!drink.image) return null;
             return (
               <motion.div
                 key={drink.id}
@@ -126,11 +122,11 @@ export default function FeaturedDrinks() {
                 style={{ transform: `rotate(${index === 0 ? -8 : index === 2 ? 8 : 0}deg)` }}
               >
                 <Image
-                  src={img.imageUrl}
+                  src={drink.image}
                   alt={drink.name}
-                  fill
+                  width={80}
+                  height={100}
                   className="object-contain drop-shadow-xl"
-                  data-ai-hint={img.imageHint}
                 />
               </motion.div>
             );
