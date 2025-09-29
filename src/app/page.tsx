@@ -16,6 +16,10 @@ export default function Home() {
       <div className="relative z-10">
         <Hero />
       </div>
+      
+      <div className="w-full bg-background text-primary-foreground">
+        <ActivePromotions />
+      </div>
 
       <div className="absolute top-[88vh] right-[50px] w-[30vw] aspect-square z-30 hidden md:block transform -translate-y-1/2">
         {newImage && (
@@ -32,9 +36,6 @@ export default function Home() {
       <StatsSection />
       <div className="bg-secondary text-foreground">
         <FeaturedDrinks />
-      </div>
-      <div className="w-full bg-background text-primary-foreground">
-        <ActivePromotions />
       </div>
       <div className="w-full bg-secondary">
         <OutletFinder />
