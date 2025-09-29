@@ -7,7 +7,19 @@ export default function Hero() {
   const heroImage = PlaceHolderImages.find((img) => img.id === 'hero-coffee-cup');
 
   return (
-    <section className="relative bg-primary text-primary-foreground overflow-hidden">
+    <section className="relative text-primary-foreground overflow-hidden">
+      <div className="absolute inset-0 z-[-1]">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover"
+          src="https://videos.pexels.com/video-files/2909914/2909914-hd_1920_1080_25fps.mp4"
+        />
+        <div className="absolute inset-0 bg-black/50"></div>
+      </div>
+
       <div className="container mx-auto px-4 min-h-screen flex items-center">
         <div className="z-10 text-center md:text-left max-w-2xl">
           <h1 className="font-headline text-5xl md:text-7xl font-bold tracking-tight text-background drop-shadow-lg">
