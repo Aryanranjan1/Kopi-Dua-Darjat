@@ -33,7 +33,7 @@ export default function LatestBlog() {
 
   return (
     <section className="py-24 sm:py-32 bg-background">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
           <AnimateOnScroll animationType='slideInFromLeft' className="lg:ml-8">
             <h2 className="text-4xl md:text-6xl font-headline font-bold text-primary leading-tight">

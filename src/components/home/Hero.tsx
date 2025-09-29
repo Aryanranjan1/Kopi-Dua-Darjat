@@ -20,7 +20,7 @@ export default function Hero() {
       <div className="absolute inset-0 z-[-1] bg-gradient-to-r from-black to-transparent"></div>
       
       {/* Main Content Area */}
-      <div className="container mx-auto px-4 h-full relative">
+      <div className="container mx-auto px-12 h-full relative">
         <div className="grid md:grid-cols-1 items-center h-full min-h-[88vh] pt-0">
           
           {/* Text Content */}
