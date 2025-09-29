@@ -31,15 +31,15 @@ export default function Home() {
 
       <StatsSection />
       
-      <div className="w-full bg-secondary">
-        <OutletFinder />
-      </div>
-
       <div className="bg-secondary text-foreground">
         <FeaturedDrinks />
       </div>
       
       <ActivePromotions />
+
+      <div className="w-full bg-secondary">
+        <OutletFinder />
+      </div>
       
       <div className="w-full bg-primary">
         <FranchiseTeaser />
