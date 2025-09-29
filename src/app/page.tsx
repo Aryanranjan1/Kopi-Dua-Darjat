@@ -25,7 +25,7 @@ export default function Home() {
 
       <StatsSection />
       
-      <div className="text-foreground">
+      <div className="bg-secondary text-foreground">
         <FeaturedDrinks />
       </div>
       
