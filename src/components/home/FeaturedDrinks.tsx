@@ -46,7 +46,7 @@ export default function FeaturedDrinks() {
 
   const imageVariants = {
     hidden: { opacity: 0, x: 100, y: -100, scale: 0.8, rotate: 15 },
-    visible: { opacity: 1, x: 0, y: 0, scale: 1, rotate: 0, transition: { duration: 0.7, ease: 'easeInOut' } },
+    visible: { opacity: 1, x: 0, y: 0, scale: 1, rotate: -25, transition: { duration: 0.7, ease: 'easeInOut' } },
     exit: { opacity: 0, x: 100, y: -100, scale: 0.8, rotate: -15, transition: { duration: 0.7, ease: 'easeInOut' } },
   };
 
@@ -87,7 +87,7 @@ export default function FeaturedDrinks() {
                   animate="visible"
                   exit="exit"
                   variants={imageVariants}
-                  className="relative z-10 h-full w-[80%] max-w-md -rotate-[25deg]"
+                  className="relative z-10 h-full w-[80%] max-w-md"
                 >
                   <Image
                     src={mainDrink.image}
