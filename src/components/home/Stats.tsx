@@ -4,8 +4,8 @@ import { useState, useEffect, useRef } from 'react';
 
 const stats = [
   { value: 50, label: 'Outlets Nationwide', symbol: '+' },
-  { value: 2020, label: 'Serving Heritage Coffee', symbol: 'Since' },
-  { value: 3, label: 'Quality Kopi Kampung', symbol: 'From RM' },
+  { value: 100, label: 'Local Beans', symbol: '%' },
+  { value: 3, label: 'Starting Price', symbol: 'From RM' },
 ];
 
 const StatCounter = ({ end, duration = 2000, symbol, label }) => {
@@ -39,18 +39,25 @@ const StatCounter = ({ end, duration = 2000, symbol, label }) => {
     if (!isVisible) return;
 
     let start = 0;
+    // For "Since" stats, we don't want to start from 0
+    if (symbol === 'Since') {
+      start = end - 20 > 0 ? end - 20 : 0;
+    }
+
     const endValue = end;
     const startTime = Date.now();
 
     const animateCount = () => {
       const now = Date.now();
       const progress = Math.min((now - startTime) / duration, 1);
-      const currentValue = Math.floor(progress * endValue);
+      const currentValue = Math.floor(progress * (endValue - start) + start);
       
       setCount(currentValue);
 
       if (progress < 1) {
         requestAnimationFrame(animateCount);
+      } else {
+        setCount(endValue);
       }
     };
 
@@ -64,7 +71,7 @@ const StatCounter = ({ end, duration = 2000, symbol, label }) => {
         {symbol === 'Since' && `${symbol} `}
         {symbol === 'From RM' && `${symbol}`}
         {count}
-        {symbol === '+' && `${symbol}`}
+        {(symbol === '+' || symbol === '%') && `${symbol}`}
       </p>
       <p className="mt-1 text-sm md:text-base text-muted-foreground">{label}</p>
     </div>
