@@ -8,7 +8,7 @@ export default function Hero() {
 
   return (
     <section className="relative bg-primary text-primary-foreground overflow-hidden">
-      <div className="container mx-auto px-4 min-h-[600px] md:min-h-[700px] flex items-center">
+      <div className="container mx-auto px-4 min-h-screen flex items-center">
         <div className="z-10 text-center md:text-left max-w-2xl">
           <h1 className="font-headline text-5xl md:text-7xl font-bold tracking-tight text-background drop-shadow-lg">
             Antara Warisan & Artisan.
