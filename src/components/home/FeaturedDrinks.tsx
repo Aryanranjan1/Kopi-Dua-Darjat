@@ -15,7 +15,7 @@ import { ArrowRight, ShoppingCart } from 'lucide-react';
 
 export default function FeaturedDrinks() {
   return (
-    <section className="py-24 sm:py-32 bg-background">
+    <section className="py-24 sm:py-32 bg-secondary">
       <div className="container mx-auto px-4 text-center">
         <h2 className="text-4xl font-headline font-bold text-primary">
           Our Signature Selections
@@ -39,7 +39,7 @@ export default function FeaturedDrinks() {
                 return (
                   <CarouselItem key={drink.id} className="md:basis-1/2 lg:basis-1/3">
                     <div className="p-2">
-                      <Card className="overflow-hidden transition-all duration-300 group hover:shadow-xl hover:-translate-y-1 rounded-xl bg-secondary border-none">
+                      <Card className="overflow-hidden transition-all duration-300 group hover:shadow-xl hover:-translate-y-1 rounded-xl bg-background border-none">
                         <CardContent className="p-6 flex flex-col items-center text-center">
                           {drinkImage && (
                             <div className="relative w-48 h-48 mb-4 transform group-hover:scale-110 transition-transform duration-500">
