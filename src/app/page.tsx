@@ -33,7 +33,7 @@ export default function Home() {
       <div className="bg-secondary text-foreground">
         <FeaturedDrinks />
       </div>
-      <div className="w-full bg-primary text-primary-foreground">
+      <div className="w-full bg-background text-primary-foreground">
         <ActivePromotions />
       </div>
       <div className="w-full bg-secondary">
