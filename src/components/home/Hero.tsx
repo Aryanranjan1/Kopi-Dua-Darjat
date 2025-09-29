@@ -1,12 +1,7 @@
-import Image from 'next/image';
 import Link from 'next/link';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Button } from '@/components/ui/button';
-import Stats from './Stats';
 
 export default function Hero() {
-  const heroImage = PlaceHolderImages.find((img) => img.id === 'hero-coffee-cup');
-
   return (
     <section className="relative w-full min-h-screen text-primary-foreground overflow-hidden">
       {/* Background Video */}
@@ -26,26 +21,10 @@ export default function Hero() {
       
       {/* Main Content Area */}
       <div className="container mx-auto px-4 h-full relative">
-        <div className="grid md:grid-cols-5 items-center h-full min-h-screen pt-20 md:pt-0">
+        <div className="grid md:grid-cols-1 items-center h-full min-h-screen pt-20 md:pt-0">
           
-          {/* Mobile Image */}
-          <div className="md:hidden col-span-5 flex justify-center -mt-16">
-            {heroImage && (
-              <div className="relative w-[300px] h-[300px]">
-                <Image
-                  src={heroImage.imageUrl}
-                  alt={heroImage.description}
-                  fill
-                  className="object-contain"
-                  priority
-                  data-ai-hint={heroImage.imageHint}
-                />
-              </div>
-            )}
-          </div>
-
           {/* Text Content */}
-          <div className="md:col-span-5 z-10 text-center md:text-left pb-48 md:pb-0">
+          <div className="z-10 text-center md:text-left pb-48 md:pb-0">
             <h1 className="font-headline text-5xl md:text-7xl font-bold tracking-tight text-background drop-shadow-lg">
               Antara Warisan & Artisan.
             </h1>

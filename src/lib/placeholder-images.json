@@ -7,12 +7,6 @@
       "imageHint": "cafe interior"
     },
     {
-      "id": "hero-coffee-cup",
-      "description": "A photorealistic image of a coffee cup with saucer, leaves, and beans, on a transparent background.",
-      "imageUrl": "https://images.unsplash.com/photo-1494314671902-399b18174975?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxN3x8Y29mZmVlfGVufDB8fHx8MTc1OTExNTIyNXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "coffee cup"
-    },
-    {
       "id": "drink-darjat",
       "description": "Signature Darjat coffee.",
       "imageUrl": "https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjb2ZmZWUlMjBkcmlua3xlbnwwfHx8fDE3NTkwNjY5MjF8MA&ixlib=rb-4.1.0&q=80&w=1080",
@@ -69,25 +63,25 @@
     {
       "id": "founder-hadi",
       "description": "Photo of founder Hadi.",
-      "imageUrl": "https://images.unsplash.com/photo-1567324216289-97cc4134f626?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwb3J0cmFpdCUyMG1hbnxlbnwwfHx8fDE3NTkwMjQxOTh8MA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1567324216289-97cc4134f626?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwb3J0cmFpdCUyMG1hbnxlbnwwfHx8fDE3NTkwMjQxOTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "portrait man"
     },
     {
       "id": "founder-azad",
       "description": "Photo of founder Azad.",
-      "imageUrl": "https://images.unsplash.com/photo-1661170489141-fc9128eeae92?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxwb3J0cmFpdCUyMG1hbiUyMHNtaWxlfGVufDB8fHx8MTc1OTA2NjkyMXww&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1661170489141-fc9128eeae92?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxwb3J0cmFpdCUyMG1hbiUyMHNtaWxlfGVufDB8fHx8MTc1OTA2NjkyMXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "portrait man smile"
     },
     {
       "id": "brand-timeline",
       "description": "Image representing brand growth or history.",
-      "imageUrl": "https://images.unsplash.com/photo-1511081692775-05d0f180a065?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjb2ZmZWUlMjBzaG9wfGVufDB8fHx8MTc1OTAyOTkzN3ww&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1511081692775-05d0f180a065?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjb2ZmZWUlMjBzaG9wfGVufDB8fHx8MTc1OTAyOTkzN3ww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "coffee shop"
     },
     {
       "id": "brewing-method",
       "description": "Image showing traditional coffee brewing.",
-      "imageUrl": "https://images.unsplash.com/photo-1586848384751-aa8f7ee302c7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjb2ZmZWUlMjBicmV3aW5nfGVufDB8fHx8MTc1OTA2NjkyMXww&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1586848384751-aa8f7ee302c7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjb2ZmZWUlMjBicmV3aW5nfGVufDB8fHx8MTc1OTA2NjkyMXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "coffee brewing"
     },
     {
@@ -95,12 +89,6 @@
       "description": "Hero image for franchise page",
       "imageUrl": "https://images.unsplash.com/photo-1594392174535-eb4b1043dad3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y2FmZSUyMG93bmVyfGVufDB8fHx8MTc1OTA2NjkyMXww&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "cafe owner"
-    },
-    {
-      "id": "stats-image",
-      "description": "A close-up shot of steaming hot, freshly brewed coffee being poured into a cup.",
-      "imageUrl": "https://images.unsplash.com/photo-1544421604-029b2ff95af1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjb2ZmZWUlMjBwb3VyfGVufDB8fHx8MTc1OTAzMjMzNnww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "coffee pour"
     }
   ]
 }
