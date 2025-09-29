@@ -22,7 +22,6 @@ export default function FeaturedDrinks() {
       const [selectedDrink] = newOrder.splice(selectedIndex, 1);
       newOrder.unshift(selectedDrink);
 
-      // To move the old main drink to the end, we can do this:
       const [newMain, ...rest] = newOrder;
       const oldMain = prevDrinks[0];
       const finalRest = rest.filter(d => d.id !== oldMain.id);
