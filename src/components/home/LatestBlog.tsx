@@ -25,8 +25,8 @@ export default function LatestBlog() {
     <section className="py-24 sm:py-32 bg-background">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-          <div>
-            <h2 className="text-4xl font-headline font-bold text-primary leading-tight">
+          <div className="lg:ml-8">
+            <h2 className="text-4xl md:text-5xl font-headline font-bold text-primary leading-tight">
               Join the <br /> <span className="text-accent">Community</span>
             </h2>
           </div>
