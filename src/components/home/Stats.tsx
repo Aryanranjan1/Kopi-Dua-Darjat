@@ -75,7 +75,7 @@ const StatCounter = ({ end, duration = 2000, symbol, label }) => {
 export default function Stats() {
   return (
     <div className="max-w-4xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-8">
+        <div className="grid grid-cols-3 gap-8">
             {stats.map((stat, index) => (
                 <StatCounter key={index} end={stat.value} symbol={stat.symbol} label={stat.label} />
             ))}
