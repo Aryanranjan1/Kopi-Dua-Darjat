@@ -15,7 +15,7 @@ export default function Hero() {
           muted
           playsInline
           className="w-full h-full object-cover"
-          src="https://videos.pexels.com/video-files/2909914/2909914-hd_1920_1080_25fps.mp4"
+          src="https://videos.pexels.com/video-files/4784093/4784093-hd_1920_1080_25fps.mp4"
         />
         <div className="absolute inset-0 bg-black/50"></div>
       </div>
