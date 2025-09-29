@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
-import { CoffeeBean } from '@/components/icons/CoffeeBean';
 
 export default function FranchiseTeaser() {
   const teaserImage = PlaceHolderImages.find((img) => img.id === 'franchise-teaser');
@@ -22,9 +21,6 @@ export default function FranchiseTeaser() {
                     data-ai-hint={teaserImage.imageHint}
                 />
             )}
-            <div className="absolute -bottom-4 -left-4 w-20 h-20 text-accent">
-                <CoffeeBean />
-            </div>
           </div>
           <div className="text-center md:text-left">
             <h2 className="font-headline text-4xl font-bold">
