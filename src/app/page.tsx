@@ -26,23 +26,23 @@ export default function Home() {
 
       <StatsSection />
       
-      <AnimateOnScroll>
+      <AnimateOnScroll animationType="slideInFromLeft">
         <div className="bg-secondary text-foreground">
           <FeaturedDrinks />
         </div>
       </AnimateOnScroll>
       
-      <AnimateOnScroll>
+      <AnimateOnScroll animationType="slideInFromRight">
         <ActivePromotions />
       </AnimateOnScroll>
 
-      <AnimateOnScroll>
+      <AnimateOnScroll animationType="fadeIn">
         <div className="w-full bg-secondary">
           <OutletFinder />
         </div>
       </AnimateOnScroll>
       
-      <AnimateOnScroll>
+      <AnimateOnScroll animationType="slideInFromBottom">
         <div className="w-full bg-primary">
           <FranchiseTeaser />
         </div>
