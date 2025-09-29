@@ -2,105 +2,148 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { ArrowRight, Instagram, Facebook, Youtube } from 'lucide-react';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel';
+import { Input } from '../ui/input';
+import { blogPosts } from '@/lib/data';
+import Autoplay from "embla-carousel-autoplay";
+import * as React from "react";
 
 export default function LatestBlog() {
-  const communityImage = PlaceHolderImages.find((img) => img.id === 'community-event-1');
-  const parallaxBg = PlaceHolderImages.find((img) => img.id === 'parallax-promo-bg');
+  const eventImage1 = PlaceHolderImages.find((img) => img.id === 'community-event-1');
+  const eventImage2 = PlaceHolderImages.find((img) => img.id === 'community-event-2');
+  const eventImage3 = PlaceHolderImages.find((img) => img.id === 'community-event-3');
 
+  const articles = blogPosts.slice(0, 2);
+  const plugin = React.useRef(
+    Autoplay({ delay: 5000, stopOnInteraction: true })
+  );
+
+  const eventImages = [eventImage1, eventImage2, eventImage3].filter(Boolean);
 
   return (
     <section className="py-24 sm:py-32 bg-background">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
           <div className="lg:ml-8">
             <h2 className="text-4xl md:text-6xl font-headline font-bold text-primary leading-tight">
-              Sip Smart. <br /> <span className="text-accent">Stay Sharp.</span>
+              Join the <br /> <span className="text-accent">Community</span>
             </h2>
           </div>
           <div>
             <p className="mt-4 text-lg text-muted-foreground max-w-prose">
-              We know your day is challenging. Kopi Dua Darjat is more than just coffee; it's a daily ritual that connects you to a vibrant community and rich heritage. We're here to elevate your day.
+              More than just great coffee, we're a community of flavor-chasers and story-tellers. Dive into our latest articles, join the conversation on social media, and become part of the Kopi Dua Darjat family.
             </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Card 1: Large with video background */}
-          <Card className="bg-card shadow-lg rounded-3xl p-8 relative overflow-hidden min-h-[450px] flex flex-col justify-between text-white col-span-1 lg:col-span-1">
-             <video
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="absolute inset-0 w-full h-full object-cover z-0"
-                src="/video/bg1.mp4"
-            />
-            <div className="absolute inset-0 bg-black/70 z-10"></div>
-            <div className="z-20 relative flex flex-col h-full">
-                <div>
-                    <h3 className="font-headline text-3xl font-bold">The Kopi Dua Darjat Story</h3>
-                    <p className="text-white/80 mt-2 max-w-prose">
-                        Our approach to coffee is unique, blending artisan methods with rich heritage. Our story is crafted by our founders, for coffee lovers of any level.
-                    </p>
+        <div className="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+          <div className="flex flex-col gap-8">
+            <Card className="bg-card overflow-hidden shadow-lg rounded-3xl">
+              <Carousel 
+                plugins={[plugin.current]}
+                className="w-full"
+                onMouseEnter={plugin.current.stop}
+                onMouseLeave={plugin.current.reset}
+                opts={{ loop: true }}
+               >
+                <CarouselContent>
+                  {eventImages.map((image) => (
+                    image && (
+                      <CarouselItem key={image.id}>
+                        <Link href={image.linkUrl || '#'} target="_blank" rel="noopener noreferrer">
+                          <div className="relative aspect-video cursor-pointer">
+                            <Image
+                              src={image.imageUrl}
+                              alt={image.description}
+                              fill
+                              className="object-cover"
+                              data-ai-hint={image.imageHint}
+                            />
+                          </div>
+                        </Link>
+                      </CarouselItem>
+                    )
+                  ))}
+                </CarouselContent>
+                <div className="absolute bottom-4 right-4 flex gap-2">
+                  <CarouselPrevious className="relative -left-0 -bottom-0 transform-none static" />
+                  <CarouselNext className="relative -right-0 -bottom-0 transform-none static" />
                 </div>
-                <div className="mt-auto grid grid-cols-2 gap-4">
-                    <Button asChild variant="outline" className="bg-white/10 border-white/20 hover:bg-white/20">
-                        <Link href="/about">Our Story <ArrowRight className="ml-2 h-4 w-4" /></Link>
-                    </Button>
-                     <Button asChild variant="outline" className="bg-white/10 border-white/20 hover:bg-white/20">
-                        <Link href="/about">Our Heritage <ArrowRight className="ml-2 h-4 w-4" /></Link>
-                    </Button>
-                </div>
-            </div>
-          </Card>
-          
+              </Carousel>
+            </Card>
+             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+              {articles.map((article) => (
+                <Card key={article.id} className="bg-card shadow-lg rounded-3xl p-6 flex flex-col justify-between hover:shadow-xl transition-shadow">
+                  <div>
+                    <h3 className="font-headline text-xl font-bold text-primary">{article.title}</h3>
+                  </div>
+                  <Button asChild variant="link" className="p-0 mt-4 self-start text-accent">
+                    <Link href={`/blog/${article.slug}`}>
+                      Read More <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                </Card>
+              ))}
+             </div>
+          </div>
+
           <div className="space-y-8">
-            {/* Card 2: Refine Strategy */}
-            <Card className="bg-card shadow-lg rounded-3xl p-8 flex flex-col justify-between min-h-[210px]">
+            <Card className="bg-card shadow-lg rounded-3xl p-8 flex flex-col justify-between">
                 <div>
-                    <h3 className="font-headline text-2xl font-bold text-primary">Latest Promos & Offers</h3>
+                    <h3 className="font-headline text-2xl font-bold text-primary">Join our Socials</h3>
                     <p className="text-muted-foreground mt-2">
-                        Stay ahead with our latest deals, new drink alerts, and exclusive offers for our community.
+                        Network online and stay on top of updates, events, and trading trends.
                     </p>
                 </div>
-                <div className="flex gap-4 mt-4">
-                     <Button asChild variant="secondary" className="bg-primary/5 hover:bg-primary/10 text-primary">
-                        <Link href="/promotions">Weekday Specials <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                <div className="flex items-center gap-4 mt-6">
+                    <Button variant="outline" size="icon" className="rounded-full w-12 h-12">
+                        <Instagram className="w-6 h-6" />
                     </Button>
-                     <Button asChild variant="secondary" className="bg-primary/5 hover:bg-primary/10 text-primary">
-                        <Link href="/menu">New Drinks <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                    <Button variant="outline" size="icon" className="rounded-full w-12 h-12">
+                        <Facebook className="w-6 h-6" />
+                    </Button>
+                    <Button variant="outline" size="icon" className="rounded-full w-12 h-12">
+                        <Youtube className="w-6 h-6" />
                     </Button>
                 </div>
             </Card>
-
-            {/* Card 3: Stay Informed */}
-             <Card className="bg-card shadow-lg rounded-3xl p-8 flex flex-col justify-between min-h-[210px] relative overflow-hidden">
-                {communityImage && (
-                    <div className="absolute bottom-0 right-0 h-3/4 w-1/2">
-                        <div className="absolute inset-0 bg-gradient-to-t from-card via-card to-transparent"></div>
-                        <Image
-                            src={communityImage.imageUrl}
-                            alt={communityImage.description}
-                            fill
-                            className="object-cover object-center z-[-1]"
-                            data-ai-hint={communityImage.imageHint}
-                        />
+            
+            <Card className="bg-card shadow-lg rounded-3xl p-8 relative overflow-hidden min-h-[300px] flex flex-col justify-between text-white">
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="absolute inset-0 w-full h-full object-cover z-0"
+                  src="/video/bg1.mp4"
+                />
+                <div className="absolute inset-0 bg-black/60 z-10"></div>
+                <div className="z-20 relative flex flex-col h-full">
+                    <div>
+                        <p className="text-sm text-white/80">Newsletter</p>
+                        <h3 className="font-headline text-2xl font-bold mt-2">
+                            Get Exclusive Promos
+                        </h3>
+                        <p className="text-white/80 mt-1 text-sm">Be the first to know about our special offers and new drinks.</p>
                     </div>
-                )}
-                <div className='relative z-10'>
-                    <h3 className="font-headline text-2xl font-bold text-primary">Join The Community</h3>
-                    <p className="text-muted-foreground mt-2 max-w-[60%]">
-                       Get daily updates, news, and see what's brewing in our vibrant community.
-                    </p>
-                </div>
-                <div className="flex gap-4 mt-4 relative z-10">
-                     <Button asChild className="bg-accent hover:bg-accent/90 text-accent-foreground">
-                        <Link href="#">Follow on Instagram <ArrowRight className="ml-2 h-4 w-4" /></Link>
-                    </Button>
+                    <div className="mt-auto">
+                        <div className="flex gap-2">
+                            <Input placeholder="Enter your email" className="bg-white/90 text-black placeholder:text-gray-500" />
+                            <Button variant="default" className="bg-accent hover:bg-accent/90 text-accent-foreground">
+                                Subscribe
+                            </Button>
+                        </div>
+                    </div>
                 </div>
             </Card>
           </div>
