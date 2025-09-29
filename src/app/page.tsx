@@ -1,5 +1,4 @@
 import Hero from '@/components/home/Hero';
-import Stats from '@/components/home/Stats';
 import FeaturedDrinks from '@/components/home/FeaturedDrinks';
 import ActivePromotions from '@/components/home/ActivePromotions';
 import OutletFinder from '@/components/home/OutletFinder';
@@ -11,13 +10,19 @@ export default function Home() {
   return (
     <div className="flex flex-col">
       <Hero />
-      <Stats />
       <FeaturedDrinks />
-      <ActivePromotions />
+      <div className="w-full bg-primary relative">
+        <div className="absolute top-0 left-0 w-full h-24 bg-background [clip-path:ellipse(100%_100%_at_50%_0%)]"></div>
+        <ActivePromotions />
+        <div className="absolute bottom-0 left-0 w-full h-24 bg-secondary [clip-path:ellipse(100%_100%_at_50%_100%)]"></div>
+      </div>
       <div className="w-full bg-secondary">
         <OutletFinder />
       </div>
-      <FranchiseTeaser />
+       <div className="w-full bg-primary relative">
+        <div className="absolute top-0 left-0 w-full h-24 bg-secondary [clip-path:ellipse(100%_100%_at_50%_0%)]"></div>
+        <FranchiseTeaser />
+      </div>
       <div className="bg-background">
         <LatestBlog />
       </div>

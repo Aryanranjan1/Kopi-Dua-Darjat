@@ -11,18 +11,18 @@ export default function ActivePromotions() {
   const promoImage = PlaceHolderImages.find((img) => img.id === activePromo.image);
 
   return (
-    <section className="py-16 bg-secondary">
+    <section className="py-24 bg-primary text-primary-foreground">
       <div className="container mx-auto px-4">
         <div className="text-center mb-10">
-            <h2 className="text-4xl font-headline font-bold text-primary">
+            <h2 className="text-4xl font-headline font-bold">
                 What's Brewing Now
             </h2>
-            <p className="mt-2 text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="mt-2 text-lg text-primary-foreground/80 max-w-2xl mx-auto">
                 Don't miss out on our latest offers and promotions.
             </p>
         </div>
 
-        <Card className="overflow-hidden shadow-lg border-2 border-accent/50 rounded-xl">
+        <Card className="overflow-hidden shadow-lg bg-secondary text-secondary-foreground border-2 border-accent/50 rounded-xl max-w-4xl mx-auto">
           <div className="grid md:grid-cols-2">
             <div className="relative min-h-[300px] md:min-h-full">
               {promoImage && (
