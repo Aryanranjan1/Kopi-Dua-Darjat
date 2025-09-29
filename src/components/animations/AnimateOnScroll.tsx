@@ -18,7 +18,7 @@ export function AnimateOnScroll({
   delay = 0,
   duration = 0.5,
   amount = 0.5,
-  once = true,
+  once = false,
 }: AnimateOnScrollProps) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once, amount });

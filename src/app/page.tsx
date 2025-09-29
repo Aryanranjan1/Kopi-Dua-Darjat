@@ -24,9 +24,7 @@ export default function Home() {
         />
       </div>
 
-      <AnimateOnScroll>
-        <StatsSection />
-      </AnimateOnScroll>
+      <StatsSection />
       
       <AnimateOnScroll>
         <div className="bg-secondary text-foreground">
