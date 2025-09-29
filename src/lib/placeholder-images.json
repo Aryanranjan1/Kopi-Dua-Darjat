@@ -100,19 +100,22 @@
       "id": "community-event-1",
       "description": "People at a Kopi Dua Darjat community event.",
       "imageUrl": "https://images.unsplash.com/photo-1564758615972-fd7f13dbdc70?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxM3x8Q0FGRSUyMENPTU1VTklUWXxlbnwwfHx8fDE3NTkxMjY4NjV8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "cafe community"
+      "imageHint": "cafe community",
+      "linkUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
     },
     {
       "id": "community-event-2",
       "description": "A close-up of people enjoying coffee at an event.",
       "imageUrl": "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxDT0ZGRUV8ZW58MHx8fHwxNzU5MTI3NTQ2fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "meetup"
+      "imageHint": "meetup",
+      "linkUrl": "https://www.youtube.com/watch?v=L_LUpnjgPso"
     },
     {
       "id": "community-event-3",
       "description": "A barista crafting a specialty coffee for an event.",
       "imageUrl": "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxDT01NVU5JVFklMjBTRVJWSUNFfGVufDB8fHx8MTc1OTEyNzU3Mnww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "coffee event"
+      "imageHint": "coffee event",
+      "linkUrl": "https://www.youtube.com/watch?v=LXb3EKWsInQ"
     },
     {
       "id": "newsletter-background",

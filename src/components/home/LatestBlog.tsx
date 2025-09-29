@@ -26,8 +26,10 @@ export default function LatestBlog() {
 
   const articles = blogPosts.slice(0, 2);
   const plugin = React.useRef(
-    Autoplay({ delay: 2000, stopOnInteraction: true })
+    Autoplay({ delay: 5000, stopOnInteraction: true })
   );
+
+  const eventImages = [eventImage1, eventImage2, eventImage3].filter(Boolean);
 
   return (
     <section className="py-24 sm:py-32 bg-background">
@@ -56,45 +58,23 @@ export default function LatestBlog() {
                 opts={{ loop: true }}
                >
                 <CarouselContent>
-                  {eventImage1 && (
-                    <CarouselItem>
-                      <div className="relative aspect-video">
-                        <Image
-                          src={eventImage1.imageUrl}
-                          alt={eventImage1.description}
-                          fill
-                          className="object-cover"
-                          data-ai-hint={eventImage1.imageHint}
-                        />
-                      </div>
-                    </CarouselItem>
-                  )}
-                  {eventImage2 && (
-                    <CarouselItem>
-                       <div className="relative aspect-video">
-                        <Image
-                          src={eventImage2.imageUrl}
-                          alt={eventImage2.description}
-                          fill
-                          className="object-cover"
-                          data-ai-hint={eventImage2.imageHint}
-                        />
-                      </div>
-                    </CarouselItem>
-                  )}
-                   {eventImage3 && (
-                    <CarouselItem>
-                       <div className="relative aspect-video">
-                        <Image
-                          src={eventImage3.imageUrl}
-                          alt={eventImage3.description}
-                          fill
-                          className="object-cover"
-                          data-ai-hint={eventImage3.imageHint}
-                        />
-                      </div>
-                    </CarouselItem>
-                  )}
+                  {eventImages.map((image) => (
+                    image && (
+                      <CarouselItem key={image.id}>
+                        <Link href={image.linkUrl || '#'} target="_blank" rel="noopener noreferrer">
+                          <div className="relative aspect-video cursor-pointer">
+                            <Image
+                              src={image.imageUrl}
+                              alt={image.description}
+                              fill
+                              className="object-cover"
+                              data-ai-hint={image.imageHint}
+                            />
+                          </div>
+                        </Link>
+                      </CarouselItem>
+                    )
+                  ))}
                 </CarouselContent>
                 <div className="absolute bottom-4 right-4 flex gap-2">
                   <CarouselPrevious className="relative -left-0 -bottom-0 transform-none static" />
