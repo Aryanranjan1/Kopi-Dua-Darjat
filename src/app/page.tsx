@@ -17,8 +17,6 @@ export default function Home() {
         <Hero />
       </div>
       
-      <ActivePromotions />
-
       <div className="absolute top-[88vh] right-[50px] w-[30vw] aspect-square z-30 hidden md:block transform -translate-y-1/2">
         {newImage && (
           <Image
@@ -35,6 +33,9 @@ export default function Home() {
       <div className="bg-secondary text-foreground">
         <FeaturedDrinks />
       </div>
+      
+      <ActivePromotions />
+
       <div className="w-full bg-secondary">
         <OutletFinder />
       </div>
