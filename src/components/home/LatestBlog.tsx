@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Instagram, Facebook, Youtube, Mail } from 'lucide-react';
+import { ArrowRight, Instagram, Facebook, Youtube } from 'lucide-react';
 import {
   Carousel,
   CarouselContent,
@@ -12,11 +12,14 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 import { Input } from '../ui/input';
+import { blogPosts } from '@/lib/data';
 
 export default function LatestBlog() {
   const eventImage1 = PlaceHolderImages.find((img) => img.id === 'community-event-1');
   const eventImage2 = PlaceHolderImages.find((img) => img.id === 'community-event-2');
   const newsletterImage = PlaceHolderImages.find((img) => img.id === 'newsletter-background');
+
+  const articles = blogPosts.slice(0, 2);
 
   return (
     <section className="py-24 sm:py-32 bg-background">
@@ -72,9 +75,20 @@ export default function LatestBlog() {
                 </div>
               </Carousel>
             </Card>
-             <h3 className="text-2xl font-headline text-primary font-bold">
-                We participate in coffee expos and organize special events to engage with our trading community in person.
-            </h3>
+             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+              {articles.map((article) => (
+                <Card key={article.id} className="bg-card shadow-lg rounded-3xl p-6 flex flex-col justify-between hover:shadow-xl transition-shadow">
+                  <div>
+                    <h3 className="font-headline text-xl font-bold text-primary">{article.title}</h3>
+                  </div>
+                  <Button asChild variant="link" className="p-0 mt-4 self-start text-accent">
+                    <Link href={`/blog/${article.slug}`}>
+                      Read More <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                </Card>
+              ))}
+             </div>
           </div>
 
           <div className="space-y-8">
@@ -133,5 +147,3 @@ export default function LatestBlog() {
     </section>
   );
 }
-
-    
