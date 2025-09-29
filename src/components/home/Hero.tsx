@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Button } from '@/components/ui/button';
+import Stats from './Stats';
 
 export default function Hero() {
   const heroImage = PlaceHolderImages.find((img) => img.id === 'hero-coffee-cup');
@@ -52,7 +53,15 @@ export default function Hero() {
         </div>
       )}
 
-      <div className="absolute bottom-0 left-0 w-full h-32 md:h-48 bg-background [clip-path:ellipse(100%_100%_at_50%_100%)]"></div>
+      <div className="absolute bottom-0 left-0 w-full h-auto bg-transparent">
+        <div
+          className="absolute bottom-0 left-0 w-full h-32 md:h-48 bg-background [clip-path:ellipse(100%_100%_at_50%_100%)]"
+          aria-hidden="true"
+        ></div>
+        <div className="relative container mx-auto px-4">
+            <Stats />
+        </div>
+      </div>
     </section>
   );
 }

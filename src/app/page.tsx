@@ -4,7 +4,6 @@ import ActivePromotions from '@/components/home/ActivePromotions';
 import OutletFinder from '@/components/home/OutletFinder';
 import FranchiseTeaser from '@/components/home/FranchiseTeaser';
 import LatestBlog from '@/components/home/LatestBlog';
-import Stats from '@/components/home/Stats';
 
 export default function Home() {
   return (
@@ -13,7 +12,6 @@ export default function Home() {
       <div className="bg-secondary text-foreground">
         <FeaturedDrinks />
       </div>
-      <Stats />
       <div className="w-full bg-primary text-primary-foreground">
         <ActivePromotions />
       </div>
