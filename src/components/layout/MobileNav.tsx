@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { Sheet, SheetContent } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetDescription, SheetTitle } from '@/components/ui/sheet';
 import { Coffee } from 'lucide-react';
 import type { NavItem } from '@/lib/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -17,6 +17,8 @@ export function MobileNav({ isOpen, setIsOpen, navItems }: MobileNavProps) {
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetContent side="left" className="pr-0 flex flex-col">
+        <SheetTitle className="sr-only">Mobile Navigation Menu</SheetTitle>
+        <SheetDescription className="sr-only">A list of links to navigate the Kopi Dua Darjat website.</SheetDescription>
         <Link
           href="/"
           className="flex items-center"
