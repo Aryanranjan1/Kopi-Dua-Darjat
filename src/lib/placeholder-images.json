@@ -109,10 +109,10 @@
       "imageHint": "meetup"
     },
     {
-      "id": "online-activities",
-      "description": "An image representing online coffee workshops or live streams.",
-      "imageUrl": "https://images.unsplash.com/photo-1495474472287-4d713b20e5e3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxiYXJpc3RhfGVufDB8fHx8fDE3NTkyNjY2MjB8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "barista"
+      "id": "newsletter-background",
+      "description": "An inviting image of a person reading a newsletter on a tablet while enjoying coffee.",
+      "imageUrl": "https://images.unsplash.com/photo-1521791136064-7986c2920216?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxuZXdzbGV0dGVyfGVufDB8fHx8MTc1OTM4MjYxN3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "newsletter coffee"
     }
   ]
 }
