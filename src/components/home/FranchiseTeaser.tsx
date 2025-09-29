@@ -9,8 +9,8 @@ export default function FranchiseTeaser() {
   const teaserImage = PlaceHolderImages.find((img) => img.id === 'franchise-teaser');
 
   return (
-    <section className="bg-primary text-primary-foreground pt-12">
-      <div className="container mx-auto px-4 py-16">
+    <section className="bg-primary text-primary-foreground py-24 sm:py-32">
+      <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
           <div className="relative aspect-square max-w-md mx-auto">
             {teaserImage && (
