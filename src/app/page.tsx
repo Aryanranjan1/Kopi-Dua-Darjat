@@ -48,7 +48,7 @@ export default function Home() {
         </div>
       </AnimateOnScroll>
 
-      <AnimateOnScroll>
+      <AnimateOnScroll once={true}>
         <div className="bg-background">
           <LatestBlog />
         </div>
