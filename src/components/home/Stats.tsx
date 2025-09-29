@@ -39,11 +39,6 @@ const StatCounter = ({ end, duration = 2000, symbol, label }) => {
     if (!isVisible) return;
 
     let start = 0;
-    // For "Since" stats, we don't want to start from 0
-    if (symbol === 'Since') {
-      start = end - 20 > 0 ? end - 20 : 0;
-    }
-
     const endValue = end;
     const startTime = Date.now();
 
@@ -79,8 +74,8 @@ const StatCounter = ({ end, duration = 2000, symbol, label }) => {
 
 export default function Stats() {
   return (
-    <div className="relative pb-8 md:pb-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-8 max-w-4xl">
+    <div className="max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-8">
             {stats.map((stat, index) => (
                 <StatCounter key={index} end={stat.value} symbol={stat.symbol} label={stat.label} />
             ))}
