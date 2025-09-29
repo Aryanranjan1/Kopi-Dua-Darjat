@@ -32,7 +32,7 @@ export default function LatestBlog() {
           </div>
           <div>
             <p className="text-lg text-muted-foreground max-w-prose">
-              Connect and grow with thousands of coffee enthusiasts and professionals in the Kopi Dua Darjat family.
+              More than just great coffee, we're a community of flavor-chasers and story-tellers. Dive into our latest articles, join the conversation on social media, and become part of the Kopi Dua Darjat family.
             </p>
           </div>
         </div>
