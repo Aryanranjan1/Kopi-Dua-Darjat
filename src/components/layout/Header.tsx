@@ -15,6 +15,7 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
+  NavigationMenuViewport,
 } from "@/components/ui/navigation-menu"
 import { ListItem } from './ListItem';
 
@@ -84,7 +85,7 @@ export default function SiteHeader() {
           </Link>
           
           <div className="flex flex-1 items-center justify-end space-x-2">
-            <NavigationMenu className="hidden md:flex">
+            <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
                   <NavigationMenuTrigger>About</NavigationMenuTrigger>
@@ -137,6 +138,9 @@ export default function SiteHeader() {
                   </NavigationMenuContent>
                 </NavigationMenuItem>
               </NavigationMenuList>
+              <div className="absolute top-full flex justify-end">
+                <NavigationMenuViewport />
+              </div>
             </NavigationMenu>
 
             <Button asChild className="hidden md:inline-flex bg-accent hover:bg-accent/90 text-accent-foreground">
