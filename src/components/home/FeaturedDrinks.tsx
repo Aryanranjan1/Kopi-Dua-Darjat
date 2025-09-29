@@ -70,7 +70,7 @@ export default function FeaturedDrinks() {
                 Since 2020, our passion has been about quality and heritage. We ethically source the finest local coffee beans and roast them with great care. Our passion for coffee is rivaled only by our love of sharing it.
               </p>
             </div>
-            <div className="mt-8">
+            <div className="mt-12">
               <Button asChild size="lg">
                 <Link href="/menu">
                   View Full Menu <ArrowRight className="ml-2 h-4 w-4" />
