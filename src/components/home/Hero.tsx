@@ -24,7 +24,7 @@ export default function Hero() {
         <div className="grid md:grid-cols-1 items-center h-full min-h-screen pt-20 md:pt-0">
           
           {/* Text Content */}
-          <div className="z-10 text-center md:text-left pb-48 md:pb-0">
+          <div className="z-10 text-center md:text-left pb-48 md:pb-0 md:w-[56%]">
             <h1 className="font-headline text-5xl md:text-7xl font-bold tracking-tight text-background drop-shadow-lg">
               Antara Warisan & Artisan.
             </h1>
