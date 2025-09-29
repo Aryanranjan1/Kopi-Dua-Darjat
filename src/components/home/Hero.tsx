@@ -45,7 +45,7 @@ export default function Hero() {
           </div>
 
           {/* Text Content */}
-          <div className="md:col-span-3 z-10 text-center md:text-left pb-48 md:pb-0">
+          <div className="md:col-span-5 z-10 text-center md:text-left pb-48 md:pb-0">
             <h1 className="font-headline text-5xl md:text-7xl font-bold tracking-tight text-background drop-shadow-lg">
               Antara Warisan & Artisan.
             </h1>
@@ -60,22 +60,6 @@ export default function Hero() {
                 <Link href="/outlets">Find Outlet Near Me</Link>
               </Button>
             </div>
-          </div>
-
-          {/* Desktop Image */}
-          <div className="hidden md:block md:col-span-2 relative h-full">
-             {heroImage && (
-                <div className="absolute z-10 -bottom-16 -right-16 w-[500px] h-[500px] lg:w-[600px] lg:h-[600px] pointer-events-none">
-                  <Image
-                    src={heroImage.imageUrl}
-                    alt={heroImage.description}
-                    fill
-                    className="object-contain"
-                    priority
-                    data-ai-hint={heroImage.imageHint}
-                  />
-                </div>
-              )}
           </div>
         </div>
       </div>
