@@ -12,16 +12,13 @@ export default function Home() {
       <div className="bg-background text-foreground">
         <FeaturedDrinks />
       </div>
-      <div className="w-full bg-primary relative text-primary-foreground">
-        <div className="absolute top-0 left-0 w-full h-24 bg-background [clip-path:ellipse(100%_100%_at_50%_0%)]"></div>
+      <div className="w-full bg-primary text-primary-foreground">
         <ActivePromotions />
-        <div className="absolute bottom-0 left-0 w-full h-24 bg-secondary [clip-path:ellipse(100%_100%_at_50%_100%)]"></div>
       </div>
       <div className="w-full bg-secondary">
         <OutletFinder />
       </div>
-       <div className="w-full bg-primary relative">
-        <div className="absolute top-0 left-0 w-full h-24 bg-secondary [clip-path:ellipse(100%_100%_at_50%_0%)]"></div>
+       <div className="w-full bg-primary">
         <FranchiseTeaser />
       </div>
       <div className="bg-background">
