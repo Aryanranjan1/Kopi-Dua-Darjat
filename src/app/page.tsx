@@ -34,8 +34,6 @@ export default function Home() {
         <FeaturedDrinks />
       </div>
       
-      <ActivePromotions />
-
       <div className="w-full bg-secondary">
         <OutletFinder />
       </div>

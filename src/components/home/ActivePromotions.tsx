@@ -1,11 +1,11 @@
 'use client';
 
-import { ParallaxPromo } from './ParallaxPromo';
+import LatestBlog from './LatestBlog';
 
 export default function ActivePromotions() {
   return (
     <section className="relative w-full">
-        <ParallaxPromo />
+        <LatestBlog />
     </section>
   );
 }
