@@ -9,7 +9,9 @@ import StatsSection from '@/components/home/StatsSection';
 export default function Home() {
   return (
     <div className="flex flex-col">
-      <Hero />
+      <div className="relative z-10">
+        <Hero />
+      </div>
       <StatsSection />
       <div className="bg-secondary text-foreground">
         <FeaturedDrinks />
