@@ -14,7 +14,7 @@ export default function Home() {
         <Hero />
       </div>
       
-      <div className="absolute top-[88vh] right-[50px] w-[30vw] aspect-square z-30 hidden md:block transform -translate-y-1/2">
+      <div className="absolute top-[88vh] right-0 w-[30vw] aspect-square z-30 hidden md:block transform -translate-y-1/2">
         <Image
           src="/image/coffee.png"
           alt="Artisan coffee"
