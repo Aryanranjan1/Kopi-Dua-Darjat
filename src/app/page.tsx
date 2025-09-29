@@ -6,6 +6,7 @@ import FranchiseTeaser from '@/components/home/FranchiseTeaser';
 import LatestBlog from '@/components/home/LatestBlog';
 import StatsSection from '@/components/home/StatsSection';
 import Image from 'next/image';
+import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 
 export default function Home() {
   return (
@@ -23,25 +24,37 @@ export default function Home() {
         />
       </div>
 
-      <StatsSection />
+      <AnimateOnScroll>
+        <StatsSection />
+      </AnimateOnScroll>
       
-      <div className="bg-secondary text-foreground">
-        <FeaturedDrinks />
-      </div>
+      <AnimateOnScroll>
+        <div className="bg-secondary text-foreground">
+          <FeaturedDrinks />
+        </div>
+      </AnimateOnScroll>
       
-      <ActivePromotions />
+      <AnimateOnScroll>
+        <ActivePromotions />
+      </AnimateOnScroll>
 
-      <div className="w-full bg-secondary">
-        <OutletFinder />
-      </div>
+      <AnimateOnScroll>
+        <div className="w-full bg-secondary">
+          <OutletFinder />
+        </div>
+      </AnimateOnScroll>
       
-      <div className="w-full bg-primary">
-        <FranchiseTeaser />
-      </div>
+      <AnimateOnScroll>
+        <div className="w-full bg-primary">
+          <FranchiseTeaser />
+        </div>
+      </AnimateOnScroll>
 
-      <div className="bg-background">
-        <LatestBlog />
-      </div>
+      <AnimateOnScroll>
+        <div className="bg-background">
+          <LatestBlog />
+        </div>
+      </AnimateOnScroll>
     </div>
   );
 }
