@@ -11,7 +11,7 @@ export default function ActivePromotions() {
   const promoImage = PlaceHolderImages.find((img) => img.id === activePromo.image);
 
   return (
-    <section className="py-24 bg-primary text-primary-foreground">
+    <section className="py-24 sm:py-32 bg-primary text-primary-foreground">
       <div className="container mx-auto px-4">
         <div className="text-center mb-10">
             <h2 className="text-4xl font-headline font-bold">

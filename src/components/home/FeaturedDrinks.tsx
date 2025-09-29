@@ -15,7 +15,7 @@ import { ArrowRight, ShoppingCart } from 'lucide-react';
 
 export default function FeaturedDrinks() {
   return (
-    <section className="py-16 bg-background">
+    <section className="py-24 sm:py-32 bg-background">
       <div className="container mx-auto px-4 text-center">
         <h2 className="text-4xl font-headline font-bold text-primary">
           Our Signature Selections

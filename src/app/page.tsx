@@ -4,14 +4,15 @@ import ActivePromotions from '@/components/home/ActivePromotions';
 import OutletFinder from '@/components/home/OutletFinder';
 import FranchiseTeaser from '@/components/home/FranchiseTeaser';
 import LatestBlog from '@/components/home/LatestBlog';
-import { Separator } from '@/components/ui/separator';
 
 export default function Home() {
   return (
     <div className="flex flex-col">
       <Hero />
-      <FeaturedDrinks />
-      <div className="w-full bg-primary relative">
+      <div className="bg-background text-foreground">
+        <FeaturedDrinks />
+      </div>
+      <div className="w-full bg-primary relative text-primary-foreground">
         <div className="absolute top-0 left-0 w-full h-24 bg-background [clip-path:ellipse(100%_100%_at_50%_0%)]"></div>
         <ActivePromotions />
         <div className="absolute bottom-0 left-0 w-full h-24 bg-secondary [clip-path:ellipse(100%_100%_at_50%_100%)]"></div>
