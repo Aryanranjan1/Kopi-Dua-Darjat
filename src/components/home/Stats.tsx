@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from 'react';
 const stats = [
   { value: 50, label: 'Outlets Nationwide', symbol: '+' },
   { value: 100, label: 'Local Beans', symbol: '%' },
-  { value: 3, label: 'Starting Price', symbol: 'From RM' },
+  { value: 3, label: 'Starting Price', symbol: 'RM' },
 ];
 
 const StatCounter = ({ end, duration = 2000, symbol, label }) => {
@@ -68,8 +68,7 @@ const StatCounter = ({ end, duration = 2000, symbol, label }) => {
   return (
     <div ref={ref} className="text-center">
       <p className="text-4xl md:text-5xl font-bold font-headline text-primary tracking-tighter">
-        {symbol === 'Since' && `${symbol} `}
-        {symbol === 'From RM' && `${symbol}`}
+        {symbol === 'RM' && `${symbol}`}
         {count}
         {(symbol === '+' || symbol === '%') && `${symbol}`}
       </p>
