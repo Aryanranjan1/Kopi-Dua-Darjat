@@ -10,19 +10,22 @@
       "id": "drink-darjat",
       "description": "Signature Darjat coffee.",
       "imageUrl": "https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjb2ZmZWUlMjBkcmlua3xlbnwwfHx8fDE3NTkwNjY5MjF8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "coffee drink"
+      "imageHint": "coffee drink",
+      "linkUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
     },
     {
       "id": "drink-matcha",
       "description": "Artisanal matcha latte.",
       "imageUrl": "https://images.unsplash.com/photo-1631679263367-9095fca628de?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtYXRjaGElMjBsYXR0ZXxlbnwwfHx8fDE3NTg5NjYwNTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "matcha latte"
+      "imageHint": "matcha latte",
+      "linkUrl": "https://www.youtube.com/watch?v=L_LUpnjgPso"
     },
     {
       "id": "drink-bottled",
       "description": "Bottled coffee series.",
       "imageUrl": "https://images.unsplash.com/photo-1719936224687-eb66dc011a99?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxib3R0bGVkJTIwY29mZmVlfGVufDB8fHx8MTc1OTA2NjkyMXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "bottled coffee"
+      "imageHint": "bottled coffee",
+      "linkUrl": "https://www.youtube.com/watch?v=LXb3EKWsInQ"
     },
     {
       "id": "promotion-banner",

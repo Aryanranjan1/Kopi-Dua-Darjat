@@ -1,26 +1,23 @@
-import Image from 'next/image';
 import Link from 'next/link';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
+import InfiniteMenu from './InfiniteMenu';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function FranchiseTeaser() {
-  const teaserImage = PlaceHolderImages.find((img) => img.id === 'franchise-teaser');
+  const menuItems = PlaceHolderImages.filter(item => item.id.startsWith('drink-')).map(item => ({
+    image: item.imageUrl,
+    link: item.linkUrl || '#',
+    title: item.id.replace('drink-', ''),
+    description: item.description,
+  }));
 
   return (
     <section className="bg-primary text-primary-foreground py-24 sm:py-32">
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
-          <div className="relative aspect-square max-w-md mx-auto">
-            {teaserImage && (
-                <Image
-                    src={teaserImage.imageUrl}
-                    alt={teaserImage.description}
-                    fill
-                    className="object-cover rounded-xl shadow-2xl"
-                    data-ai-hint={teaserImage.imageHint}
-                />
-            )}
+          <div className="relative aspect-square max-w-md mx-auto w-full h-full">
+            <InfiniteMenu items={menuItems} />
           </div>
           <div className="text-center md:text-left">
             <h2 className="font-headline text-4xl font-bold">
