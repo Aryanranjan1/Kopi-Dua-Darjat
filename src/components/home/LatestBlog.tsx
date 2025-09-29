@@ -22,7 +22,6 @@ export default function LatestBlog() {
   const eventImage1 = PlaceHolderImages.find((img) => img.id === 'community-event-1');
   const eventImage2 = PlaceHolderImages.find((img) => img.id === 'community-event-2');
   const eventImage3 = PlaceHolderImages.find((img) => img.id === 'community-event-3');
-  const newsletterImage = PlaceHolderImages.find((img) => img.id === 'newsletter-background');
 
   const articles = blogPosts.slice(0, 2);
   const plugin = React.useRef(
@@ -120,15 +119,14 @@ export default function LatestBlog() {
             </Card>
             
             <Card className="bg-card shadow-lg rounded-3xl p-8 relative overflow-hidden min-h-[300px] flex flex-col justify-between text-white">
-                {newsletterImage && (
-                    <Image 
-                        src={newsletterImage.imageUrl}
-                        alt={newsletterImage.description}
-                        fill
-                        className="object-cover z-0"
-                        data-ai-hint={newsletterImage.imageHint}
-                    />
-                )}
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="absolute inset-0 w-full h-full object-cover z-0"
+                  src="/video/bg1.mp4"
+                />
                 <div className="absolute inset-0 bg-black/60 z-10"></div>
                 <div className="z-20 relative flex flex-col h-full">
                     <div>
