@@ -17,9 +17,7 @@ export default function Home() {
         <Hero />
       </div>
       
-      <div className="w-full bg-background text-primary-foreground">
-        <ActivePromotions />
-      </div>
+      <ActivePromotions />
 
       <div className="absolute top-[88vh] right-[50px] w-[30vw] aspect-square z-30 hidden md:block transform -translate-y-1/2">
         {newImage && (

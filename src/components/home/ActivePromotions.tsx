@@ -1,11 +1,11 @@
 'use client';
 
-import { MorningRushBanner } from './MorningRushBanner';
+import { ParallaxPromo } from './ParallaxPromo';
 
 export default function ActivePromotions() {
   return (
-    <section className="relative w-full bg-primary/5 border-y border-border">
-        <MorningRushBanner />
+    <section className="relative w-full">
+        <ParallaxPromo />
     </section>
   );
 }
