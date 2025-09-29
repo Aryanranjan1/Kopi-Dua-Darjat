@@ -30,16 +30,21 @@ export default function Home() {
       </div>
 
       <StatsSection />
+
       <div className="bg-secondary text-foreground">
         <FeaturedDrinks />
       </div>
       
+      <ActivePromotions />
+      
       <div className="w-full bg-secondary">
         <OutletFinder />
       </div>
-       <div className="w-full bg-primary">
+      
+      <div className="w-full bg-primary">
         <FranchiseTeaser />
       </div>
+
       <div className="bg-background">
         <LatestBlog />
       </div>
