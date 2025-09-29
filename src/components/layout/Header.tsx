@@ -8,13 +8,49 @@ import type { NavItem } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { MobileNav } from '@/components/layout/MobileNav';
 import { Coffee, Menu, MapPin } from 'lucide-react';
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu"
+import { ListItem } from './ListItem';
 
-const desktopNavItems: NavItem[] = [
-  { title: 'Home', href: '/' },
-  { title: 'Menu', href: '/menu' },
-  { title: 'Outlets', href: '/outlets' },
-  { title: 'Franchise', href: '/franchise' },
-];
+const aboutLinks: { title: string; href: string; description: string }[] = [
+  {
+    title: "Our Story",
+    href: "/about",
+    description:
+      "Learn about our history, our passion for coffee, and our mission.",
+  },
+  {
+    title: "Blog",
+    href: "/blog",
+    description:
+      "Read our latest articles, stories, and updates from the world of Kopi Dua Darjat.",
+  },
+  {
+    title: "Contact Us",
+    href: "/contact",
+    description: "Get in touch with us for inquiries, partnerships, or feedback.",
+  },
+]
+
+const franchiseLinks: { title: string; href: string; description: string }[] = [
+    {
+      title: "Franchise Info",
+      href: "/franchise",
+      description:
+        "Learn more about our franchise model, benefits, and how to get started.",
+    },
+    {
+      title: "Apply Now",
+      href: "/franchise/apply",
+      description: "Ready to join us? Start your franchise application today.",
+    },
+]
 
 const allNavItems: NavItem[] = [
     { title: 'Home', href: '/' },
@@ -46,23 +82,63 @@ export default function SiteHeader() {
               Kopi Dua Darjat
             </span>
           </Link>
-          <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
-            {desktopNavItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  'transition-colors hover:text-foreground/80',
-                  pathname === item.href
-                    ? 'text-foreground'
-                    : 'text-foreground/60'
-                )}
-              >
-                {item.title}
-              </Link>
-            ))}
-          </nav>
-          <div className="flex flex-1 items-center justify-end space-x-4">
+          
+          <div className="flex flex-1 items-center justify-end space-x-2">
+            <NavigationMenu className="hidden md:flex">
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger>About</NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                      {aboutLinks.map((component) => (
+                        <ListItem
+                          key={component.title}
+                          title={component.title}
+                          href={component.href}
+                        >
+                          {component.description}
+                        </ListItem>
+                      ))}
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <Link href="/menu" legacyBehavior passHref>
+                    <NavigationMenuLink className={cn('group inline-flex h-10 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50', 
+                      pathname === '/menu' ? 'text-foreground' : 'text-foreground/60'
+                    )}>
+                      Menu
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+                 <NavigationMenuItem>
+                  <Link href="/outlets" legacyBehavior passHref>
+                    <NavigationMenuLink className={cn('group inline-flex h-10 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50', 
+                      pathname === '/outlets' ? 'text-foreground' : 'text-foreground/60'
+                    )}>
+                      Outlets
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger>Franchise</NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                      {franchiseLinks.map((component) => (
+                        <ListItem
+                          key={component.title}
+                          title={component.title}
+                          href={component.href}
+                        >
+                          {component.description}
+                        </ListItem>
+                      ))}
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
+
             <Button asChild className="hidden md:inline-flex bg-accent hover:bg-accent/90 text-accent-foreground">
               <Link href="/outlets">Find Outlet</Link>
             </Button>
