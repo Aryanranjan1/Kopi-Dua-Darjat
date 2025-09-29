@@ -55,7 +55,7 @@ export default function FeaturedDrinks() {
   };
 
   return (
-    <section className="overflow-hidden bg-background py-24 sm:py-32">
+    <section className="relative overflow-hidden bg-background py-24 sm:py-32">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 items-center gap-16 md:grid-cols-2">
           {/* Left Column: Text Content */}
@@ -104,39 +104,39 @@ export default function FeaturedDrinks() {
                 </motion.div>
               )}
             </AnimatePresence>
-
-            {/* Other Drink Images */}
-            <div className="absolute bottom-[-60px] z-20 flex w-full justify-center gap-1 md:gap-2">
-              <AnimatePresence>
-                {otherDrinks.map((drink, index) => {
-                  const img = PlaceHolderImages.find((i) => i.id === drink.image);
-                  if (!img) return null;
-                  return (
-                    <motion.div
-                      key={drink.id}
-                      layout
-                      initial={{ opacity: 0, scale: 0.5 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.3 }}
-                      transition={{ duration: 0.5, ease: 'easeInOut' }}
-                      onClick={() => handleSelectDrink(drink.id)}
-                      className="relative h-20 w-16 md:h-24 md:w-20 cursor-pointer transition-transform duration-300 hover:scale-110 hover:!rotate-0 hover:z-30"
-                      style={{ transform: `rotate(${index === 0 ? -8 : index === 2 ? 8 : 0}deg)` }}
-                    >
-                      <Image
-                        src={img.imageUrl}
-                        alt={drink.name}
-                        fill
-                        className="object-contain drop-shadow-xl"
-                        data-ai-hint={img.imageHint}
-                      />
-                    </motion.div>
-                  );
-                })}
-              </AnimatePresence>
-            </div>
           </div>
         </div>
+      </div>
+
+      {/* Other Drink Images - Now centered relative to the section */}
+      <div className="absolute bottom-12 left-0 right-0 z-20 flex w-full justify-center gap-1 md:gap-2">
+        <AnimatePresence>
+          {otherDrinks.map((drink, index) => {
+            const img = PlaceHolderImages.find((i) => i.id === drink.image);
+            if (!img) return null;
+            return (
+              <motion.div
+                key={drink.id}
+                layout
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.3 }}
+                transition={{ duration: 0.5, ease: 'easeInOut' }}
+                onClick={() => handleSelectDrink(drink.id)}
+                className="relative h-20 w-16 md:h-24 md:w-20 cursor-pointer transition-transform duration-300 hover:scale-110 hover:!rotate-0 hover:z-30"
+                style={{ transform: `rotate(${index === 0 ? -8 : index === 2 ? 8 : 0}deg)` }}
+              >
+                <Image
+                  src={img.imageUrl}
+                  alt={drink.name}
+                  fill
+                  className="object-contain drop-shadow-xl"
+                  data-ai-hint={img.imageHint}
+                />
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
       </div>
     </section>
   );
