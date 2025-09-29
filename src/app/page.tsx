@@ -17,7 +17,7 @@ export default function Home() {
         <Hero />
       </div>
 
-      <div className="absolute top-[85vh] right-0 w-[30vw] aspect-square z-30 hidden md:block">
+      <div className="absolute top-[88vh] right-0 w-[30vw] aspect-square z-30 hidden md:block transform -translate-y-1/2">
         {newImage && (
           <Image
             src={newImage.imageUrl}
