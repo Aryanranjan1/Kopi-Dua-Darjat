@@ -25,10 +25,10 @@ export default function Hero() {
           
           {/* Text Content */}
           <div className="z-10 text-center md:text-left md:w-[56%]">
-            <h1 className="font-headline text-5xl md:text-7xl font-bold tracking-tight text-background drop-shadow-lg">
+            <h1 className="font-headline text-5xl md:text-7xl font-bold tracking-tight text-primary drop-shadow-lg">
               Antara Warisan & Artisan.
             </h1>
-            <p className="mt-4 text-lg text-background/80 max-w-lg mx-auto md:mx-0">
+            <p className="mt-4 text-lg text-primary/80 max-w-lg mx-auto md:mx-0">
               Experience the perfect blend of heritage and artisan coffee, crafted with passion and served with warmth in over 50+ outlets nationwide.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4">
