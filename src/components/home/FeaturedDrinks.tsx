@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { featuredDrinks as allFeaturedDrinks } from '@/lib/data';
 import { ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 
 export default function FeaturedDrinks() {
   const [drinks, setDrinks] = useState(allFeaturedDrinks);
@@ -56,28 +57,30 @@ export default function FeaturedDrinks() {
         <div className="grid grid-cols-1 items-center gap-16 md:grid-cols-2">
           {/* Left Column: Text Content */}
           <div className="text-center md:text-left flex flex-col justify-center min-h-[350px]">
-            <div>
-              <h2 className="font-headline text-4xl font-normal text-muted-foreground md:text-5xl">
-                It's not just Kopi.
-              </h2>
-              <h1 className="font-headline text-5xl font-bold text-primary md:text-6xl">
-                It's Dua Darjat.
-              </h1>
-              <p className="mx-auto mt-6 max-w-md text-base text-muted-foreground md:mx-0">
-                Since 2020, our passion has been about quality and heritage. We ethically source the finest local coffee beans and roast them with great care. Our passion for coffee is rivaled only by our love of sharing it.
-              </p>
-            </div>
-            <div className="mt-8">
+            <AnimateOnScroll animationType='slideInFromLeft'>
+              <div>
+                <h2 className="font-headline text-4xl font-normal text-muted-foreground md:text-5xl">
+                  It's not just Kopi.
+                </h2>
+                <h1 className="font-headline text-5xl font-bold text-primary md:text-6xl">
+                  It's Dua Darjat.
+                </h1>
+                <p className="mx-auto mt-6 max-w-md text-base text-muted-foreground md:mx-0">
+                  Since 2020, our passion has been about quality and heritage. We ethically source the finest local coffee beans and roast them with great care. Our passion for coffee is rivaled only by our love of sharing it.
+                </p>
+              </div>
+            </AnimateOnScroll>
+            <AnimateOnScroll animationType='fadeIn' delay={0.2} className="mt-8">
               <Button asChild size="lg">
                 <Link href="/menu">
                   View Full Menu <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-            </div>
+            </AnimateOnScroll>
           </div>
 
           {/* Right Column: Images */}
-          <div className="relative flex h-full min-h-[50vh] flex-col items-center justify-center">
+          <AnimateOnScroll animationType='slideInFromRight' className="relative flex h-full min-h-[50vh] flex-col items-center justify-center">
             {/* Main Drink Image */}
             <AnimatePresence mode="wait">
               {mainDrink && (
@@ -99,7 +102,7 @@ export default function FeaturedDrinks() {
                 </motion.div>
               )}
             </AnimatePresence>
-          </div>
+          </AnimateOnScroll>
         </div>
       </div>
 

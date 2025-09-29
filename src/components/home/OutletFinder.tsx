@@ -12,6 +12,7 @@ import type { Outlet } from '@/lib/types';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { calculateDistance } from '@/lib/geolocation';
 import OutletCard from './OutletCard';
+import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 
 export default function OutletFinder() {
   const {
@@ -65,37 +66,43 @@ export default function OutletFinder() {
       <div className="container mx-auto px-4">
         <div className="grid lg:grid-cols-5 gap-8 items-center">
           <div className="lg:col-span-2 text-center lg:text-left">
-            <h2 className="text-4xl font-headline font-bold text-primary">
-              Find Us Near You
-            </h2>
-            <p className="mt-2 text-lg text-muted-foreground">
-              Your daily dose of artisan Kopi Kampung is just around the corner.
-            </p>
-            <div className="mt-6 flex flex-col gap-4">
-              <div className="flex gap-2">
-                <Input 
-                  placeholder="Enter your city or postcode..." 
-                  className="bg-background"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <Button>Search</Button>
+            <AnimateOnScroll animationType="slideInFromLeft">
+              <h2 className="text-4xl font-headline font-bold text-primary">
+                Find Us Near You
+              </h2>
+              <p className="mt-2 text-lg text-muted-foreground">
+                Your daily dose of artisan Kopi Kampung is just around the corner.
+              </p>
+            </AnimateOnScroll>
+            <AnimateOnScroll animationType="fadeIn" delay={0.2}>
+              <div className="mt-6 flex flex-col gap-4">
+                <div className="flex gap-2">
+                  <Input 
+                    placeholder="Enter your city or postcode..." 
+                    className="bg-background"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                  <Button>Search</Button>
+                </div>
+                <Button variant="outline" onClick={handleLocateMe} disabled={isGeolocationLoading}>
+                  {isGeolocationLoading ? (
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  ) : (
+                    <MapPin className="mr-2 h-5 w-5" />
+                  )}
+                  Locate Me
+                </Button>
               </div>
-              <Button variant="outline" onClick={handleLocateMe} disabled={isGeolocationLoading}>
-                {isGeolocationLoading ? (
-                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                ) : (
-                  <MapPin className="mr-2 h-5 w-5" />
-                )}
-                Locate Me
-              </Button>
-            </div>
+            </AnimateOnScroll>
             
             {geolocationError && <p className="mt-2 text-sm text-destructive">{geolocationError}</p>}
 
             <div className="mt-6 space-y-4">
-              {closestOutlets.map((outlet) => (
-                <OutletCard key={outlet.id} outlet={outlet} userLocation={position} />
+              {closestOutlets.map((outlet, index) => (
+                <AnimateOnScroll key={outlet.id} animationType='slideInFromLeft' delay={index * 0.1}>
+                  <OutletCard outlet={outlet} userLocation={position} />
+                </AnimateOnScroll>
               ))}
             </div>
 
@@ -105,11 +112,11 @@ export default function OutletFinder() {
                 </Button>
             )}
           </div>
-          <div className="lg:col-span-3">
+          <AnimateOnScroll animationType='slideInFromRight' className="lg:col-span-3">
             <Card className="overflow-hidden shadow-lg rounded-xl aspect-[4/3]">
               <InteractiveMap />
             </Card>
-          </div>
+          </AnimateOnScroll>
         </div>
       </div>
     </section>
