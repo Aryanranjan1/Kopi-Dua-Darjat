@@ -1,3 +1,5 @@
+"use client";
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
@@ -13,13 +15,19 @@ import {
 } from '@/components/ui/carousel';
 import { Input } from '../ui/input';
 import { blogPosts } from '@/lib/data';
+import Autoplay from "embla-carousel-autoplay";
+import * as React from "react";
 
 export default function LatestBlog() {
   const eventImage1 = PlaceHolderImages.find((img) => img.id === 'community-event-1');
   const eventImage2 = PlaceHolderImages.find((img) => img.id === 'community-event-2');
+  const eventImage3 = PlaceHolderImages.find((img) => img.id === 'community-event-3');
   const newsletterImage = PlaceHolderImages.find((img) => img.id === 'newsletter-background');
 
   const articles = blogPosts.slice(0, 2);
+  const plugin = React.useRef(
+    Autoplay({ delay: 2000, stopOnInteraction: true })
+  );
 
   return (
     <section className="py-24 sm:py-32 bg-background">
@@ -40,7 +48,13 @@ export default function LatestBlog() {
         <div className="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
           <div className="flex flex-col gap-8">
             <Card className="bg-card overflow-hidden shadow-lg rounded-3xl">
-              <Carousel opts={{ loop: true }}>
+              <Carousel 
+                plugins={[plugin.current]}
+                className="w-full"
+                onMouseEnter={plugin.current.stop}
+                onMouseLeave={plugin.current.reset}
+                opts={{ loop: true }}
+               >
                 <CarouselContent>
                   {eventImage1 && (
                     <CarouselItem>
@@ -64,6 +78,19 @@ export default function LatestBlog() {
                           fill
                           className="object-cover"
                           data-ai-hint={eventImage2.imageHint}
+                        />
+                      </div>
+                    </CarouselItem>
+                  )}
+                   {eventImage3 && (
+                    <CarouselItem>
+                       <div className="relative aspect-video">
+                        <Image
+                          src={eventImage3.imageUrl}
+                          alt={eventImage3.description}
+                          fill
+                          className="object-cover"
+                          data-ai-hint={eventImage3.imageHint}
                         />
                       </div>
                     </CarouselItem>
