@@ -87,7 +87,7 @@ export default function FeaturedDrinks() {
                   animate="visible"
                   exit="exit"
                   variants={imageVariants}
-                  className="relative z-10 h-full w-[80%] max-w-md"
+                  className="relative z-10 h-full w-[90%] max-w-lg"
                 >
                   <Image
                     src={mainDrink.image}
