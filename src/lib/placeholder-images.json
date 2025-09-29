@@ -42,7 +42,7 @@
     {
       "id": "outlet-map",
       "description": "A map showing outlet locations.",
-      "imageUrl": "https://images.unsplash.com/photo-1476385822777-70eabacbd41f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjaXR5JTIwbWFwfGVufDB8fHx8MTc1ODk3NjgzMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1476385822777-70eabacbd41f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjaXR5JTIwbWFwfGVufDB8fHx8MTc1ODk3NjgzMnww&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "city map"
     },
     {
@@ -54,7 +54,7 @@
     {
       "id": "blog-post-1",
       "description": "Image for the first blog post.",
-      "imageUrl": "https://images.unsplash.com/photo-1607681034540-2c46cc71896d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjb2ZmZWUlMjBiZWFuc3xlbnwwfHx8fDE3NTkwNDg5NjR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1607681034540-2c46cc71896d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjb2ZmZWUlMjBiZWFuc3xlbnwwfHx8fDE3NTkwNDg5NjR8MA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "coffee beans"
     },
     {
@@ -122,7 +122,7 @@
     {
       "id": "community-event-3",
       "description": "A barista crafting a specialty coffee for an event.",
-      "imageUrl": "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxDT01NVU5JVFklMjBTRVJWSUNFfGVufDB8fHx8MTc1OTEyNzU3Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxDT01NVU5JVFklMjBTRVJWSUNFfGVufDB8fHx8MTc1OTEyNzU3Mnww&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "coffee event",
       "linkUrl": "https://www.youtube.com/watch?v=LXb3EKWsInQ"
     },
@@ -153,7 +153,7 @@
     {
       "id": "parallax-promo-bg",
       "description": "A close-up shot of rich, dark coffee beans.",
-      "imageUrl": "https://images.unsplash.com/photo-1495474472287-4d713b4e_2a9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjb2ZmZWV8ZW58MHx8fHwxNzU5NTA3OTU4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1495474472287-4d713b4e_2a9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjb2ZmZWV8ZW58MHx8fHwxNzU5NTA3OTU4fDA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "coffee"
     }
   ]
