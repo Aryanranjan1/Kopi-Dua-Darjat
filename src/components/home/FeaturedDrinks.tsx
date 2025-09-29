@@ -87,13 +87,12 @@ export default function FeaturedDrinks() {
                   animate="visible"
                   exit="exit"
                   variants={imageVariants}
-                  className="relative z-10 aspect-[4/5] w-[70%] max-w-sm -rotate-[25deg]"
+                  className="relative z-10 h-full w-[70%] max-w-sm -rotate-[25deg]"
                 >
                   <Image
                     src={mainDrink.image}
                     alt={mainDrink.name}
-                    width={400}
-                    height={500}
+                    fill
                     className="object-contain drop-shadow-2xl"
                     priority
                   />
