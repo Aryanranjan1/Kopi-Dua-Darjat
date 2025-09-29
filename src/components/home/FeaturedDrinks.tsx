@@ -55,8 +55,8 @@ export default function FeaturedDrinks() {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 items-center gap-16 md:grid-cols-2">
           {/* Left Column: Text Content */}
-          <div className="text-center md:text-left h-80 flex flex-col justify-center">
-            <div className="h-48">
+          <div className="text-center md:text-left flex flex-col justify-center min-h-[350px]">
+            <div>
               <h2 className="font-headline text-4xl font-normal text-muted-foreground md:text-5xl">
                 It's not just Kopi.
               </h2>
@@ -67,7 +67,7 @@ export default function FeaturedDrinks() {
                 Since 2020, our passion has been about quality and heritage. We ethically source the finest local coffee beans and roast them with great care. Our passion for coffee is rivaled only by our love of sharing it.
               </p>
             </div>
-            <div className="mt-12">
+            <div className="mt-8">
               <Button asChild size="lg">
                 <Link href="/menu">
                   View Full Menu <ArrowRight className="ml-2 h-4 w-4" />
