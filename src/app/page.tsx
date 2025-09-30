@@ -1,11 +1,25 @@
+import dynamic from 'next/dynamic';
 import Hero from '@/components/home/Hero';
-import FeaturedDrinks from '@/components/home/FeaturedDrinks';
-import ActivePromotions from '@/components/home/ActivePromotions';
-import OutletFinder from '@/components/home/OutletFinder';
-import FranchiseTeaser from '@/components/home/FranchiseTeaser';
-import LatestBlog from '@/components/home/LatestBlog';
 import StatsSection from '@/components/home/StatsSection';
 import Image from 'next/image';
+import { Skeleton } from '@/components/ui/skeleton';
+
+const FeaturedDrinks = dynamic(() => import('@/components/home/FeaturedDrinks'), {
+  loading: () => <Skeleton className="h-[80vh] w-full" />,
+});
+const ActivePromotions = dynamic(() => import('@/components/home/ActivePromotions'), {
+  loading: () => <Skeleton className="h-[80vh] w-full" />,
+});
+const OutletFinder = dynamic(() => import('@/components/home/OutletFinder'), {
+  loading: () => <Skeleton className="h-[60vh] w-full" />,
+});
+const FranchiseTeaser = dynamic(() => import('@/components/home/FranchiseTeaser'), {
+  loading: () => <Skeleton className="h-[60vh] w-full" />,
+});
+const LatestBlog = dynamic(() => import('@/components/home/LatestBlog'), {
+  loading: () => <Skeleton className="h-[80vh] w-full" />,
+});
+
 
 export default function Home() {
   return (
@@ -19,6 +33,7 @@ export default function Home() {
           src="/image/coffee.png"
           alt="Artisan coffee"
           fill
+          priority
           className="object-contain rounded-xl shadow-2xl"
         />
       </div>
