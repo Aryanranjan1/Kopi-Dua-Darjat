@@ -20,7 +20,7 @@ export default function FeaturedDrinks() {
     <section className="py-24 sm:py-32 bg-background text-foreground">
       <div className="container mx-auto px-12">
         <AnimateOnScroll animationType="fadeIn">
-          <div className="text-center mb-12">
+          <div className="text-center mb-16">
             <h2 className="font-headline text-4xl md:text-5xl font-bold text-primary tracking-wide">
               Popular products
             </h2>
