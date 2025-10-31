@@ -39,13 +39,13 @@ export default function FeaturedDrinks() {
                 <CarouselItem key={drink.id} className="md:basis-1/2 lg:basis-1/3 pl-4">
                   <div className="p-1">
                     <Card className="rounded-3xl bg-card overflow-visible">
-                      <CardContent className="relative p-4 pt-8 flex flex-col items-center text-center">
-                        <div className="relative w-full h-48 -mt-24 mb-4 group">
+                      <CardContent className="relative p-4 pt-12 flex flex-col items-center text-center">
+                        <div className="relative w-full h-56 -mt-28 mb-4 group">
                           <Image
                             src={drink.image}
                             alt={drink.name}
                             fill
-                            className="object-contain drop-shadow-2xl transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-3 -rotate-12"
+                            className="object-contain drop-shadow-2xl transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-3 -rotate-12 -scale-x-100"
                           />
                         </div>
                         <div className="w-full flex justify-between items-center text-left">
