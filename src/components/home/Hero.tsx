@@ -5,7 +5,7 @@ import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 export default function Hero() {
   return (
     <>
-      <section className="relative w-full h-screen flex items-center justify-center text-center overflow-hidden bg-card pt-20">
+      <section className="relative w-full h-screen flex items-center justify-center text-center overflow-hidden bg-primary pt-20">
         {/* Main Content Area */}
         <div className="container mx-auto px-12 z-10">
           
