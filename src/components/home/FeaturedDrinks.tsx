@@ -45,7 +45,7 @@ export default function FeaturedDrinks() {
                             src={drink.image}
                             alt={drink.name}
                             fill
-                            className="object-contain drop-shadow-2xl transition-transform duration-300 group-hover:scale-105 rotate-[125deg]"
+                            className="object-contain drop-shadow-2xl transition-transform duration-300 group-hover:scale-105 rotate-12"
                           />
                         </div>
                         <div className="w-full flex justify-between items-center text-left">
