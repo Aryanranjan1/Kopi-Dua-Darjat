@@ -67,7 +67,7 @@ export default function Header() {
               className={cn(
                 'relative px-4 py-2 text-sm font-medium rounded-full transition-colors',
                 pathname === item.href
-                  ? 'text-foreground bg-primary'
+                  ? 'text-foreground bg-primary/90'
                   : 'text-background hover:text-primary'
               )}
             >
