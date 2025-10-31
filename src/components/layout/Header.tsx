@@ -42,11 +42,22 @@ const Icon = () => (
 export default function Header() {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = React.useState(false);
+  const [isHidden, setIsHidden] = React.useState(false);
+  const lastScrollY = React.useRef(0);
 
   React.useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
+      const currentScrollY = window.scrollY;
+      setIsScrolled(currentScrollY > 10);
+
+      if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
+        setIsHidden(true);
+      } else {
+        setIsHidden(false);
+      }
+      lastScrollY.current = currentScrollY;
     };
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -55,7 +66,8 @@ export default function Header() {
     <header
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-        isScrolled ? 'bg-card/80 backdrop-blur-sm shadow-md' : 'bg-transparent'
+        isScrolled ? 'bg-card/80 backdrop-blur-sm shadow-md' : 'bg-transparent',
+        isHidden ? '-translate-y-full' : 'translate-y-0'
       )}
     >
       <div className="container mx-auto px-6 h-20 flex items-center justify-between">
