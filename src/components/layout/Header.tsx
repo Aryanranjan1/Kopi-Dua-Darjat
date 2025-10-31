@@ -74,9 +74,6 @@ export default function Header() {
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-2">
             <Icon />
-            <span className="font-bold text-2xl font-headline text-foreground">
-                Kopi Dua Darjat
-            </span>
         </Link>
 
 
@@ -119,7 +116,6 @@ export default function Header() {
                     <div className="flex flex-col h-full p-4">
                         <Link href="/" className="flex items-center space-x-2 mb-8">
                             <Icon />
-                            <span className="font-bold text-xl font-headline">Kopi Dua Darjat</span>
                         </Link>
                         <div className="flex flex-col space-y-4">
                             {navItems.map((item) => (

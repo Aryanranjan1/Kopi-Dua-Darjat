@@ -32,9 +32,6 @@ export default function SiteFooter() {
               className="flex items-center space-x-2 text-primary"
             >
               <Icon />
-              <span className="font-bold text-2xl font-headline">
-                Kopi Dua Darjat
-              </span>
             </Link>
             <p className="mt-4 text-sm text-gray-400">
               Antara Warisan & Artisan. Experience the perfect blend of heritage and artisan coffee, crafted with passion and served with warmth.
