@@ -1,138 +1,129 @@
-
 "use client";
 
-import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { featuredDrinks as allFeaturedDrinks } from '@/lib/data';
-import { ArrowRight } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { featuredDrinks } from '@/lib/data';
+import { ArrowRight, ChevronRight } from 'lucide-react';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
+import { Card } from '@/components/ui/card';
 
 export default function FeaturedDrinks() {
-  const [drinks, setDrinks] = useState(allFeaturedDrinks);
-
-  const handleSelectDrink = (id: string) => {
-    setDrinks((prevDrinks) => {
-      const selectedIndex = prevDrinks.findIndex((d) => d.id === id);
-      if (selectedIndex <= 0) return prevDrinks; // Already main or not found
-
-      const newOrder = [...prevDrinks];
-      const [selectedDrink] = newOrder.splice(selectedIndex, 1);
-      newOrder.unshift(selectedDrink);
-      
-      return newOrder;
-    });
-  };
-
-  const cycleDrinks = useCallback(() => {
-    setDrinks((prevDrinks) => {
-      const newOrder = [...prevDrinks];
-      const first = newOrder.shift();
-      if(first) newOrder.push(first);
-      return newOrder;
-    });
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      cycleDrinks();
-    }, 5000); // Autoplay every 5 seconds
-    return () => clearInterval(interval);
-  }, [cycleDrinks]);
-
-  const mainDrink = drinks[0];
-  const otherDrinks = drinks.slice(1);
-
-  const imageVariants = {
-    hidden: { opacity: 0, x: 100, y: -100, scale: 0.8, rotate: 15 },
-    visible: { opacity: 1, x: 0, y: 0, scale: 1, rotate: -25, transition: { duration: 0.7, ease: 'easeInOut' } },
-    exit: { opacity: 0, x: 100, y: -100, scale: 0.8, rotate: -15, transition: { duration: 0.7, ease: 'easeInOut' } },
-  };
+  const mainDrink = featuredDrinks[0];
+  const secondaryDrink = featuredDrinks[1];
+  const tertiaryDrink = featuredDrinks[2];
 
   return (
-    <section className="relative overflow-hidden py-24 sm:py-32">
+    <section className="py-24 sm:py-32 bg-background">
       <div className="container mx-auto px-12">
-        <div className="grid grid-cols-1 items-center gap-16 md:grid-cols-2">
-          {/* Left Column: Text Content */}
-          <div className="text-center md:text-left flex flex-col justify-center min-h-[350px]">
-            <AnimateOnScroll animationType='slideInFromLeft'>
-              <div>
-                <h2 className="font-headline text-4xl font-normal text-muted-foreground md:text-5xl">
-                  It's not just Kopi.
-                </h2>
-                <h1 className="font-headline text-5xl font-bold text-accent md:text-6xl">
-                  It's Dua Darjat.
-                </h1>
-                <p className="mx-auto mt-6 max-w-md text-base text-muted-foreground md:mx-0">
-                  Since 2020, our passion has been about quality and heritage. We ethically source the finest local coffee beans and roast them with great care. Our passion for coffee is rivaled only by our love of sharing it.
-                </p>
-              </div>
-            </AnimateOnScroll>
-            <AnimateOnScroll animationType='fadeIn' delay={0.2} className="mt-8">
-              <Button asChild size="lg">
-                <Link href="/menu">
-                  View Full Menu <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </AnimateOnScroll>
-          </div>
+        <AnimateOnScroll animationType="slideInFromBottom" className="text-center max-w-3xl mx-auto mb-16">
+          <h2 className="text-4xl md:text-5xl font-headline text-primary">Signature Selections</h2>
+          <p className="mt-4 text-lg text-muted-foreground">
+            Crafted with passion, our featured drinks represent the heart of Kopi Dua Darjat—a perfect fusion of heritage and modern artisanry.
+          </p>
+        </AnimateOnScroll>
 
-          {/* Right Column: Images */}
-          <AnimateOnScroll animationType='slideInFromRight' className="relative flex h-full min-h-[50vh] flex-col items-center justify-center">
-            {/* Main Drink Image */}
-            <AnimatePresence mode="wait">
-              {mainDrink && (
-                <motion.div
-                  key={mainDrink.id}
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
-                  variants={imageVariants}
-                  className="relative z-10 h-full w-[90%] max-w-lg"
-                >
-                  <Image
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Main Drink Card */}
+          <AnimateOnScroll animationType="slideInFromLeft" amount={0.2} className="h-full">
+            {mainDrink && (
+              <Card className="relative flex flex-col justify-between p-8 rounded-2xl shadow-lg group overflow-hidden h-full bg-card">
+                <div className="relative z-10">
+                  <div className="inline-block bg-accent/20 text-accent font-bold text-sm px-3 py-1 rounded-full mb-4">
+                    Signature Blend
+                  </div>
+                  <h3 className="text-4xl font-headline text-foreground">{mainDrink.name}</h3>
+                  <p className="mt-2 text-muted-foreground max-w-xs">{mainDrink.description}</p>
+                  <ul className="mt-6 space-y-2 text-muted-foreground">
+                    {mainDrink.tags.map(tag => (
+                       <li key={tag} className="flex items-center">
+                          <ChevronRight className="h-4 w-4 text-accent mr-2" />
+                          <span>{tag}</span>
+                       </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="relative z-0 lg:absolute lg:right-[-5rem] lg:bottom-[-2rem] lg:w-[26rem] h-64 lg:h-auto mt-8 lg:mt-0">
+                   <Image
                     src={mainDrink.image}
                     alt={mainDrink.name}
-                    fill
-                    className="object-contain drop-shadow-2xl"
-                    priority
+                    width={450}
+                    height={450}
+                    className="object-contain drop-shadow-2xl transition-transform duration-500 group-hover:scale-105"
                   />
-                </motion.div>
-              )}
-            </AnimatePresence>
+                </div>
+              </Card>
+            )}
           </AnimateOnScroll>
-        </div>
-      </div>
 
-      {/* Other Drink Images - Now centered relative to the section */}
-      <div className="absolute bottom-12 left-0 right-0 z-20 flex w-full justify-center gap-1 md:gap-2">
-        <AnimatePresence>
-          {otherDrinks.map((drink, index) => {
-            if (!drink.image) return null;
-            return (
-              <motion.div
-                key={drink.id}
-                layout
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.3 }}
-                transition={{ duration: 0.5, ease: 'easeInOut' }}
-                onClick={() => handleSelectDrink(drink.id)}
-                className="relative h-20 w-16 cursor-pointer transition-transform duration-300 hover:scale-110 hover:!rotate-0 hover:z-30"
-                style={{ transform: `rotate(${index === 0 ? -8 : index === 2 ? 8 : 0}deg)` }}
-              >
-                <Image
-                  src={drink.image}
-                  alt={drink.name}
-                  fill
-                  className="object-contain drop-shadow-xl"
-                />
-              </motion.div>
-            );
-          })}
-        </AnimatePresence>
+          {/* Secondary and Tertiary Drink Cards */}
+          <div className="flex flex-col gap-8">
+            <AnimateOnScroll animationType="slideInFromRight" amount={0.4}>
+              {secondaryDrink && (
+                <Card className="relative flex items-center p-8 rounded-2xl shadow-lg group overflow-hidden bg-card">
+                  <div className="flex-1 z-10">
+                    <div className="inline-block bg-accent/20 text-accent font-bold text-sm px-3 py-1 rounded-full mb-4">
+                      Artisan Series
+                    </div>
+                    <h3 className="text-3xl font-headline text-foreground">{secondaryDrink.name}</h3>
+                     <ul className="mt-4 space-y-1 text-muted-foreground">
+                        {secondaryDrink.tags.map(tag => (
+                          <li key={tag} className="flex items-center text-sm">
+                              <ChevronRight className="h-4 w-4 text-accent mr-2" />
+                              <span>{tag}</span>
+                          </li>
+                        ))}
+                    </ul>
+                  </div>
+                  <div className="relative w-40 h-40 mr-[-3rem] z-0">
+                     <Image
+                      src={secondaryDrink.image}
+                      alt={secondaryDrink.name}
+                      fill
+                      className="object-contain drop-shadow-2xl transition-transform duration-500 group-hover:scale-110"
+                    />
+                  </div>
+                </Card>
+              )}
+            </AnimateOnScroll>
+            <AnimateOnScroll animationType="slideInFromRight" amount={0.4} delay={0.1}>
+              {tertiaryDrink && (
+                <Card className="relative flex items-center p-8 rounded-2xl shadow-lg group overflow-hidden bg-card">
+                  <div className="flex-1 z-10">
+                    <div className="inline-block bg-accent/20 text-accent font-bold text-sm px-3 py-1 rounded-full mb-4">
+                      On-the-Go
+                    </div>
+                    <h3 className="text-3xl font-headline text-foreground">{tertiaryDrink.name}</h3>
+                    <ul className="mt-4 space-y-1 text-muted-foreground">
+                        {tertiaryDrink.tags.map(tag => (
+                          <li key={tag} className="flex items-center text-sm">
+                              <ChevronRight className="h-4 w-4 text-accent mr-2" />
+                              <span>{tag}</span>
+                          </li>
+                        ))}
+                    </ul>
+                  </div>
+                  <div className="relative w-40 h-40 mr-[-3rem] z-0">
+                    <Image
+                      src={tertiaryDrink.image}
+                      alt={tertiaryDrink.name}
+                      fill
+                      className="object-contain drop-shadow-2xl transition-transform duration-500 group-hover:scale-110"
+                    />
+                  </div>
+                </Card>
+              )}
+            </AnimateOnScroll>
+          </div>
+        </div>
+
+        <AnimateOnScroll animationType="fadeIn" delay={0.3} className="mt-16 text-center">
+            <Button asChild size="lg">
+                <Link href="/menu">
+                    View Full Menu <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+            </Button>
+        </AnimateOnScroll>
       </div>
     </section>
   );
