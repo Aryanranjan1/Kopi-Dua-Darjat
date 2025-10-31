@@ -40,7 +40,7 @@ export default function FeaturedDrinks() {
                 <CarouselItem key={drink.id} className="md:basis-1/2 lg:basis-1/3 pl-4 overflow-visible">
                   <div className="p-1">
                     <Card className="rounded-3xl bg-card overflow-visible">
-                      <CardContent className="relative p-4 pt-24 flex flex-col items-center text-center">
+                      <CardContent className="relative p-4 pt-40 flex flex-col items-center text-center">
                         <div className="relative w-full h-80 -mt-48 mb-4 group">
                           <Image
                             src={drink.image}
