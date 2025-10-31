@@ -24,7 +24,7 @@ export default function LatestBlog() {
             </h2>
           </AnimateOnScroll>
           <AnimateOnScroll animationType="slideInFromRight">
-            <p className="mt-4 text-lg text-gray-300 max-w-prose">
+            <p className="mt-4 text-lg text-white max-w-prose">
               We know your day is challenging. Kopi Dua Darjat is more than just coffee; it's a daily ritual that connects you to a vibrant community and rich heritage. We're here to elevate your day.
             </p>
           </AnimateOnScroll>
@@ -58,16 +58,16 @@ export default function LatestBlog() {
             <AnimateOnScroll animationType="slideInFromRight" amount={0.5} delay={0.1}>
               <Card className="bg-zinc-900 shadow-lg rounded-3xl p-8 flex flex-col justify-between min-h-[210px]">
                   <div>
-                      <h3 className="font-headline text-2xl font-bold text-primary">Latest Promos & Offers</h3>
+                      <h3 className="font-headline text-2xl font-bold text-white">Latest Promos & Offers</h3>
                       <p className="text-gray-400 mt-2">
                           Stay ahead with our latest deals, new drink alerts, and exclusive offers for our community.
                       </p>
                   </div>
                   <div className="flex gap-4 mt-4">
-                      <Button asChild variant="secondary" className="bg-primary/10 hover:bg-primary/20 text-primary">
+                      <Button asChild variant="outline" className="border-accent text-accent hover:bg-accent hover:text-accent-foreground">
                           <Link href="/promotions">Weekday Specials <ArrowRight className="ml-2 h-4 w-4" /></Link>
                       </Button>
-                      <Button asChild variant="secondary" className="bg-primary/10 hover:bg-primary/20 text-primary">
+                      <Button asChild variant="outline" className="border-accent text-accent hover:bg-accent hover:text-accent-foreground">
                           <Link href="/menu">New Drinks <ArrowRight className="ml-2 h-4 w-4" /></Link>
                       </Button>
                   </div>
@@ -90,7 +90,7 @@ export default function LatestBlog() {
                       </div>
                   )}
                   <div className='relative z-10'>
-                      <h3 className="font-headline text-2xl font-bold text-primary">Join The Community</h3>
+                      <h3 className="font-headline text-2xl font-bold text-white">Join The Community</h3>
                       <p className="text-gray-400 mt-2 max-w-[60%]">
                         Get daily updates, news, and see what's brewing in our vibrant community.
                       </p>
