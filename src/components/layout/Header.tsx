@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -8,50 +9,14 @@ import type { NavItem } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { MobileNav } from '@/components/layout/MobileNav';
 import { Menu, MapPin } from 'lucide-react';
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuTrigger,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuViewport,
-} from "@/components/ui/navigation-menu"
-import { ListItem } from './ListItem';
 
-const aboutLinks: { title: string; href: string; description: string }[] = [
-  {
-    title: "Our Story",
-    href: "/about",
-    description:
-      "Learn about our history, our passion for coffee, and our mission.",
-  },
-  {
-    title: "Blog",
-    href: "/blog",
-    description:
-      "Read our latest articles, stories, and updates from the world of Kopi Dua Darjat.",
-  },
-  {
-    title: "Contact Us",
-    href: "/contact",
-    description: "Get in touch with us for inquiries, partnerships, or feedback.",
-  },
-]
-
-const franchiseLinks: { title: string; href: string; description: string }[] = [
-    {
-      title: "Franchise Info",
-      href: "/franchise",
-      description:
-        "Learn more about our franchise model, benefits, and how to get started.",
-    },
-    {
-      title: "Apply Now",
-      href: "/franchise/apply",
-      description: "Ready to join us? Start your franchise application today.",
-    },
-]
+const mainNavItems: NavItem[] = [
+  { title: 'Home', href: '/' },
+  { title: 'Menu', href: '/menu' },
+  { title: 'About', href: '/about' },
+  { title: 'Outlets', href: '/outlets' },
+  { title: 'Contact', href: '/contact' },
+];
 
 const allNavItems: NavItem[] = [
     { title: 'Home', href: '/' },
@@ -93,83 +58,34 @@ export default function SiteHeader() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-20 items-center justify-between">
+      <header className="fixed top-0 left-0 right-0 z-50 w-full p-4">
+        <div className="container flex h-16 items-center justify-between bg-background rounded-full shadow-lg">
           <Link href="/" className="flex items-center space-x-2">
             <Icon />
           </Link>
           
-          <div className="hidden md:flex justify-center items-center bg-black/80 backdrop-blur-sm rounded-full p-2 shadow-lg">
-            <NavigationMenu>
-              <NavigationMenuList>
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger className="bg-transparent text-primary-foreground/70 hover:bg-zinc-800 hover:text-primary-foreground focus:bg-zinc-800 focus:text-primary-foreground data-[active]:bg-zinc-700 data-[state=open]:bg-zinc-700">About</NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                      {aboutLinks.map((component) => (
-                        <ListItem
-                          key={component.title}
-                          title={component.title}
-                          href={component.href}
-                        >
-                          {component.description}
-                        </ListItem>
-                      ))}
-                    </ul>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <NavigationMenuLink asChild>
-                    <Link
-                      href="/menu"
-                      className={cn('group inline-flex h-10 w-max items-center justify-center rounded-full bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-zinc-800 hover:text-primary-foreground focus:bg-zinc-800 focus:text-primary-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-zinc-700/50 data-[state=open]:bg-zinc-700/50',
-                        pathname === '/menu' ? 'text-primary-foreground bg-zinc-700' : 'text-primary-foreground/70'
-                      )}
-                    >
-                      Menu
-                    </Link>
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <NavigationMenuLink asChild>
-                    <Link
-                      href="/outlets"
-                      className={cn('group inline-flex h-10 w-max items-center justify-center rounded-full bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-zinc-800 hover:text-primary-foreground focus:bg-zinc-800 focus:text-primary-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-zinc-700/50 data-[state=open]:bg-zinc-700/50',
-                        pathname === '/outlets' ? 'text-primary-foreground bg-zinc-700' : 'text-primary-foreground/70'
-                      )}
-                    >
-                      Outlets
-                    </Link>
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger className="bg-transparent text-primary-foreground/70 hover:bg-zinc-800 hover:text-primary-foreground focus:bg-zinc-800 focus:text-primary-foreground data-[active]:bg-zinc-700 data-[state=open]:bg-zinc-700">Franchise</NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                      {franchiseLinks.map((component) => (
-                        <ListItem
-                          key={component.title}
-                          title={component.title}
-                          href={component.href}
-                        >
-                          {component.description}
-                        </ListItem>
-                      ))}
-                    </ul>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-              </NavigationMenuList>
-              <div className="absolute top-full right-0 flex justify-end">
-                <NavigationMenuViewport />
-              </div>
-            </NavigationMenu>
-          </div>
+          <nav className="hidden md:flex items-center space-x-8">
+            {mainNavItems.map((item) => {
+              const isActive = pathname === item.href;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "relative text-sm font-medium transition-colors text-accent/80 hover:text-accent",
+                    isActive && "text-accent"
+                  )}
+                >
+                  {item.title}
+                  {isActive && (
+                    <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-0.5 w-4 bg-accent rounded-full"></span>
+                  )}
+                </Link>
+              )
+            })}
+          </nav>
 
           <div className="flex items-center gap-2">
-            <Button asChild className="hidden md:inline-flex bg-accent hover:bg-accent/90 text-accent-foreground rounded-full">
-              <Link href="/outlets">Find Outlet</Link>
-            </Button>
-            
             <Button
               variant="ghost"
               className="md:hidden"
@@ -199,3 +115,4 @@ export default function SiteHeader() {
     </>
   );
 }
+

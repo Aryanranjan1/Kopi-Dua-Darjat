@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 import './globals.css';
 import { cn } from '@/lib/utils';
@@ -47,7 +48,7 @@ export default function RootLayout({
         <SmoothScrollProvider>
           <div className="relative flex min-h-dvh flex-col">
             <SiteHeader />
-            <main className="flex-1">{children}</main>
+            <main className="flex-1 pt-24">{children}</main>
             <SiteFooter />
           </div>
           <Toaster />
