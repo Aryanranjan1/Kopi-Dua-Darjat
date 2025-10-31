@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -67,7 +68,7 @@ export default function OutletFinder() {
         <div className="grid lg:grid-cols-5 gap-8 items-center">
           <div className="lg:col-span-2 text-center lg:text-left">
             <AnimateOnScroll animationType="slideInFromLeft">
-              <h2 className="text-4xl font-headline font-bold text-primary">
+              <h2 className="text-4xl font-headline font-bold text-foreground">
                 Find Us Near You
               </h2>
               <p className="mt-2 text-lg text-muted-foreground">

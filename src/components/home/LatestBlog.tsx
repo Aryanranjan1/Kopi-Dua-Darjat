@@ -90,7 +90,7 @@ export default function LatestBlog() {
                 <AnimateOnScroll key={article.id} animationType='fadeIn' delay={index * 0.1}>
                   <Card className="bg-background shadow-lg rounded-3xl p-6 flex flex-col justify-between hover:shadow-xl transition-shadow h-full">
                     <div>
-                      <h3 className="font-headline text-xl font-bold text-primary">{article.title}</h3>
+                      <h3 className="font-headline text-xl font-bold text-foreground">{article.title}</h3>
                     </div>
                     <Button asChild variant="link" className="p-0 mt-4 self-start text-accent">
                       <Link href={`/blog/${article.slug}`}>
@@ -107,7 +107,7 @@ export default function LatestBlog() {
             <AnimateOnScroll animationType='slideInFromRight' delay={0.1}>
               <Card className="bg-background shadow-lg rounded-3xl p-8 flex flex-col justify-between">
                   <div>
-                      <h3 className="font-headline text-2xl font-bold text-primary">Join our Socials</h3>
+                      <h3 className="font-headline text-2xl font-bold text-foreground">Join our Socials</h3>
                       <p className="text-muted-foreground mt-2">
                           Network online and stay on top of updates, events, and trading trends.
                       </p>
@@ -145,7 +145,7 @@ export default function LatestBlog() {
                           </h3>
                           <p className="text-white/80 mt-1 text-sm">Be the first to know about our special offers and new drinks.</p>
                       </div>
-                      <div className="mt-auto pt-4">
+                      <div className="mt-auto pt-8">
                           <div className="flex gap-2">
                               <Input placeholder="Enter your email" className="bg-white/90 text-foreground placeholder:text-muted-foreground" />
                               <Button variant="default" className="bg-accent hover:bg-accent/90 text-accent-foreground">
