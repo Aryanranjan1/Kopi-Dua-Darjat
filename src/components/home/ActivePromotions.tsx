@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -41,21 +42,12 @@ export default function LatestBlog() {
                   className="absolute inset-0 w-full h-full object-cover z-0"
                   src="/video/bg1.mp4"
               />
-              <div className="absolute inset-0 bg-foreground/70 z-10"></div>
               <div className="z-20 relative flex flex-col h-full">
                   <div>
-                      <h3 className="font-headline text-3xl font-bold">The Kopi Dua Darjat Story</h3>
-                      <p className="text-primary-foreground/80 mt-2 max-w-prose">
-                          Our approach to coffee is unique, blending artisan methods with rich heritage. Our story is crafted by our founders, for coffee lovers of any level.
-                      </p>
+                      
                   </div>
                   <div className="mt-auto grid grid-cols-2 gap-4">
-                      <Button asChild variant="outline" className="bg-white/10 border-white/20 hover:bg-white/20 text-accent-foreground">
-                          <Link href="/about">Our Story <ArrowRight className="ml-2 h-4 w-4" /></Link>
-                      </Button>
-                      <Button asChild variant="outline" className="bg-white/10 border-white/20 hover:bg-white/20 text-accent-foreground">
-                          <Link href="/about">Our Heritage <ArrowRight className="ml-2 h-4 w-4" /></Link>
-                      </Button>
+                      
                   </div>
               </div>
             </Card>
