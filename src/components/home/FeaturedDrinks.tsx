@@ -38,7 +38,7 @@ export default function FeaturedDrinks() {
               {featuredDrinks.map((drink, index) => (
                 <CarouselItem key={drink.id} className="md:basis-1/2 lg:basis-1/3 pl-4">
                   <div className="p-1">
-                    <Card className="border-none shadow-none bg-transparent">
+                    <Card>
                       <CardContent className="p-4 flex flex-col items-center text-center">
                         <div className="relative w-full aspect-1 mb-4 group">
                           <Image
