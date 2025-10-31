@@ -1,13 +1,11 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
-import Header from './Header';
 
 export default function Hero() {
   return (
     <>
-      <Header />
-      <section className="relative w-full h-screen flex items-center justify-center text-center overflow-hidden bg-card">
+      <section className="relative w-full h-screen flex items-center justify-center text-center overflow-hidden bg-card pt-20">
         {/* Main Content Area */}
         <div className="container mx-auto px-12 z-10">
           <AnimateOnScroll animationType='slideInFromBottom'>

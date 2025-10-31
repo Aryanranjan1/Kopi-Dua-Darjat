@@ -6,6 +6,7 @@ import { Toaster } from '@/components/ui/toaster';
 import SiteFooter from '@/components/layout/Footer';
 import { Playfair_Display, PT_Sans } from 'next/font/google';
 import { SmoothScrollProvider } from '@/components/layout/SmoothScrollProvider';
+import Header from '@/components/layout/Header';
 
 const playfairDisplay = Playfair_Display({
   subsets: ['latin'],
@@ -46,6 +47,7 @@ export default function RootLayout({
       >
         <SmoothScrollProvider>
           <div className="relative flex min-h-dvh flex-col">
+            <Header />
             <main className="flex-1">{children}</main>
             <SiteFooter />
           </div>

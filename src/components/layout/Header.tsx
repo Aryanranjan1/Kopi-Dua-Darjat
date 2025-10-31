@@ -78,7 +78,7 @@ export default function Header() {
                 'relative px-4 py-2 text-sm font-medium rounded-full transition-colors',
                 pathname === item.href
                   ? 'text-foreground bg-primary'
-                  : 'text-background hover:text-primary-foreground/80'
+                  : 'text-background hover:text-primary'
               )}
             >
               {item.title}
