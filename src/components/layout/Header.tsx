@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Menu, Search, ShoppingBag, User } from 'lucide-react';
+import { Menu, MapPin } from 'lucide-react';
 import {
   Sheet,
   SheetContent,
@@ -100,17 +100,12 @@ export default function Header() {
 
         {/* Right Actions */}
         <div className="flex items-center gap-2">
-            <div className='hidden lg:flex items-center gap-2'>
-                <Button variant="ghost" size="icon">
-                    <Search className="h-5 w-5" />
-                </Button>
-                <Button variant="ghost" size="icon">
-                    <ShoppingBag className="h-5 w-5" />
-                </Button>
-                <Button variant="ghost" size="icon">
-                    <User className="h-5 w-5" />
-                </Button>
-            </div>
+            <Button asChild className="hidden lg:flex rounded-full bg-accent hover:bg-accent/90 text-accent-foreground">
+              <Link href="/outlets">
+                <MapPin className="h-4 w-4 mr-2" />
+                Find Outlet
+              </Link>
+            </Button>
             
             {/* Mobile Navigation Trigger */}
             <Sheet>
@@ -140,15 +135,12 @@ export default function Header() {
                                 </Link>
                             ))}
                         </div>
-                        <div className="mt-auto flex items-center justify-around">
-                            <Button variant="ghost" size="icon">
-                                <Search className="h-6 w-6" />
-                            </Button>
-                            <Button variant="ghost" size="icon">
-                                <ShoppingBag className="h-6 w-6" />
-                            </Button>
-                            <Button variant="ghost" size="icon">
-                                <User className="h-6 w-6" />
+                        <div className="mt-auto">
+                            <Button asChild className="w-full rounded-full bg-accent hover:bg-accent/90 text-accent-foreground">
+                              <Link href="/outlets">
+                                <MapPin className="h-4 w-4 mr-2" />
+                                Find Outlet
+                              </Link>
                             </Button>
                         </div>
                     </div>
