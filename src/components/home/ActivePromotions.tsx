@@ -14,7 +14,7 @@ export default function LatestBlog() {
 
 
   return (
-    <section className="py-24 sm:py-32">
+    <section className="py-24 sm:py-32 bg-card">
       <div className="container mx-auto px-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
           <AnimateOnScroll animationType="slideInFromLeft" className="lg:ml-8">
@@ -32,7 +32,7 @@ export default function LatestBlog() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Card 1: Large with video background */}
           <AnimateOnScroll animationType="slideInFromLeft" amount={0.2}>
-            <Card className="bg-card shadow-lg rounded-3xl p-8 relative overflow-hidden min-h-[450px] flex flex-col justify-between text-primary-foreground col-span-1 lg:col-span-1">
+            <Card className="bg-background shadow-lg rounded-3xl p-8 relative overflow-hidden min-h-[450px] flex flex-col justify-between text-primary-foreground col-span-1 lg:col-span-1">
               <video
                   autoPlay
                   loop
@@ -64,7 +64,7 @@ export default function LatestBlog() {
           <div className="space-y-8">
             {/* Card 2: Refine Strategy */}
             <AnimateOnScroll animationType="slideInFromRight" amount={0.5} delay={0.1}>
-              <Card className="bg-card shadow-lg rounded-3xl p-8 flex flex-col justify-between min-h-[210px]">
+              <Card className="bg-background shadow-lg rounded-3xl p-8 flex flex-col justify-between min-h-[210px]">
                   <div>
                       <h3 className="font-headline text-2xl font-bold text-primary">Latest Promos & Offers</h3>
                       <p className="text-muted-foreground mt-2">
@@ -84,10 +84,10 @@ export default function LatestBlog() {
 
             {/* Card 3: Stay Informed */}
             <AnimateOnScroll animationType="slideInFromRight" amount={0.5} delay={0.2}>
-              <Card className="bg-card shadow-lg rounded-3xl p-8 flex flex-col justify-between min-h-[210px] relative overflow-hidden">
+              <Card className="bg-background shadow-lg rounded-3xl p-8 flex flex-col justify-between min-h-[210px] relative overflow-hidden">
                   {communityImage && (
                       <div className="absolute bottom-0 right-0 h-3/4 w-1/2">
-                          <div className="absolute inset-0 bg-gradient-to-t from-card via-card to-transparent"></div>
+                          <div className="absolute inset-0 bg-gradient-to-t from-background via-background to-transparent"></div>
                           <Image
                               src={communityImage.imageUrl}
                               alt={communityImage.description}

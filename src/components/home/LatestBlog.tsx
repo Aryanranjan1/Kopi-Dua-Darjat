@@ -32,7 +32,7 @@ export default function LatestBlog() {
   const eventImages = [eventImage1, eventImage2, eventImage3].filter(Boolean);
 
   return (
-    <section className="py-24 sm:py-32">
+    <section className="py-24 sm:py-32 bg-card">
       <div className="container mx-auto px-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
           <AnimateOnScroll animationType='slideInFromLeft' className="lg:ml-8">
@@ -50,7 +50,7 @@ export default function LatestBlog() {
         <div className="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
           <div className="flex flex-col gap-8">
             <AnimateOnScroll animationType='slideInFromLeft' amount={0.2}>
-              <Card className="bg-card overflow-hidden shadow-lg rounded-3xl">
+              <Card className="bg-background overflow-hidden shadow-lg rounded-3xl">
                 <Carousel 
                   plugins={[plugin.current]}
                   className="w-full"
@@ -87,7 +87,7 @@ export default function LatestBlog() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
               {articles.map((article, index) => (
                 <AnimateOnScroll key={article.id} animationType='fadeIn' delay={index * 0.1}>
-                  <Card className="bg-card shadow-lg rounded-3xl p-6 flex flex-col justify-between hover:shadow-xl transition-shadow h-full">
+                  <Card className="bg-background shadow-lg rounded-3xl p-6 flex flex-col justify-between hover:shadow-xl transition-shadow h-full">
                     <div>
                       <h3 className="font-headline text-xl font-bold text-primary">{article.title}</h3>
                     </div>
@@ -104,7 +104,7 @@ export default function LatestBlog() {
 
           <div className="space-y-8">
             <AnimateOnScroll animationType='slideInFromRight' delay={0.1}>
-              <Card className="bg-card shadow-lg rounded-3xl p-8 flex flex-col justify-between">
+              <Card className="bg-background shadow-lg rounded-3xl p-8 flex flex-col justify-between">
                   <div>
                       <h3 className="font-headline text-2xl font-bold text-primary">Join our Socials</h3>
                       <p className="text-muted-foreground mt-2">
@@ -126,7 +126,7 @@ export default function LatestBlog() {
             </AnimateOnScroll>
             
             <AnimateOnScroll animationType='slideInFromRight' delay={0.2}>
-              <Card className="bg-card shadow-lg rounded-3xl p-8 relative overflow-hidden min-h-[300px] flex flex-col justify-between text-primary-foreground">
+              <Card className="bg-background shadow-lg rounded-3xl p-8 relative overflow-hidden min-h-[300px] flex flex-col justify-between text-primary-foreground">
                   <video
                     autoPlay
                     loop
