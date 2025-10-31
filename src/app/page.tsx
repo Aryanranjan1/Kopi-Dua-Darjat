@@ -28,9 +28,9 @@ export default function Home() {
       <Hero />
       <FeaturedDrinks />
       <ActivePromotions />
+      <OutletFinder />
       <MenuShowcase />
       <BrandStory />
-      <OutletFinder />
       <LatestBlog />
     </div>
   );
