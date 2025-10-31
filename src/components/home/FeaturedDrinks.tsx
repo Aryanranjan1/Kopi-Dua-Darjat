@@ -12,8 +12,9 @@ import {
 } from '@/components/ui/carousel';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '../ui/button';
-import { ShoppingBag, Star } from 'lucide-react';
+import { ArrowUpRight, Star } from 'lucide-react';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
+import Link from 'next/link';
 
 export default function FeaturedDrinks() {
   return (
@@ -61,8 +62,10 @@ export default function FeaturedDrinks() {
                                     </div>
                                 </div>
                             </div>
-                           <Button variant="outline" size="icon" className="rounded-full border-2 border-foreground/50 hover:bg-primary hover:border-primary shrink-0">
-                             <ShoppingBag className="w-5 h-5" />
+                           <Button asChild variant="outline" size="icon" className="rounded-full border-2 border-foreground/50 hover:bg-primary hover:border-primary shrink-0">
+                            <Link href="/outlets">
+                              <ArrowUpRight className="w-5 h-5" />
+                            </Link>
                            </Button>
                         </div>
                       </CardContent>
