@@ -14,7 +14,7 @@ export default function LatestBlog() {
 
 
   return (
-    <section className="py-24 sm:py-32 bg-background">
+    <section className="py-24 sm:py-32">
       <div className="container mx-auto px-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
           <AnimateOnScroll animationType="slideInFromLeft" className="lg:ml-8">
@@ -50,10 +50,10 @@ export default function LatestBlog() {
                       </p>
                   </div>
                   <div className="mt-auto grid grid-cols-2 gap-4">
-                      <Button asChild variant="outline" className="bg-white/10 border-white/20 hover:bg-white/20 text-white">
+                      <Button asChild variant="outline" className="bg-white/10 border-white/20 hover:bg-white/20 text-accent-foreground">
                           <Link href="/about">Our Story <ArrowRight className="ml-2 h-4 w-4" /></Link>
                       </Button>
-                      <Button asChild variant="outline" className="bg-white/10 border-white/20 hover:bg-white/20 text-white">
+                      <Button asChild variant="outline" className="bg-white/10 border-white/20 hover:bg-white/20 text-accent-foreground">
                           <Link href="/about">Our Heritage <ArrowRight className="ml-2 h-4 w-4" /></Link>
                       </Button>
                   </div>

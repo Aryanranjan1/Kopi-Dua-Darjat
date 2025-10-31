@@ -7,7 +7,7 @@ import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 
 export default function FranchiseTeaser() {
   return (
-    <section className="bg-primary text-primary-foreground py-24 sm:py-32">
+    <section className="text-primary-foreground py-24 sm:py-32">
       <div className="container mx-auto px-12">
         <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
             <AnimateOnScroll animationType="slideInFromLeft" className="w-full flex items-center justify-center">
