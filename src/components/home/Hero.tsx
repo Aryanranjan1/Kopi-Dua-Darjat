@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 
 export default function Hero() {
   return (
-    <section className="relative w-full min-h-[88vh] text-primary-foreground overflow-hidden">
+    <section className="relative w-full h-screen text-primary-foreground overflow-hidden">
       {/* Background Video */}
       <div className="absolute inset-0 z-[-2]">
         <video
@@ -21,7 +21,7 @@ export default function Hero() {
       
       {/* Main Content Area */}
       <div className="container mx-auto px-12 h-full relative">
-        <div className="grid md:grid-cols-1 items-center h-full min-h-[88vh] pt-0">
+        <div className="grid md:grid-cols-1 items-center h-screen pt-0">
           
           {/* Text Content */}
           <div className="z-10 text-center md:text-left md:w-[56%]">
