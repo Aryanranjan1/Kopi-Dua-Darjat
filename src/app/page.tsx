@@ -1,6 +1,5 @@
 import dynamic from 'next/dynamic';
 import Hero from '@/components/home/Hero';
-import Image from 'next/image';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const FeaturedDrinks = dynamic(() => import('@/components/home/FeaturedDrinks'), {
@@ -9,10 +8,13 @@ const FeaturedDrinks = dynamic(() => import('@/components/home/FeaturedDrinks'),
 const ActivePromotions = dynamic(() => import('@/components/home/ActivePromotions'), {
   loading: () => <Skeleton className="h-[80vh] w-full" />,
 });
-const OutletFinder = dynamic(() => import('@/components/home/OutletFinder'), {
-  loading: () => <Skeleton className="h-[60vh] w-full" />,
+const MenuShowcase = dynamic(() => import('@/components/home/MenuShowcase'), {
+  loading: () => <Skeleton className="h-[70vh] w-full" />,
 });
-const FranchiseTeaser = dynamic(() => import('@/components/home/FranchiseTeaser'), {
+const BrandStory = dynamic(() => import('@/components/home/BrandStory'), {
+    loading: () => <Skeleton className="h-[60vh] w-full" />,
+});
+const OutletFinder = dynamic(() => import('@/components/home/OutletFinder'), {
   loading: () => <Skeleton className="h-[60vh] w-full" />,
 });
 const LatestBlog = dynamic(() => import('@/components/home/LatestBlog'), {
@@ -26,8 +28,9 @@ export default function Home() {
       <Hero />
       <FeaturedDrinks />
       <ActivePromotions />
+      <MenuShowcase />
+      <BrandStory />
       <OutletFinder />
-      <FranchiseTeaser />
       <LatestBlog />
     </div>
   );
