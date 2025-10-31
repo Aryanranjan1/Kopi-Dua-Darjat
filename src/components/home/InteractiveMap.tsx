@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-const mapEmbedUrl = "https://www.google.com/maps/embed/v1/search?q=Kopi%20Dua%20Darjat&key=" + (process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '');
+const mapEmbedUrl = "https://www.google.com/maps/embed/v1/search?q=Kopi%20Dua%20Darjat";
 
 export default function InteractiveMap() {
   return (
