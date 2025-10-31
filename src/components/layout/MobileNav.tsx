@@ -17,7 +17,7 @@ const Icon = () => (
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
-    className="h-6 w-6 mr-2"
+    className="h-8 w-8"
   >
     <path d="M10 20.5c-3.3 0-6-2.2-6-5v-5c0-2.8 2.7-5 6-5h4c3.3 0 6 2.2 6 5v5c0 2.8-2.7 5-6 5h-4z" />
     <path d="M16 10.5h.5c1.4 0 2.5 1.1 2.5 2.5v1c0 1.4-1.1 2.5-2.5 2.5H16" />
@@ -44,9 +44,6 @@ export function MobileNav({ isOpen, setIsOpen, navItems }: MobileNavProps) {
           onClick={() => setIsOpen(false)}
         >
           <Icon />
-          <span className="font-bold font-headline text-primary">
-            Kopi Dua Darjat
-          </span>
         </Link>
         <ScrollArea className="my-4 flex-1 h-[calc(100vh-8rem)] pb-10 pl-6">
           <div className="flex flex-col space-y-4">
