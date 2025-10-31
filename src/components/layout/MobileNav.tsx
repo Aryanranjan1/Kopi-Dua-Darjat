@@ -3,9 +3,28 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from '@/components/ui/sheet';
-import { Coffee } from 'lucide-react';
 import type { NavItem } from '@/lib/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
+
+const Icon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="#FECC0A"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className="h-6 w-6 mr-2"
+  >
+    <path d="M10 20.5c-3.3 0-6-2.2-6-5v-5c0-2.8 2.7-5 6-5h4c3.3 0 6 2.2 6 5v5c0 2.8-2.7 5-6 5h-4z" />
+    <path d="M16 10.5h.5c1.4 0 2.5 1.1 2.5 2.5v1c0 1.4-1.1 2.5-2.5 2.5H16" />
+    <path d="M7 2h8" />
+  </svg>
+);
+
 
 interface MobileNavProps {
   isOpen: boolean;
@@ -24,7 +43,7 @@ export function MobileNav({ isOpen, setIsOpen, navItems }: MobileNavProps) {
           className="flex items-center"
           onClick={() => setIsOpen(false)}
         >
-          <Coffee className="h-6 w-6 mr-2 text-primary" />
+          <Icon />
           <span className="font-bold font-headline text-primary">
             Kopi Dua Darjat
           </span>

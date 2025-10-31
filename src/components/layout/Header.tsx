@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import type { NavItem } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { MobileNav } from '@/components/layout/MobileNav';
-import { Coffee, Menu, MapPin } from 'lucide-react';
+import { Menu, MapPin } from 'lucide-react';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -64,6 +64,24 @@ const allNavItems: NavItem[] = [
     { title: 'Contact', href: '/contact' },
   ];
   
+const Icon = () => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#FECC0A"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="h-6 w-6"
+    >
+      <path d="M10 20.5c-3.3 0-6-2.2-6-5v-5c0-2.8 2.7-5 6-5h4c3.3 0 6 2.2 6 5v5c0 2.8-2.7 5-6 5h-4z" />
+      <path d="M16 10.5h.5c1.4 0 2.5 1.1 2.5 2.5v1c0 1.4-1.1 2.5-2.5 2.5H16" />
+      <path d="M7 2h8" />
+    </svg>
+  );
 
 export default function SiteHeader() {
   const pathname = usePathname();
@@ -78,7 +96,7 @@ export default function SiteHeader() {
       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center">
           <Link href="/" className="mr-6 flex items-center space-x-2">
-            <Coffee className="h-6 w-6 text-primary" />
+            <Icon />
             <span className="font-bold inline-block font-headline text-primary text-lg">
               Kopi Dua Darjat
             </span>
