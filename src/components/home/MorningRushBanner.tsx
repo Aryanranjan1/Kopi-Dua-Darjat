@@ -11,7 +11,7 @@ const SteamingCoffeeCup = () => (
       viewBox="0 0 64 64"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="text-primary"
+      className="text-accent"
     >
       <path
         d="M52 38H12C9.79086 38 8 36.2091 8 34V20C8 17.7909 9.79086 16 12 16H52C54.2091 16 56 17.7909 56 20V34C56 36.2091 54.2091 38 52 38Z"
@@ -98,7 +98,7 @@ const calculateTimeLeft = () => {
 
 const TimerDisplay = ({ time, label }: { time: string; label: string }) => (
   <div className="flex flex-col items-center">
-    <div className="text-2xl sm:text-3xl font-bold font-mono text-primary bg-background/50 rounded-lg px-2 py-1 shadow-inner animate-pulse-light">
+    <div className="text-2xl sm:text-3xl font-bold font-mono text-accent bg-background/50 rounded-lg px-2 py-1 shadow-inner animate-pulse-light">
       {time}
     </div>
     <div className="text-xs text-muted-foreground">{label}</div>
@@ -133,9 +133,9 @@ export const MorningRushBanner = () => {
           {timeLeft ? (
             <div className="flex items-center gap-2">
               <TimerDisplay time={timeLeft.hours} label="hours" />
-              <span className="text-2xl font-bold text-primary">:</span>
+              <span className="text-2xl font-bold text-accent">:</span>
               <TimerDisplay time={timeLeft.minutes} label="mins" />
-              <span className="text-2xl font-bold text-primary">:</span>
+              <span className="text-2xl font-bold text-accent">:</span>
               <TimerDisplay time={timeLeft.seconds} label="secs" />
             </div>
           ) : (

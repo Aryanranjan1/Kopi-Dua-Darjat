@@ -62,7 +62,7 @@ export default function FeaturedDrinks() {
                 <h2 className="font-headline text-4xl font-normal text-muted-foreground md:text-5xl">
                   It's not just Kopi.
                 </h2>
-                <h1 className="font-headline text-5xl font-bold text-primary md:text-6xl">
+                <h1 className="font-headline text-5xl font-bold text-accent md:text-6xl">
                   It's Dua Darjat.
                 </h1>
                 <p className="mx-auto mt-6 max-w-md text-base text-muted-foreground md:mx-0">
