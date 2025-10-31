@@ -17,7 +17,7 @@ import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 
 export default function FeaturedDrinks() {
   return (
-    <section className="py-24 sm:py-32 bg-background text-foreground">
+    <section className="py-24 sm:py-32 bg-[#F7F4EF] text-foreground">
       <div className="container mx-auto px-12">
         <AnimateOnScroll animationType="fadeIn">
           <div className="text-center mb-16">
