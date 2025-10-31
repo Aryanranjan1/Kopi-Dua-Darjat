@@ -37,7 +37,7 @@ export default function FeaturedDrinks() {
           >
             <CarouselContent className="-ml-4 py-16">
               {featuredDrinks.map((drink, index) => (
-                <CarouselItem key={drink.id} className="md:basis-1/2 lg:basis-1/3 pl-4">
+                <CarouselItem key={drink.id} className="md:basis-1/2 lg:basis-1/3 pl-4 overflow-visible">
                   <div className="p-1">
                     <Card className="rounded-3xl bg-card overflow-visible">
                       <CardContent className="relative p-4 pt-24 flex flex-col items-center text-center">
