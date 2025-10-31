@@ -1,48 +1,75 @@
 "use client";
 
-import Link from 'next/link';
 import Image from 'next/image';
-import { Button } from '@/components/ui/button';
 import { featuredDrinks } from '@/lib/data';
-import { ArrowRight } from 'lucide-react';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '../ui/button';
+import { ShoppingBag, Star } from 'lucide-react';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 
 export default function FeaturedDrinks() {
-  const mainDrink = featuredDrinks.find(drink => drink.id === '1');
-
   return (
     <section className="py-24 sm:py-32 bg-background text-foreground">
       <div className="container mx-auto px-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <AnimateOnScroll animationType="slideInFromLeft" amount={0.4}>
-            <div className="max-w-md">
-              <h2 className="font-headline text-4xl md:text-5xl font-bold text-primary leading-tight">
-                Signature Selections
-              </h2>
-              <p className="mt-4 text-lg text-muted-foreground">
-                Crafted with passion, our featured drinks represent the heart of Kopi Dua Darjat—a perfect fusion of heritage and modern artisanry.
-              </p>
-              <Button asChild size="lg" className="mt-8">
-                <Link href="/menu">
-                    View Full Menu <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
-          </AnimateOnScroll>
+        <AnimateOnScroll animationType="fadeIn">
+          <div className="text-center mb-12">
+            <h2 className="font-headline text-4xl md:text-5xl font-bold text-primary tracking-wide">
+              Popular products
+            </h2>
+          </div>
+        </AnimateOnScroll>
 
-          <AnimateOnScroll animationType="slideInFromRight" amount={0.4}>
-            {mainDrink && (
-              <div className="relative aspect-square group">
-                 <Image
-                  src={mainDrink.image}
-                  alt={mainDrink.name}
-                  fill
-                  className="object-contain drop-shadow-2xl transition-transform duration-500 group-hover:scale-105"
-                />
-              </div>
-            )}
-          </AnimateOnScroll>
-        </div>
+        <AnimateOnScroll animationType="fadeIn" delay={0.2}>
+          <Carousel
+            opts={{
+              align: 'start',
+              loop: true,
+            }}
+            className="w-full"
+          >
+            <CarouselContent className="-ml-4">
+              {featuredDrinks.map((drink, index) => (
+                <CarouselItem key={drink.id} className="md:basis-1/2 lg:basis-1/3 pl-4">
+                  <div className="p-1">
+                    <Card className="border-none shadow-none bg-transparent">
+                      <CardContent className="p-4 flex flex-col items-center text-center">
+                        <div className="relative w-full aspect-1 mb-4 group">
+                          <Image
+                            src={drink.image}
+                            alt={drink.name}
+                            fill
+                            className="object-contain drop-shadow-md transition-transform duration-300 group-hover:scale-105"
+                          />
+                        </div>
+                        <h3 className="font-bold text-lg text-foreground truncate w-full">{drink.name}</h3>
+                        <div className="flex items-center gap-4 mt-2">
+                           <p className="font-semibold text-primary">RM{drink.price.toFixed(2)}</p>
+                           <div className="flex items-center">
+                            {[...Array(5)].map((_, i) => (
+                              <Star key={i} className="w-4 h-4 text-amber-400 fill-amber-400" />
+                            ))}
+                           </div>
+                        </div>
+                        <Button variant="outline" size="icon" className="mt-4 rounded-full border-2 border-foreground/50 hover:bg-primary hover:border-primary">
+                          <ShoppingBag className="w-5 h-5" />
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="ml-14" />
+            <CarouselNext className="mr-14" />
+          </Carousel>
+        </AnimateOnScroll>
       </div>
     </section>
   );
