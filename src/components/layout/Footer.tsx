@@ -29,8 +29,7 @@ export default function SiteFooter() {
           <div className="md:col-span-1">
             <Link
               href="/"
-              className="flex items-center space-x-2"
-              style={{ color: '#FECC0A' }}
+              className="flex items-center space-x-2 text-primary"
             >
               <Icon />
               <span className="font-bold text-2xl font-headline">

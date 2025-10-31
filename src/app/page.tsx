@@ -23,27 +23,12 @@ const LatestBlog = dynamic(() => import('@/components/home/LatestBlog'), {
 export default function Home() {
   return (
     <div className="flex flex-col">
-      <div className="relative z-10">
-        <Hero />
-      </div>
-      
-      <div className="bg-secondary text-foreground">
-        <FeaturedDrinks />
-      </div>
-      
+      <Hero />
+      <FeaturedDrinks />
       <ActivePromotions />
-
-      <div className="w-full bg-secondary">
-        <OutletFinder />
-      </div>
-      
-      <div className="w-full bg-primary">
-        <FranchiseTeaser />
-      </div>
-
-      <div className="bg-background">
-        <LatestBlog />
-      </div>
+      <OutletFinder />
+      <FranchiseTeaser />
+      <LatestBlog />
     </div>
   );
 }
