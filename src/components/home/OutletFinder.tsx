@@ -63,7 +63,7 @@ export default function OutletFinder() {
 
 
   return (
-    <section className="py-16 bg-card">
+    <section className="py-16 bg-primary/65">
       <div className="container mx-auto px-12">
         <div className="grid lg:grid-cols-5 gap-8 items-center">
           <div className="lg:col-span-2 text-center lg:text-left">
