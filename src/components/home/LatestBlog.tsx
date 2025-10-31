@@ -33,7 +33,7 @@ export default function LatestBlog() {
   const eventImages = [eventImage1, eventImage2, eventImage3].filter(Boolean);
 
   return (
-    <section className="py-24 sm:py-32 bg-card">
+    <section className="py-24 sm:py-32 bg-primary/20">
       <div className="container mx-auto px-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
           <AnimateOnScroll animationType='slideInFromLeft' className="lg:ml-8">
