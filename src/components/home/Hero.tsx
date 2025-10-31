@@ -4,25 +4,10 @@ import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 
 export default function Hero() {
   return (
-    <section className="relative w-full h-screen text-primary-foreground overflow-hidden">
-      {/* Background Video */}
-      <div className="absolute inset-0 z-[-2]">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="w-full h-full object-cover"
-          src="/video/bg1.mp4"
-        />
-      </div>
-
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 z-[-1] bg-black/60"></div>
-      
+    <section className="relative w-full h-screen bg-black text-primary-foreground flex items-center justify-center text-center overflow-hidden">
       {/* Main Content Area */}
-      <div className="container mx-auto px-12 h-full flex items-center justify-center">
-        <AnimateOnScroll animationType='slideInFromBottom' className="z-10 text-center">
+      <div className="container mx-auto px-12 z-10">
+        <AnimateOnScroll animationType='slideInFromBottom'>
             <h1 className="font-headline text-5xl md:text-8xl font-bold tracking-tight text-primary drop-shadow-lg">
               Antara Warisan & Artisan.
             </h1>
