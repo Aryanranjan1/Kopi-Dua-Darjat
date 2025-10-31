@@ -3,7 +3,6 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
-import SiteHeader from '@/components/layout/Header';
 import SiteFooter from '@/components/layout/Footer';
 import { Playfair_Display, PT_Sans } from 'next/font/google';
 import { SmoothScrollProvider } from '@/components/layout/SmoothScrollProvider';
@@ -47,8 +46,7 @@ export default function RootLayout({
       >
         <SmoothScrollProvider>
           <div className="relative flex min-h-dvh flex-col">
-            <SiteHeader />
-            <main className="flex-1 pt-24">{children}</main>
+            <main className="flex-1">{children}</main>
             <SiteFooter />
           </div>
           <Toaster />
