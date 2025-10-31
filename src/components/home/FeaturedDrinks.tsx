@@ -34,23 +34,23 @@ export default function FeaturedDrinks() {
             }}
             className="w-full"
           >
-            <CarouselContent className="-ml-4">
+            <CarouselContent className="-ml-4 py-16">
               {featuredDrinks.map((drink, index) => (
                 <CarouselItem key={drink.id} className="md:basis-1/2 lg:basis-1/3 pl-4">
                   <div className="p-1">
-                    <Card>
-                      <CardContent className="p-4 flex flex-col items-center text-center">
-                        <div className="relative w-full aspect-1 mb-4 group">
+                    <Card className="rounded-3xl">
+                      <CardContent className="relative p-4 pt-24 flex flex-col items-center text-center">
+                        <div className="absolute -top-24 w-full aspect-1 mb-4 group">
                           <Image
                             src={drink.image}
                             alt={drink.name}
                             fill
-                            className="object-contain drop-shadow-md transition-transform duration-300 group-hover:scale-105"
+                            className="object-contain drop-shadow-2xl transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-3 -rotate-12"
                           />
                         </div>
-                        <h3 className="font-bold text-lg text-foreground truncate w-full">{drink.name}</h3>
+                        <h3 className="font-bold text-xl text-foreground truncate w-full">{drink.name}</h3>
                         <div className="flex items-center gap-4 mt-2">
-                           <p className="font-semibold text-primary">RM{drink.price.toFixed(2)}</p>
+                           <p className="font-semibold text-primary text-lg">RM{drink.price.toFixed(2)}</p>
                            <div className="flex items-center">
                             {[...Array(5)].map((_, i) => (
                               <Star key={i} className="w-4 h-4 text-amber-400 fill-amber-400" />
