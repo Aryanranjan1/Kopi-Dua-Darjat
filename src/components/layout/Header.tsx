@@ -12,9 +12,9 @@ import {
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
+  NavigationMenuTrigger,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
   NavigationMenuViewport,
 } from "@/components/ui/navigation-menu"
 import { ListItem } from './ListItem';
@@ -94,81 +94,81 @@ export default function SiteHeader() {
   return (
     <>
       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center">
-          <Link href="/" className="mr-6 flex items-center space-x-2">
+        <div className="container flex h-20 items-center justify-between">
+          <Link href="/" className="flex items-center space-x-2">
             <Icon />
           </Link>
           
-          <div className="flex flex-1 items-center justify-end space-x-2">
-            <div className="hidden md:flex justify-end items-center">
-              <NavigationMenu>
-                <NavigationMenuList>
-                  <NavigationMenuItem>
-                    <NavigationMenuTrigger>About</NavigationMenuTrigger>
-                    <NavigationMenuContent>
-                      <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                        {aboutLinks.map((component) => (
-                          <ListItem
-                            key={component.title}
-                            title={component.title}
-                            href={component.href}
-                          >
-                            {component.description}
-                          </ListItem>
-                        ))}
-                      </ul>
-                    </NavigationMenuContent>
-                  </NavigationMenuItem>
-                  <NavigationMenuItem>
-                    <NavigationMenuLink asChild>
-                      <Link
-                        href="/menu"
-                        className={cn('group inline-flex h-10 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50',
-                          pathname === '/menu' ? 'text-foreground' : 'text-foreground/60'
-                        )}
-                      >
-                        Menu
-                      </Link>
-                    </NavigationMenuLink>
-                  </NavigationMenuItem>
-                  <NavigationMenuItem>
-                    <NavigationMenuLink asChild>
-                      <Link
-                        href="/outlets"
-                        className={cn('group inline-flex h-10 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50',
-                          pathname === '/outlets' ? 'text-foreground' : 'text-foreground/60'
-                        )}
-                      >
-                        Outlets
-                      </Link>
-                    </NavigationMenuLink>
-                  </NavigationMenuItem>
-                  <NavigationMenuItem>
-                    <NavigationMenuTrigger>Franchise</NavigationMenuTrigger>
-                    <NavigationMenuContent>
-                      <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                        {franchiseLinks.map((component) => (
-                          <ListItem
-                            key={component.title}
-                            title={component.title}
-                            href={component.href}
-                          >
-                            {component.description}
-                          </ListItem>
-                        ))}
-                      </ul>
-                    </NavigationMenuContent>
-                  </NavigationMenuItem>
-                </NavigationMenuList>
-                <div className="absolute top-full right-0 flex justify-end">
-                  <NavigationMenuViewport />
-                </div>
-              </NavigationMenu>
+          <div className="hidden md:flex justify-center items-center bg-black/80 backdrop-blur-sm rounded-full p-2 shadow-lg">
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="bg-transparent text-primary-foreground/70 hover:bg-zinc-800 hover:text-primary-foreground focus:bg-zinc-800 focus:text-primary-foreground data-[active]:bg-zinc-700 data-[state=open]:bg-zinc-700">About</NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                      {aboutLinks.map((component) => (
+                        <ListItem
+                          key={component.title}
+                          title={component.title}
+                          href={component.href}
+                        >
+                          {component.description}
+                        </ListItem>
+                      ))}
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <NavigationMenuLink asChild>
+                    <Link
+                      href="/menu"
+                      className={cn('group inline-flex h-10 w-max items-center justify-center rounded-full bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-zinc-800 hover:text-primary-foreground focus:bg-zinc-800 focus:text-primary-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-zinc-700/50 data-[state=open]:bg-zinc-700/50',
+                        pathname === '/menu' ? 'text-primary-foreground bg-zinc-700' : 'text-primary-foreground/70'
+                      )}
+                    >
+                      Menu
+                    </Link>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <NavigationMenuLink asChild>
+                    <Link
+                      href="/outlets"
+                      className={cn('group inline-flex h-10 w-max items-center justify-center rounded-full bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-zinc-800 hover:text-primary-foreground focus:bg-zinc-800 focus:text-primary-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-zinc-700/50 data-[state=open]:bg-zinc-700/50',
+                        pathname === '/outlets' ? 'text-primary-foreground bg-zinc-700' : 'text-primary-foreground/70'
+                      )}
+                    >
+                      Outlets
+                    </Link>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="bg-transparent text-primary-foreground/70 hover:bg-zinc-800 hover:text-primary-foreground focus:bg-zinc-800 focus:text-primary-foreground data-[active]:bg-zinc-700 data-[state=open]:bg-zinc-700">Franchise</NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                      {franchiseLinks.map((component) => (
+                        <ListItem
+                          key={component.title}
+                          title={component.title}
+                          href={component.href}
+                        >
+                          {component.description}
+                        </ListItem>
+                      ))}
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+              <div className="absolute top-full right-0 flex justify-end">
+                <NavigationMenuViewport />
+              </div>
+            </NavigationMenu>
+          </div>
 
-              <Button asChild className="hidden md:inline-flex bg-accent hover:bg-accent/90 text-accent-foreground ml-2">
-                <Link href="/outlets">Find Outlet</Link>
-              </Button>
-            </div>
+          <div className="flex items-center gap-2">
+            <Button asChild className="hidden md:inline-flex bg-accent hover:bg-accent/90 text-accent-foreground rounded-full">
+              <Link href="/outlets">Find Outlet</Link>
+            </Button>
             
             <Button
               variant="ghost"
@@ -180,6 +180,7 @@ export default function SiteHeader() {
               <span className="sr-only">Toggle Menu</span>
             </Button>
           </div>
+
         </div>
       </header>
       <MobileNav
