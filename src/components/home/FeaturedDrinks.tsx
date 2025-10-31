@@ -16,13 +16,6 @@ export default function FeaturedDrinks() {
   return (
     <section className="py-24 sm:py-32 bg-background">
       <div className="container mx-auto px-12">
-        <AnimateOnScroll animationType="slideInFromBottom" className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-4xl md:text-5xl font-headline text-primary">Signature Selections</h2>
-          <p className="mt-4 text-lg text-muted-foreground">
-            Crafted with passion, our featured drinks represent the heart of Kopi Dua Darjat—a perfect fusion of heritage and modern artisanry.
-          </p>
-        </AnimateOnScroll>
-
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Main Drink Card */}
           <AnimateOnScroll animationType="slideInFromLeft" amount={0.2} className="h-full">
