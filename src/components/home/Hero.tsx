@@ -4,7 +4,7 @@ import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 
 export default function Hero() {
   return (
-    <section className="relative w-full h-screen flex items-center justify-center text-center overflow-hidden bg-background">
+    <section className="relative w-full h-screen flex items-center justify-center text-center overflow-hidden bg-card">
       {/* Main Content Area */}
       <div className="container mx-auto px-12 z-10">
         <AnimateOnScroll animationType='slideInFromBottom'>
