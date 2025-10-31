@@ -59,15 +59,15 @@ export default function LatestBlog() {
               <Card className="bg-zinc-900 shadow-lg rounded-3xl p-8 flex flex-col justify-between min-h-[210px]">
                   <div>
                       <h3 className="font-headline text-2xl font-bold text-white">Latest Promos & Offers</h3>
-                      <p className="text-gray-400 mt-2">
+                      <p className="text-white/80 mt-2">
                           Stay ahead with our latest deals, new drink alerts, and exclusive offers for our community.
                       </p>
                   </div>
                   <div className="flex gap-4 mt-4">
-                      <Button asChild variant="outline" className="border-accent text-accent hover:bg-accent hover:text-accent-foreground">
+                      <Button asChild variant="outline" className="border-accent text-accent hover:bg-accent hover:text-white bg-transparent">
                           <Link href="/promotions">Weekday Specials <ArrowRight className="ml-2 h-4 w-4" /></Link>
                       </Button>
-                      <Button asChild variant="outline" className="border-accent text-accent hover:bg-accent hover:text-accent-foreground">
+                      <Button asChild variant="outline" className="border-accent text-accent hover:bg-accent hover:text-white bg-transparent">
                           <Link href="/menu">New Drinks <ArrowRight className="ml-2 h-4 w-4" /></Link>
                       </Button>
                   </div>
@@ -91,7 +91,7 @@ export default function LatestBlog() {
                   )}
                   <div className='relative z-10'>
                       <h3 className="font-headline text-2xl font-bold text-white">Join The Community</h3>
-                      <p className="text-gray-400 mt-2 max-w-[60%]">
+                      <p className="text-white/80 mt-2 max-w-[60%]">
                         Get daily updates, news, and see what's brewing in our vibrant community.
                       </p>
                   </div>
