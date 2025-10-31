@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -126,7 +127,7 @@ export default function LatestBlog() {
             </AnimateOnScroll>
             
             <AnimateOnScroll animationType='slideInFromRight' delay={0.2}>
-              <Card className="bg-background shadow-lg rounded-3xl p-8 relative overflow-hidden min-h-[300px] flex flex-col justify-between text-primary-foreground">
+              <Card className="bg-background shadow-lg rounded-3xl p-8 relative overflow-hidden min-h-[300px] flex flex-col justify-between">
                   <video
                     autoPlay
                     loop
@@ -138,13 +139,13 @@ export default function LatestBlog() {
                   <div className="absolute inset-0 bg-black/60 z-10"></div>
                   <div className="z-20 relative flex flex-col h-full">
                       <div>
-                          <p className="text-sm text-primary-foreground/80">Newsletter</p>
-                          <h3 className="font-headline text-2xl font-bold mt-2">
+                          <p className="text-sm text-white/80">Newsletter</p>
+                          <h3 className="font-headline text-2xl text-white font-bold mt-2">
                               Get Exclusive Promos
                           </h3>
-                          <p className="text-primary-foreground/80 mt-1 text-sm">Be the first to know about our special offers and new drinks.</p>
+                          <p className="text-white/80 mt-1 text-sm">Be the first to know about our special offers and new drinks.</p>
                       </div>
-                      <div className="mt-auto">
+                      <div className="mt-auto pt-4">
                           <div className="flex gap-2">
                               <Input placeholder="Enter your email" className="bg-white/90 text-foreground placeholder:text-muted-foreground" />
                               <Button variant="default" className="bg-accent hover:bg-accent/90 text-accent-foreground">
