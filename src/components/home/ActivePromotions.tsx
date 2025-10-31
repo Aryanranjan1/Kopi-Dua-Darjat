@@ -18,7 +18,7 @@ export default function LatestBlog() {
       <div className="container mx-auto px-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
           <AnimateOnScroll animationType="slideInFromLeft" className="lg:ml-8">
-            <h2 className="text-4xl md:text-6xl font-headline font-bold text-primary leading-tight">
+            <h2 className="text-5xl md:text-7xl font-headline font-bold text-primary leading-tight">
               Sip Smart. <br /> <span className="text-accent">Stay Sharp.</span>
             </h2>
           </AnimateOnScroll>
