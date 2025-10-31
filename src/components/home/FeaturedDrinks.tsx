@@ -38,7 +38,7 @@ export default function FeaturedDrinks() {
               {featuredDrinks.map((drink, index) => (
                 <CarouselItem key={drink.id} className="md:basis-1/2 lg:basis-1/3 pl-4">
                   <div className="p-1">
-                    <Card className="rounded-3xl">
+                    <Card className="rounded-3xl bg-card">
                       <CardContent className="relative p-4 pt-24 flex flex-col items-center text-center">
                         <div className="absolute -top-24 w-full aspect-1 mb-4 group">
                           <Image
@@ -48,18 +48,22 @@ export default function FeaturedDrinks() {
                             className="object-contain drop-shadow-2xl transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-3 -rotate-12"
                           />
                         </div>
-                        <h3 className="font-bold text-xl text-foreground truncate w-full">{drink.name}</h3>
-                        <div className="flex items-center gap-4 mt-2">
-                           <p className="font-semibold text-primary text-lg">RM{drink.price.toFixed(2)}</p>
-                           <div className="flex items-center">
-                            {[...Array(5)].map((_, i) => (
-                              <Star key={i} className="w-4 h-4 text-amber-400 fill-amber-400" />
-                            ))}
-                           </div>
+                        <div className="w-full flex justify-between items-center text-left">
+                            <div className="flex-grow">
+                                <h3 className="font-bold text-xl text-foreground truncate">{drink.name}</h3>
+                                <div className="flex items-center gap-2 mt-1">
+                                    <p className="font-semibold text-accent text-lg">RM{drink.price.toFixed(2)}</p>
+                                    <div className="flex items-center">
+                                        {[...Array(5)].map((_, i) => (
+                                        <Star key={i} className="w-4 h-4 text-amber-400 fill-amber-400" />
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                           <Button variant="outline" size="icon" className="rounded-full border-2 border-foreground/50 hover:bg-primary hover:border-primary shrink-0">
+                             <ShoppingBag className="w-5 h-5" />
+                           </Button>
                         </div>
-                        <Button variant="outline" size="icon" className="mt-4 rounded-full border-2 border-foreground/50 hover:bg-primary hover:border-primary">
-                          <ShoppingBag className="w-5 h-5" />
-                        </Button>
                       </CardContent>
                     </Card>
                   </div>
