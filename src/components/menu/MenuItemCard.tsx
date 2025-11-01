@@ -16,12 +16,12 @@ export default function MenuItemCard({ drink }: MenuItemCardProps) {
   return (
     <Card className="bg-black text-white border-zinc-800 rounded-3xl w-full h-full flex flex-col">
       <CardContent className="p-4 flex flex-col flex-grow">
-        <div className="relative aspect-[3/4] w-full rounded-lg overflow-hidden mb-4">
+        <div className="relative aspect-[3/4] w-full rounded-lg overflow-hidden mb-4 bg-zinc-800/50">
           <Image
             src={drink.image}
             alt={drink.name}
             fill
-            className="object-cover opacity-50"
+            className="object-contain"
           />
         </div>
         <div className="flex flex-col flex-grow">
