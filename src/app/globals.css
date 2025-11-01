@@ -4,18 +4,18 @@
 
 @layer base {
   :root {
-    --background: 37 50% 96%; /* #F7F4EF */
-    --foreground: 0 0% 0%; /* #000000 */
-    --card: 32 58% 87%; /* #F0DFCB */
+    --background: 37 50% 98%; /* Lighter beige for menu */
+    --foreground: 24 10% 10%; /* Dark brown/black for text */
+    --card: 32 58% 87%;
     --card-foreground: 0 0% 0%;
     --popover: 32 58% 87%;
     --popover-foreground: 0 0% 0%;
     --primary: 48 98.6% 51.8%; /* #fecd0b */
-    --primary-foreground: 0 0% 0%;
+    --primary-foreground: 24 10% 10%;
     --secondary: 32 58% 87%; /* #F0DFCB */
     --secondary-foreground: 0 0% 0%;
     --muted: 0 0% 48%; /* #7A7A7A */
-    --muted-foreground: 0 0% 55%;
+    --muted-foreground: 24 10% 30%;
     --accent: 17 80% 55%; /* #E86A33 */
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84.2% 60.2%;
@@ -39,18 +39,18 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
   .dark {
-    --background: 37 50% 96%; /* #F7F4EF */
-    --foreground: 0 0% 0%; /* #000000 */
-    --card: 32 58% 87%; /* #F0DFCB */
+    --background: 37 50% 98%; /* Lighter beige for menu */
+    --foreground: 24 10% 10%; /* Dark brown/black for text */
+    --card: 32 58% 87%;
     --card-foreground: 0 0% 0%;
     --popover: 32 58% 87%;
     --popover-foreground: 0 0% 0%;
     --primary: 48 98.6% 51.8%; /* #fecd0b */
-    --primary-foreground: 0 0% 0%;
+    --primary-foreground: 24 10% 10%;
     --secondary: 32 58% 87%; /* #F0DFCB */
     --secondary-foreground: 0 0% 0%;
     --muted: 0 0% 48%; /* #7A7A7A */
-    --muted-foreground: 0 0% 55%;
+    --muted-foreground: 24 10% 30%;
     --accent: 17 80% 55%; /* #E86A33 */
     --accent-foreground: 0 0% 100%;
     --destructive: 0 62.8% 30.6%;
