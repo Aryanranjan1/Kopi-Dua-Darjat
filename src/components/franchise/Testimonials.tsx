@@ -15,11 +15,11 @@ import {
 
 export default function Testimonials() {
   return (
-    <section className="py-24 sm:py-32 bg-card">
+    <section className="py-24 sm:py-32 bg-black text-white">
       <div className="container mx-auto px-4">
         <AnimateOnScroll animationType="slideInFromBottom" className="text-center max-w-3xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-headline text-primary">Success Stories</h2>
-          <p className="mt-4 text-lg text-muted-foreground">
+          <p className="mt-4 text-lg text-white/70">
             Hear from our partners who are brewing success with Kopi Dua Darjat.
           </p>
         </AnimateOnScroll>
@@ -30,45 +30,45 @@ export default function Testimonials() {
               align: 'start',
               loop: true,
             }}
-            className="w-full max-w-4xl mx-auto mt-16"
+            className="w-full max-w-5xl mx-auto mt-24"
           >
-            <CarouselContent>
+            <CarouselContent className="-ml-8">
               {testimonials.map((testimonial) => {
                 const image = PlaceHolderImages.find((img) => img.id === testimonial.image);
                 return (
-                  <CarouselItem key={testimonial.id}>
-                    <div className="p-4">
-                      <Card className="bg-background rounded-3xl shadow-lg overflow-hidden">
-                        <CardContent className="p-0 md:p-8 md:grid md:grid-cols-3 md:items-center">
-                            <div className="relative aspect-[4/3] md:aspect-square">
-                                {image && (
+                  <CarouselItem key={testimonial.id} className="md:basis-1/2 pl-8">
+                    <div className="p-4 h-full">
+                        <div className="relative h-full mt-10">
+                            {image && (
+                                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full overflow-hidden border-4 border-accent shadow-lg z-10">
                                     <Image
-                                    src={image.imageUrl}
-                                    alt={testimonial.name}
-                                    fill
-                                    className="object-cover"
-                                    data-ai-hint={image.imageHint}
+                                        src={image.imageUrl}
+                                        alt={testimonial.name}
+                                        fill
+                                        className="object-cover"
+                                        data-ai-hint={image.imageHint}
                                     />
-                                )}
-                            </div>
-                            <div className="p-6 md:p-0 md:pl-8 md:col-span-2">
-                                <blockquote className="text-lg font-medium text-foreground">
+                                </div>
+                            )}
+                            <Card className="bg-zinc-900/50 border-zinc-800 rounded-3xl h-full pt-20 shadow-lg text-center">
+                                <CardContent className="p-8">
+                                <blockquote className="text-lg font-medium text-white/90">
                                 “{testimonial.quote}”
                                 </blockquote>
-                                <footer className="mt-4">
-                                <p className="font-bold text-accent text-lg">{testimonial.name}</p>
-                                <p className="text-muted-foreground">{testimonial.designation}</p>
+                                <footer className="mt-6">
+                                <p className="font-bold text-accent text-xl">{testimonial.name}</p>
+                                <p className="text-white/60">{testimonial.designation}</p>
                                 </footer>
-                            </div>
-                        </CardContent>
-                      </Card>
+                                </CardContent>
+                            </Card>
+                        </div>
                     </div>
                   </CarouselItem>
                 );
               })}
             </CarouselContent>
-            <CarouselPrevious className="-left-4 md:-left-12" />
-            <CarouselNext className="-right-4 md:-right-12" />
+            <CarouselPrevious className="-left-4 md:-left-12 bg-zinc-800 border-zinc-700 text-white hover:bg-primary hover:text-black" />
+            <CarouselNext className="-right-4 md:-right-12 bg-zinc-800 border-zinc-700 text-white hover:bg-primary hover:text-black" />
           </Carousel>
         </AnimateOnScroll>
       </div>
