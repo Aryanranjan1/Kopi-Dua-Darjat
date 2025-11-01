@@ -16,7 +16,7 @@ export default function OutletCard({ outlet, userLocation }: OutletCardProps) {
     : `https://www.google.com/maps/search/?api=1&query=${outlet.lat},${outlet.lng}`;
 
   return (
-    <Card className="p-4 flex justify-between items-center bg-card/50">
+    <Card className="p-4 flex justify-between items-center bg-card/50 rounded-3xl">
       <div>
         <h4 className="font-bold text-foreground flex items-center">
             <Pin className="w-4 h-4 mr-2 text-accent" />
@@ -29,7 +29,7 @@ export default function OutletCard({ outlet, userLocation }: OutletCardProps) {
           </p>
         )}
       </div>
-      <Button asChild className="bg-foreground text-background hover:bg-foreground/80">
+      <Button asChild className="bg-foreground text-background hover:bg-foreground/80 rounded-full">
         <a href={directionsUrl} target="_blank" rel="noopener noreferrer">
           <Map className="mr-2 h-4 w-4" />
           Directions

@@ -85,13 +85,13 @@ export default function OutletFinder() {
                 <div className="flex gap-2">
                   <Input 
                     placeholder="Enter your city or postcode..." 
-                    className="bg-background"
+                    className="bg-background rounded-full"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
-                  <Button className="bg-foreground text-background hover:bg-foreground/80">Search</Button>
+                  <Button className="bg-foreground text-background hover:bg-foreground/80 rounded-full">Search</Button>
                 </div>
-                <Button variant="outline" onClick={handleLocateMe} disabled={isGeolocationLoading}>
+                <Button variant="outline" onClick={handleLocateMe} disabled={isGeolocationLoading} className="rounded-full">
                   {isGeolocationLoading ? (
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                   ) : (
@@ -112,12 +112,12 @@ export default function OutletFinder() {
               ))}
             </div>
 
-            <Button asChild variant="link" className="mt-2 text-accent hover:text-accent/80 pl-0">
+            <Button asChild variant="link" className="text-accent hover:text-accent/80 pl-0">
                 <Link href="/outlets">Or view all 50+ outlets</Link>
             </Button>
           </div>
           <AnimateOnScroll animationType='slideInFromRight' className="lg:col-span-3">
-            <Card className="overflow-hidden shadow-lg rounded-xl aspect-[4/3]">
+            <Card className="overflow-hidden shadow-lg rounded-3xl aspect-[4/3]">
               <InteractiveMap />
             </Card>
           </AnimateOnScroll>
