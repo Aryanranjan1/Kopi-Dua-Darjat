@@ -2,7 +2,7 @@
 
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { DollarSign, Award, Users, Megaphone, TrendingUp } from 'lucide-react';
+import { DollarSign, Award, Users, Megaphone, TrendingUp, CheckCircle } from 'lucide-react';
 
 const features = [
   {
@@ -34,29 +34,33 @@ const features = [
 
 export default function ValueProposition() {
   return (
-    <section className="py-24 sm:py-32 bg-background">
+    <section className="py-24 sm:py-32 bg-black text-white">
       <div className="container mx-auto px-4">
-        <AnimateOnScroll animationType="slideInFromBottom" className="text-center max-w-3xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-headline text-primary">Why Join Us?</h2>
-          <p className="mt-4 text-lg text-muted-foreground">
-            Here’s why Kopi Dua Darjat is the winning choice for your entrepreneurial journey.
-          </p>
-        </AnimateOnScroll>
-
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
-          {features.map((feature, index) => (
-            <AnimateOnScroll key={index} animationType="fadeIn" delay={index * 0.1}>
-              <Card className="text-center h-full bg-card/50 hover:bg-card transition-all duration-300 transform hover:-translate-y-2 shadow-sm hover:shadow-xl rounded-2xl">
-                <CardHeader className="items-center">
-                    <div className="bg-primary text-primary-foreground p-4 rounded-full mb-4">
-                        <feature.icon className="w-8 h-8" />
-                    </div>
-                    <CardTitle className="font-headline text-xl">{feature.title}</CardTitle>
-                    <CardDescription className="pt-2">{feature.description}</CardDescription>
-                </CardHeader>
-              </Card>
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <AnimateOnScroll animationType="slideInFromLeft" className="text-center lg:text-left">
+                <h2 className="text-4xl md:text-5xl font-headline font-bold text-primary leading-tight">
+                    The Winning Choice for Your Entrepreneurial Journey
+                </h2>
+                <p className="mt-6 text-lg text-white/80">
+                    Kopi Dua Darjat isn’t just another coffee brand. We are a movement built on heritage, quality, and community. We offer a proven, profitable, and accessible franchise model designed for your success.
+                </p>
             </AnimateOnScroll>
-          ))}
+            
+            <AnimateOnScroll animationType="slideInFromRight">
+                <div className="space-y-8">
+                {features.map((feature, index) => (
+                    <div key={index} className="flex items-start gap-4">
+                        <div className="bg-primary/20 text-primary p-3 rounded-full mt-1">
+                            <feature.icon className="w-6 h-6" />
+                        </div>
+                        <div>
+                            <h3 className="font-headline text-xl text-white">{feature.title}</h3>
+                            <p className="text-white/70 mt-1">{feature.description}</p>
+                        </div>
+                    </div>
+                ))}
+                </div>
+            </AnimateOnScroll>
         </div>
       </div>
     </section>
