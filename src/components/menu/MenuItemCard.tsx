@@ -2,7 +2,7 @@
 "use client";
 
 import Image from 'next/image';
-import { ArrowUpRight, MoreVertical } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import type { Drink } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -14,14 +14,14 @@ interface MenuItemCardProps {
 
 export default function MenuItemCard({ drink }: MenuItemCardProps) {
   return (
-    <Card className="bg-black text-white border-zinc-800 rounded-2xl w-full h-full flex flex-col">
+    <Card className="bg-black text-white border-zinc-800 rounded-3xl w-full h-full flex flex-col">
       <CardContent className="p-4 flex flex-col flex-grow">
         <div className="relative aspect-[3/4] w-full rounded-lg overflow-hidden mb-4">
           <Image
             src={drink.image}
             alt={drink.name}
             fill
-            className="object-cover"
+            className="object-cover opacity-50"
           />
         </div>
         <div className="flex flex-col flex-grow">
