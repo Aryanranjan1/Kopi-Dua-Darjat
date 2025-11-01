@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function FranchiseApplyPage() {
   return (
-    <div className="bg-card min-h-screen py-24 sm:py-32">
+    <div className="bg-background min-h-screen py-24 sm:py-32">
         <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto">
                  <Button asChild variant="outline" className="mb-8 rounded-full">
