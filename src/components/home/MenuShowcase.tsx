@@ -54,7 +54,7 @@ export default function MenuShowcase() {
               align: 'start',
               dragFree: true,
             }}
-            className="w-full"
+            className="w-full relative"
           >
             <CarouselContent className="-ml-4">
               {filteredDrinks.map((drink, index) => (
@@ -63,13 +63,13 @@ export default function MenuShowcase() {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="opacity-0 group-hover/showcase:opacity-100 transition-opacity" />
-            <CarouselNext className="opacity-0 group-hover/showcase:opacity-100 transition-opacity" />
+            <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 opacity-0 group-hover/showcase:opacity-100 transition-opacity" />
+            <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 opacity-0 group-hover/showcase:opacity-100 transition-opacity" />
           </Carousel>
         </AnimateOnScroll>
 
         <AnimateOnScroll animationType="fadeIn" delay={0.4} className="mt-12 text-center">
-          <Button asChild size="lg">
+          <Button asChild size="lg" className="rounded-full">
             <Link href="/menu">
               View Full Menu <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
