@@ -2,7 +2,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -22,14 +22,19 @@ export default function OutletFinder() {
     error: geolocationError,
     getPosition,
   } = useGeolocation();
-  const [closestOutlets, setClosestOutlets] = useState<Outlet[]>([]);
+  const [displayedOutlets, setDisplayedOutlets] = useState<Outlet[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const findClosestOutlets = () => {
-    if (!position) {
-      getPosition();
-      return;
+  // Show first 3 outlets by default
+  useEffect(() => {
+    if (displayedOutlets.length === 0 && !position) {
+      setDisplayedOutlets(outlets.slice(0, 3));
     }
+  }, [displayedOutlets.length, position]);
+
+
+  const findClosestOutlets = () => {
+    if (!position) return;
 
     const outletsWithDistance = outlets.map((outlet) => ({
       ...outlet,
@@ -43,7 +48,7 @@ export default function OutletFinder() {
 
     outletsWithDistance.sort((a, b) => a.distance - b.distance);
 
-    setClosestOutlets(outletsWithDistance.slice(0, 3));
+    setDisplayedOutlets(outletsWithDistance.slice(0, 3));
   };
 
   const handleLocateMe = () => {
@@ -55,11 +60,11 @@ export default function OutletFinder() {
   };
 
   // Automatically find closest outlets once position is available
-  useState(() => {
+  useEffect(() => {
     if (position) {
       findClosestOutlets();
     }
-  });
+  }, [position]);
 
 
   return (
@@ -99,19 +104,17 @@ export default function OutletFinder() {
             
             {geolocationError && <p className="mt-2 text-sm text-destructive">{geolocationError}</p>}
 
-            <div className="mt-6 space-y-4">
-              {closestOutlets.map((outlet, index) => (
+            <div className="mt-4 space-y-4">
+              {displayedOutlets.map((outlet, index) => (
                 <AnimateOnScroll key={outlet.id} animationType='slideInFromLeft' delay={index * 0.1}>
                   <OutletCard outlet={outlet} userLocation={position} />
                 </AnimateOnScroll>
               ))}
             </div>
 
-            {closestOutlets.length === 0 && (
-                 <Button asChild variant="link" className="mt-2 text-accent hover:text-accent/80 pl-0">
-                    <Link href="/outlets">Or view all 50+ outlets</Link>
-                </Button>
-            )}
+            <Button asChild variant="link" className="mt-2 text-accent hover:text-accent/80 pl-0">
+                <Link href="/outlets">Or view all 50+ outlets</Link>
+            </Button>
           </div>
           <AnimateOnScroll animationType='slideInFromRight' className="lg:col-span-3">
             <Card className="overflow-hidden shadow-lg rounded-xl aspect-[4/3]">
