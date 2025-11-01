@@ -21,7 +21,7 @@ export default function FranchiseHero() {
         />
         <div className="absolute inset-0 bg-black/60 z-10"></div>
       <div className="container mx-auto px-4 relative z-20">
-        <div className="text-center">
+        <div className="text-left max-w-3xl">
              <AnimateOnScroll animationType="slideInFromBottom">
                 <Badge variant="default" className="mb-4 text-sm py-1 px-4 rounded-full bg-accent text-accent-foreground">
                     50+ stalls & growing since 2020
@@ -29,10 +29,10 @@ export default function FranchiseHero() {
                 <h1 className="text-4xl lg:text-6xl font-headline font-bold text-primary leading-tight drop-shadow-lg">
                     Own Your Kopi Dua Darjat Stall — Brew Success, One Cup at a Time.
                 </h1>
-                <p className="mt-6 text-lg lg:text-xl text-white/90 max-w-2xl mx-auto drop-shadow-md">
+                <p className="mt-6 text-lg lg:text-xl text-white/90 drop-shadow-md">
                     We’re expanding our local kopi culture across Malaysia. Join our growing family and serve the taste everyone’s talking about.
                 </p>
-                <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+                <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-start">
                     <Button asChild size="lg" className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90">
                         <Link href="/franchise/apply">Apply for Franchise</Link>
                     </Button>
