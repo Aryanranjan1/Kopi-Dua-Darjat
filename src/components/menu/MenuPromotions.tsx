@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -8,7 +9,6 @@ import type { Drink } from '@/lib/types';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
-import MenuItemCard from './MenuItemCard';
 import {
   Carousel,
   CarouselContent,
@@ -17,6 +17,7 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 import PromotionCard from './PromotionCard';
+import PromotionCarouselCard from './PromotionCarouselCard';
 
 // Function to shuffle an array
 const shuffleArray = (array: any[]) => {
@@ -132,13 +133,13 @@ export default function MenuPromotions() {
             }}
             className="w-full"
           >
-            <CarouselContent className="-ml-4 py-16">
+            <CarouselContent className="-ml-4 py-24">
               {remainingPromos.map((drink) => (
                 <CarouselItem
                   key={drink.id}
                   className="basis-1/2 md:basis-1/3 lg:basis-1/4 pl-4 overflow-visible"
                 >
-                  <MenuItemCard drink={drink} />
+                  <PromotionCarouselCard drink={drink} />
                 </CarouselItem>
               ))}
             </CarouselContent>

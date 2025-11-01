@@ -38,7 +38,7 @@ export default function MenuItemCard({ drink }: MenuItemCardProps) {
                   </div>
               </div>
              <Button asChild variant="outline" size="icon" className="rounded-full border-2 border-foreground/50 hover:bg-primary hover:border-primary shrink-0">
-              <Link href={`/order/${drink.slug}`}>
+              <Link href="/outlets">
                 <ArrowUpRight className="w-5 h-5" />
               </Link>
              </Button>
