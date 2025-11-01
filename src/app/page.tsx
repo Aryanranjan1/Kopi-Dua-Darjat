@@ -27,6 +27,9 @@ const Community = dynamic(() => import('@/components/home/Community'), {
 const LatestStories = dynamic(() => import('@/components/home/LatestStories'), {
   loading: () => <Skeleton className="h-[80vh] w-full" />,
 });
+const NewsletterSignUp = dynamic(() => import('@/components/home/NewsletterSignUp'), {
+  loading: () => <Skeleton className="h-[50vh] w-full" />,
+});
 
 
 export default function Home() {
@@ -41,6 +44,7 @@ export default function Home() {
       <InstaSync />
       <Community />
       <LatestStories />
+      <NewsletterSignUp />
     </div>
   );
 }

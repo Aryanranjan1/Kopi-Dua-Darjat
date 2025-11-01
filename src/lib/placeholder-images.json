@@ -30,7 +30,7 @@
     {
       "id": "drink-macchiato",
       "description": "Caramel Macchiato.",
-      "imageUrl": "https://images.unsplash.com/photo-1541782064729-b752e929ebbc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxDQVJBTUVMJTIwTUFDQ0hJVE98ZW58MHx8fHwxNzU5MTM0NTI5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1541782064729-b752e929ebbc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxDQVJBTUVMJTIwTUFDQ0hJVE98ZW58MHx8fHwxNzU5MTM0NTI5fDA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "caramel macchiato"
     },
     {
@@ -102,7 +102,7 @@
     {
       "id": "franchise-hero",
       "description": "Hero image for franchise page",
-      "imageUrl": "https://images.unsplash.com/photo-1594392174535-eb4b1043dad3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y2FmZSUyMG93bmVyfGVufDB8fHx8MTc1OTA2NjkyMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1594392174535-eb4b1043dad3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y2FmZSUyMG93bmVyfGVufDB8fHx8MTc1OTA2NjkyMXww&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "cafe owner"
     },
     {
@@ -141,7 +141,7 @@
     {
       "id": "testimonial-1",
       "description": "Portrait of a happy male franchisee.",
-      "imageUrl": "https://images.unsplash.com/photo-1557862921-37829c790f19?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwb3J0cmFpdCUyMG1hbiUyMGhhcHB5fGVufDB8fHx8MTc1OTQ1NjcwOHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1557862921-37829c790f19?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwb3J0cmFpdCUyMG1hbiUyMGhhcHB5fGVufDB8fHx8MTc1OTQ1NjcwOHww&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "happy man"
     },
     {
@@ -165,25 +165,25 @@
     {
       "id": "insta-post-1",
       "description": "A flat lay of coffee and a croissant.",
-      "imageUrl": "https://images.unsplash.com/photo-1555092643-32474e97e8b7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjb2ZmZWUlMjBmbGF0bGF5fGVufDB8fHx8MTc2MTk4MzgyN3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1555092643-32474e97e8b7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjb2ZmZWUlMjBmbGF0bGF5fGVufDB8fHx8MTc2MTk4MzgyN3ww&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "coffee flatlay"
     },
     {
       "id": "insta-post-2",
       "description": "A smiling customer holding a cup of Kopi Dua Darjat.",
-      "imageUrl": "https://images.unsplash.com/photo-1543269664-56d93c1b41a6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxoYXBweSUyMGN1c3RvbWVyfGVufDB8fHx8MTc2MTkxNTY5N3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1543269664-56d93c1b41a6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxoYXBweSUyMGN1c3RvbWVyfGVufDB8fHx8MTc2MTkxNTY5N3ww&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "happy customer"
     },
     {
       "id": "insta-post-3",
       "description": "The minimalist interior of one of our outlets.",
-      "imageUrl": "https://images.unsplash.com/photo-1613274554329-70f997f5789f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjYWZlJTIwaW50ZXJpb3J8ZW58MHx8fHwxNzYxOTgyODIwfDA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1613274554329-70f997f5789f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjYWZlJTIwaW50ZXJpb3J8ZW58MHx8fHwxNzYxOTgyODIwfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "cafe interior"
     },
     {
       "id": "insta-post-4",
       "description": "A close-up shot of our signature Kopi Darjat.",
-      "imageUrl": "https://images.unsplash.com/photo-1653286017965-83cbb7ba0b60?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8c2lnbmF0dXJlJTIwY29mZmVlfGVufDB8fHx8MTc2MTk4MzgyN3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1653286017965-83cbb7ba0b60?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8c2lnbmF0dXJlJTIwY29mZmVlfGVufDB8fHx8MTc2MTk4MzgyN3ww&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "signature coffee"
     },
     {
@@ -201,7 +201,7 @@
     {
       "id": "community-grid-3",
       "description": "A top-down view of many hands with matching bracelets reaching into the center.",
-      "imageUrl": "https://images.unsplash.com/photo-1527525443983-6e60c75fff46?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxoYW5kcyUyMHRvZ2V0aGVyfGVufDB8fHx8MTc2MTk4NTQzN3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1527525443983-6e60c75fff46?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxoYW5kcyUyMHRvZ2V0aGVyfGVufDB8fHx8MTc2MTk4NTQzN3ww&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "hands together"
     },
     {
@@ -213,7 +213,7 @@
     {
       "id": "community-grid-5",
       "description": "Two friends laughing and sharing coffee.",
-      "imageUrl": "https://images.unsplash.com/photo-1526547319484-63dce467060b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxmcmllbmRzJTIwY29mZmVlfGVufDB8fHx8MTc2MTk4NTQzN3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1526547319484-63dce467060b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxmcmllbmRzJTIwY29mZmVlfGVufDB8fHx8MTc2MTk4NTQzN3ww&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "friends coffee"
     }
   ]
