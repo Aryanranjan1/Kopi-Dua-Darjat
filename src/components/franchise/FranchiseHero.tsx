@@ -9,48 +9,39 @@ import { Badge } from '@/components/ui/badge';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 
 export default function FranchiseHero() {
-  const heroImage = PlaceHolderImages.find((img) => img.id === 'franchise-hero');
-
   return (
-    <section className="relative bg-card pt-32 pb-20 lg:pt-48 lg:pb-28">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="text-center lg:text-left">
-             <AnimateOnScroll animationType="slideInFromLeft">
+    <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-28 text-white overflow-hidden">
+        <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover z-0"
+            src="/video/bg1.mp4"
+        />
+        <div className="absolute inset-0 bg-black/60 z-10"></div>
+      <div className="container mx-auto px-4 relative z-20">
+        <div className="text-center">
+             <AnimateOnScroll animationType="slideInFromBottom">
                 <Badge variant="default" className="mb-4 text-sm py-1 px-4 rounded-full bg-accent text-accent-foreground">
                     50+ stalls & growing since 2020
                 </Badge>
-                <h1 className="text-4xl lg:text-6xl font-headline font-bold text-primary leading-tight">
+                <h1 className="text-4xl lg:text-6xl font-headline font-bold text-primary leading-tight drop-shadow-lg">
                     Own Your Kopi Dua Darjat Stall — Brew Success, One Cup at a Time.
                 </h1>
-                <p className="mt-6 text-lg lg:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0">
+                <p className="mt-6 text-lg lg:text-xl text-white/90 max-w-2xl mx-auto drop-shadow-md">
                     We’re expanding our local kopi culture across Malaysia. Join our growing family and serve the taste everyone’s talking about.
                 </p>
-                <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                    <Button asChild size="lg" className="rounded-full">
+                <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+                    <Button asChild size="lg" className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90">
                         <Link href="/franchise/apply">Apply for Franchise</Link>
                     </Button>
-                    <Button asChild size="lg" variant="outline" className="rounded-full">
+                    <Button asChild size="lg" variant="outline" className="rounded-full border-white text-white hover:bg-white hover:text-black">
                         <Link href="#">Download Info Pack</Link>
                     </Button>
                 </div>
             </AnimateOnScroll>
           </div>
-          <div className="relative aspect-square max-w-lg mx-auto lg:max-w-none">
-            <AnimateOnScroll animationType="slideInFromRight">
-                {heroImage && (
-                    <Image
-                        src={heroImage.imageUrl}
-                        alt={heroImage.description}
-                        fill
-                        className="object-cover rounded-3xl shadow-lg"
-                        data-ai-hint={heroImage.imageHint}
-                        priority
-                    />
-                )}
-            </AnimateOnScroll>
-          </div>
-        </div>
       </div>
     </section>
   );
