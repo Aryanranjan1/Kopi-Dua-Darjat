@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from 'next/link';
@@ -48,7 +47,7 @@ export default function Community() {
             <ImageCard id="community-grid-1" className="col-span-2 row-span-3" overlayText="Be part of a growing community, one cup at a time." />
             <ImageCard id="community-grid-2" className="col-span-3 row-span-2" />
             <ImageCard id="community-grid-3" className="col-span-1 row-span-1" />
-            <ImageCard id="community-grid-4" className="col-span-1 row-span-1" overlayText="Together, we can turn moments into memories." />
+            <ImageCard id="community-grid-4" className="col-span-1 row-span-1" />
             <ImageCard id="community-grid-5" className="col-span-1 row-span-1" />
           </div>
           
