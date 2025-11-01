@@ -8,12 +8,12 @@ import { AnimateOnScroll } from "@/components/animations/AnimateOnScroll"
 export default function BrandStory() {
   return (
     <section className="py-24 sm:py-32 bg-[#F7F4EF] text-foreground overflow-hidden">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+      <div className="mx-auto">
         <div className="grid lg:grid-cols-2 gap-x-8 gap-y-16 sm:gap-y-20 lg:gap-x-16 items-center">
           {/* Left Side: Image */}
           <div className="relative lg:pl-16">
               <AnimateOnScroll animationType="slideInFromLeft" className="relative flex justify-center items-center">
-                <div className="relative w-[32rem] h-[32rem] lg:w-[40rem] lg:h-[40rem] lg:max-w-none -ml-16 lg:ml-0">
+                <div className="relative w-[48rem] h-[48rem] lg:w-[60rem] lg:h-[60rem] lg:max-w-none -ml-32 lg:-ml-48">
                   <Image
                     src="/image/kdd-cup.png"
                     alt="Kopi Darjat"
