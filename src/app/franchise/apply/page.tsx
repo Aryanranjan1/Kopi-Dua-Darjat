@@ -1,4 +1,9 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import FranchiseApplicationForm from '@/components/franchise/FranchiseApplicationForm';
 
 export const metadata: Metadata = {
   title: 'Apply for Franchise',
@@ -7,11 +12,30 @@ export const metadata: Metadata = {
 
 export default function FranchiseApplyPage() {
   return (
-    <div className="container mx-auto px-4 py-12 text-center">
-      <h1 className="text-4xl md:text-5xl font-headline text-primary">Franchise Application</h1>
-      <p className="mt-4 text-lg text-foreground/80 max-w-2xl mx-auto">
-        Our application form will be live here soon. Get ready to join our family!
-      </p>
+    <div className="bg-card min-h-screen py-24 sm:py-32">
+        <div className="container mx-auto px-4">
+            <div className="max-w-3xl mx-auto">
+                 <Button asChild variant="outline" className="mb-8 rounded-full">
+                    <Link href="/franchise">
+                        <ArrowLeft className="mr-2 h-4 w-4" />
+                        Back to Franchise Page
+                    </Link>
+                </Button>
+                <Card className="shadow-lg rounded-2xl">
+                <CardHeader className="text-center">
+                    <CardTitle className="font-headline text-4xl text-primary">
+                    Franchise Application
+                    </CardTitle>
+                    <CardDescription className="text-lg">
+                    Tell us a bit about yourself. We're excited to learn more about your interest in joining the Kopi Dua Darjat family.
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <FranchiseApplicationForm />
+                </CardContent>
+                </Card>
+            </div>
+        </div>
     </div>
   );
 }

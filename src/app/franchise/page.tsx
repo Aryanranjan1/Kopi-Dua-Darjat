@@ -1,4 +1,13 @@
 import type { Metadata } from 'next';
+import FranchiseHero from '@/components/franchise/FranchiseHero';
+import ValueProposition from '@/components/franchise/ValueProposition';
+import FranchiseModel from '@/components/franchise/FranchiseModel';
+import Investment from '@/components/franchise/Investment';
+import Testimonials from '@/components/franchise/Testimonials';
+import SupportAndTraining from '@/components/franchise/SupportAndTraining';
+import Faq from '@/components/franchise/Faq';
+import FinalCta from '@/components/franchise/FinalCta';
+
 
 export const metadata: Metadata = {
   title: 'Franchise',
@@ -7,11 +16,15 @@ export const metadata: Metadata = {
 
 export default function FranchisePage() {
   return (
-    <div className="container mx-auto px-4 py-12 text-center">
-      <h1 className="text-4xl md:text-5xl font-headline text-primary">Become a Partner</h1>
-      <p className="mt-4 text-lg text-foreground/80 max-w-2xl mx-auto">
-        Detailed information about our franchise model, ROI calculator, and success stories is on its way.
-      </p>
+    <div className="bg-background text-foreground">
+      <FranchiseHero />
+      <ValueProposition />
+      <FranchiseModel />
+      <Investment />
+      <Testimonials />
+      <SupportAndTraining />
+      <Faq />
+      <FinalCta />
     </div>
   );
 }

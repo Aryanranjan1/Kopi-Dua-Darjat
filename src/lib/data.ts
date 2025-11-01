@@ -1,4 +1,5 @@
-import type { Drink, Outlet, Promotion, BlogPost, Testimonial } from './types';
+
+import type { Drink, Outlet, Promotion, BlogPost, Testimonial, FaqItem } from './types';
 
 export const allDrinks: Drink[] = [
   // Darjat Series
@@ -149,25 +150,52 @@ export const blogPosts: BlogPost[] = generatePosts();
 export const testimonials: Testimonial[] = [
     {
       id: '1',
-      quote: 'Joining Kopi Dua Darjat was the best business decision I\'ve ever made. The support from the central team is unmatched.',
+      quote: 'I started my stall in Shah Alam — sold out every morning within 2 weeks! The training and marketing support made everything easy.',
       name: 'Ahmad Faizal',
-      designation: 'Franchisee, KDD Bangi',
+      designation: 'Franchisee, Shah Alam',
       image: 'testimonial-1',
     },
     {
       id: '2',
       quote: 'The brand recognition is incredible. Customers love the coffee, and my outlet has been profitable since month one.',
       name: 'Siti Nurhaliza',
-      designation: 'Franchisee, KDD Kajang',
+      designation: 'Franchisee, Kajang',
       image: 'testimonial-2',
     },
     {
       id: '3',
       quote: 'I always wanted to own a café. Kopi Dua Darjat made that dream a reality with a low-cost, high-return model.',
       name: 'Ravi Chandran',
-      designation: 'Franchisee, KDD Putrajaya',
+      designation: 'Franchisee, Putrajaya',
       image: 'testimonial-3',
     },
   ];
 
+export const faqItems: FaqItem[] = [
+    {
+        id: 'faq1',
+        question: 'What’s the minimum investment?',
+        answer: 'You can start your own Kopi Dua Darjat stall with as low as RM25,000. This includes equipment, branding kit, starter stock, and initial training. A detailed breakdown is available in our franchise kit.'
+    },
+    {
+        id: 'faq2',
+        question: 'How long does setup take?',
+        answer: 'The entire process from application to launch typically takes between 4 to 6 weeks, depending on location scouting and renovation approvals. Our team will guide you through every step.'
+    },
+    {
+        id: 'faq3',
+        question: 'Do I need F&B experience?',
+        answer: 'No, you don’t! Our comprehensive training program covers everything from barista skills to daily operations and customer service. A passion for coffee and business is all you need to start.'
+    },
+    {
+        id: 'faq4',
+        question: 'Who handles marketing?',
+        answer: 'We provide strong brand-level marketing, including social media campaigns, brand awareness events, and new product launches. We also equip you with toolkits for local marketing to attract customers in your area.'
+    },
+    {
+        id: 'faq5',
+        question: 'Is the menu customizable?',
+        answer: 'The core menu is standardized to ensure brand consistency and quality. However, we encourage and support franchisees in offering location-specific seasonal specials and combos with our guidance.'
+    }
+];
     

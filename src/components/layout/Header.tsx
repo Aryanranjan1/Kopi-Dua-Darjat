@@ -17,6 +17,7 @@ const navItems = [
   { title: 'About', href: '/about' },
   { title: 'Menu', href: '/menu' },
   { title: 'Outlets', href: '/outlets' },
+  { title: 'Franchise', href: '/franchise'},
   { title: 'Contact', href: '/contact' },
 ];
 
@@ -46,7 +47,8 @@ export default function Header() {
   return (
     <header
       className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-primary',
+        'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
+        isScrolled ? 'bg-primary' : 'bg-transparent',
         isHidden ? '-translate-y-full' : 'translate-y-0'
       )}
     >
@@ -78,9 +80,8 @@ export default function Header() {
         {/* Right Actions */}
         <div className="flex items-center gap-2">
             <Button asChild className="hidden lg:flex rounded-full bg-accent hover:bg-accent/90 text-accent-foreground">
-              <Link href="/outlets">
-                <MapPin className="h-4 w-4 mr-2" />
-                Find Outlet
+              <Link href="/franchise/apply">
+                Apply Now
               </Link>
             </Button>
             
@@ -113,9 +114,8 @@ export default function Header() {
                         </div>
                         <div className="mt-auto">
                             <Button asChild className="w-full rounded-full bg-accent hover:bg-accent/90 text-accent-foreground">
-                              <Link href="/outlets">
-                                <MapPin className="h-4 w-4 mr-2" />
-                                Find Outlet
+                              <Link href="/franchise/apply">
+                                Apply Now
                               </Link>
                             </Button>
                         </div>

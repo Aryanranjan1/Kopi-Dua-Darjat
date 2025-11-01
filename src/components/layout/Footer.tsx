@@ -1,6 +1,5 @@
-
 import Link from 'next/link';
-import { Coffee, Facebook, Instagram, Twitter } from 'lucide-react';
+import { Facebook, Instagram, Twitter } from 'lucide-react';
 
 export default function SiteFooter() {
   const currentYear = new Date().getFullYear();
@@ -11,7 +10,7 @@ export default function SiteFooter() {
       height="24"
       viewBox="0 0 24 24"
       fill="none"
-      stroke="#FECC0A"
+      stroke="hsl(var(--primary))"
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -66,6 +65,7 @@ export default function SiteFooter() {
             </h3>
             <ul className="mt-4 space-y-2">
               <li><Link href="/franchise" className="text-gray-400 hover:text-primary">Franchise</Link></li>
+               <li><Link href="/franchise/apply" className="text-gray-400 hover:text-primary">Apply</Link></li>
               <li><Link href="/news" className="text-gray-400 hover:text-primary">News</Link></li>
               <li><Link href="/contact" className="text-gray-400 hover:text-primary">Contact Us</Link></li>
             </ul>

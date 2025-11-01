@@ -30,7 +30,7 @@ export type Outlet = {
 };
 
 export type Promotion = {
-  id: string;
+  id:string;
   title: string;
   description: string;
   expiry: string;
@@ -56,4 +56,10 @@ export type Testimonial = {
   name: string;
   designation: string;
   image: string;
+};
+
+export type FaqItem = {
+    id: string;
+    question: string;
+    answer: string;
 };
