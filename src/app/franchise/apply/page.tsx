@@ -16,7 +16,7 @@ export default function FranchiseApplyPage() {
     <div className="bg-zinc-950 min-h-screen py-24 sm:py-32">
         <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto">
-                 <Button asChild variant="outline" className="mb-8 rounded-full bg-transparent text-white hover:bg-white hover:text-black">
+                 <Button asChild variant="outline" className="mb-8 rounded-full bg-transparent text-white hover:bg-white hover:text-black border border-white/50">
                     <Link href="/franchise">
                         <ArrowLeft className="mr-2 h-4 w-4" />
                         Back to Franchise Page
