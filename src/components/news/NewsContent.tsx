@@ -188,39 +188,41 @@ export default function NewsContent({ allPosts }: { allPosts: BlogPost[] }) {
           </h2>
           {paginatedPosts.length > 0 ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {paginatedPosts.map((post) => {
+              {paginatedPosts.map((post, index) => {
                 const image = getPostImage(post.imageUrl);
                 return (
-                  <Link key={post.id} href={`/news/${post.slug}`} className="group block">
-                    <div className="relative aspect-video rounded-2xl overflow-hidden mb-4">
-                      {image && (
-                        <Image
-                          src={image.imageUrl}
-                          alt={post.title}
-                          fill
-                          className="object-cover transition-transform duration-300 group-hover:scale-105"
-                          data-ai-hint={image.imageHint}
-                        />
-                      )}
-                    </div>
-                    <p className="font-semibold text-accent text-sm">{post.tags.filter(t => t !== 'All').join(', ')}</p>
-                    <h4 className="text-xl font-headline font-bold text-foreground mt-1 group-hover:text-primary transition-colors">
-                      {post.title}
-                    </h4>
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground mt-2">
-                      <div className="flex items-center gap-1.5">
-                        <User className="w-3.5 h-3.5" />
-                        <span>{post.author}</span>
+                  <AnimateOnScroll key={post.id} animationType="fadeIn" delay={index * 0.1}>
+                    <Link href={`/news/${post.slug}`} className="group block">
+                      <div className="relative aspect-video rounded-2xl overflow-hidden mb-4">
+                        {image && (
+                          <Image
+                            src={image.imageUrl}
+                            alt={post.title}
+                            fill
+                            className="object-cover transition-transform duration-300 group-hover:scale-105"
+                            data-ai-hint={image.imageHint}
+                          />
+                        )}
                       </div>
-                      <div className="flex items-center gap-1.5">
-                        <Calendar className="w-3.5 h-3.5" />
-                        <span>{post.publishDate}</span>
+                      <p className="font-semibold text-accent text-sm">{post.tags.filter(t => t !== 'All').join(', ')}</p>
+                      <h4 className="text-xl font-headline font-bold text-foreground mt-1 group-hover:text-primary transition-colors">
+                        {post.title}
+                      </h4>
+                      <div className="flex items-center gap-4 text-xs text-muted-foreground mt-2">
+                        <div className="flex items-center gap-1.5">
+                          <User className="w-3.5 h-3.5" />
+                          <span>{post.author}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <Calendar className="w-3.5 h-3.5" />
+                          <span>{post.publishDate}</span>
+                        </div>
                       </div>
-                    </div>
-                    <span className="mt-3 inline-block text-sm font-semibold text-primary group-hover:underline">
-                      Read More
-                    </span>
-                  </Link>
+                      <span className="mt-3 inline-block text-sm font-semibold text-primary group-hover:underline">
+                        Read More
+                      </span>
+                    </Link>
+                  </AnimateOnScroll>
                 );
               })}
             </div>
