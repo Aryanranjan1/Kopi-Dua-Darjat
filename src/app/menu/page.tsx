@@ -54,15 +54,15 @@ export default function MenuPage() {
             </section>
 
             {/* Add-ons Section */}
-            <div className="py-8 bg-black">
+            <div className="py-16 bg-black">
                 <div className="container mx-auto text-center text-white">
-                    <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-4 text-2xl">
+                    <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-4 text-4xl">
                         <span>Caramel Drizzle <strong className="text-primary font-bold">+RM1</strong></span>
-                        <span className="hidden md:block h-6 w-px bg-border/50"></span>
+                        <span className="hidden md:block h-8 w-px bg-border/50"></span>
                         <span>Espresso Shot <strong className="text-primary font-bold">+RM2</strong></span>
-                        <span className="hidden md:block h-6 w-px bg-border/50"></span>
+                        <span className="hidden md:block h-8 w-px bg-border/50"></span>
                         <span>Add Syrup <strong className="text-primary font-bold">+RM1</strong></span>
-                        <span className="hidden md:block h-6 w-px bg-border/50"></span>
+                        <span className="hidden md:block h-8 w-px bg-border/50"></span>
                         <span>Sweet Foam <strong className="text-primary font-bold">+RM2</strong></span>
                     </div>
                 </div>
