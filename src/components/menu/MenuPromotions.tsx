@@ -89,6 +89,7 @@ export default function MenuPromotions() {
                 </div>
               ))}
             </div>
+            <div className="absolute inset-0 bg-black/20 z-0"></div>
 
             <div className="relative z-10">
               <h2 className="text-4xl md:text-5xl font-headline font-bold text-foreground">
@@ -105,8 +106,8 @@ export default function MenuPromotions() {
                 size="lg"
                 className="bg-accent hover:bg-accent/90 text-accent-foreground rounded-full"
               >
-                <Link href={`/order/${mainPromo.slug}`}>
-                  Check out the {mainPromo.name} Deal{' '}
+                <Link href="/outlets">
+                  Visit Us Today
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
