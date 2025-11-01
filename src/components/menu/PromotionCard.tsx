@@ -1,11 +1,12 @@
-'use client';
+
+"use client";
 
 import Image from 'next/image';
-import Link from 'next/link';
 import type { Drink } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowUpRight } from 'lucide-react';
+import Link from 'next/link';
 
 interface PromotionCardProps {
   drink: Drink;
@@ -13,28 +14,30 @@ interface PromotionCardProps {
 
 export default function PromotionCard({ drink }: PromotionCardProps) {
   return (
-    <Link href={`/order/${drink.slug}`} className="group block h-full">
-      <Card className="overflow-hidden rounded-2xl bg-card/50 transition-all duration-300 hover:shadow-lg h-full flex flex-col">
-        <CardContent className="p-4 flex flex-col flex-grow">
-          <div className="relative aspect-square w-full rounded-lg overflow-hidden mb-4 bg-background">
+    <div className="p-1 h-full">
+      <Card className="rounded-3xl bg-primary/65 overflow-hidden h-full flex flex-col">
+        <CardContent className="relative p-4 flex flex-col items-center text-center flex-grow">
+          <div className="relative w-full aspect-[4/3] mb-4 group">
             <Image
               src={drink.image}
               alt={drink.name}
               fill
-              className="object-contain transition-transform duration-300 group-hover:scale-110"
+              className="object-contain drop-shadow-2xl transition-transform duration-300 group-hover:scale-105"
             />
           </div>
-          <div className="flex flex-col flex-grow text-center">
-            <h3 className="font-bold text-lg text-foreground">{drink.name}</h3>
-            <p className="text-sm text-primary font-semibold mt-1 flex-grow">{drink.promotionDetails}</p>
-          </div>
-          <div className="flex justify-end mt-2">
-            <div className="w-8 h-8 rounded-full bg-foreground text-background flex items-center justify-center transition-colors group-hover:bg-accent group-hover:text-accent-foreground">
-                <ArrowUpRight className="w-4 h-4" />
-            </div>
+          <div className="w-full flex justify-between items-center text-left mt-auto">
+              <div className="flex-grow">
+                  <h3 className="font-bold text-xl text-foreground truncate">{drink.name}</h3>
+                  <p className="font-semibold text-accent text-lg">RM{drink.price.toFixed(2)}</p>
+              </div>
+             <Button asChild variant="outline" size="icon" className="rounded-full border-2 border-foreground/50 hover:bg-primary hover:border-primary shrink-0">
+              <Link href={`/order/${drink.slug}`}>
+                <ArrowUpRight className="w-5 h-5" />
+              </Link>
+             </Button>
           </div>
         </CardContent>
       </Card>
-    </Link>
+    </div>
   );
 }

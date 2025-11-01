@@ -16,6 +16,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel';
+import PromotionCard from './PromotionCard';
 
 // Function to shuffle an array
 const shuffleArray = (array: any[]) => {
@@ -114,7 +115,7 @@ export default function MenuPromotions() {
           {/* Right Grid */}
           <div className="grid grid-cols-2 gap-6">
             {gridPromos.map((drink) => (
-              <MenuItemCard key={drink.id} drink={drink} />
+              <PromotionCard key={drink.id} drink={drink} />
             ))}
           </div>
         </div>
@@ -131,7 +132,7 @@ export default function MenuPromotions() {
             }}
             className="w-full"
           >
-            <CarouselContent className="-ml-4 py-8">
+            <CarouselContent className="-ml-4 py-16">
               {remainingPromos.map((drink) => (
                 <CarouselItem
                   key={drink.id}
