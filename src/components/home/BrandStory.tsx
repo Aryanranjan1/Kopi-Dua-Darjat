@@ -7,21 +7,22 @@ import { AnimateOnScroll } from "@/components/animations/AnimateOnScroll"
 
 export default function BrandStory() {
   return (
-    <section className="py-24 sm:py-32 bg-[#F7F4EF] text-foreground">
-      <div className="container mx-auto px-12">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+    <section className="py-24 sm:py-32 bg-[#F7F4EF] text-foreground overflow-hidden">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="grid lg:grid-cols-2 gap-x-8 gap-y-16 sm:gap-y-20 lg:gap-x-16 items-center">
           {/* Left Side: Image */}
-          <AnimateOnScroll animationType="slideInFromLeft" className="relative flex justify-center items-center">
-            <div className="relative w-72 h-72">
-              <Image
-                src="/image/kdd-cup.png"
-                alt="Kopi Darjat"
-                width={400}
-                height={400}
-                className="object-contain drop-shadow-2xl"
-              />
-            </div>
-          </AnimateOnScroll>
+          <div className="relative lg:pl-16">
+              <AnimateOnScroll animationType="slideInFromLeft" className="relative flex justify-center items-center">
+                <div className="relative w-[32rem] h-[32rem] lg:w-[40rem] lg:h-[40rem] lg:max-w-none -ml-16 lg:ml-0">
+                  <Image
+                    src="/image/kdd-cup.png"
+                    alt="Kopi Darjat"
+                    fill
+                    className="object-contain drop-shadow-2xl"
+                  />
+                </div>
+              </AnimateOnScroll>
+          </div>
 
           {/* Right Side: Text Content */}
           <AnimateOnScroll animationType="slideInFromRight">
