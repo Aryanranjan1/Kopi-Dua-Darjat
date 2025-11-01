@@ -4,6 +4,7 @@ import { allDrinks } from '@/lib/data';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import MenuCarousel from '@/components/menu/MenuCarousel';
 import MenuPromotions from '@/components/menu/MenuPromotions';
+import { DailySpecials } from '@/components/menu/DailySpecials';
 
 export const metadata: Metadata = {
   title: 'Menu',
@@ -40,6 +41,7 @@ export default function MenuPage() {
         </section>
 
         <MenuPromotions />
+        <DailySpecials />
 
         <div className="py-12 sm:py-20 space-y-16">
             {/* NAK KOPI Section */}
