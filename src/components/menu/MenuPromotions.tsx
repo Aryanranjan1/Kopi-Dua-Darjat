@@ -8,7 +8,7 @@ import type { Drink } from '@/lib/types';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
-import PromotionCard from './PromotionCard';
+import MenuItemCard from './MenuItemCard';
 import {
   Carousel,
   CarouselContent,
@@ -114,7 +114,7 @@ export default function MenuPromotions() {
           {/* Right Grid */}
           <div className="grid grid-cols-2 gap-6">
             {gridPromos.map((drink) => (
-              <PromotionCard key={drink.id} drink={drink} />
+              <MenuItemCard key={drink.id} drink={drink} />
             ))}
           </div>
         </div>
@@ -135,11 +135,9 @@ export default function MenuPromotions() {
               {remainingPromos.map((drink) => (
                 <CarouselItem
                   key={drink.id}
-                  className="basis-1/2 md:basis-1/3 lg:basis-1/4 pl-4"
+                  className="basis-1/2 md:basis-1/3 lg:basis-1/4 pl-4 overflow-visible"
                 >
-                  <div className="h-[350px]">
-                    <PromotionCard drink={drink} />
-                  </div>
+                  <MenuItemCard drink={drink} />
                 </CarouselItem>
               ))}
             </CarouselContent>
