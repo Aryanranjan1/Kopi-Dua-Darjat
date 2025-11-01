@@ -4,6 +4,7 @@ import { allDrinks } from '@/lib/data';
 import MenuCarousel from '@/components/menu/MenuCarousel';
 import MenuPromotions from '@/components/menu/MenuPromotions';
 import { DailySpecials } from '@/components/menu/DailySpecials';
+import NewsletterSignUp from '@/components/home/NewsletterSignUp';
 
 export const metadata: Metadata = {
   title: 'Menu',
@@ -98,6 +99,7 @@ export default function MenuPage() {
                 </div>
             </section>
         </div>
+        <NewsletterSignUp />
     </div>
   );
 }

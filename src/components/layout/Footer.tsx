@@ -57,7 +57,6 @@ export default function SiteFooter() {
               <li><Link href="/about" className="text-gray-400 hover:text-primary">Our Story</Link></li>
               <li><Link href="/menu" className="text-gray-400 hover:text-primary">Menu</Link></li>
               <li><Link href="/outlets" className="text-gray-400 hover:text-primary">Outlets</Link></li>
-              <li><Link href="/promotions" className="text-gray-400 hover:text-primary">Promotions</Link></li>
             </ul>
           </div>
           <div>
@@ -66,8 +65,7 @@ export default function SiteFooter() {
             </h3>
             <ul className="mt-4 space-y-2">
               <li><Link href="/franchise" className="text-gray-400 hover:text-primary">Franchise</Link></li>
-              <li><Link href="/franchise/apply" className="text-gray-400 hover:text-primary">Apply Now</Link></li>
-              <li><Link href="/blog" className="text-gray-400 hover:text-primary">Blog</Link></li>
+              <li><Link href="/blog" className="text-gray-400 hover:text-primary">News</Link></li>
               <li><Link href="/contact" className="text-gray-400 hover:text-primary">Contact Us</Link></li>
             </ul>
           </div>
