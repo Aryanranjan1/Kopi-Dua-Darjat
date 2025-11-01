@@ -41,7 +41,7 @@ export default function MenuPage() {
         <div className="py-12 sm:py-20 space-y-16">
             {/* NAK KOPI Section */}
             <section className="container mx-auto px-4">
-                <h2 className="text-4xl font-headline text-center font-bold tracking-widest text-primary mb-12">NAK KOPI</h2>
+                <h2 className="text-5xl font-headline text-center font-bold tracking-widest text-foreground mb-12 underline decoration-primary decoration-4 underline-offset-8">NAK KOPI</h2>
                 <div className="space-y-12">
                     {nakKopiCategories.map(cat => (
                         <MenuCarousel 
@@ -82,7 +82,7 @@ export default function MenuPage() {
 
             {/* TAKNAK KOPI Section */}
             <section className="container mx-auto px-4">
-                <h2 className="text-4xl font-headline text-center font-bold tracking-widest text-primary mb-12">TAKNAK KOPI</h2>
+                <h2 className="text-5xl font-headline text-center font-bold tracking-widest text-foreground mb-12 underline decoration-primary decoration-4 underline-offset-8">TAKNAK KOPI</h2>
                  <div className="space-y-12">
                     {taknakKopiCategories.map(cat => (
                         <MenuCarousel 
