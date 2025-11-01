@@ -29,7 +29,7 @@ export default function BrandStory() {
             <h2 className="text-4xl md:text-5xl font-headline font-bold text-foreground leading-tight">
               Antara Warisan & Artisan
             </h2>
-            <p className="mt-6 text-lg text-muted-foreground">
+            <p className="mt-6 text-xl text-muted-foreground">
               Kopi Dua Darjat was born from a simple vision: to honour the rich legacy of Malaysian Kopi Kampung while embracing the meticulous craft of artisan coffee. We bridge generations, serving nostalgic flavours with a modern touch.
             </p>
             <div className="mt-8">
