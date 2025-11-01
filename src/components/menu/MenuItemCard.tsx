@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from 'next/image';
@@ -22,9 +23,6 @@ export default function MenuItemCard({ drink }: MenuItemCardProps) {
             fill
             className="object-cover"
           />
-          <Button variant="ghost" size="icon" className="absolute top-2 right-2 bg-black/50 hover:bg-black/80 rounded-full h-8 w-8">
-            <MoreVertical className="h-4 w-4" />
-          </Button>
         </div>
         <div className="flex flex-col flex-grow">
           <h3 className="text-xl font-headline font-semibold">{drink.name}</h3>
