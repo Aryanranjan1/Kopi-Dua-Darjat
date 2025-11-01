@@ -58,23 +58,23 @@ export default function MenuPage() {
                 <div className="container mx-auto text-center text-white">
                     <div className="flex flex-wrap justify-center items-center gap-x-8 sm:gap-x-12 gap-y-8">
                         <div className="flex flex-col text-center">
-                            <span className="text-xl sm:text-2xl">Caramel Drizzle</span>
-                            <strong className="text-primary font-bold text-2xl sm:text-3xl">+RM1</strong>
+                            <span className="font-bold text-2xl sm:text-4xl">Caramel Drizzle</span>
+                            <strong className="text-primary font-bold text-4xl sm:text-5xl">+RM1</strong>
                         </div>
                         <span className="hidden md:block h-16 w-px bg-border/50"></span>
                         <div className="flex flex-col text-center">
-                            <span className="text-xl sm:text-2xl">Espresso Shot</span>
-                            <strong className="text-primary font-bold text-2xl sm:text-3xl">+RM2</strong>
+                            <span className="font-bold text-2xl sm:text-4xl">Espresso Shot</span>
+                            <strong className="text-primary font-bold text-4xl sm:text-5xl">+RM2</strong>
                         </div>
                         <span className="hidden md:block h-16 w-px bg-border/50"></span>
                         <div className="flex flex-col text-center">
-                            <span className="text-xl sm:text-2xl">Add Syrup</span>
-                            <strong className="text-primary font-bold text-2xl sm:text-3xl">+RM1</strong>
+                            <span className="font-bold text-2xl sm:text-4xl">Add Syrup</span>
+                            <strong className="text-primary font-bold text-4xl sm:text-5xl">+RM1</strong>
                         </div>
                         <span className="hidden md:block h-16 w-px bg-border/50"></span>
                         <div className="flex flex-col text-center">
-                            <span className="text-xl sm:text-2xl">Sweet Foam</span>
-                            <strong className="text-primary font-bold text-2xl sm:text-3xl">+RM2</strong>
+                            <span className="font-bold text-2xl sm:text-4xl">Sweet Foam</span>
+                            <strong className="text-primary font-bold text-4xl sm:text-5xl">+RM2</strong>
                         </div>
                     </div>
                 </div>
