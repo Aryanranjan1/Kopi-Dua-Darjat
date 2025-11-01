@@ -60,6 +60,8 @@ export type Testimonial = {
 
 export type FaqItem = {
     id: string;
+    category: 'General' | 'Product' | 'Franchise';
     question: string;
     answer: string;
 };
+

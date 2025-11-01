@@ -173,29 +173,59 @@ export const testimonials: Testimonial[] = [
 
 export const faqItems: FaqItem[] = [
     {
-        id: 'faq1',
-        question: 'What’s the minimum investment?',
-        answer: 'You can start your own Kopi Dua Darjat stall with as low as RM25,000. This includes equipment, branding kit, starter stock, and initial training. A detailed breakdown is available in our franchise kit.'
+        id: 'faq-gen-1',
+        category: 'General',
+        question: 'What makes Kopi Dua Darjat different?',
+        answer: 'We bridge the gap between "Warisan" (heritage) and "Artisan." We honor traditional Malaysian Kopi Kampung recipes and brewing methods while infusing them with modern quality and creativity. It\'s the nostalgic taste you love, elevated.'
     },
     {
-        id: 'faq2',
-        question: 'How long does setup take?',
-        answer: 'The entire process from application to launch typically takes between 4 to 6 weeks, depending on location scouting and renovation approvals. Our team will guide you through every step.'
+        id: 'faq-gen-2',
+        category: 'General',
+        question: 'Are your ingredients Halal?',
+        answer: 'Yes, all our ingredients are sourced from Halal-certified suppliers. We are committed to serving all members of our community.'
     },
     {
-        id: 'faq3',
-        question: 'Do I need F&B experience?',
+        id: 'faq-gen-3',
+        category: 'General',
+        question: 'Where can I find your outlets?',
+        answer: 'We have over 50 outlets across Malaysia! You can find the one nearest to you by visiting our Outlets page, which has an interactive map and a full directory.'
+    },
+    {
+        id: 'faq-prod-1',
+        category: 'Product',
+        question: 'What is your signature drink?',
+        answer: 'Our signature line is the "Darjat Series," especially the Darjat Caramel. For a true classic, you can\'t go wrong with the "Kopi Warisan" from our Kopitiam series.'
+    },
+    {
+        id: 'faq-prod-2',
+        category: 'Product',
+        question: 'Do you offer non-coffee drinks?',
+        answer: 'Absolutely! Our "Taknak Kopi" (Don\'t Want Coffee) menu includes a delicious Coklat Series, a premium Matcha Series, and our refreshing fruit-infused "Menet" sparkling drinks.'
+    },
+    {
+        id: 'faq-prod-3',
+        category: 'Product',
+        question: 'Can I customize the sweetness level?',
+        answer: 'Yes, of course. Just let our baristas know your preference, and they will be happy to adjust the sweetness level to your liking.'
+    },
+    {
+        id: 'faq-fran-1',
+        category: 'Franchise',
+        question: 'What’s the minimum investment to start a franchise?',
+        answer: 'You can start your own Kopi Dua Darjat stall with an investment as low as RM25,000. This includes your kiosk, essential equipment, branding kit, initial stock, and comprehensive training.'
+    },
+    {
+        id: 'faq-fran-2',
+        category: 'Franchise',
+        question: 'Do I need F&B experience to be a franchisee?',
         answer: 'No, you don’t! Our comprehensive training program covers everything from barista skills to daily operations and customer service. A passion for coffee and business is all you need to start.'
     },
     {
-        id: 'faq4',
-        question: 'Who handles marketing?',
-        answer: 'We provide strong brand-level marketing, including social media campaigns, brand awareness events, and new product launches. We also equip you with toolkits for local marketing to attract customers in your area.'
-    },
-    {
-        id: 'faq5',
-        question: 'Is the menu customizable?',
-        answer: 'The core menu is standardized to ensure brand consistency and quality. However, we encourage and support franchisees in offering location-specific seasonal specials and combos with our guidance.'
+        id: 'faq-fran-3',
+        category: 'Franchise',
+        question: 'What kind of support do you provide to franchisees?',
+        answer: 'We provide end-to-end support, including location scouting assistance, full operational training, supply chain management, and continuous brand-level marketing to drive customers to your outlet.'
     }
 ];
     
+

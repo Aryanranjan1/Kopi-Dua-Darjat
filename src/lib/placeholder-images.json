@@ -233,6 +233,12 @@
       "description": "Portrait of a thoughtful male business owner.",
       "imageUrl": "https://images.unsplash.com/photo-1715838854648-ea200803934a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8cG9ydHJhaXQlMjBtYW58ZW58MHx8fHwxNzYxOTgyOTkwfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "portrait man"
+    },
+    {
+      "id": "faq-hero",
+      "description": "A stylish shot of a barista preparing coffee.",
+      "imageUrl": "https://images.unsplash.com/photo-1594498652934-d3a158b23a85?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxiYXJpc3RhfGVufDB8fHx8MTc2MjA3OTI2Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "barista"
     }
   ]
 }
