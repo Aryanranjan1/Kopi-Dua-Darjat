@@ -42,7 +42,7 @@
     {
       "id": "outlet-map",
       "description": "A map showing outlet locations.",
-      "imageUrl": "https://images.unsplash.com/photo-1476385822777-70eabacbd41f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjaXR5JTIwbWFwfGVufDB8fHx8MTc1ODk3NjgzMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1476385822777-70eabacbd41f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjaXR5JTIwbWFwfGVufDB8fHx8MTc1ODk3NjgzMnww&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "city map"
     },
     {
@@ -54,7 +54,7 @@
     {
       "id": "blog-post-1",
       "description": "Image for the first blog post.",
-      "imageUrl": "https://images.unsplash.com/photo-1607681034540-2c46cc71896d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjb2ZmZWUlMjBiZWFuc3xlbnwwfHx8fDE3NTkwNDg5NjR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1607681034540-2c46cc71896d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjb2ZmZWUlMjBiZWFuc3xlbnwwfHx8fDE3NTkwNDg5NjR8MA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "coffee beans"
     },
     {
@@ -177,13 +177,13 @@
     {
       "id": "insta-post-3",
       "description": "The minimalist interior of one of our outlets.",
-      "imageUrl": "https://images.unsplash.com/photo-1613274554329-70f997f5789f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjYWZlJTIwaW50ZXJpb3J8ZW58MHx8fHwxNzYxOTgyODIwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1613274554329-70f997f5789f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjYWZlJTIwaW50ZXJpb3J8ZW58MHx8fHwxNzYxOTgyODIwfDA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "cafe interior"
     },
     {
       "id": "insta-post-4",
       "description": "A close-up shot of our signature Kopi Darjat.",
-      "imageUrl": "https://images.unsplash.com/photo-1653286017965-83cbb7ba0b60?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8c2lnbmF0dXJlJTIwY29mZmVlfGVufDB8fHx8MTc2MTk4MzgyN3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1653286017965-83cbb7ba0b60?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8c2lnbmF0dXJlJTIwY29mZmVlfGVufDB8fHx8MTc2MTk4MzgyN3ww&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "signature coffee"
     },
     {
