@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -17,7 +18,7 @@ import React from 'react';
 
 export default function Testimonials() {
   const plugin = React.useRef(
-    Autoplay({ delay: 3000, stopOnInteraction: true })
+    Autoplay({ delay: 5000, stopOnInteraction: true })
   )
   
   return (
@@ -60,7 +61,7 @@ export default function Testimonials() {
                                 </div>
                             )}
                             <Card className="bg-zinc-900/50 border-zinc-800 rounded-3xl h-full pt-20 shadow-lg text-center">
-                                <CardContent className="p-8 min-h-[280px] flex flex-col justify-center">
+                                <CardContent className="p-8 min-h-[320px] flex flex-col justify-center">
                                 <blockquote className="text-lg font-medium text-white/90">
                                 “{testimonial.quote}”
                                 </blockquote>
