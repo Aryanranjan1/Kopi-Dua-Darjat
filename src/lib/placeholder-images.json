@@ -23,14 +23,14 @@
     {
       "id": "drink-bottled",
       "description": "Bottled coffee series.",
-      "imageUrl": "https://images.unsplash.com/photo-1719936224687-eb66dc011a99?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxib3R0bGVkJTIwY29mZmVlfGVufDB8fHx8MTc1OTA2NjkyMXww&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1719936224687-eb66dc011a99?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxib3R0bGVkJTIwY29mZmVlfGVufDB8fHx8MTc1OTA2NjkyMXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "bottled coffee",
       "linkUrl": "https://www.youtube.com/watch?v=LXb3EKWsInQ"
     },
     {
       "id": "drink-macchiato",
       "description": "Caramel Macchiato.",
-      "imageUrl": "https://images.unsplash.com/photo-1541782064729-b752e929ebbc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxDQVJBTUVMJTIwTUFDQ0hJVE98ZW58MHx8fHwxNzU5MTM0NTI5fDA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1541782064729-b752e929ebbc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxDQVJBTUVMJTIwTUFDQ0hJVE98ZW58MHx8fHwxNzU5MTM0NTI5fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "caramel macchiato"
     },
     {
@@ -78,13 +78,13 @@
     {
       "id": "founder-hadi",
       "description": "Photo of founder Hadi.",
-      "imageUrl": "https://images.unsplash.com/photo-1567324216289-97cc4134f626?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwb3J0cmFpdCUyMG1hbnxlbnwwfHx8fDE3NTkwMjQxOTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1567324216289-97cc4134f626?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwb3J0cmFpdCUyMG1hbnxlbnwwfHx8fDE3NTkwMjQxOTh8MA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "portrait man"
     },
     {
       "id": "founder-azad",
       "description": "Photo of founder Azad.",
-      "imageUrl": "https://images.unsplash.com/photo-1661170489141-fc9128eeae92?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxwb3J0cmFpdCUyMG1hbiUyMHNtaWxlfGVufDB8fHx8MTc1OTA2NjkyMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1661170489141-fc9128eeae92?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxwb3J0cmFpdCUyMG1hbiUyMHNtaWxlfGVufDB8fHx8MTc1OTA2NjkyMXww&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "portrait man smile"
     },
     {
@@ -134,9 +134,9 @@
     },
     {
       "id": "newsletter-background",
-      "description": "An inviting image of a person reading a newsletter on a tablet while enjoying coffee.",
-      "imageUrl": "https://images.unsplash.com/photo-1521791136064-7986c2920216?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxuZXdzbGV0dGVyfGVufDB8fHx8fDE3NTkzODIxNjd8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "newsletter"
+      "description": "A joyful person holding a cup of coffee.",
+      "imageUrl": "https://images.unsplash.com/photo-1688913707189-3a349a5eb216?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjb2ZlZSUyMGhhcHB5JTIwcGVyc29ufGVufDB8fHx8MTc2MTk4NjgwM3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "happy person"
     },
     {
       "id": "testimonial-1",
@@ -165,7 +165,7 @@
     {
       "id": "insta-post-1",
       "description": "A flat lay of coffee and a croissant.",
-      "imageUrl": "https://images.unsplash.com/photo-1555092643-32474e97e8b7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjb2ZmZWUlMjBmbGF0bGF5fGVufDB8fHx8MTc2MTk4MzgyN3ww&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1555092643-32474e97e8b7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjb2ZmZWUlMjBmbGF0bGF5fGVufDB8fHx8MTc2MTk4MzgyN3ww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "coffee flatlay"
     },
     {
@@ -183,7 +183,7 @@
     {
       "id": "insta-post-4",
       "description": "A close-up shot of our signature Kopi Darjat.",
-      "imageUrl": "https://images.unsplash.com/photo-1653286017965-83cbb7ba0b60?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8c2lnbmF0dXJlJTIwY29mZmVlfGVufDB8fHx8MTc2MTk4MzgyN3ww&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1653286017965-83cbb7ba0b60?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8c2lnbmF0dXJlJTIwY29mZmVlfGVufDB8fHx8MTc2MTk4MzgyN3ww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "signature coffee"
     },
     {
@@ -201,19 +201,19 @@
     {
       "id": "community-grid-3",
       "description": "A top-down view of many hands with matching bracelets reaching into the center.",
-      "imageUrl": "https://images.unsplash.com/photo-1527525443983-6e60c75fff46?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxoYW5kcyUyMHRvZ2V0aGVyfGVufDB8fHx8MTc2MTk4NTQzN3ww&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1527525443983-6e60c75fff46?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxoYW5kcyUyMHRvZ2V0aGVyfGVufDB8fHx8MTc2MTk4NTQzN3ww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "hands together"
     },
     {
       "id": "community-grid-4",
       "description": "A smiling child holding a cup.",
-      "imageUrl": "https://images.unsplash.com/photo-1577896852336-e749dd04f202?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzbWlsaW5nJTIwY2hpbGR8ZW58MHx8fHwxNzYxODU4NDM5fDA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1577896852336-e749dd04f202?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzbWlsaW5nJTIwY2hpbGR8ZW58MHx8fHwxNzYxODU4NDM5fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "smiling child"
     },
     {
       "id": "community-grid-5",
       "description": "Two friends laughing and sharing coffee.",
-      "imageUrl": "https://images.unsplash.com/photo-1526547319484-63dce467060b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxmcmllbmRzJTIwY29mZmVlfGVufDB8fHx8MTc2MTk4NTQzN3ww&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1526547319484-63dce467060b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxmcmllbmRzJTIwY29mZmVlfGVufDB8fHx8MTc2MTk4NTQzN3ww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "friends coffee"
     }
   ]
