@@ -33,41 +33,55 @@ const steps = [
 
 export default function FranchiseModel() {
   return (
-    <section className="py-24 sm:py-32 bg-card">
+    <section className="py-24 sm:py-32 bg-primary text-primary-foreground">
       <div className="container mx-auto px-4">
         <AnimateOnScroll animationType="slideInFromBottom" className="text-center max-w-3xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-headline text-primary">How It Works</h2>
+          <h2 className="text-4xl md:text-5xl font-headline text-foreground">How It Works</h2>
           <p className="mt-4 text-lg text-muted-foreground">
             Our process is transparent and designed to get you started quickly and efficiently.
           </p>
         </AnimateOnScroll>
 
-        <div className="relative mt-16">
-          {/* Dashed Line Connector for Desktop */}
-          <div className="hidden lg:block absolute top-1/2 left-0 w-full h-px -translate-y-1/2">
-             <svg width="100%" height="2">
-                <line x1="0" y1="1" x2="100%" y2="1" strokeWidth="2" stroke="hsl(var(--border))" strokeDasharray="8 8"/>
-            </svg>
-          </div>
+        <div className="relative mt-20 max-w-2xl mx-auto">
+            {/* Wavy Line SVG */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 h-full w-40" aria-hidden="true">
+                <svg width="100%" height="100%" viewBox="0 0 160 1000" preserveAspectRatio="none" className="h-full w-full">
+                    <path 
+                        d="M 80,0 
+                           C 0,100 160,200 80,300 
+                           S 0,400 80,500 
+                           160,600 80,700 
+                           0,800 80,900 
+                           160,1000 80,1000" 
+                        fill="none" 
+                        stroke="hsl(var(--foreground) / 0.2)" 
+                        strokeWidth="4" 
+                        strokeDasharray="10 10" 
+                    />
+                </svg>
+            </div>
 
-          <div className="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
-            {steps.map((step, index) => (
-              <AnimateOnScroll key={index} animationType="fadeIn" delay={index * 0.15}>
-                <div className="text-center relative">
-                  <div className="flex justify-center items-center">
-                    <div className="relative z-10 bg-background w-24 h-24 flex items-center justify-center rounded-full border-4 border-primary shadow-lg">
-                      <step.icon className="w-12 h-12 text-accent" />
+            <div className="relative flex flex-col gap-24">
+                {steps.map((step, index) => (
+                <AnimateOnScroll key={index} animationType="fadeIn" delay={index * 0.1}>
+                    <div className="grid grid-cols-2 gap-8 items-center">
+                        {/* Icon aligned with the wave */}
+                        <div className={`flex justify-center items-center ${index % 2 === 0 ? 'order-1' : 'order-2'}`}>
+                            <div className="relative z-10 bg-background text-foreground w-28 h-28 flex items-center justify-center rounded-full border-4 border-accent shadow-lg">
+                                <step.icon className="w-12 h-12" />
+                            </div>
+                        </div>
+
+                        {/* Text Content */}
+                        <div className={`relative z-10 ${index % 2 === 0 ? 'order-2 text-left' : 'order-1 text-right'}`}>
+                            <p className="text-sm font-semibold text-accent">Step {index + 1}</p>
+                            <h3 className="text-3xl font-headline mt-1 text-foreground">{step.title}</h3>
+                            <p className="mt-2 text-muted-foreground">{step.description}</p>
+                        </div>
                     </div>
-                  </div>
-                  <div className="mt-4">
-                     <p className="text-sm font-semibold text-accent">Step {index + 1}</p>
-                    <h3 className="text-2xl font-headline mt-1">{step.title}</h3>
-                    <p className="mt-2 text-muted-foreground">{step.description}</p>
-                  </div>
-                </div>
-              </AnimateOnScroll>
-            ))}
-          </div>
+                </AnimateOnScroll>
+                ))}
+            </div>
         </div>
       </div>
     </section>
