@@ -32,7 +32,7 @@ export default function MenuItemCard({ drink }: MenuItemCardProps) {
                       <p className="font-semibold text-accent text-lg">RM{drink.price.toFixed(2)}</p>
                       <div className="flex items-center">
                           {[...Array(5)].map((_, i) => (
-                          <Star key={i} className="w-4 h-4 text-amber-400 fill-amber-400" />
+                          <Star key={i} className="w-4 h-4 text-orange-400 fill-orange-400" />
                           ))}
                       </div>
                   </div>
