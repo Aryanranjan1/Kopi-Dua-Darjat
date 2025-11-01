@@ -1,4 +1,3 @@
-
 import type { Drink, Outlet, Promotion, BlogPost, Testimonial } from './types';
 
 export const allDrinks: Drink[] = [
@@ -98,48 +97,54 @@ export const outlets: Outlet[] = [
     },
 ];
 
-export const blogPosts: BlogPost[] = [
-  {
-    id: '1',
-    title: 'The Secret Behind Our Kopi Kampung',
-    slug: 'secret-behind-kopi-kampung',
-    excerpt: 'Discover the heritage and brewing methods that make our coffee special, and how we blend tradition with modern tastes.',
-    imageUrl: 'blog-post-1',
-    author: 'Hadi & Azad',
-    publishDate: '15 July 2024',
-    tags: ['Heritage'],
-  },
-  {
-    id: '2',
-    title: 'From One Stall to 50+ Outlets: Our Journey',
-    slug: 'from-one-to-fifty',
-    excerpt: 'A look back at how Kopi Dua Darjat grew from a humble beginning into a nationwide family.',
-    imageUrl: 'blog-post-2',
-    author: 'KopiVerse Team',
-    publishDate: '10 July 2024',
-    tags: ['Brand Story'],
-  },
-  {
-    id: '3',
-    title: 'Why Kopi Dua Darjat is Your Next Franchise Opportunity',
-    slug: 'franchise-opportunity',
-    excerpt: 'Low entry costs, full support, and a beloved brand. Learn more here.',
-    imageUrl: 'blog-post-3',
-    author: 'Franchise Team',
-    publishDate: '05 July 2024',
-    tags: ['Franchise'],
-  },
-  {
-    id: '4',
-    title: 'A Guide to Our Signature Matcha Blends',
-    slug: 'matcha-blends-guide',
-    excerpt: 'Explore the world of our artisan matcha, from classic lattes to unique infusions.',
-    imageUrl: 'blog-post-4',
-    author: 'Azad',
-    publishDate: '20 July 2024',
-    tags: ['Menu'],
-  },
-];
+const generatePosts = (): BlogPost[] => {
+  const posts: BlogPost[] = [];
+  const authors = ['Hadi & Azad', 'KopiVerse Team', 'Franchise Team', 'Azad', 'Guest Writer'];
+  const tags = ['Heritage', 'Brand Story', 'Franchise', 'Menu', 'Community', 'Tips'];
+  const titles = [
+    'The Secret Behind Our Kopi Kampung',
+    'From One Stall to 50+ Outlets: Our Journey',
+    'Why Kopi Dua Darjat is Your Next Franchise Opportunity',
+    'A Guide to Our Signature Matcha Blends',
+    'Connecting Communities, One Cup at a Time',
+    'Top 5 Iced Coffees to Beat the Malaysian Heat',
+    'The Art of the Perfect Kopi Tarik',
+    'Meet the Farmers: Sourcing Our Local Beans',
+    'Celebrating Our 1 Millionth Customer!',
+    'New Outlet Opening in Johor Bahru!',
+    'A Deep Dive into Gula Apong',
+    'Pairing Pastries with Your Favorite Kopi',
+    'Behind the Scenes: A Day in the Life of a Barista',
+    'Sustainability Efforts at Kopi Dua Darjat',
+    'Your Guide to Our "Menet" Sparkling Series',
+    'How We Keep Our Prices Affordable',
+    'The Kopi Dua Darjat Foundation: Giving Back',
+    'Customer Spotlight: Stories from Our Regulars',
+    'Franchise Success Story: From Customer to Owner',
+    'The Perfect Brew: Tips for Making Coffee at Home',
+    'Our Response to the Latest Coffee Trends',
+  ];
+
+  for (let i = 0; i < titles.length; i++) {
+    const publishDate = new Date(2024, 6, 20 - i);
+    posts.push({
+      id: `${i + 1}`,
+      title: titles[i],
+      slug: titles[i].toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, ''),
+      excerpt: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      imageUrl: `blog-post-${(i % 4) + 1}`,
+      author: authors[i % authors.length],
+      publishDate: publishDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+      publishDateISO: publishDate.toISOString(),
+      tags: [tags[i % tags.length], 'All'],
+      popularity: Math.floor(Math.random() * 1000) + 50,
+    });
+  }
+  return posts;
+};
+
+export const blogPosts: BlogPost[] = generatePosts();
+
 
 export const testimonials: Testimonial[] = [
     {

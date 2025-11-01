@@ -44,8 +44,10 @@ export type BlogPost = {
   excerpt: string;
   imageUrl: string;
   author: string;
-  publishDate: string;
+  publishDate: string; // Keep as string for display
+  publishDateISO: string; // Add ISO string for sorting
   tags: string[];
+  popularity: number; // Add for "Popular" sort
 };
 
 export type Testimonial = {
