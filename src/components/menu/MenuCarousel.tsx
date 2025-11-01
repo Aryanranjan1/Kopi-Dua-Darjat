@@ -23,6 +23,8 @@ export default function MenuCarousel({ title, items }: MenuCarouselProps) {
         return null;
     }
 
+    const showControls = items.length > 5;
+
     return (
         <div>
             <div className="flex justify-between items-center mb-6">
@@ -36,7 +38,7 @@ export default function MenuCarousel({ title, items }: MenuCarouselProps) {
              <Carousel
                 opts={{
                 align: 'start',
-                loop: items.length > 5, // Only loop if there are enough items to scroll
+                loop: showControls,
                 }}
                 className="w-full"
             >
@@ -47,8 +49,12 @@ export default function MenuCarousel({ title, items }: MenuCarouselProps) {
                     </CarouselItem>
                 ))}
                 </CarouselContent>
-                <CarouselPrevious className="ml-14" />
-                <CarouselNext className="mr-14" />
+                {showControls && (
+                    <>
+                        <CarouselPrevious className="ml-14" />
+                        <CarouselNext className="mr-14" />
+                    </>
+                )}
             </Carousel>
         </div>
     );

@@ -53,16 +53,16 @@ export default function MenuPage() {
             </section>
 
             {/* Add-ons Section */}
-            <AnimateOnScroll animationType='fadeIn' delay={0.4} className="py-8 bg-card/50">
-                <div className="container mx-auto text-center text-muted-foreground">
-                    <div className="flex justify-center items-center gap-x-8">
-                        <span>Caramel Drizzle <strong className="text-foreground">+RM1</strong></span>
-                        <span className="h-4 w-px bg-border"></span>
-                        <span>Espresso Shot <strong className="text-foreground">+RM2</strong></span>
-                        <span className="h-4 w-px bg-border"></span>
-                        <span>Add Syrup <strong className="text-foreground">+RM1</strong></span>
-                        <span className="h-4 w-px bg-border"></span>
-                        <span>Sweet Foam <strong className="text-foreground">+RM2</strong></span>
+            <AnimateOnScroll animationType='fadeIn' delay={0.4} className="py-8 bg-black">
+                <div className="container mx-auto text-center text-white">
+                    <div className="flex justify-center items-center gap-x-8 text-xl">
+                        <span>Caramel Drizzle <strong className="text-primary font-bold">+RM1</strong></span>
+                        <span className="h-6 w-px bg-border/50"></span>
+                        <span>Espresso Shot <strong className="text-primary font-bold">+RM2</strong></span>
+                        <span className="h-6 w-px bg-border/50"></span>
+                        <span>Add Syrup <strong className="text-primary font-bold">+RM1</strong></span>
+                        <span className="h-6 w-px bg-border/50"></span>
+                        <span>Sweet Foam <strong className="text-primary font-bold">+RM2</strong></span>
                     </div>
                 </div>
             </AnimateOnScroll>
