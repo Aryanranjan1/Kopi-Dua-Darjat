@@ -93,11 +93,11 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: hsl(var(--accent));
+    background: hsl(var(--primary));
     border-radius: 10px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--accent) / 0.8);
+    background: hsl(var(--primary) / 0.8);
   }
 }
