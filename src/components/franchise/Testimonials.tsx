@@ -12,8 +12,14 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel';
+import Autoplay from "embla-carousel-autoplay"
+import React from 'react';
 
 export default function Testimonials() {
+  const plugin = React.useRef(
+    Autoplay({ delay: 3000, stopOnInteraction: true })
+  )
+  
   return (
     <section className="py-24 sm:py-32 bg-black text-white">
       <div className="container mx-auto px-4">
@@ -26,11 +32,14 @@ export default function Testimonials() {
 
         <AnimateOnScroll animationType="fadeIn" delay={0.2}>
           <Carousel
+            plugins={[plugin.current]}
             opts={{
               align: 'start',
               loop: true,
             }}
             className="w-full max-w-5xl mx-auto mt-24"
+            onMouseEnter={plugin.current.stop}
+            onMouseLeave={plugin.current.reset}
           >
             <CarouselContent className="-ml-8">
               {testimonials.map((testimonial) => {
@@ -51,7 +60,7 @@ export default function Testimonials() {
                                 </div>
                             )}
                             <Card className="bg-zinc-900/50 border-zinc-800 rounded-3xl h-full pt-20 shadow-lg text-center">
-                                <CardContent className="p-8">
+                                <CardContent className="p-8 min-h-[280px] flex flex-col justify-center">
                                 <blockquote className="text-lg font-medium text-white/90">
                                 “{testimonial.quote}”
                                 </blockquote>
