@@ -7,7 +7,7 @@ import { AnimateOnScroll } from "@/components/animations/AnimateOnScroll"
 
 export default function BrandStory() {
   return (
-    <section className="py-24 sm:py-32 bg-[#F7F4EF] text-foreground overflow-hidden">
+    <section className="pt-24 sm:pt-32 bg-[#F7F4EF] text-foreground overflow-hidden">
       <div className="mx-auto">
         <div className="grid lg:grid-cols-2 gap-x-8 gap-y-16 sm:gap-y-20 lg:gap-x-16 items-center">
           {/* Left Side: Image */}
