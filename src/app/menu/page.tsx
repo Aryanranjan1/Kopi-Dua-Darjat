@@ -56,14 +56,26 @@ export default function MenuPage() {
             {/* Add-ons Section */}
             <div className="py-16 bg-black">
                 <div className="container mx-auto text-center text-white">
-                    <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-4 text-4xl">
-                        <span>Caramel Drizzle <strong className="text-primary font-bold">+RM1</strong></span>
-                        <span className="hidden md:block h-8 w-px bg-border/50"></span>
-                        <span>Espresso Shot <strong className="text-primary font-bold">+RM2</strong></span>
-                        <span className="hidden md:block h-8 w-px bg-border/50"></span>
-                        <span>Add Syrup <strong className="text-primary font-bold">+RM1</strong></span>
-                        <span className="hidden md:block h-8 w-px bg-border/50"></span>
-                        <span>Sweet Foam <strong className="text-primary font-bold">+RM2</strong></span>
+                    <div className="flex flex-wrap justify-center items-center gap-x-8 sm:gap-x-12 gap-y-8">
+                        <div className="flex flex-col text-center">
+                            <span className="text-xl sm:text-2xl">Caramel Drizzle</span>
+                            <strong className="text-primary font-bold text-2xl sm:text-3xl">+RM1</strong>
+                        </div>
+                        <span className="hidden md:block h-16 w-px bg-border/50"></span>
+                        <div className="flex flex-col text-center">
+                            <span className="text-xl sm:text-2xl">Espresso Shot</span>
+                            <strong className="text-primary font-bold text-2xl sm:text-3xl">+RM2</strong>
+                        </div>
+                        <span className="hidden md:block h-16 w-px bg-border/50"></span>
+                        <div className="flex flex-col text-center">
+                            <span className="text-xl sm:text-2xl">Add Syrup</span>
+                            <strong className="text-primary font-bold text-2xl sm:text-3xl">+RM1</strong>
+                        </div>
+                        <span className="hidden md:block h-16 w-px bg-border/50"></span>
+                        <div className="flex flex-col text-center">
+                            <span className="text-xl sm:text-2xl">Sweet Foam</span>
+                            <strong className="text-primary font-bold text-2xl sm:text-3xl">+RM2</strong>
+                        </div>
                     </div>
                 </div>
             </div>
