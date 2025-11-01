@@ -64,10 +64,10 @@ export default function LatestBlog() {
                       </p>
                   </div>
                   <div className="flex gap-4 mt-4">
-                      <Button asChild variant="outline" className="border-accent text-accent hover:bg-accent hover:text-white bg-transparent">
+                      <Button asChild variant="outline" className="border-accent text-accent hover:bg-accent hover:text-white bg-transparent rounded-full">
                           <Link href="/promotions">Weekday Specials <ArrowRight className="ml-2 h-4 w-4" /></Link>
                       </Button>
-                      <Button asChild variant="outline" className="border-accent text-accent hover:bg-accent hover:text-white bg-transparent">
+                      <Button asChild variant="outline" className="border-accent text-accent hover:bg-accent hover:text-white bg-transparent rounded-full">
                           <Link href="/menu">New Drinks <ArrowRight className="ml-2 h-4 w-4" /></Link>
                       </Button>
                   </div>
@@ -96,7 +96,7 @@ export default function LatestBlog() {
                       </p>
                   </div>
                   <div className="flex gap-4 mt-4 relative z-10">
-                      <Button asChild className="bg-accent hover:bg-accent/90 text-accent-foreground">
+                      <Button asChild className="bg-accent hover:bg-accent/90 text-accent-foreground rounded-full">
                           <Link href="#">Follow on Instagram <ArrowRight className="ml-2 h-4 w-4" /></Link>
                       </Button>
                   </div>
