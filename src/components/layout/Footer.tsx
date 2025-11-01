@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { Facebook, Instagram, Twitter } from 'lucide-react';
+import InteractiveMap from '../home/InteractiveMap';
+import { Card } from '../ui/card';
 
 export default function SiteFooter() {
   const currentYear = new Date().getFullYear();
@@ -57,6 +59,8 @@ export default function SiteFooter() {
               <li><Link href="/about" className="text-gray-400 hover:text-primary">Our Story</Link></li>
               <li><Link href="/menu" className="text-gray-400 hover:text-primary">Menu</Link></li>
               <li><Link href="/outlets" className="text-gray-400 hover:text-primary">Outlets</Link></li>
+              <li><Link href="/faq" className="text-gray-400 hover:text-primary">FAQ</Link></li>
+              <li><Link href="/contact" className="text-gray-400 hover:text-primary">Contact Us</Link></li>
             </ul>
           </div>
           <div>
@@ -65,20 +69,19 @@ export default function SiteFooter() {
             </h3>
             <ul className="mt-4 space-y-2">
               <li><Link href="/franchise" className="text-gray-400 hover:text-primary">Franchise</Link></li>
-               <li><Link href="/franchise/apply" className="text-gray-400 hover:text-primary">Apply</Link></li>
+              <li><Link href="/franchise/apply" className="text-gray-400 hover:text-primary">Apply</Link></li>
               <li><Link href="/news" className="text-gray-400 hover:text-primary">News</Link></li>
-              <li><Link href="/contact" className="text-gray-400 hover:text-primary">Contact Us</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="font-headline text-lg font-semibold text-white">
-              Legal
-            </h3>
-            <ul className="mt-4 space-y-2">
-              <li><Link href="/faq" className="text-gray-400 hover:text-primary">FAQ</Link></li>
               <li><Link href="/privacy" className="text-gray-400 hover:text-primary">Privacy Policy</Link></li>
               <li><Link href="/terms" className="text-gray-400 hover:text-primary">Terms of Service</Link></li>
             </ul>
+          </div>
+          <div className="md:col-span-1">
+            <h3 className="font-headline text-lg font-semibold text-white">
+              Our Locations
+            </h3>
+             <Card className="overflow-hidden shadow-lg rounded-3xl aspect-[4/3] mt-4">
+              <InteractiveMap />
+            </Card>
           </div>
         </div>
         <div className="mt-12 border-t border-gray-800 pt-8 text-center text-sm text-gray-500">
