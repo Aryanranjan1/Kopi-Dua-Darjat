@@ -14,7 +14,7 @@ export default function BrandStory() {
           <AnimateOnScroll animationType="slideInFromLeft" className="relative flex justify-center items-center">
             <div className="relative w-72 h-72">
               <Image
-                src="/image/a.png"
+                src="/image/kdd-cup.png"
                 alt="Kopi Darjat"
                 width={400}
                 height={400}
