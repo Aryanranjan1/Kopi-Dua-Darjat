@@ -4,12 +4,10 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, MoveRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { featuredDrinks } from '@/lib/data';
 import MenuItemCard from '../menu/MenuItemCard';
-import { cn } from '@/lib/utils';
-import type { Drink } from '@/lib/types';
 
 const filterCategories = ['Specials', 'Coffee', 'Matcha', 'Tea'];
 
@@ -24,6 +22,9 @@ export default function MenuShowcase() {
     <section className="py-24 sm:py-32 bg-black text-white">
       <div className="container mx-auto px-12">
         <div className="flex justify-between items-center mb-12">
+          <h1 className="text-5xl md:text-7xl font-headline font-bold text-primary tracking-widest">
+            MENU
+          </h1>
           <div className="flex items-center gap-6">
             {filterCategories.map((category) => (
               <button
@@ -38,9 +39,6 @@ export default function MenuShowcase() {
               </button>
             ))}
           </div>
-          <h2 className="text-4xl md:text-5xl font-headline font-bold text-primary tracking-widest">
-            MENU
-          </h2>
         </div>
 
         <AnimateOnScroll animationType="fadeIn" delay={0.2} className="mt-16">
