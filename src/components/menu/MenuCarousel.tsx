@@ -1,13 +1,14 @@
+
 'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
 import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
+    Carousel,
+    CarouselContent,
+    CarouselItem,
+    CarouselNext,
+    CarouselPrevious,
 } from '@/components/ui/carousel';
 import MenuItemCard from './MenuItemCard';
 import type { Drink } from '@/lib/types';
@@ -38,7 +39,7 @@ export default function MenuCarousel({ title, items }: MenuCarouselProps) {
                 </Button>
             </div>
             {isExpanded ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-4 gap-y-24 py-8">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-4 gap-y-24 py-16">
                     {items.map((drink) => (
                         <div key={drink.id} className="overflow-visible">
                             <MenuItemCard drink={drink} />
