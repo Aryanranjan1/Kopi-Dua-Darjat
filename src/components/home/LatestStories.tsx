@@ -33,7 +33,7 @@ export default function LatestStories() {
                 <div className="grid lg:grid-cols-2 gap-8">
                     {/* Featured Post */}
                     <AnimateOnScroll animationType="fadeIn">
-                        <Link href={`/blog/${featuredPost.slug}`} className="group block rounded-2xl p-2 transition-all hover:ring-2 hover:ring-primary/50">
+                        <Link href={`/blog/${featuredPost.slug}`} className="group block rounded-2xl p-2 transition-all hover:ring-2 hover:ring-foreground/50">
                             <div className="overflow-hidden rounded-2xl mb-4">
                                 {featuredPostImage && (
                                     <Image 
@@ -59,7 +59,7 @@ export default function LatestStories() {
                             const postImage = getPostImage(post.imageUrl);
                             return (
                                 <AnimateOnScroll key={post.id} animationType="slideInFromRight" delay={index * 0.1}>
-                                    <Link href={`/blog/${post.slug}`} className="group flex items-center gap-6 rounded-2xl p-2 transition-all hover:ring-2 hover:ring-primary/50">
+                                    <Link href={`/blog/${post.slug}`} className="group flex items-center gap-6 rounded-2xl p-2 transition-all hover:ring-2 hover:ring-foreground/50">
                                         <div className="relative w-32 h-32 shrink-0">
                                             {postImage && (
                                                  <Image 
