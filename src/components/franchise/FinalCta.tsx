@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -14,12 +15,12 @@ export default function FinalCta() {
       <div className="container mx-auto px-0">
         <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[70vh]">
           {/* Left side: Text content */}
-          <div className="flex flex-col justify-center bg-black text-white p-12 lg:p-24 text-center lg:text-left">
+          <div className="flex flex-col justify-center bg-primary text-primary-foreground p-12 lg:p-24 text-center lg:text-left">
             <AnimateOnScroll animationType="slideInFromLeft">
-              <h2 className="text-4xl md:text-6xl font-headline font-bold text-primary leading-tight">
+              <h2 className="text-4xl md:text-6xl font-headline font-bold text-foreground leading-tight">
                 Your Stall. Your Story. Your Success.
               </h2>
-              <p className="mt-6 text-lg md:text-xl max-w-prose text-white/80 mx-auto lg:mx-0">
+              <p className="mt-6 text-lg md:text-xl max-w-prose text-muted-foreground mx-auto lg:mx-0">
                 Ready to become a part of Malaysia's favourite kopi movement? The next success story could be yours.
               </p>
               <div className="mt-10">
