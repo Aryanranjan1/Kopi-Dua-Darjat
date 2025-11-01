@@ -1,3 +1,4 @@
+
 import dynamic from 'next/dynamic';
 import Hero from '@/components/home/Hero';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -17,6 +18,9 @@ const BrandStory = dynamic(() => import('@/components/home/BrandStory'), {
 const OutletFinder = dynamic(() => import('@/components/home/OutletFinder'), {
   loading: () => <Skeleton className="h-[60vh] w-full" />,
 });
+const InstaSync = dynamic(() => import('@/components/home/InstaSync'), {
+  loading: () => <Skeleton className="h-[80vh] w-full" />,
+});
 const LatestBlog = dynamic(() => import('@/components/home/LatestBlog'), {
   loading: () => <Skeleton className="h-[80vh] w-full" />,
 });
@@ -31,6 +35,7 @@ export default function Home() {
       <OutletFinder />
       <MenuShowcase />
       <BrandStory />
+      <InstaSync />
       <LatestBlog />
     </div>
   );

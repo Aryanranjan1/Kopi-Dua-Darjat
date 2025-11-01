@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import Link from 'next/link';
 import { ArrowRight, Calendar, Users, Coffee } from 'lucide-react';
-import InstaSync from '@/components/about/InstaSync';
 
 export const metadata: Metadata = {
   title: 'Our Story',
@@ -63,8 +62,6 @@ export default function AboutPage() {
           </AnimateOnScroll>
         </div>
       </section>
-
-      <InstaSync />
 
       {/* Founders Section */}
       <section className="py-24 sm:py-32 bg-card">
