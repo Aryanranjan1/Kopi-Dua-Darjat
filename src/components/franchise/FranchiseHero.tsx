@@ -1,9 +1,6 @@
-
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
@@ -21,7 +18,7 @@ export default function FranchiseHero() {
         />
         <div className="absolute inset-0 bg-black/60 z-10"></div>
       <div className="container mx-auto px-4 relative z-20">
-        <div className="text-left max-w-3xl">
+        <div className="text-center lg:text-left lg:w-2/5">
              <AnimateOnScroll animationType="slideInFromBottom">
                 <Badge variant="default" className="mb-4 text-sm py-1 px-4 rounded-full bg-accent text-accent-foreground">
                     50+ stalls & growing since 2020
@@ -32,7 +29,7 @@ export default function FranchiseHero() {
                 <p className="mt-6 text-lg lg:text-xl text-white/90 drop-shadow-md">
                     We’re expanding our local kopi culture across Malaysia. Join our growing family and serve the taste everyone’s talking about.
                 </p>
-                <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-start">
+                <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                     <Button asChild size="lg" className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90">
                         <Link href="/franchise/apply">Apply for Franchise</Link>
                     </Button>
