@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -12,21 +13,21 @@ export const metadata: Metadata = {
 
 export default function FranchiseApplyPage() {
   return (
-    <div className="bg-background min-h-screen py-24 sm:py-32">
+    <div className="bg-zinc-950 min-h-screen py-24 sm:py-32">
         <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto">
-                 <Button asChild variant="outline" className="mb-8 rounded-full">
+                 <Button asChild variant="outline" className="mb-8 rounded-full bg-transparent text-white hover:bg-white hover:text-black">
                     <Link href="/franchise">
                         <ArrowLeft className="mr-2 h-4 w-4" />
                         Back to Franchise Page
                     </Link>
                 </Button>
-                <Card className="shadow-lg rounded-2xl">
+                <Card className="shadow-2xl rounded-2xl bg-black border-none ring-1 ring-white/10">
                 <CardHeader className="text-center">
-                    <CardTitle className="font-headline text-4xl text-primary">
+                    <CardTitle className="font-headline text-4xl text-white">
                     Franchise Application
                     </CardTitle>
-                    <CardDescription className="text-lg">
+                    <CardDescription className="text-lg text-zinc-400">
                     Tell us a bit about yourself. We're excited to learn more about your interest in joining the Kopi Dua Darjat family.
                     </CardDescription>
                 </CardHeader>

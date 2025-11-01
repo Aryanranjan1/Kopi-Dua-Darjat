@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -64,9 +65,11 @@ export default function FranchiseApplicationForm() {
         form.reset();
   }
 
+  const inputStyles = "bg-zinc-900 border-zinc-800 rounded-full text-white focus-visible:ring-primary";
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 text-white">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormField
               control={form.control}
@@ -75,7 +78,7 @@ export default function FranchiseApplicationForm() {
                 <FormItem>
                   <FormLabel>Full Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., Ahmad bin Abdullah" {...field} />
+                    <Input placeholder="e.g., Ahmad bin Abdullah" {...field} className={inputStyles} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -88,7 +91,7 @@ export default function FranchiseApplicationForm() {
                 <FormItem>
                   <FormLabel>Email Address</FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="e.g., ahmad@example.com" {...field} />
+                    <Input type="email" placeholder="e.g., ahmad@example.com" {...field} className={inputStyles} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -101,7 +104,7 @@ export default function FranchiseApplicationForm() {
                 <FormItem>
                   <FormLabel>Phone Number</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., 012-3456789" {...field} />
+                    <Input placeholder="e.g., 012-3456789" {...field} className={inputStyles} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -114,7 +117,7 @@ export default function FranchiseApplicationForm() {
                 <FormItem>
                   <FormLabel>Preferred City/State</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., Kuala Lumpur" {...field} />
+                    <Input placeholder="e.g., Kuala Lumpur" {...field} className={inputStyles} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -130,11 +133,11 @@ export default function FranchiseApplicationForm() {
                 <FormLabel>Investment Budget</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className={inputStyles}>
                         <SelectValue placeholder="Select your budget range" />
                     </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
+                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
                         <SelectItem value="<25k">Below RM25,000</SelectItem>
                         <SelectItem value="25k-50k">RM25,000 - RM50,000</SelectItem>
                         <SelectItem value="50k-100k">RM50,000 - RM100,000</SelectItem>
@@ -155,7 +158,7 @@ export default function FranchiseApplicationForm() {
               <FormControl>
                 <Textarea
                   placeholder="Tell us a little about your passion for coffee and business..."
-                  className="resize-none"
+                  className="bg-zinc-900 border-zinc-800 text-white rounded-2xl resize-none focus-visible:ring-primary"
                   {...field}
                 />
               </FormControl>
@@ -164,7 +167,7 @@ export default function FranchiseApplicationForm() {
           )}
         />
 
-        <Button type="submit" disabled={isSubmitting} className="w-full">
+        <Button type="submit" disabled={isSubmitting} className="w-full rounded-full bg-primary text-primary-foreground hover:bg-primary/90 text-lg py-6">
             {isSubmitting ? (
                 <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
