@@ -6,8 +6,13 @@ import { Button } from "@/components/ui/button"
 import { PlaceHolderImages } from "@/lib/placeholder-images"
 import { AnimateOnScroll } from "@/components/animations/AnimateOnScroll"
 
-export default function NewsletterSignUp() {
+export default function NewsletterSignUp({ disableAnimations = false }: { disableAnimations?: boolean }) {
   const bgImage = PlaceHolderImages.find((img) => img.id === 'newsletter-background');
+
+  const Wrapper = disableAnimations ? 'div' : AnimateOnScroll;
+  const wrapperProps = disableAnimations ? {} : { animationType: 'slideInFromBottom' };
+  const formWrapperProps = disableAnimations ? {} : { animationType: 'fadeIn', delay: 0.2 };
+
 
   return (
     <section className="relative py-24 sm:py-32 text-white">
@@ -26,15 +31,15 @@ export default function NewsletterSignUp() {
 
       <div className="container mx-auto px-12 relative z-10">
         <div className="max-w-2xl text-center mx-auto">
-            <AnimateOnScroll animationType="slideInFromBottom">
+            <Wrapper {...wrapperProps}>
                 <h2 className="text-4xl md:text-5xl font-headline font-bold text-primary leading-tight">
                     Get Brew-tiful News Straight to Your Inbox
                 </h2>
                 <p className="mt-4 text-lg text-white/80">
                     Join our mailing list for exclusive deals, new drink announcements, and stories from the Kopi Dua Darjat community.
                 </p>
-            </AnimateOnScroll>
-            <AnimateOnScroll animationType="fadeIn" delay={0.2} className="mt-8">
+            </Wrapper>
+            <Wrapper {...formWrapperProps} className="mt-8">
                 <form className="flex flex-col sm:flex-row gap-2 max-w-lg mx-auto">
                     <Input 
                         type="email" 
@@ -48,7 +53,7 @@ export default function NewsletterSignUp() {
                 <p className="text-xs text-white/50 mt-4">
                     We respect your privacy. Unsubscribe at any time.
                 </p>
-            </AnimateOnScroll>
+            </Wrapper>
         </div>
       </div>
     </section>

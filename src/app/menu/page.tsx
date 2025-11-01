@@ -99,7 +99,7 @@ export default function MenuPage() {
                 </div>
             </section>
         </div>
-        <NewsletterSignUp />
+        <NewsletterSignUp disableAnimations />
     </div>
   );
 }
