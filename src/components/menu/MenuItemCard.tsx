@@ -5,7 +5,7 @@ import Image from 'next/image';
 import type { Drink } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Plus } from 'lucide-react';
+import { ArrowUpRight, Plus, Star } from 'lucide-react';
 import Link from 'next/link';
 
 interface MenuItemCardProps {
@@ -14,27 +14,37 @@ interface MenuItemCardProps {
 
 export default function MenuItemCard({ drink }: MenuItemCardProps) {
   return (
-    <Card className="group overflow-hidden rounded-2xl shadow-lg transition-all duration-300 hover:shadow-xl bg-card/80 border-border/50">
-        <div className="relative aspect-[4/5] w-full">
+    <div className="p-1">
+      <Card className="rounded-3xl bg-primary/65 overflow-visible">
+        <CardContent className="relative p-4 pt-32 flex flex-col items-center text-center">
+          <div className="relative w-full h-80 -mt-48 mb-4 group">
             <Image
-            src={drink.image}
-            alt={drink.name}
-            fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+              src={drink.image}
+              alt={drink.name}
+              fill
+              className="object-contain drop-shadow-2xl transition-transform duration-300 group-hover:scale-105 rotate-12"
             />
-             <div className="absolute top-2 right-2 bg-background/50 text-foreground font-bold p-2 rounded-lg text-sm">
-                RM{drink.price.toFixed(2)}
-            </div>
-        </div>
-        <CardContent className="p-4">
-             <h3 className="text-lg font-headline font-semibold text-foreground truncate">{drink.name}</h3>
-             {drink.description && <p className="text-xs text-muted-foreground mt-1 h-8">{drink.description}</p>}
-             <Button className="w-full mt-4 rounded-full" asChild>
-                <Link href={`/order/${drink.slug}`}>
-                    <Plus className="mr-2 h-4 w-4"/> Add to Order
-                </Link>
+          </div>
+          <div className="w-full flex justify-between items-center text-left">
+              <div className="flex-grow">
+                  <h3 className="font-bold text-xl text-foreground truncate">{drink.name}</h3>
+                  <div className="flex items-center gap-2 mt-1">
+                      <p className="font-semibold text-accent text-lg">RM{drink.price.toFixed(2)}</p>
+                      <div className="flex items-center">
+                          {[...Array(5)].map((_, i) => (
+                          <Star key={i} className="w-4 h-4 text-amber-400 fill-amber-400" />
+                          ))}
+                      </div>
+                  </div>
+              </div>
+             <Button asChild variant="outline" size="icon" className="rounded-full border-2 border-foreground/50 hover:bg-primary hover:border-primary shrink-0">
+              <Link href={`/order/${drink.slug}`}>
+                <ArrowUpRight className="w-5 h-5" />
+              </Link>
              </Button>
+          </div>
         </CardContent>
-    </Card>
+      </Card>
+    </div>
   );
 }

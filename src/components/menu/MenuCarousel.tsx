@@ -40,12 +40,10 @@ export default function MenuCarousel({ title, items }: MenuCarouselProps) {
                 }}
                 className="w-full"
             >
-                <CarouselContent className="-ml-4">
+                <CarouselContent className="-ml-4 py-16">
                 {items.map((drink) => (
-                    <CarouselItem key={drink.id} className="md:basis-1/3 lg:basis-1/4 xl:basis-1/5 pl-4">
-                        <div className="p-1">
-                            <MenuItemCard drink={drink} />
-                        </div>
+                    <CarouselItem key={drink.id} className="md:basis-1/3 lg:basis-1/4 xl:basis-1/5 pl-4 overflow-visible">
+                        <MenuItemCard drink={drink} />
                     </CarouselItem>
                 ))}
                 </CarouselContent>
