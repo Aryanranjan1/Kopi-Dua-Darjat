@@ -1,4 +1,6 @@
+
 import type { Metadata } from 'next';
+import MenuGrid from '@/components/menu/MenuGrid';
 
 export const metadata: Metadata = {
   title: 'Menu',
@@ -6,12 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function MenuPage() {
-  return (
-    <div className="container mx-auto px-4 py-12 text-center">
-      <h1 className="text-4xl md:text-5xl font-headline text-primary">Our Menu</h1>
-      <p className="mt-4 text-lg text-foreground/80 max-w-2xl mx-auto">
-        Our full menu with categories, descriptions, and pricing will be available here soon.
-      </p>
-    </div>
-  );
+  return <MenuGrid />;
 }

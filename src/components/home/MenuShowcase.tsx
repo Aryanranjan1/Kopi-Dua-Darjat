@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
-import { featuredDrinks } from '@/lib/data';
+import { allDrinks } from '@/lib/data';
 import MenuItemCard from '../menu/MenuItemCard';
 import {
   Carousel,
@@ -21,7 +21,7 @@ const filterCategories = ['Specials', 'Coffee', 'Matcha', 'Tea'];
 export default function MenuShowcase() {
   const [activeFilter, setActiveFilter] = useState('Specials');
 
-  const filteredDrinks = featuredDrinks.filter((drink) =>
+  const filteredDrinks = allDrinks.filter((drink) =>
     drink.tags.includes(activeFilter)
   );
 

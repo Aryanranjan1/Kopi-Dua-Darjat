@@ -1,7 +1,7 @@
 
 import type { Drink, Outlet, Promotion, BlogPost, Testimonial } from './types';
 
-export const featuredDrinks: Drink[] = [
+export const allDrinks: Drink[] = [
   {
     id: '1',
     name: 'Kopi Darjat',

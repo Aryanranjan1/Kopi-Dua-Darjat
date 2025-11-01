@@ -2,7 +2,7 @@
 "use client";
 
 import Image from 'next/image';
-import { featuredDrinks } from '@/lib/data';
+import { allDrinks } from '@/lib/data';
 import {
   Carousel,
   CarouselContent,
@@ -17,6 +17,7 @@ import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import Link from 'next/link';
 
 export default function FeaturedDrinks() {
+  const featured = allDrinks.filter(d => d.isFeatured);
   return (
     <section className="py-24 sm:py-32 bg-[#F7F4EF] text-foreground">
       <div className="container mx-auto px-12">
@@ -37,7 +38,7 @@ export default function FeaturedDrinks() {
             className="w-full"
           >
             <CarouselContent className="-ml-4 py-16">
-              {featuredDrinks.map((drink, index) => (
+              {featured.map((drink, index) => (
                 <CarouselItem key={drink.id} className="md:basis-1/2 lg:basis-1/3 pl-4 overflow-visible">
                   <div className="p-1">
                     <Card className="rounded-3xl bg-primary/65 overflow-visible">
