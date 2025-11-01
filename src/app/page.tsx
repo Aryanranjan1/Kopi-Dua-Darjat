@@ -21,7 +21,7 @@ const OutletFinder = dynamic(() => import('@/components/home/OutletFinder'), {
 const InstaSync = dynamic(() => import('@/components/home/InstaSync'), {
   loading: () => <Skeleton className="h-[80vh] w-full" />,
 });
-const LatestBlog = dynamic(() => import('@/components/home/LatestBlog'), {
+const Community = dynamic(() => import('@/components/home/Community'), {
   loading: () => <Skeleton className="h-[80vh] w-full" />,
 });
 
@@ -36,7 +36,7 @@ export default function Home() {
       <MenuShowcase />
       <BrandStory />
       <InstaSync />
-      <LatestBlog />
+      <Community />
     </div>
   );
 }
