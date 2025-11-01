@@ -52,7 +52,7 @@ export default function MenuShowcase() {
           <Carousel
             opts={{
               align: 'start',
-              dragFree: true,
+              loop: true,
             }}
             className="w-full relative"
           >
