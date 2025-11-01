@@ -24,6 +24,23 @@ export default function SiteFooter() {
     </svg>
   );
 
+  const TikTokIcon = () => (
+    <svg 
+        xmlns="http://www.w3.org/2000/svg" 
+        width="24" 
+        height="24" 
+        viewBox="0 0 24 24" 
+        fill="none" 
+        stroke="currentColor" 
+        strokeWidth="2" 
+        strokeLinecap="round" 
+        strokeLinejoin="round" 
+        className="h-6 w-6"
+    >
+        <path d="M21 7.5a4.5 4.5 0 0 1-4.5 4.5H12V17a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 4.5-4.5V7.5a4.5 4.5 0 0 1 9 0Z"/>
+    </svg>
+  );
+
   return (
     <footer className="bg-black text-white">
       <div className="container mx-auto px-6 py-12">
@@ -46,7 +63,7 @@ export default function SiteFooter() {
                 <Instagram className="h-6 w-6" />
               </Link>
               <Link href="#" className="text-gray-400 hover:text-primary">
-                <Twitter className="h-6 w-6" />
+                <TikTokIcon />
               </Link>
             </div>
           </div>
@@ -71,8 +88,6 @@ export default function SiteFooter() {
               <li><Link href="/franchise" className="text-gray-400 hover:text-primary">Franchise</Link></li>
               <li><Link href="/franchise/apply" className="text-gray-400 hover:text-primary">Apply</Link></li>
               <li><Link href="/news" className="text-gray-400 hover:text-primary">News</Link></li>
-              <li><Link href="/privacy" className="text-gray-400 hover:text-primary">Privacy Policy</Link></li>
-              <li><Link href="/terms" className="text-gray-400 hover:text-primary">Terms of Service</Link></li>
             </ul>
           </div>
           <div className="md:col-span-1">
