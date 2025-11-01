@@ -25,10 +25,11 @@ export function DailySpecials() {
     <div
       className="container mx-auto px-4 pb-12 sm:pb-16"
     >
-      <div className="border-2 border-dashed border-primary/80 rounded-2xl p-6 md:p-8">
-        <h2 className="text-3xl font-headline text-center font-bold text-foreground mb-6">
+       <h2 className="text-5xl font-headline text-center font-bold tracking-widest text-foreground mb-12 underline decoration-primary decoration-4 underline-offset-8">
           Daily Specials
         </h2>
+      <div className="border-2 border-dashed border-primary/80 rounded-2xl p-6 md:p-8 mt-12">
+       
 
         <div className="max-w-4xl mx-auto">
           {visibleSpecials.map((drink) => (
