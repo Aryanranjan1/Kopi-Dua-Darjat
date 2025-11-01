@@ -63,8 +63,8 @@ export default function MenuShowcase() {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 opacity-0 group-hover/showcase:opacity-100 transition-opacity" />
-            <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 opacity-0 group-hover/showcase:opacity-100 transition-opacity" />
+            <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 opacity-0 group-hover/showcase:opacity-100 transition-opacity bg-transparent border-white border-2 text-white hover:bg-primary hover:text-primary-foreground hover:border-primary" />
+            <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 opacity-0 group-hover/showcase:opacity-100 transition-opacity bg-transparent border-white border-2 text-white hover:bg-primary hover:text-primary-foreground hover:border-primary" />
           </Carousel>
         </AnimateOnScroll>
 
