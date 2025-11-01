@@ -13,6 +13,8 @@ export type Drink = {
   description: string;
   tags: string[];
   isFeatured: boolean;
+  hasPromotion?: boolean;
+  promotionDetails?: string;
 };
 
 export type Outlet = {
