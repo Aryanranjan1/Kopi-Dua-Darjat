@@ -3,44 +3,73 @@
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { PlaceHolderImages } from "@/lib/placeholder-images"
 import { AnimateOnScroll } from "@/components/animations/AnimateOnScroll"
+import { Leaf, Award, Coffee } from "lucide-react"
+import { FeatureLine } from "./FeatureLine"
+
+const features = [
+  {
+    icon: Award,
+    title: "Authentic Kopi Kampung Recipe",
+    description: "Honoring the rich legacy of traditional Malaysian coffee.",
+  },
+  {
+    icon: Leaf,
+    title: "Premium Artisan Beans",
+    description: "Carefully selected and roasted to perfection for a superior taste.",
+  },
+  {
+    icon: Coffee,
+    title: "Brewed Fresh Daily",
+    description: "Every cup is prepared with passion to ensure the highest quality.",
+  },
+]
 
 export default function BrandStory() {
-  const bgImage = PlaceHolderImages.find((img) => img.id === 'new-section-image');
-
   return (
-    <section className="relative py-32 sm:py-48 text-white">
-      <div className="absolute inset-0 z-[-2]">
-        {bgImage && (
-            <Image
-                src={bgImage.imageUrl}
-                alt={bgImage.description}
-                fill
-                className="object-cover"
-                data-ai-hint={bgImage.imageHint}
-            />
-        )}
-      </div>
-      <div className="absolute inset-0 bg-black/60 z-[-1]"></div>
+    <section className="py-24 sm:py-32 bg-[#F7F4EF] text-foreground">
+      <div className="container mx-auto px-12">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          {/* Left Side: Image and Features */}
+          <AnimateOnScroll animationType="slideInFromLeft" className="relative flex justify-center items-center">
+            <div className="relative w-72 h-72">
+              <Image
+                src="/image/a.png"
+                alt="Kopi Darjat"
+                width={400}
+                height={400}
+                className="object-contain drop-shadow-2xl"
+              />
+            </div>
+            
+            {/* Feature Callouts */}
+            <div className="absolute top-0 -left-16 w-48 text-right">
+              <FeatureLine feature={features[0]} position="topLeft" />
+            </div>
+            <div className="absolute top-1/2 -left-24 w-48 text-right -translate-y-1/2">
+              <FeatureLine feature={features[1]} position="left" />
+            </div>
+            <div className="absolute bottom-0 -left-16 w-48 text-right">
+               <FeatureLine feature={features[2]} position="bottomLeft" />
+            </div>
+          </AnimateOnScroll>
 
-      <div className="container mx-auto px-12 relative z-10">
-        <div className="max-w-3xl text-center mx-auto">
-            <AnimateOnScroll animationType="slideInFromBottom">
-                <h2 className="text-4xl md:text-6xl font-headline font-bold text-primary leading-tight">
-                    Antara Warisan & Artisan
-                </h2>
-                <p className="mt-6 text-lg text-white/90">
-                    Kopi Dua Darjat was born from a simple vision: to honour the rich legacy of Malaysian Kopi Kampung while embracing the meticulous craft of artisan coffee. We bridge generations, serving nostalgic flavours with a modern touch, ensuring every cup is a testament to our dual heritage.
-                </p>
-            </AnimateOnScroll>
-            <AnimateOnScroll animationType="fadeIn" delay={0.2} className="mt-8">
-                <Button size="lg" asChild variant="outline" className="border-accent text-accent hover:bg-accent hover:text-accent-foreground">
-                    <Link href="/about">
-                    Discover Our Story
-                    </Link>
-                </Button>
-            </AnimateOnScroll>
+          {/* Right Side: Text Content */}
+          <AnimateOnScroll animationType="slideInFromRight">
+            <h2 className="text-4xl md:text-5xl font-headline font-bold text-foreground leading-tight">
+              Antara Warisan & Artisan
+            </h2>
+            <p className="mt-6 text-lg text-muted-foreground">
+              Kopi Dua Darjat was born from a simple vision: to honour the rich legacy of Malaysian Kopi Kampung while embracing the meticulous craft of artisan coffee. We bridge generations, serving nostalgic flavours with a modern touch.
+            </p>
+            <div className="mt-8">
+              <Button size="lg" asChild className="bg-accent hover:bg-accent/90 text-accent-foreground">
+                <Link href="/about">
+                  Discover Our Story
+                </Link>
+              </Button>
+            </div>
+          </AnimateOnScroll>
         </div>
       </div>
     </section>
