@@ -89,7 +89,7 @@ export default function OutletFinder() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
-                  <Button>Search</Button>
+                  <Button className="bg-foreground text-background hover:bg-foreground/80">Search</Button>
                 </div>
                 <Button variant="outline" onClick={handleLocateMe} disabled={isGeolocationLoading}>
                   {isGeolocationLoading ? (

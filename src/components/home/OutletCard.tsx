@@ -29,7 +29,7 @@ export default function OutletCard({ outlet, userLocation }: OutletCardProps) {
           </p>
         )}
       </div>
-      <Button asChild>
+      <Button asChild className="bg-foreground text-background hover:bg-foreground/80">
         <a href={directionsUrl} target="_blank" rel="noopener noreferrer">
           <Map className="mr-2 h-4 w-4" />
           Directions
