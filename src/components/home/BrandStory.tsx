@@ -11,8 +11,8 @@ export default function BrandStory() {
       <div className="mx-auto">
         <div className="grid lg:grid-cols-2 gap-x-8 gap-y-16 sm:gap-y-20 lg:gap-x-16 items-center">
           {/* Left Side: Image */}
-          <div className="relative lg:pl-16">
-              <AnimateOnScroll animationType="slideInFromLeft" className="relative flex justify-center items-center">
+          <div className="relative lg:pl-16 h-full">
+              <AnimateOnScroll animationType="slideInFromLeft" className="relative flex justify-center items-end h-full">
                 <div className="relative w-[48rem] h-[48rem] lg:w-[60rem] lg:h-[60rem] lg:max-w-none -ml-32 lg:-ml-48">
                   <Image
                     src="/image/kdd-cup.png"
@@ -25,7 +25,7 @@ export default function BrandStory() {
           </div>
 
           {/* Right Side: Text Content */}
-          <AnimateOnScroll animationType="slideInFromRight">
+          <AnimateOnScroll animationType="slideInFromRight" className="pb-24 lg:pb-0 px-8 lg:px-0">
             <h2 className="text-4xl md:text-5xl font-headline font-bold text-foreground leading-tight">
               Antara Warisan & Artisan
             </h2>
