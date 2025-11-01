@@ -36,7 +36,7 @@
     {
       "id": "promotion-banner",
       "description": "Banner for a current promotion.",
-      "imageUrl": "https://images.unsplash.com/photo-1690983325788-a0d5aaffa5b1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjb2ZmZWUlMjBwcm9tb3Rpb258ZW58MHx8fHwxNzU5MDY2OTIxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1690983325788-a0d5aaffa5b1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjb2ZmZWUlMjBwcm9tb3Rpb258ZW58MHx8fHwxNzU5MDY2OTIxfDA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "coffee promotion"
     },
     {
@@ -54,7 +54,7 @@
     {
       "id": "blog-post-1",
       "description": "Image for the first blog post.",
-      "imageUrl": "https://images.unsplash.com/photo-1607681034540-2c46cc71896d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjb2ZmZWUlMjBiZWFuc3xlbnwwfHx8fDE3NTkwNDg5NjR8MA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1607681034540-2c46cc71896d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjb2ZmZWUlMjBiZWFuc3xlbnwwfHx8fDE3NTkwNDg5NjR8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "coffee beans"
     },
     {
@@ -72,7 +72,7 @@
     {
       "id": "blog-post-4",
       "description": "Image for the fourth blog post.",
-      "imageUrl": "https://images.unsplash.com/photo-1694245876425-b6af2c09ddba?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtYWNoYXxlbnwwfHx8fDE3NjE5ODU5MDZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1694245876425-b6af2c09ddba?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtYWNoYXxlbnwwfHx8fDE3NjE5ODU5MDZ8MA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "matcha latte"
     },
     {
@@ -128,15 +128,15 @@
     {
       "id": "community-event-3",
       "description": "A barista crafting a specialty coffee for an event.",
-      "imageUrl": "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxDT01NVU5JVFklMjBTRVJWSUNFfGVufDB8fHx8MTc1OTEyNzU3Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxDT01NVU5JVFklMjBTRVJWSUNFfGVufDB8fHx8MTc1OTEyNzU3Mnww&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "coffee event",
       "linkUrl": "https://www.youtube.com/watch?v=LXb3EKWsInQ"
     },
     {
       "id": "newsletter-background",
-      "description": "A joyful person holding a cup of coffee.",
-      "imageUrl": "https://images.unsplash.com/photo-1688913707189-3a349a5eb216?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjb2ZlZSUyMGhhcHB5JTIwcGVyc29ufGVufDB8fHx8MTc2MTk4NjgwM3ww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "happy person"
+      "description": "A flat lay of different coffee cups.",
+      "imageUrl": "https://images.unsplash.com/photo-1497515114629-f71d768fd07c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxOXx8Y29mZmVlfGVufDB8fHx8MTc2MjAwMTQ4NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "coffee"
     },
     {
       "id": "testimonial-1",
@@ -159,7 +159,7 @@
     {
       "id": "parallax-promo-bg",
       "description": "A close-up shot of rich, dark coffee beans.",
-      "imageUrl": "https://images.unsplash.com/photo-1495474472287-4d713b4e_2a9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjb2ZmZWV8ZW58MHx8fHwxNzU5NTA3OTU4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1495474472287-4d713b4e_2a9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjb2ZmZWV8ZW58MHx8fHwxNzU5NTA3OTU4fDA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "coffee"
     },
     {
@@ -171,19 +171,19 @@
     {
       "id": "insta-post-2",
       "description": "A smiling customer holding a cup of Kopi Dua Darjat.",
-      "imageUrl": "https://images.unsplash.com/photo-1543269664-56d93c1b41a6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxoYXBweSUyMGN1c3RvbWVyfGVufDB8fHx8MTc2MTkxNTY5N3ww&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1543269664-56d93c1b41a6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxoYXBweSUyMGN1c3RvbWVyfGVufDB8fHx8MTc2MTkxNTY5N3ww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "happy customer"
     },
     {
       "id": "insta-post-3",
       "description": "The minimalist interior of one of our outlets.",
-      "imageUrl": "https://images.unsplash.com/photo-1613274554329-70f997f5789f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjYWZlJTIwaW50ZXJpb3J8ZW58MHx8fHwxNzYxOTgyODIwfDA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1613274554329-70f997f5789f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjYWZlJTIwaW50ZXJpb3J8ZW58MHx8fHwxNzYxOTgyODIwfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "cafe interior"
     },
     {
       "id": "insta-post-4",
       "description": "A close-up shot of our signature Kopi Darjat.",
-      "imageUrl": "https://images.unsplash.com/photo-1653286017965-83cbb7ba0b60?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8c2lnbmF0dXJlJTIwY29mZmVlfGVufDB8fHx8MTc2MTk4MzgyN3ww&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1653286017965-83cbb7ba0b60?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8c2lnbmF0dXJlJTIwY29mZmVlfGVufDB8fHx8MTc2MTk4MzgyN3ww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "signature coffee"
     },
     {
@@ -201,13 +201,13 @@
     {
       "id": "community-grid-3",
       "description": "A top-down view of many hands with matching bracelets reaching into the center.",
-      "imageUrl": "https://images.unsplash.com/photo-1527525443983-6e60c75fff46?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxoYW5kcyUyMHRvZ2V0aGVyfGVufDB8fHx8MTc2MTk4NTQzN3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1527525443983-6e60c75fff46?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxoYW5kcyUyMHRvZ2V0aGVyfGVufDB8fHx8MTc2MTk4NTQzN3ww&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "hands together"
     },
     {
       "id": "community-grid-4",
       "description": "A smiling child holding a cup.",
-      "imageUrl": "https://images.unsplash.com/photo-1577896852336-e749dd04f202?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzbWlsaW5nJTIwY2hpbGR8ZW58MHx8fHwxNzYxODU4NDM5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1577896852336-e749dd04f202?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzbWlsaW5nJTIwY2hpbGR8ZW58MHx8fHwxNzYxODU4NDM5fDA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "smiling child"
     },
     {
