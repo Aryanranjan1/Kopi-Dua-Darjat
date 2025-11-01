@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 import { allDrinks } from '@/lib/data';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
@@ -53,19 +54,19 @@ export default function MenuPage() {
             </section>
 
             {/* Add-ons Section */}
-            <AnimateOnScroll animationType='fadeIn' delay={0.4} className="py-8 bg-black">
+            <div className="py-8 bg-black">
                 <div className="container mx-auto text-center text-white">
-                    <div className="flex justify-center items-center gap-x-8 text-xl">
+                    <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-4 text-2xl">
                         <span>Caramel Drizzle <strong className="text-primary font-bold">+RM1</strong></span>
-                        <span className="h-6 w-px bg-border/50"></span>
+                        <span className="hidden md:block h-6 w-px bg-border/50"></span>
                         <span>Espresso Shot <strong className="text-primary font-bold">+RM2</strong></span>
-                        <span className="h-6 w-px bg-border/50"></span>
+                        <span className="hidden md:block h-6 w-px bg-border/50"></span>
                         <span>Add Syrup <strong className="text-primary font-bold">+RM1</strong></span>
-                        <span className="h-6 w-px bg-border/50"></span>
+                        <span className="hidden md:block h-6 w-px bg-border/50"></span>
                         <span>Sweet Foam <strong className="text-primary font-bold">+RM2</strong></span>
                     </div>
                 </div>
-            </AnimateOnScroll>
+            </div>
 
             {/* TAKNAK KOPI Section */}
             <section className="container mx-auto px-4">
