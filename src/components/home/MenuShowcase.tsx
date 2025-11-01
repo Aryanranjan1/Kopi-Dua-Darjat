@@ -4,10 +4,9 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Star } from 'lucide-react';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { allDrinks } from '@/lib/data';
-import MenuItemCard from '../menu/MenuItemCard';
 import {
   Carousel,
   CarouselContent,
@@ -15,15 +14,50 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel';
+import type { Drink } from '@/lib/types';
+import { Card, CardContent } from '../ui/card';
+import Image from 'next/image';
 
 const filterCategories = ['Specials', 'Coffee', 'Matcha', 'Tea'];
+
+const ShowcaseCard = ({ drink }: { drink: Drink }) => (
+  <Link href={`/order/${drink.slug}`} className="group block">
+    <Card className="rounded-3xl bg-black overflow-visible border-zinc-800">
+      <CardContent className="relative p-4 pt-32 flex flex-col items-center text-center">
+        <div className="relative w-full h-80 -mt-48 mb-4">
+           <Image
+              src={drink.image}
+              alt={drink.name}
+              fill
+              className="object-contain drop-shadow-2xl transition-transform duration-300 group-hover:scale-105 rotate-12"
+            />
+        </div>
+        <div className="w-full text-left">
+          <h3 className="font-bold text-xl text-white truncate">{drink.name}</h3>
+          <div className="flex items-center gap-2 mt-1">
+            <p className="font-semibold text-accent text-lg">RM{drink.price.toFixed(2)}</p>
+            <div className="flex items-center">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="w-4 h-4 text-amber-400 fill-amber-400" />
+              ))}
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  </Link>
+);
+
 
 export default function MenuShowcase() {
   const [activeFilter, setActiveFilter] = useState('Specials');
 
-  const filteredDrinks = allDrinks.filter((drink) =>
-    drink.tags.includes(activeFilter)
-  );
+  const filteredDrinks = allDrinks.filter((drink) => {
+    if (activeFilter === 'Specials') {
+      return drink.tags.includes('Daily Special');
+    }
+    return drink.tags.includes(activeFilter);
+  });
 
   return (
     <section className="py-24 sm:py-32 bg-black text-white group/showcase">
@@ -56,10 +90,10 @@ export default function MenuShowcase() {
             }}
             className="w-full relative"
           >
-            <CarouselContent className="-ml-4">
+            <CarouselContent className="-ml-4 py-16">
               {filteredDrinks.map((drink, index) => (
-                <CarouselItem key={index} className="basis-1/2 md:basis-1/3 lg:basis-1/4 pl-4">
-                  <MenuItemCard drink={drink} />
+                <CarouselItem key={index} className="basis-1/2 md:basis-1/3 lg:basis-1/4 pl-4 overflow-visible">
+                  <ShowcaseCard drink={drink} />
                 </CarouselItem>
               ))}
             </CarouselContent>
