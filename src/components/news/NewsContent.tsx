@@ -8,7 +8,7 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Search, Calendar, User, ArrowRight } from 'lucide-react';
-import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
+import { motion } from 'framer-motion';
 import {
   Select,
   SelectContent,
@@ -24,6 +24,24 @@ type SortOption = 'Latest' | 'Popular';
 
 const getPostImage = (imageUrlId: string) => {
   return PlaceHolderImages.find((img) => img.id === imageUrlId);
+};
+
+const sectionVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+};
+
+const gridVariants = {
+  visible: {
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
 };
 
 export default function NewsContent({ allPosts }: { allPosts: BlogPost[] }) {
@@ -91,8 +109,7 @@ export default function NewsContent({ allPosts }: { allPosts: BlogPost[] }) {
   return (
     <>
       {/* Filters and Search */}
-      <AnimateOnScroll animationType="fadeIn" delay={0.1}>
-        <section className="container mx-auto px-6 py-6 border-y border-border">
+      <motion.section variants={sectionVariants} className="container mx-auto px-6 py-6 border-y border-border">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2">
               <Button
@@ -133,12 +150,10 @@ export default function NewsContent({ allPosts }: { allPosts: BlogPost[] }) {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             </div>
           </div>
-        </section>
-      </AnimateOnScroll>
+        </motion.section>
 
       {/* Featured Post */}
-      <AnimateOnScroll animationType="fadeIn" delay={0.2}>
-        <section className="container mx-auto px-6 py-16">
+      <motion.section variants={sectionVariants} className="container mx-auto px-6 py-16">
           <h2 className="text-3xl font-headline font-bold mb-8">Featured Post</h2>
           <Link href={`/news/${featuredPost.slug}`} className="group block">
             <div className="grid md:grid-cols-2 gap-8 items-center">
@@ -177,21 +192,19 @@ export default function NewsContent({ allPosts }: { allPosts: BlogPost[] }) {
               </div>
             </div>
           </Link>
-        </section>
-      </AnimateOnScroll>
+        </motion.section>
 
       {/* Latest Articles */}
-      <AnimateOnScroll animationType="fadeIn" delay={0.3}>
-        <section className="container mx-auto px-6 py-16 border-t border-border">
+      <motion.section variants={sectionVariants} className="container mx-auto px-6 py-16 border-t border-border">
           <h2 className="text-3xl font-headline font-bold mb-8">
             {selectedCategory !== 'All' ? selectedCategory : 'All Articles'}
           </h2>
           {paginatedPosts.length > 0 ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {paginatedPosts.map((post, index) => {
+            <motion.div variants={gridVariants} initial="hidden" animate="visible" className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {paginatedPosts.map((post) => {
                 const image = getPostImage(post.imageUrl);
                 return (
-                  <AnimateOnScroll key={post.id} animationType="fadeIn" delay={index * 0.1}>
+                  <motion.div key={post.id} variants={itemVariants}>
                     <Link href={`/news/${post.slug}`} className="group block">
                       <div className="relative aspect-video rounded-2xl overflow-hidden mb-4">
                         {image && (
@@ -222,10 +235,10 @@ export default function NewsContent({ allPosts }: { allPosts: BlogPost[] }) {
                         Read More
                       </span>
                     </Link>
-                  </AnimateOnScroll>
+                  </motion.div>
                 );
               })}
-            </div>
+            </motion.div>
           ) : (
             <div className="text-center py-16">
               <p className="text-lg text-muted-foreground">No articles found. Try a different search or category.</p>
@@ -239,8 +252,7 @@ export default function NewsContent({ allPosts }: { allPosts: BlogPost[] }) {
               onPageChange={setCurrentPage}
             />
           )}
-        </section>
-      </AnimateOnScroll>
+        </motion.section>
     </>
   );
 }

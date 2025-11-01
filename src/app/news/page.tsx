@@ -1,4 +1,7 @@
 
+'use client';
+
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -7,16 +10,26 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import NewsletterSignUp from '@/components/home/NewsletterSignUp';
-import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import NewsContent from '@/components/news/NewsContent';
-
-export const metadata: Metadata = {
-  title: 'News',
-  description: 'News, stories, and updates from the world of Kopi Dua Darjat.',
-};
+import { motion } from 'framer-motion';
 
 const getPostImage = (imageUrlId: string) => {
     return PlaceHolderImages.find((img) => img.id === imageUrlId);
+};
+
+const pageVariants = {
+  hidden: { opacity: 0 },
+  visible: { 
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2
+    }
+  },
+};
+
+const heroVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
 export default function NewsPage() {
@@ -26,9 +39,13 @@ export default function NewsPage() {
     return (
         <>
         <div className="bg-background text-foreground">
-            {/* Hero Section */}
-            <AnimateOnScroll animationType="fadeIn">
-                <section className="container mx-auto px-6 pt-24 pb-16">
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={pageVariants}
+            >
+                {/* Hero Section */}
+                <motion.section variants={heroVariants} className="container mx-auto px-6 pt-24 pb-16">
                     <div className="bg-card/50 rounded-3xl p-8 md:p-12 grid md:grid-cols-2 gap-8 items-center">
                         <div className="max-w-lg">
                             <p className="font-semibold text-accent">{heroPost.tags[0]}</p>
@@ -56,13 +73,16 @@ export default function NewsPage() {
                             )}
                         </div>
                     </div>
-                </section>
-            </AnimateOnScroll>
+                </motion.section>
             
-            <NewsContent allPosts={blogPosts} />
+                <Suspense fallback={<div>Loading content...</div>}>
+                    <NewsContent allPosts={blogPosts} />
+                </Suspense>
            
+            </motion.div>
         </div>
          <NewsletterSignUp disableAnimations />
         </>
     );
 }
+
