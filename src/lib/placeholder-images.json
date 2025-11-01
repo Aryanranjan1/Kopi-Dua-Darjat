@@ -239,6 +239,12 @@
       "description": "A person holding a cup of coffee.",
       "imageUrl": "https://images.unsplash.com/photo-1626097116802-708db5be6b00?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1175",
       "imageHint": "coffee cup"
+    },
+    {
+      "id": "contact-hero-bg",
+      "description": "Dark, moody shot of a coffee shop interior.",
+      "imageUrl": "https://images.unsplash.com/photo-1559925393-8be0ec4767c8?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "dark cafe"
     }
   ]
 }
