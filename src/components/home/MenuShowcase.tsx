@@ -8,6 +8,13 @@ import { ArrowRight } from 'lucide-react';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { featuredDrinks } from '@/lib/data';
 import MenuItemCard from '../menu/MenuItemCard';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel';
 
 const filterCategories = ['Specials', 'Coffee', 'Matcha', 'Tea'];
 
@@ -19,7 +26,7 @@ export default function MenuShowcase() {
   );
 
   return (
-    <section className="py-24 sm:py-32 bg-black text-white">
+    <section className="py-24 sm:py-32 bg-black text-white group/showcase">
       <div className="container mx-auto px-12">
         <div className="flex justify-between items-center mb-12">
           <h1 className="text-5xl md:text-7xl font-headline font-bold text-primary tracking-widest">
@@ -42,16 +49,23 @@ export default function MenuShowcase() {
         </div>
 
         <AnimateOnScroll animationType="fadeIn" delay={0.2} className="mt-16">
-          <div
-            className="flex gap-6 overflow-x-auto pb-8 -mx-12 px-12"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          <Carousel
+            opts={{
+              align: 'start',
+              dragFree: true,
+            }}
+            className="w-full"
           >
-            {filteredDrinks.map((drink, index) => (
-              <div key={index} className="min-w-[300px] flex-shrink-0">
-                <MenuItemCard drink={drink} />
-              </div>
-            ))}
-          </div>
+            <CarouselContent className="-ml-4">
+              {filteredDrinks.map((drink, index) => (
+                <CarouselItem key={index} className="basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 pl-4">
+                  <MenuItemCard drink={drink} />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="opacity-0 group-hover/showcase:opacity-100 transition-opacity" />
+            <CarouselNext className="opacity-0 group-hover/showcase:opacity-100 transition-opacity" />
+          </Carousel>
         </AnimateOnScroll>
 
         <AnimateOnScroll animationType="fadeIn" delay={0.4} className="mt-12 text-center">
@@ -62,11 +76,6 @@ export default function MenuShowcase() {
           </Button>
         </AnimateOnScroll>
       </div>
-      <style jsx>{`
-        .overflow-x-auto::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
     </section>
   );
 }
