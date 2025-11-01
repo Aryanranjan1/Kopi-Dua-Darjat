@@ -16,7 +16,6 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel';
-import MenuItemCard from './MenuItemCard';
 
 // Function to shuffle an array
 const shuffleArray = (array: any[]) => {
@@ -138,8 +137,8 @@ export default function MenuPromotions() {
                   key={drink.id}
                   className="basis-1/2 md:basis-1/3 lg:basis-1/4 pl-4"
                 >
-                  <div className="h-full">
-                    <MenuItemCard drink={drink} />
+                  <div className="h-[350px]">
+                    <PromotionCard drink={drink} />
                   </div>
                 </CarouselItem>
               ))}
