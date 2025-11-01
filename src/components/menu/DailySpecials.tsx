@@ -7,7 +7,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import { Badge } from '../ui/badge';
 import Image from 'next/image';
 
@@ -23,8 +22,7 @@ export function DailySpecials() {
   }
 
   return (
-    <AnimateOnScroll
-      animationType="fadeIn"
+    <div
       className="container mx-auto px-4 pb-12 sm:pb-16"
     >
       <div className="border-2 border-dashed border-primary/80 rounded-2xl p-6 md:p-8">
@@ -69,11 +67,8 @@ export function DailySpecials() {
           {hiddenSpecials.length > 0 && (
             <Accordion type="single" collapsible>
               <AccordionItem value="item-1" className="border-b-0">
-                <AccordionTrigger className="font-semibold text-accent hover:no-underline justify-center">
-                  View All Specials
-                </AccordionTrigger>
                 <AccordionContent>
-                  <div className="space-y-3">
+                  <div className="space-y-3 pt-3">
                     {hiddenSpecials.map((drink) => (
                       <div
                         key={drink.id}
@@ -108,11 +103,14 @@ export function DailySpecials() {
                     ))}
                   </div>
                 </AccordionContent>
+                <AccordionTrigger className="font-semibold text-accent hover:no-underline justify-center">
+                  View All Specials
+                </AccordionTrigger>
               </AccordionItem>
             </Accordion>
           )}
         </div>
       </div>
-    </AnimateOnScroll>
+    </div>
   );
 }

@@ -5,11 +5,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { allDrinks } from '@/lib/data';
 import type { Drink } from '@/lib/types';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import PromotionCard from './PromotionCard';
-import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import {
   Carousel,
   CarouselContent,
@@ -61,8 +60,7 @@ export default function MenuPromotions() {
 
   return (
     <div className="py-12 sm:py-16">
-      <AnimateOnScroll
-        animationType="fadeIn"
+      <div
         className="container mx-auto px-4"
       >
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -121,11 +119,10 @@ export default function MenuPromotions() {
             ))}
           </div>
         </div>
-      </AnimateOnScroll>
+      </div>
 
       {showRemainingCarousel && (
-        <AnimateOnScroll
-          animationType="fadeIn"
+        <div
           className="container mx-auto px-4 mt-16"
         >
           <Carousel
@@ -152,7 +149,7 @@ export default function MenuPromotions() {
               </>
             )}
           </Carousel>
-        </AnimateOnScroll>
+        </div>
       )}
     </div>
   );

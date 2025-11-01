@@ -1,7 +1,6 @@
 
 import type { Metadata } from 'next';
 import { allDrinks } from '@/lib/data';
-import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import MenuCarousel from '@/components/menu/MenuCarousel';
 import MenuPromotions from '@/components/menu/MenuPromotions';
 import { DailySpecials } from '@/components/menu/DailySpecials';
@@ -30,14 +29,14 @@ export default function MenuPage() {
     <div className="bg-background text-foreground">
         {/* Hero Section - Placeholder */}
         <section className="h-[40vh] bg-primary/20 flex items-center justify-center text-center">
-            <AnimateOnScroll animationType="slideInFromBottom" className="container mx-auto px-4">
+            <div className="container mx-auto px-4">
                 <h1 className="text-5xl md:text-6xl font-headline font-bold text-primary tracking-wider">
                 Our Menu
                 </h1>
                 <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
                 Handcrafted with passion, from classic heritage recipes to modern artisan creations.
                 </p>
-            </AnimateOnScroll>
+            </div>
         </section>
 
         <MenuPromotions />
