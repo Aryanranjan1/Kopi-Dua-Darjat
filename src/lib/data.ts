@@ -8,7 +8,7 @@ export const featuredDrinks: Drink[] = [
     price: 4.5,
     image: '/image/a.png',
     description: 'Our signature blend, a perfect harmony of bold and smooth, representing our heritage.',
-    tags: ['Darjat', 'Signature'],
+    tags: ['Specials', 'Coffee'],
     isFeatured: true,
   },
   {
@@ -18,17 +18,17 @@ export const featuredDrinks: Drink[] = [
     price: 6.0,
     image: '/image/b.png',
     description: 'Stone-ground matcha from Niko Neko, whisked to perfection for a vibrant taste.',
-    tags: ['Non-Coffee', 'Artisan'],
+    tags: ['Matcha', 'Specials'],
     isFeatured: true,
   },
   {
     id: '3',
-    name: 'Bottled Series',
-    slug: 'bottled-series',
+    name: 'Iced Peach Tea',
+    slug: 'iced-peach-tea',
     price: 5.0,
     image: '/image/c.png',
-    description: 'Your favorite Kopi Dua Darjat drinks, ready to go whenever you are.',
-    tags: ['On-the-Go', 'Bottled'],
+    description: 'A refreshing iced tea infused with sweet peach flavor, perfect for a sunny day.',
+    tags: ['Tea'],
     isFeatured: true,
   },
   {
@@ -38,7 +38,7 @@ export const featuredDrinks: Drink[] = [
     price: 5.5,
     image: '/image/d.png',
     description: 'A creamy, classic favorite with a sweet caramel drizzle and a bold espresso shot.',
-    tags: ['Sweet', 'Classic'],
+    tags: ['Coffee', 'Specials'],
     isFeatured: true,
   },
 ];
@@ -145,6 +145,7 @@ export const testimonials: Testimonial[] = [
       image: 'testimonial-3',
     },
   ];
+
 
 
 
