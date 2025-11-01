@@ -30,19 +30,19 @@
     {
       "id": "drink-macchiato",
       "description": "Caramel Macchiato.",
-      "imageUrl": "https://images.unsplash.com/photo-1541782064729-b752e929ebbc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxDQVJBTUVMJTIwTUFDQ0hJVE98ZW58MHx8fHwxNzU5MTM0NTI5fDA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1541782064729-b752e929ebbc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxDQVJBTUVMJTIwTUFDQ0hJVE98ZW58MHx8fHwxNzU5MTM0NTI5fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "caramel macchiato"
     },
     {
       "id": "promotion-banner",
       "description": "Banner for a current promotion.",
-      "imageUrl": "https://images.unsplash.com/photo-1690983325788-a0d5aaffa5b1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjb2ZmZWUlMjBwcm9tb3Rpb258ZW58MHx8fHwxNzU5MDY2OTIxfDA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1690983325788-a0d5aaffa5b1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjb2ZmZWUlMjBwcm9tb3Rpb258ZW58MHx8fHwxNzU5MDY2OTIxfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "coffee promotion"
     },
     {
       "id": "outlet-map",
       "description": "A map showing outlet locations.",
-      "imageUrl": "https://images.unsplash.com/photo-1476385822777-70eabacbd41f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjaXR5JTIwbWFwfGVufDB8fHx8MTc1ODk3NjgzMnww&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1476385822777-70eabacbd41f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjaXR5JTIwbWFwfGVufDB8fHx8MTc1ODk3NjgzMnww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "city map"
     },
     {
@@ -102,7 +102,7 @@
     {
       "id": "franchise-hero",
       "description": "Hero image for franchise page",
-      "imageUrl": "https://images.unsplash.com/photo-1594392174535-eb4b1043dad3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y2FmZSUyMG93bmVyfGVufDB8fHx8MTc1OTA2NjkyMXww&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1594392174535-eb4b1043dad3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y2FmZSUyMG93bmVyfGVufDB8fHx8MTc1OTA2NjkyMXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "cafe owner"
     },
     {
@@ -128,7 +128,7 @@
     {
       "id": "community-event-3",
       "description": "A barista crafting a specialty coffee for an event.",
-      "imageUrl": "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxDT01NVU5JVFklMjBTRVJWSUNFfGVufDB8fHx8MTc1OTEyNzU3Mnww&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxDT01NVU5JVFklMjBTRVJWSUNFfGVufDB8fHx8MTc1OTEyNzU3Mnww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "coffee event",
       "linkUrl": "https://www.youtube.com/watch?v=LXb3EKWsInQ"
     },
@@ -141,7 +141,7 @@
     {
       "id": "testimonial-1",
       "description": "Portrait of a happy male franchisee.",
-      "imageUrl": "https://images.unsplash.com/photo-1557862921-37829c790f19?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwb3J0cmFpdCUyMG1hbiUyMGhhcHB5fGVufDB8fHx8MTc1OTQ1NjcwOHww&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1557862921-37829c790f19?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwb3J0cmFpdCUyMG1hbiUyMGhhcHB5fGVufDB8fHx8MTc1OTQ1NjcwOHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "happy man"
     },
     {
@@ -177,20 +177,20 @@
     {
       "id": "insta-post-3",
       "description": "The minimalist interior of one of our outlets.",
-      "imageUrl": "https://images.unsplash.com/photo-1613274554329-70f997f5789f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjYWZlJTIwaW50ZXJpb3J8ZW58MHx8fHwxNzYxOTgyODIwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1613274554329-70f997f5789f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjYWZlJTIwaW50ZXJpb3J8ZW58MHx8fHwxNzYxOTgyODIwfDA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "cafe interior"
     },
     {
       "id": "insta-post-4",
       "description": "A close-up shot of our signature Kopi Darjat.",
-      "imageUrl": "https://images.unsplash.com/photo-1653286017965-83cbb7ba0b60?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8c2lnbmF0dXJlJTIwY29mZmVlfGVufDB8fHx8MTc2MTk4MzgyN3ww&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1653286017965-83cbb7ba0b60?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8c2lnbmF0dXJlJTIwY29mZmVlfGVufDB8fHx8MTc2MTk4MzgyN3ww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "signature coffee"
     },
     {
       "id": "community-grid-1",
-      "description": "A woman with curly hair smiling warmly.",
-      "imageUrl": "https://images.unsplash.com/photo-1636153279424-cb5d1e00f5a2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxwb3J0cmFpdCUyMHdvbWFufGVufDB8fHx8MTc2MTk3NzA3NXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "portrait woman"
+      "description": "A close-up of a perfectly crafted coffee cup.",
+      "imageUrl": "https://images.unsplash.com/photo-1598908314732-07113901949e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjb2ZmZWUlMjBjdXB8ZW58MHx8fHwxNzYxOTg2MzAyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "coffee cup"
     },
     {
       "id": "community-grid-2",
