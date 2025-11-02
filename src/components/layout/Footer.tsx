@@ -5,16 +5,17 @@ import { Card } from '../ui/card';
 
 export const TikTokIcon = () => (
     <svg 
-        xmlns="http://www.w3.org/2000/svg" 
-        viewBox="0 0 448 512"
-        className="h-8 w-8"
+      xmlns="http://www.w3.org/2000/svg" 
+      viewBox="0 0 448 512"
+      className="h-8 w-8"
     >
-      <path 
-        fill="hsl(var(--primary))"
-        d="M448 209.9a210.1 210.1 0 0 1 -122.8-39.25V349.38A162.6 162.6 0 1 1 185 188.31V278.2a74.62 74.62 0 1 0 52.23 71.18V0h88a121.18 121.18 0 0 0 122.77 122.77c0 29.12-10.86 56.83-30.05 78.13z"
-      />
+        <path 
+            fill="hsl(var(--primary))"
+            d="M448 209.9a210.1 210.1 0 0 1 -122.8-39.25V349.38A162.6 162.6 0 1 1 185 188.31V278.2a74.62 74.62 0 1 0 52.23 71.18V0h88a121.18 121.18 0 0 0 122.77 122.77c0 29.12-10.86 56.83-30.05 78.13z"
+        />
     </svg>
-  );
+);
+
 
 export default function SiteFooter() {
   const currentYear = new Date().getFullYear();
