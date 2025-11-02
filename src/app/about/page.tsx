@@ -130,7 +130,7 @@ export default function AboutPage() {
       <section className="py-24 sm:py-32">
         <div className="container mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-20">
-            <h2 className="text-4xl md:text-5xl font-headline font-bold text-foreground">Our Milestones</h2>
+            <h2 className="text-4xl md:text-5xl font-headline font-bold text-foreground inline-block underline decoration-primary decoration-4 underline-offset-8">Our Milestones</h2>
           </div>
           <div className="max-w-5xl mx-auto flex flex-col gap-24">
             {milestones.map((milestone, index) =>
@@ -154,7 +154,7 @@ export default function AboutPage() {
       <section className="py-24 sm:py-32 bg-black text-white">
         <div className="container mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-4xl md:text-5xl font-headline font-bold">A Message from Our Founders</h2>
+            <h2 className="text-4xl md:text-5xl font-headline font-bold text-primary">A Message from Our Founders</h2>
           </div>
           <div className="max-w-5xl mx-auto space-y-24">
              {founderHadi && (
@@ -179,25 +179,27 @@ export default function AboutPage() {
       </section>
 
       {/* Vision & Mission Section */}
-      <section className="py-24 sm:py-32">
+      <section className="py-24 sm:py-32 bg-black text-white">
         <div className="container mx-auto px-6 text-center max-w-4xl">
-            <h2 className="text-4xl md:text-5xl font-headline font-bold text-foreground">Our Vision & Mission</h2>
-            <p className="mt-4 text-lg md:text-xl max-w-3xl mx-auto text-muted-foreground">
+            <h2 className="text-4xl md:text-5xl font-headline font-bold text-primary">Our Vision & Mission</h2>
+            <p className="mt-4 text-lg md:text-xl max-w-3xl mx-auto text-white/80">
                 To be the leading purveyor of authentic Malaysian coffee culture, celebrated for our rich heritage, innovative spirit, and commitment to community.
             </p>
-            <ul className="mt-8 space-y-4 text-left inline-block">
-                {[
-                    'To serve high-quality, ethically-sourced Malaysian coffee beans.',
-                    'To create and provide friendly, inviting spaces that foster connection and culture appreciation.',
-                    'To preserve and promote the rich heritage of Malaysian coffee culture.',
-                    'To continuously innovate with products and experiences to expand our reach.'
-                ].map((item, index) => (
-                    <li key={index} className="flex items-start">
-                        <span className="text-accent font-bold mr-3">✓</span>
-                        <span className="text-muted-foreground">{item}</span>
-                    </li>
-                ))}
-            </ul>
+            <div className="mt-12 grid sm:grid-cols-2 gap-8 text-left">
+                <div className="border-l-4 border-accent pl-6">
+                    <h3 className="text-2xl font-headline font-bold">Vision</h3>
+                    <p className="mt-2 text-white/70">To become the most beloved and accessible artisan coffee brand in Southeast Asia, championing local flavors and empowering entrepreneurs.</p>
+                </div>
+                <div className="border-l-4 border-accent pl-6">
+                    <h3 className="text-2xl font-headline font-bold">Mission</h3>
+                     <ul className="mt-2 space-y-2 text-white/70">
+                        <li>- To serve high-quality, ethically-sourced Malaysian coffee.</li>
+                        <li>- To foster connection and culture in every community we serve.</li>
+                        <li>- To preserve and promote the rich heritage of Malaysian coffee.</li>
+                        <li>- To innovate continuously with our products and experiences.</li>
+                    </ul>
+                </div>
+            </div>
         </div>
       </section>
 

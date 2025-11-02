@@ -4,7 +4,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useInView } from 'framer-motion';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
-import { TrendingUp, Coffee, MapPin, Users } from 'lucide-react';
+import { TrendingUp, Users, Award, MapPin } from 'lucide-react';
 
 const AnimatedCounter = ({ to, duration = 2 }: { to: number; duration?: number }) => {
   const [count, setCount] = useState(0);
@@ -43,40 +43,34 @@ const stats = [
         suffix: '+',
     },
     {
-        icon: Coffee,
-        value: 1000000,
-        label: 'Cups Served',
+        icon: Award,
+        value: 30,
+        label: 'Happy Franchisees',
         suffix: '+',
     },
     {
         icon: Users,
-        value: 5000,
-        label: 'Happy Customers Daily',
+        value: 150,
+        label: 'Signature Drinks',
         suffix: '+',
     },
-    {
-        icon: TrendingUp,
-        value: 100,
-        label: 'Local Beans',
-        suffix: '%',
-    }
 ]
 
 const StatItem = ({ icon: Icon, value, label, suffix }: (typeof stats)[0]) => (
     <div className="text-center">
         <Icon className="w-12 h-12 text-accent mx-auto mb-4" strokeWidth={1.5} />
-        <p className="text-4xl md:text-5xl font-bold font-headline text-foreground">
+        <p className="text-4xl md:text-5xl font-bold font-headline text-white">
             <AnimatedCounter to={value} />{suffix}
         </p>
-        <p className="mt-2 text-muted-foreground">{label}</p>
+        <p className="mt-2 text-white/70">{label}</p>
     </div>
 )
 
 export default function Stats() {
     return (
-        <section className="py-24 bg-card/50">
+        <section className="py-24 bg-black">
             <AnimateOnScroll animationType='fadeIn' className="container mx-auto px-6">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div className="grid grid-cols-3 gap-8">
                     {stats.map(stat => (
                         <StatItem key={stat.label} {...stat} />
                     ))}
