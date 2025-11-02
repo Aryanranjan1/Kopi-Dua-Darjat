@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -24,25 +25,13 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
       onPageChange(currentPage + 1);
     }
   };
-  
-  const pageNumbers = [];
-  // Logic to display page numbers, e.g., [1, '...', 4, 5, 6, '...', 10]
-  // For simplicity, we'll show a few pages around the current one.
-  const pagesToShow = 5;
-  let startPage = Math.max(1, currentPage - Math.floor(pagesToShow / 2));
-  let endPage = Math.min(totalPages, startPage + pagesToShow - 1);
 
-  if (endPage - startPage + 1 < pagesToShow) {
-    startPage = Math.max(1, endPage - pagesToShow + 1);
+  if (totalPages <= 1) {
+    return null;
   }
-
-  for (let i = startPage; i <= endPage; i++) {
-    pageNumbers.push(i);
-  }
-
 
   return (
-    <div className="flex items-center justify-center gap-2 mt-16">
+    <div className="flex items-center justify-center gap-4 mt-8">
       <Button
         variant="outline"
         size="icon"
@@ -54,31 +43,10 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
         <span className="sr-only">Previous Page</span>
       </Button>
 
-      {startPage > 1 && (
-        <>
-          <Button variant="ghost" onClick={() => onPageChange(1)} className="rounded-full">1</Button>
-          {startPage > 2 && <span className="text-muted-foreground">...</span>}
-        </>
-      )}
-
-      {pageNumbers.map(page => (
-         <Button
-          key={page}
-          variant={currentPage === page ? 'default' : 'ghost'}
-          onClick={() => onPageChange(page)}
-          className="rounded-full"
-        >
-          {page}
-        </Button>
-      ))}
-
-      {endPage < totalPages && (
-         <>
-          {endPage < totalPages -1 && <span className="text-muted-foreground">...</span>}
-          <Button variant="ghost" onClick={() => onPageChange(totalPages)} className="rounded-full">{totalPages}</Button>
-        </>
-      )}
-
+      <span className="font-medium text-sm">
+        {currentPage}
+      </span>
+      
       <Button
         variant="outline"
         size="icon"
