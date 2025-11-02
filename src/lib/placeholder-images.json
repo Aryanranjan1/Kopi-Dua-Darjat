@@ -9,14 +9,14 @@
     {
       "id": "drink-darjat",
       "description": "Signature Darjat coffee.",
-      "imageUrl": "https://images.unsplash.com/photo-1642867705856-2a0ecde1399b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjb2ZmZWUlMjBkcmlua3xlbnwwfHx8fDE3NjIwMDU1ODB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1642867705856-2a0ecde1399b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjb2ZmZWUlMjBkcmlua3xlbnwwfHx8fDE3NjIwMDU1ODB8MA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "coffee drink",
       "linkUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
     },
     {
       "id": "drink-matcha",
       "description": "Artisanal matcha latte.",
-      "imageUrl": "https://images.unsplash.com/photo-1582785513054-8d1bf9d69c1a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtYXRjaGElMjBsYXR0ZXxlbnwwfHx8fDE3NjIwMTM3NDV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1582785513054-8d1bf9d69c1a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtYXRjaGElMjBsYXR0ZXxlbnwwfHx8fDE3NjIwMTM3NDV8MA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "matcha latte",
       "linkUrl": "https://www.youtube.com/watch?v=L_LUpnjgPso"
     },
@@ -90,7 +90,7 @@
     {
       "id": "brand-timeline",
       "description": "Image representing brand growth or history.",
-      "imageUrl": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjb2ZmZWUlMjBzaG9wfGVufDB8fHx8MTc2MTk0MTk0Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjb2ZmZWUlMjBzaG9wfGVufDB8fHx8MTc2MTk0MTk0Mnww&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "coffee shop"
     },
     {
@@ -285,79 +285,79 @@
     {
       "id": "gallery-1",
       "description": "A barista pouring latte art.",
-      "imageUrl": "https://images.unsplash.com/photo-1718838541476-d04e71caa347?w=500&auto=format&fit=crop",
+      "imageUrl": "https://images.unsplash.com/photo-1517701559435-505494a8c255?w=500&auto=format&fit=crop",
       "imageHint": "latte art"
     },
     {
       "id": "gallery-2",
       "description": "Friends laughing together in a cafe.",
-      "imageUrl": "https://images.unsplash.com/photo-1715432362539-6ab2ab480db2?w=500&auto=format&fit=crop",
+      "imageUrl": "https://images.unsplash.com/photo-1512486130939-2c4f79935e4f?w=500&auto=format&fit=crop",
       "imageHint": "cafe friends"
     },
     {
       "id": "gallery-3",
       "description": "A traditional Malaysian coffee cup set.",
-      "imageUrl": "https://images.unsplash.com/photo-1718601980986-0ce75101d52d?w=500&auto=format&fit=crop",
+      "imageUrl": "https://images.unsplash.com/photo-1559496417-50b5d5b74248?w=500&auto=format&fit=crop",
       "imageHint": "malaysian coffee"
     },
     {
       "id": "gallery-4",
       "description": "The warm interior of a Kopi Dua Darjat outlet.",
-      "imageUrl": "https://images.unsplash.com/photo-1685904042960-66242a0ac352?w=500&auto=format&fit=crop",
+      "imageUrl": "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=500&auto=format&fit=crop",
       "imageHint": "cafe interior"
     },
     {
       "id": "gallery-5",
       "description": "A smiling couple enjoying their coffee.",
-      "imageUrl": "https://images.unsplash.com/photo-1719411182379-ffd97c1f7ebf?w=500&auto=format&fit=crop",
+      "imageUrl": "https://images.unsplash.com/photo-1525875955322-a27c01a59050?w=500&auto=format&fit=crop",
       "imageHint": "couple coffee"
     },
     {
       "id": "gallery-6",
       "description": "Coffee beans being roasted.",
-      "imageUrl": "https://images.unsplash.com/photo-1718969604981-de826f44ce15?w=500&auto=format&fit=crop",
+      "imageUrl": "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=500&auto=format&fit=crop",
       "imageHint": "coffee roasting"
     },
     {
       "id": "gallery-7",
       "description": "A cozy corner in one of the cafes.",
-      "imageUrl": "https://images.unsplash.com/photo-1476180814856-a36609db0493?w=500&auto=format&fit=crop",
+      "imageUrl": "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=500&auto=format&fit=crop",
       "imageHint": "cozy cafe"
     },
     {
       "id": "gallery-8",
       "description": "A barista carefully preparing a drink.",
-      "imageUrl": "https://images.unsplash.com/photo-1595407660626-db35dcd16609?w=500&auto=format&fit=crop",
+      "imageUrl": "https://images.unsplash.com/photo-1511920170033-f8396924c348?w=500&auto=format&fit=crop",
       "imageHint": "barista"
     },
     {
       "id": "gallery-9",
       "description": "A close up of a coffee being poured",
-      "imageUrl": "https://images.unsplash.com/photo-1719547907790-f661a88302c2?w=500&auto=format&fit=crop",
+      "imageUrl": "https://images.unsplash.com/photo-1542181961-9430372250b7?w=500&auto=format&fit=crop",
       "imageHint": "coffee pour"
     },
     {
       "id": "gallery-10",
       "description": "A flat-lay of coffee and pastries",
-      "imageUrl": "https://images.unsplash.com/photo-1599054799131-4b09c73a63cf?w=500&auto=format&fit=crop",
+      "imageUrl": "https://images.unsplash.com/photo-1587122413491-331528658882?w=500&auto=format&fit=crop",
       "imageHint": "coffee flatlay"
     },
     {
       "id": "gallery-11",
       "description": "A group of friends enjoying coffee",
-      "imageUrl": "https://images.unsplash.com/photo-1719963532023-01b573d1d584?w=500&auto=format&fit=crop",
+      "imageUrl": "https://images.unsplash.com/photo-1527498332215-5517fde89f45?w=500&auto=format&fit=crop",
       "imageHint": "friends coffee"
     },
     {
       "id": "gallery-12",
       "description": "A coffee shop interior",
-      "imageUrl": "https://images.unsplash.com/photo-1714328101501-3594de6cb80f?w=500&auto=format&fit=crop",
+      "imageUrl": "https://images.unsplash.com/photo-1444910629988-537060a46b74?w=500&auto=format&fit=crop",
       "imageHint": "cafe interior"
     },
     {
       "id": "gallery-13",
       "description": "A cup of coffee on a saucer",
-      "imageUrl": "https://images.unsplash.com/photo-1719554873571-0fd6bf322bb1?w=500&auto=format&fit=crop",
+      "imageUrl": "https://images.unsplash.com/photo-1559526324-c1f275fbfa32?w=500&auto=format&fit=crop",
       "imageHint": "coffee cup"
     }
   ]
