@@ -4,8 +4,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { allDrinks } from '@/lib/data';
-import type { Drink } from '@/lib/types';
+import type { MenuItem } from '@/lib/types';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
@@ -19,45 +18,46 @@ import {
 import PromotionCard from './PromotionCard';
 import PromotionCarouselCard from './PromotionCarouselCard';
 import BigPromotionCard from './BigPromotionCard';
-
-// Function to shuffle an array
-const shuffleArray = (array: any[]) => {
-  let currentIndex = array.length,
-    randomIndex;
-
-  // While there remain elements to shuffle.
-  while (currentIndex !== 0) {
-    // Pick a remaining element.
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex--;
-
-    // And swap it with the current element.
-    [array[currentIndex], array[randomIndex]] = [
-      array[randomIndex],
-      array[currentIndex],
-    ];
-  }
-
-  return array;
-};
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection, query, where, limit } from 'firebase/firestore';
+import { Skeleton } from '../ui/skeleton';
 
 export default function MenuPromotions() {
-  const [promotedDrinks, setPromotedDrinks] = useState<Drink[]>([]);
-  const [remainingPromos, setRemainingPromos] = useState<Drink[]>([]);
+  const firestore = useFirestore();
 
-  useEffect(() => {
-    const activePromotions = allDrinks.filter((drink) => drink.hasPromotion);
-    const shuffled = shuffleArray(activePromotions);
-    setPromotedDrinks(shuffled.slice(0, 5)); // We need 5 items for the layout
-    setRemainingPromos(shuffled.slice(5));
-  }, []);
+  // This logic is a placeholder for a more robust promotion system.
+  // We'll fetch items that happen to have promotionIds as a proxy for "being on sale".
+  const promotionsQuery = useMemoFirebase(
+    () => firestore ? query(collection(firestore, 'promotions'), where('status', '==', 'active'), limit(10)) : null,
+    [firestore]
+  );
+  const { data: promotions, isLoading } = useCollection<MenuItem>(promotionsQuery);
 
-  if (promotedDrinks.length < 5) {
-    return null; // Don't render if we don't have enough promotions for the main grid
+  if (isLoading) {
+    return (
+      <div className="py-12 sm:py-16">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Skeleton className="h-[450px] w-full rounded-3xl" />
+            <div className="grid grid-cols-2 gap-6">
+              <Skeleton className="h-[217px] w-full rounded-3xl" />
+              <Skeleton className="h-[217px] w-full rounded-3xl" />
+              <Skeleton className="h-[217px] w-full rounded-3xl" />
+              <Skeleton className="h-[217px] w-full rounded-3xl" />
+            </div>
+          </div>
+        </div>
+      </div>
+    )
   }
 
-  const mainPromo = promotedDrinks[0];
-  const gridPromos = promotedDrinks.slice(1, 5);
+  if (!promotions || promotions.length < 5) {
+    return null; // Don't render if we don't have enough promotions for the layout
+  }
+
+  const mainPromo = promotions[0];
+  const gridPromos = promotions.slice(1, 5);
+  const remainingPromos = promotions.slice(5);
   const showRemainingCarousel = remainingPromos.length > 0;
 
   return (

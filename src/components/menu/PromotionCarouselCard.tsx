@@ -2,7 +2,7 @@
 "use client";
 
 import Image from 'next/image';
-import type { Drink } from '@/lib/types';
+import type { MenuItem } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowUpRight } from 'lucide-react';
@@ -10,7 +10,7 @@ import Link from 'next/link';
 import { Badge } from '../ui/badge';
 
 interface PromotionCarouselCardProps {
-  drink: Drink;
+  drink: MenuItem;
 }
 
 export default function PromotionCarouselCard({ drink }: PromotionCarouselCardProps) {
@@ -20,7 +20,7 @@ export default function PromotionCarouselCard({ drink }: PromotionCarouselCardPr
         <CardContent className="relative p-4 pt-32 flex flex-col items-center text-center">
           <div className="relative w-full h-80 -mt-48 mb-4 group">
             <Image
-              src={drink.image}
+              src={drink.imageUrl}
               alt={drink.name}
               fill
               className="object-contain drop-shadow-2xl transition-transform duration-300 group-hover:scale-105 rotate-12"
@@ -29,11 +29,6 @@ export default function PromotionCarouselCard({ drink }: PromotionCarouselCardPr
           <div className="w-full flex justify-between items-center text-left">
               <div className="flex-grow">
                   <h3 className="font-bold text-xl text-foreground truncate">{drink.name}</h3>
-                  {drink.promotionDetails && (
-                    <Badge variant="destructive" className="mt-1">
-                      {drink.promotionDetails}
-                    </Badge>
-                  )}
               </div>
              <Button asChild variant="outline" size="icon" className="rounded-full border-2 border-foreground/50 hover:bg-primary hover:border-primary shrink-0">
               <Link href={`/outlets?promotion=${drink.slug}`}>
