@@ -13,19 +13,13 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog';
-
-// Mock data - In a real app, this would come from Firestore
-const mockMessages = [
-  { id: 'msg001', name: 'Ahmad Zaki', email: 'ahmad.z@email.com', subject: 'Partnership Inquiry', message: 'Hello, I represent a local community event and would love to partner with Kopi Dua Darjat.', read: false },
-  { id: 'msg002', name: 'Chloe Chen', email: 'chloe.chen@email.com', subject: 'Feedback on new drink', message: 'The new Borneo Latté is amazing! Please make it a permanent item.', read: true },
-  { id: 'msg003', name: 'Ravi Pillai', email: 'ravi.p@email.com', subject: 'Question about outlet hours', message: 'Hi, are you open on public holidays? Specifically the one in Subang Jaya.', read: false },
-];
+import { mockMessages } from '@/lib/data'; // Import mock data
 
 export default function MessagesPage() {
   const [messages, setMessages] = useState(mockMessages);
-  const [selectedMessage, setSelectedMessage] = useState<typeof mockMessages[0] | null>(null);
+  const [selectedMessage, setSelectedMessage] = useState<(typeof mockMessages)[0] | null>(null);
 
-  const handleViewMessage = (message: typeof mockMessages[0]) => {
+  const handleViewMessage = (message: (typeof mockMessages)[0]) => {
     setSelectedMessage(message);
     // Mark as read
     setMessages(messages.map(m => m.id === message.id ? { ...m, read: true } : m));

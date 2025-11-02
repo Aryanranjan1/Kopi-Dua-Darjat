@@ -298,8 +298,24 @@ export const faqItems: FaqItem[] = [
         answer: 'We provide end-to-end support, including location scouting assistance, full operational training, supply chain management, and continuous brand-level marketing to drive customers to your outlet.'
     }
 ];
-    
 
-    
+// Mock data for admin panel
+export const mockMessages = [
+  { id: 'msg001', name: 'Ahmad Zaki', email: 'ahmad.z@email.com', subject: 'Partnership Inquiry', message: 'Hello, I represent a local community event and would love to partner with Kopi Dua Darjat.', read: false },
+  { id: 'msg002', name: 'Chloe Chen', email: 'chloe.chen@email.com', subject: 'Feedback on new drink', message: 'The new Borneo Latté is amazing! Please make it a permanent item.', read: true },
+  { id: 'msg003', name: 'Ravi Pillai', email: 'ravi.p@email.com', subject: 'Question about outlet hours', message: 'Hi, are you open on public holidays? Specifically the one in Subang Jaya.', read: false },
+];
 
-    
+export const mockFranchiseLeads = [
+  { id: 'fl001', name: 'Siti Aisyah', email: 'siti@email.com', city: 'Kuala Lumpur', budget: 'RM50,000 - RM100,000', message: 'Very interested in opening an outlet in Bangsar.', read: false },
+  { id: 'fl002', name: 'Tan Wei Ling', email: 'tan.wl@email.com', city: 'Penang', budget: 'Above RM100,000', message: 'I have a great location in Georgetown.', read: true },
+  { id: 'fl003', name: 'Kumar Ramasamy', email: 'kumar.r@email.com', city: 'Johor Bahru', budget: 'RM25,000 - RM50,000', message: 'Looking for opportunities in the city center.', read: false },
+];
+
+export const mockNewsletterSignups = [
+  { id: 'nl001', email: 'subscriber1@email.com', date: '2023-10-26' },
+  { id: 'nl002', email: 'subscriber2@email.com', date: '2023-10-25' },
+  { id: 'nl003', email: 'subscriber3@email.com', date: '2023-10-24' },
+  { id: 'nl004', email: 'subscriber4@email.com', date: '2023-10-23' },
+  { id: 'nl005', email: 'subscriber5@email.com', date: '2023-10-22' },
+];

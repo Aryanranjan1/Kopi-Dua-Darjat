@@ -13,28 +13,14 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog';
-
-// Mock data - In a real app, this would come from Firestore
-const mockFranchiseLeads = [
-  { id: 'fl001', name: 'Siti Aisyah', email: 'siti@email.com', city: 'Kuala Lumpur', budget: 'RM50,000 - RM100,000', message: 'Very interested in opening an outlet in Bangsar.', read: false },
-  { id: 'fl002', name: 'Tan Wei Ling', email: 'tan.wl@email.com', city: 'Penang', budget: 'Above RM100,000', message: 'I have a great location in Georgetown.', read: true },
-  { id: 'fl003', name: 'Kumar Ramasamy', email: 'kumar.r@email.com', city: 'Johor Bahru', budget: 'RM25,000 - RM50,000', message: 'Looking for opportunities in the city center.', read: false },
-];
-
-const mockNewsletterSignups = [
-  { id: 'nl001', email: 'subscriber1@email.com', date: '2023-10-26' },
-  { id: 'nl002', email: 'subscriber2@email.com', date: '2023-10-25' },
-  { id: 'nl003', email: 'subscriber3@email.com', date: '2023-10-24' },
-  { id: 'nl004', email: 'subscriber4@email.com', date: '2023-10-23' },
-  { id: 'nl005', email: 'subscriber5@email.com', date: '2023-10-22' },
-];
+import { mockFranchiseLeads, mockNewsletterSignups } from '@/lib/data'; // Import mock data
 
 export default function LeadsPage() {
   const [franchiseLeads, setFranchiseLeads] = useState(mockFranchiseLeads);
   const [newsletterSignups, setNewsletterSignups] = useState(mockNewsletterSignups);
-  const [selectedLead, setSelectedLead] = useState<typeof mockFranchiseLeads[0] | null>(null);
+  const [selectedLead, setSelectedLead] = useState<(typeof mockFranchiseLeads)[0] | null>(null);
 
-  const handleViewLead = (lead: typeof mockFranchiseLeads[0]) => {
+  const handleViewLead = (lead: (typeof mockFranchiseLeads)[0]) => {
     setSelectedLead(lead);
     // Mark as read
     setFranchiseLeads(franchiseLeads.map(l => l.id === lead.id ? { ...l, read: true } : l));
