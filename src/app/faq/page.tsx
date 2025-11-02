@@ -117,7 +117,7 @@ export default function FaqPage() {
               >
                 {/* Left Column: Category Title */}
                 <div className="lg:col-span-1">
-                  <h2 className="text-3xl font-headline font-bold text-primary">
+                  <h2 className="text-3xl font-headline font-bold text-foreground">
                     {category.title}
                   </h2>
                   <p className="mt-2 text-muted-foreground">
