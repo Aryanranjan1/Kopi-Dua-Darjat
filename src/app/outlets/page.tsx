@@ -1,6 +1,5 @@
 
 import type { Metadata } from 'next';
-import OutletsList from '@/components/outlets/OutletsList';
 import FranchiseCta from '@/components/outlets/FranchiseCta';
 import InstaSync from '@/components/home/InstaSync';
 import FooterCta from '@/components/outlets/FooterCta';
@@ -8,6 +7,8 @@ import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import OutletShowcase from '@/components/outlets/OutletShowcase';
 import { Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
+import InteractiveMap from '@/components/home/InteractiveMap';
+import { Card } from '@/components/ui/card';
 
 export const metadata: Metadata = {
   title: 'Outlets',
@@ -41,8 +42,21 @@ export default function OutletsPage() {
             <OutletShowcase />
         </Suspense>
 
-        {/* Find an Outlet Section */}
-        <OutletsList />
+        {/* Interactive Map Section */}
+        <section className="py-24 sm:py-32 bg-background">
+          <div className="container mx-auto px-6">
+             <AnimateOnScroll animationType="slideInFromBottom" className="text-center max-w-3xl mx-auto mb-16">
+                <h2 className="text-4xl md:text-5xl font-headline font-bold text-black inline-block underline decoration-primary decoration-4 underline-offset-8">
+                    Explore Our Locations
+                </h2>
+             </AnimateOnScroll>
+            <AnimateOnScroll animationType="fadeIn" delay={0.2}>
+                <Card className="overflow-hidden shadow-lg rounded-3xl h-[80vh]">
+                    <InteractiveMap />
+                </Card>
+            </AnimateOnScroll>
+          </div>
+        </section>
         
         {/* Franchise CTA */}
         <FranchiseCta />
