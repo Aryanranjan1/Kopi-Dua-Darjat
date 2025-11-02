@@ -26,7 +26,7 @@ export default function BrandStory() {
 
           {/* Right Side: Text Content */}
           <AnimateOnScroll animationType="slideInFromRight" className="pb-24 lg:pb-0 px-8 lg:px-0">
-            <h2 className="text-4xl md:text-5xl font-headline font-bold text-foreground leading-tight">
+            <h2 className="text-4xl md:text-5xl font-headline font-bold text-foreground leading-tight inline-block underline decoration-primary decoration-4 underline-offset-8">
               Antara Warisan & Artisan
             </h2>
             <p className="mt-6 text-xl text-muted-foreground">

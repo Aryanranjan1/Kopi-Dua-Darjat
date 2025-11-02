@@ -23,7 +23,7 @@ export default function FeaturedDrinks() {
       <div className="container mx-auto px-4 sm:px-12">
         <AnimateOnScroll animationType="fadeIn">
           <div className="text-center mb-16">
-            <h2 className="font-headline text-4xl md:text-5xl font-bold text-foreground tracking-wide">
+            <h2 className="font-headline text-4xl md:text-5xl font-bold text-foreground tracking-wide inline-block underline decoration-primary decoration-4 underline-offset-8">
               Popular products
             </h2>
           </div>

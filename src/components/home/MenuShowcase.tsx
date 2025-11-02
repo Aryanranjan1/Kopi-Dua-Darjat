@@ -43,7 +43,7 @@ export default function MenuShowcase() {
     <section className="py-24 sm:py-32 bg-black text-white group/showcase overflow-hidden">
       <div className="container mx-auto px-4 sm:px-12">
         <div className="flex flex-col md:flex-row justify-between md:items-center gap-8 mb-12">
-          <h1 className="text-5xl md:text-7xl font-headline font-bold text-primary tracking-widest text-center md:text-left">
+          <h1 className="text-5xl md:text-7xl font-headline font-bold text-primary tracking-widest text-center md:text-left inline-block underline decoration-white decoration-4 underline-offset-8">
             MENU
           </h1>
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
@@ -67,6 +67,7 @@ export default function MenuShowcase() {
             opts={{
               align: 'start',
               loop: true,
+              slidesToScroll: 1,
             }}
             className="w-full relative"
           >
