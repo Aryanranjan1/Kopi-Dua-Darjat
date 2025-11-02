@@ -5,6 +5,8 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import LatestStories from '@/components/home/LatestStories';
 import NewsletterSignUp from '@/components/home/NewsletterSignUp';
 import StickyScroll from '@/components/ui/sticky-scroll';
+import WhoAreWe from '@/components/about/WhoAreWe';
+import Stats from '@/components/about/Stats';
 
 export const metadata: Metadata = {
   title: 'Our Story',
@@ -61,7 +63,7 @@ const FounderMessage = ({ name, quote, imageUrl, imageHint, reverse = false }: {
             />
         </div>
         <div className="md:col-span-2">
-            <p className="text-2xl md:text-3xl leading-snug font-serif text-foreground">
+            <p className="text-2xl md:text-3xl leading-snug font-serif text-white">
                 “{quote}”
             </p>
             <p className="mt-6 font-bold text-lg font-headline text-accent">- {name}</p>
@@ -110,16 +112,19 @@ export default function AboutPage() {
     <>
     <div className="bg-background text-foreground">
       {/* Hero Section */}
-      <section className="py-24 sm:py-32 text-center bg-card">
+      <section className="py-24 sm:py-32 text-center bg-primary">
         <div className="container mx-auto px-6">
-          <h1 className="text-4xl md:text-6xl font-headline font-bold text-primary">
+          <h1 className="text-4xl md:text-6xl font-headline font-bold text-primary-foreground">
             Our Journey, Our Passion
           </h1>
-          <p className="mt-4 text-lg md:text-xl max-w-3xl mx-auto text-muted-foreground">
+          <p className="mt-4 text-lg md:text-xl max-w-3xl mx-auto text-primary-foreground/80">
             The story of a local brand that hopes to unite authenticity, heritage, and a love for the perfect cup of coffee.
           </p>
         </div>
       </section>
+
+      <WhoAreWe />
+      <Stats />
 
       {/* Milestones Section */}
       <section className="py-24 sm:py-32">
@@ -146,10 +151,10 @@ export default function AboutPage() {
       </section>
       
       {/* Founder's Message Section */}
-      <section className="py-24 sm:py-32 bg-card">
+      <section className="py-24 sm:py-32 bg-black text-white">
         <div className="container mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-4xl md:text-5xl font-headline font-bold text-foreground">A Message from Our Founders</h2>
+            <h2 className="text-4xl md:text-5xl font-headline font-bold">A Message from Our Founders</h2>
           </div>
           <div className="max-w-5xl mx-auto space-y-24">
              {founderHadi && (
