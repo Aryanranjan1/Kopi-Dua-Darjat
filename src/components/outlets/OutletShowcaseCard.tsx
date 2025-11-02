@@ -20,7 +20,7 @@ export default function OutletShowcaseCard({ outlet, userLocation }: OutletShowc
 
   return (
     <div className="p-1 h-full group">
-      <Card className="rounded-3xl bg-zinc-900 overflow-hidden h-full flex flex-col border border-zinc-800 hover:border-primary transition-all duration-300">
+      <Card className="rounded-3xl bg-primary/30 overflow-hidden h-full flex flex-col border border-primary/40 hover:border-primary transition-all duration-300">
         <CardContent className="relative p-4 flex flex-col text-left flex-grow">
           <Link href={`/outlets/${outlet.slug}`} className="block">
             <div className="relative w-full aspect-video mb-4 group overflow-hidden rounded-2xl">
@@ -32,8 +32,8 @@ export default function OutletShowcaseCard({ outlet, userLocation }: OutletShowc
               />
             </div>
             <div className="flex-grow">
-              <h3 className="font-bold text-xl text-white truncate transition-colors group-hover:text-primary">{outlet.name}</h3>
-              <p className="text-sm text-zinc-400 mt-1 line-clamp-2">{outlet.address}</p>
+              <h3 className="font-bold text-xl text-foreground truncate transition-colors group-hover:text-accent">{outlet.name}</h3>
+              <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{outlet.address}</p>
             </div>
           </Link>
           <div className="w-full flex justify-between items-center text-left mt-4">
@@ -45,7 +45,7 @@ export default function OutletShowcaseCard({ outlet, userLocation }: OutletShowc
                 </p>
               )}
             </div>
-            <Button asChild variant="outline" size="icon" className="rounded-full border-2 border-white/50 hover:bg-primary hover:border-primary shrink-0 bg-transparent text-white hover:text-foreground">
+            <Button asChild variant="outline" size="icon" className="rounded-full border-2 border-foreground/50 hover:bg-primary hover:border-primary shrink-0 bg-transparent text-foreground hover:text-primary-foreground">
               <a href={directionsUrl} target="_blank" rel="noopener noreferrer">
                 <ArrowUpRight className="w-5 h-5" />
               </a>

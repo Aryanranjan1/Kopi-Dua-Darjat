@@ -31,7 +31,6 @@ export default function OutletShowcase() {
   
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortedOutlets, setSortedOutlets] = useState<Outlet[]>(outlets);
   const [activeSort, setActiveSort] = useState<SortOption>('Nearest');
   const [selectedState, setSelectedState] = useState('All');
 
@@ -70,6 +69,7 @@ export default function OutletShowcase() {
     // Sort
     processedOutlets.sort((a, b) => {
       if (activeSort === 'Nearest') {
+        if (!position) return 0;
         if (a.distance === undefined) return 1;
         if (b.distance === undefined) return -1;
         return a.distance - b.distance;
@@ -79,7 +79,7 @@ export default function OutletShowcase() {
     });
 
     return processedOutlets;
-  }, [position, outlets, selectedState, searchQuery, activeSort]);
+  }, [position, selectedState, searchQuery, activeSort]);
 
   const totalPages = Math.ceil(filteredAndSortedOutlets.length / OUTLETS_PER_PAGE);
   const paginatedOutlets = filteredAndSortedOutlets.slice(
@@ -103,45 +103,47 @@ export default function OutletShowcase() {
   }
 
   return (
-    <section className="py-24 sm:py-32 bg-background text-foreground">
+    <section className="py-24 sm:py-32 bg-white text-foreground">
       <div className="container mx-auto px-6">
         <AnimateOnScroll animationType="slideInFromBottom" className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-4xl md:text-5xl font-headline font-bold text-foreground inline-block underline decoration-primary decoration-4 underline-offset-8">
+          <h2 className="text-4xl md:text-5xl font-headline font-bold text-black inline-block underline decoration-primary decoration-4 underline-offset-8">
             Outlet Showcase
           </h2>
         </AnimateOnScroll>
         
         {/* Controls */}
-        <div className="flex flex-col md:flex-row gap-4 mb-8 justify-center">
-            <div className="relative flex-grow md:flex-grow-0">
+        <div className="flex flex-col md:flex-row gap-4 mb-8 justify-center items-center">
+            <div className="relative w-full md:flex-grow-0 md:w-auto">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                     placeholder="Search outlets..."
                     value={searchQuery}
                     onChange={handleSearchChange}
-                    className="pl-9 rounded-full"
+                    className="pl-9 rounded-full w-full"
                 />
             </div>
-            <Select onValueChange={handleStateChange} defaultValue="All">
-                <SelectTrigger className="w-full md:w-[180px] rounded-full">
-                    <SelectValue placeholder="All States" />
-                </SelectTrigger>
-                <SelectContent>
-                    {allStates.map(state => (
-                        <SelectItem key={state} value={state}>{state}</SelectItem>
-                    ))}
-                </SelectContent>
-            </Select>
-            <Select onValueChange={(value) => handleSortChange(value as SortOption)} defaultValue="Nearest">
-                <SelectTrigger className="w-full md:w-[180px] rounded-full">
-                    <SelectValue placeholder="Sort by" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="Nearest">Sort by Nearest</SelectItem>
-                    <SelectItem value="Alphabetical">Sort by Name</SelectItem>
-                </SelectContent>
-            </Select>
-             <Button onClick={getPosition} disabled={isGeolocationLoading} className="rounded-full">
+            <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+              <Select onValueChange={handleStateChange} defaultValue="All">
+                  <SelectTrigger className="w-full sm:w-[180px] rounded-full">
+                      <SelectValue placeholder="All States" />
+                  </SelectTrigger>
+                  <SelectContent>
+                      {allStates.map(state => (
+                          <SelectItem key={state} value={state}>{state}</SelectItem>
+                      ))}
+                  </SelectContent>
+              </Select>
+              <Select onValueChange={(value) => handleSortChange(value as SortOption)} defaultValue="Nearest">
+                  <SelectTrigger className="w-full sm:w-[180px] rounded-full">
+                      <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent>
+                      <SelectItem value="Nearest">Sort by Nearest</SelectItem>
+                      <SelectItem value="Alphabetical">Sort by Name</SelectItem>
+                  </SelectContent>
+              </Select>
+            </div>
+             <Button onClick={getPosition} disabled={isGeolocationLoading} className="rounded-full w-full md:w-auto">
                 {isGeolocationLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <MapPin className="mr-2 h-4 w-4" />}
                 Find Near Me
             </Button>
