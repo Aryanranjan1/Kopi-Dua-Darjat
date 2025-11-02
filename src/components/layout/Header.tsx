@@ -79,8 +79,9 @@ export default function Header() {
         {/* Right Actions */}
         <div className="flex items-center gap-2">
             <Button asChild className="hidden lg:flex rounded-full bg-black text-white hover:bg-primary hover:text-black">
-              <Link href="/franchise/apply">
-                Apply Now
+              <Link href="/outlets">
+                <MapPin className="mr-2 h-4 w-4" />
+                Locate Me
               </Link>
             </Button>
             
@@ -113,8 +114,9 @@ export default function Header() {
                         </div>
                         <div className="mt-auto">
                             <Button asChild className="w-full rounded-full bg-black text-white hover:bg-primary hover:text-black">
-                              <Link href="/franchise/apply">
-                                Apply Now
+                              <Link href="/outlets">
+                                <MapPin className="mr-2 h-4 w-4" />
+                                Locate Me
                               </Link>
                             </Button>
                         </div>
