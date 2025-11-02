@@ -54,9 +54,8 @@ export default function Header() {
     >
       <div className="container mx-auto px-6 h-20 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center space-x-2">
-            <Image src="/image/1.svg" alt="Kopi Dua Darjat Logo" width={40} height={40} className='invert' />
-            <span className="font-headline font-bold text-xl text-foreground">Kopi Dua Darjat</span>
+        <Link href="/">
+            <Image src="/image/1.svg" alt="Kopi Dua Darjat Logo" width={64} height={64} />
         </Link>
 
 
@@ -97,11 +96,10 @@ export default function Header() {
                 </SheetTrigger>
                 <SheetContent side="left" className="w-[300px]">
                     <div className="flex flex-col h-full p-4">
-                        <Link href="/" className="flex items-center space-x-2 mb-8">
-                           <Image src="/image/1.svg" alt="Kopi Dua Darjat Logo" width={40} height={40} className='invert' />
-                           <span className="font-headline font-bold text-xl text-foreground">Kopi Dua Darjat</span>
+                        <Link href="/">
+                           <Image src="/image/1.svg" alt="Kopi Dua Darjat Logo" width={64} height={64} />
                         </Link>
-                        <div className="flex flex-col space-y-4">
+                        <div className="flex flex-col space-y-4 mt-8">
                             {navItems.map((item) => (
                                 <Link
                                 key={item.href}
