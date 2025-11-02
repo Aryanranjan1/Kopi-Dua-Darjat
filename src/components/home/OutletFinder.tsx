@@ -136,17 +136,14 @@ export default function OutletFinder() {
               )}
             </div>
 
-            <div className="mt-4 flex items-center justify-between">
-              {totalPages > 1 ? (
+            <div className="mt-4 flex items-center justify-center">
+              {totalPages > 1 && (
                 <Pagination 
                   currentPage={currentPage}
                   totalPages={totalPages}
                   onPageChange={setCurrentPage}
                 />
-              ) : <div />}
-              <Button asChild variant="link" className="text-accent hover:text-accent/80 p-0">
-                  <Link href="/outlets">Or view all {outlets.length}+ outlets</Link>
-              </Button>
+              )}
             </div>
           </div>
           <AnimateOnScroll animationType='slideInFromRight' className="lg:col-span-3 min-h-[600px] h-full">
