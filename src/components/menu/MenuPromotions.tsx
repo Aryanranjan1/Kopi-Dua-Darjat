@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/carousel';
 import PromotionCard from './PromotionCard';
 import PromotionCarouselCard from './PromotionCarouselCard';
+import BigPromotionCard from './BigPromotionCard';
 
 // Function to shuffle an array
 const shuffleArray = (array: any[]) => {
@@ -65,54 +66,7 @@ export default function MenuPromotions() {
         className="container mx-auto px-4"
       >
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Left Card */}
-          <Card className="rounded-2xl bg-gradient-to-br from-primary/30 to-accent/30 p-8 flex flex-col justify-between relative overflow-hidden">
-            {/* Background decorative images */}
-            <div className="absolute inset-0 z-0 opacity-20">
-              {gridPromos.map((promo, index) => (
-                <div
-                  key={promo.id}
-                  className="absolute"
-                  style={{
-                    top: `${10 + index * 20}%`,
-                    left: `${15 + (index % 2) * 50}%`,
-                    transform: `rotate(${index * 45}deg)`,
-                  }}
-                >
-                  <Image
-                    src={promo.image}
-                    alt=""
-                    width={100}
-                    height={100}
-                    className="object-contain"
-                  />
-                </div>
-              ))}
-            </div>
-            <div className="absolute inset-0 bg-black/20 z-0"></div>
-
-            <div className="relative z-10">
-              <h2 className="text-4xl md:text-5xl font-headline font-bold text-foreground">
-                Explore Our <span className="text-primary">Latest Offers</span>
-              </h2>
-              <p className="mt-4 text-lg text-muted-foreground max-w-md">
-                Discover limited-time deals and special promotions on your
-                favourite Kopi Dua Darjat drinks.
-              </p>
-            </div>
-            <div className="relative z-10 mt-6">
-              <Button
-                asChild
-                size="lg"
-                className="bg-accent hover:bg-accent/90 text-accent-foreground rounded-full"
-              >
-                <Link href="/outlets">
-                  Visit Us Today
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
-          </Card>
+          <BigPromotionCard drink={mainPromo} />
 
           {/* Right Grid */}
           <div className="grid grid-cols-2 gap-6">
