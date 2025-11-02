@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
 type GeolocationPosition = {
   latitude: number;
@@ -14,7 +15,7 @@ export function useGeolocation() {
   const [position, setPosition] = useState<GeolocationPosition | null>(null);
   const [error, setError] = useState<GeolocationError>(null);
 
-  const getPosition = () => {
+  const getPosition = useCallback(() => {
     if (!navigator.geolocation) {
       setError("Geolocation is not supported by your browser.");
       return;
@@ -41,7 +42,7 @@ export function useGeolocation() {
         maximumAge: 0,
       }
     );
-  };
+  }, []);
 
   return { isLoading, position, error, getPosition };
 }
