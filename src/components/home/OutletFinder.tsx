@@ -82,12 +82,12 @@ export default function OutletFinder() {
   );
 
   return (
-    <section className="py-24 sm:py-32 bg-background">
+    <section className="py-24 sm:py-32 bg-white">
       <div className="container mx-auto px-12">
         <div className="grid lg:grid-cols-5 gap-8 items-center">
           <div className="lg:col-span-2 text-center lg:text-left">
             <AnimateOnScroll animationType="slideInFromLeft">
-              <h2 className="text-4xl font-headline font-bold text-foreground inline-block underline decoration-primary decoration-4 underline-offset-8">
+              <h2 className="text-4xl font-headline font-bold text-foreground inline-block underline decoration-primary/50 decoration-4 underline-offset-8">
                 Find Us Near You
               </h2>
               <p className="mt-4 text-lg text-muted-foreground">
