@@ -1,7 +1,9 @@
+
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
-import { outlets } from '@/lib/data';
+import { useState, useEffect, useMemo, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { allDrinks, outlets } from '@/lib/data';
 import type { Outlet } from '@/lib/types';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { calculateDistance } from '@/lib/geolocation';
@@ -22,7 +24,12 @@ import {
 const OUTLETS_PER_PAGE = 8;
 type SortOption = 'Nearest' | 'Alphabetical';
 
-export default function OutletShowcase() {
+function OutletShowcaseContent() {
+  const searchParams = useSearchParams();
+  const itemParam = searchParams.get('item');
+  const promotionParam = searchParams.get('promotion');
+  const categoryParam = searchParams.get('category');
+  
   const {
     isLoading: isGeolocationLoading,
     position,
@@ -41,16 +48,39 @@ export default function OutletShowcase() {
   }, []);
 
   useEffect(() => {
-    getPosition();
-  }, [getPosition]);
+    // Automatically get position on component mount if not already available
+    if (!position) {
+      getPosition();
+    }
+  }, [getPosition, position]);
 
-  const filteredAndSortedOutlets = useMemo(() => {
-    let processedOutlets = outlets.map(outlet => ({
+  const { filteredAndSortedOutlets, dynamicTitle } = useMemo(() => {
+    let processedOutlets: Outlet[] = outlets.map(outlet => ({
       ...outlet,
       distance: position
         ? calculateDistance(position.latitude, position.longitude, outlet.lat, outlet.lng)
         : undefined,
     }));
+    
+    let dynamicTitle = "Outlet Showcase";
+
+    // Handle redirection filtering
+    if (itemParam) {
+      const drink = allDrinks.find(d => d.slug === itemParam);
+      if (drink) {
+        dynamicTitle = `Outlets for ${drink.name}`;
+        // For this example, we assume all outlets have all items.
+        // In a real app, you'd filter outlets based on which ones stock `itemParam`.
+      }
+    } else if (promotionParam) {
+        const drink = allDrinks.find(d => d.slug === promotionParam);
+        if(drink) {
+            dynamicTitle = `Outlets with the ${drink.name} promotion`;
+        }
+    } else if (categoryParam) {
+        const categoryName = categoryParam.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        dynamicTitle = `Outlets with the ${categoryName}`;
+    }
 
     // Filter by state
     if (selectedState !== 'All') {
@@ -78,8 +108,8 @@ export default function OutletShowcase() {
       return a.name.localeCompare(b.name);
     });
 
-    return processedOutlets;
-  }, [position, selectedState, searchQuery, activeSort]);
+    return { filteredAndSortedOutlets: processedOutlets, dynamicTitle };
+  }, [position, selectedState, searchQuery, activeSort, itemParam, promotionParam, categoryParam]);
 
   const totalPages = Math.ceil(filteredAndSortedOutlets.length / OUTLETS_PER_PAGE);
   const paginatedOutlets = filteredAndSortedOutlets.slice(
@@ -103,11 +133,11 @@ export default function OutletShowcase() {
   }
 
   return (
-    <section className="py-24 sm:py-32 bg-white text-foreground">
+    <section id="outlet-showcase" className="py-24 sm:py-32 bg-white text-foreground scroll-mt-20">
       <div className="container mx-auto px-6">
         <AnimateOnScroll animationType="slideInFromBottom" className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-4xl md:text-5xl font-headline font-bold text-black inline-block underline decoration-primary decoration-4 underline-offset-8">
-            Outlet Showcase
+            {dynamicTitle}
           </h2>
         </AnimateOnScroll>
         
@@ -173,4 +203,12 @@ export default function OutletShowcase() {
       </div>
     </section>
   );
+}
+
+export default function OutletShowcase() {
+  return (
+    <Suspense fallback={<div>Loading outlets...</div>}>
+      <OutletShowcaseContent />
+    </Suspense>
+  )
 }

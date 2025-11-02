@@ -1,18 +1,22 @@
 
-
 import type { Metadata } from 'next';
 import OutletsList from '@/components/outlets/OutletsList';
-import MalaysiaMap from '@/components/outlets/MalaysiaMap';
 import FranchiseCta from '@/components/outlets/FranchiseCta';
 import InstaSync from '@/components/home/InstaSync';
 import FooterCta from '@/components/outlets/FooterCta';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import OutletShowcase from '@/components/outlets/OutletShowcase';
+import { Suspense } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export const metadata: Metadata = {
   title: 'Outlets',
   description: 'Find a Kopi Dua Darjat outlet near you.',
 };
+
+function OutletShowcaseSkeleton() {
+  return <Skeleton className="h-[600px] w-full rounded-2xl" />;
+}
 
 export default function OutletsPage() {
   return (
@@ -32,11 +36,13 @@ export default function OutletsPage() {
           </section>
         </AnimateOnScroll>
         
+        {/* Our Presence Section */}
+        <Suspense fallback={<OutletShowcaseSkeleton />}>
+            <OutletShowcase />
+        </Suspense>
+
         {/* Find an Outlet Section */}
         <OutletsList />
-
-        {/* Our Presence Section */}
-        <OutletShowcase />
         
         {/* Franchise CTA */}
         <FranchiseCta />
@@ -49,5 +55,3 @@ export default function OutletsPage() {
     </>
   );
 }
-
-

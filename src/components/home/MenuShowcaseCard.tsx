@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -29,7 +30,7 @@ export default function MenuShowcaseCard({ drink }: MenuShowcaseCardProps) {
           <div className="mt-4 flex justify-between items-center">
              <p className="text-2xl font-bold text-primary">RM{drink.price.toFixed(2)}</p>
              <Button asChild variant="outline" size="icon" className="rounded-full border-2 border-white/50 hover:bg-primary hover:border-primary shrink-0 bg-transparent text-white hover:text-foreground">
-              <Link href="/outlets">
+              <Link href={`/outlets?item=${drink.slug}`}>
                 <ArrowUpRight className="w-5 h-5" />
               </Link>
              </Button>
