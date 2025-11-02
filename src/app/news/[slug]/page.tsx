@@ -7,7 +7,7 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Calendar, User, Tag, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import InstaSync from '@/components/home/InstaSync';
+import { CtaSection } from '@/components/shared/CtaSection';
 
 type Props = {
   params: { slug: string };
@@ -134,7 +134,7 @@ export default function NewsArticlePage({ params }: Props) {
             </article>
         </div>
         <RecommendedPosts currentPostId={post.id} />
-        <InstaSync />
+        <CtaSection />
     </>
   );
 }
