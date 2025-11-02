@@ -3,10 +3,9 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
-import SiteFooter from '@/components/layout/Footer';
 import { Playfair_Display, PT_Sans } from 'next/font/google';
-import Header from '@/components/layout/Header';
 import { FirebaseClientProvider } from '@/firebase';
+import AppLayout from './AppLayout';
 
 const playfairDisplay = Playfair_Display({
   subsets: ['latin'],
@@ -46,11 +45,7 @@ export default function RootLayout({
         )}
       >
         <FirebaseClientProvider>
-          <div className="relative flex min-h-dvh flex-col">
-            <Header />
-            <main className="flex-1">{children}</main>
-            <SiteFooter />
-          </div>
+          <AppLayout>{children}</AppLayout>
           <Toaster />
         </FirebaseClientProvider>
       </body>
