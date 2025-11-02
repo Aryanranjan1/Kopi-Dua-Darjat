@@ -86,11 +86,11 @@ export default function OutletsList() {
             <AnimateOnScroll animationType='slideInFromLeft'>
                 <div className="flex flex-col md:flex-row gap-4">
                 <div className="relative flex-grow">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-400" />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <Input
                     type="search"
                     placeholder="Search by name, city, or address..."
-                    className="w-full rounded-full bg-zinc-900 border-zinc-800 text-white pl-12 placeholder:text-zinc-400"
+                    className="w-full rounded-full bg-transparent border-border text-foreground pl-12 placeholder:text-muted-foreground"
                     value={searchQuery}
                     onChange={(e) => {
                         setSearchQuery(e.target.value);

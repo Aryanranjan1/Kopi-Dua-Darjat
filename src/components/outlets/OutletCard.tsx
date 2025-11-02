@@ -31,9 +31,9 @@ export default function OutletCard({ outlet, userLocation }: OutletCardProps) {
             </p>
           )}
         </Link>
-        <Button asChild size="icon" variant="ghost" className="rounded-full flex-shrink-0 hover:bg-accent/20">
+        <Button asChild size="icon" variant="ghost" className="rounded-full flex-shrink-0 bg-transparent hover:bg-primary border-2 border-foreground group/btn">
           <a href={directionsUrl} target="_blank" rel="noopener noreferrer" aria-label={`Get directions to ${outlet.name}`}>
-            <ArrowUpRight className="w-5 h-5 text-accent" />
+            <ArrowUpRight className="w-5 h-5 text-foreground group-hover/btn:text-black" />
           </a>
         </Button>
       </div>
