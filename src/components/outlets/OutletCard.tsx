@@ -1,4 +1,3 @@
-
 'use client';
 
 import type { Outlet } from '@/lib/types';
@@ -18,7 +17,7 @@ export default function OutletCard({ outlet, userLocation }: OutletCardProps) {
     : `https://www.google.com/maps/search/?api=1&query=${outlet.lat},${outlet.lng}`;
 
   return (
-    <Card className="p-4 transition-all duration-300 bg-zinc-900 border-zinc-800 text-white hover:shadow-lg hover:ring-2 hover:ring-primary/50">
+    <Card className="p-4 transition-all duration-300 bg-zinc-900/35 border-zinc-800 text-white hover:shadow-lg hover:ring-2 hover:ring-primary/50">
       <div className="flex justify-between items-center gap-4">
         <Link href={`/outlets/${outlet.slug}`} className="flex-grow group">
           <h4 className="font-bold text-lg text-white flex items-center group-hover:text-primary transition-colors">
@@ -41,5 +40,3 @@ export default function OutletCard({ outlet, userLocation }: OutletCardProps) {
     </Card>
   );
 }
-
-    
