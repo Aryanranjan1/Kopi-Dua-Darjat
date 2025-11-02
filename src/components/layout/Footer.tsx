@@ -3,6 +3,23 @@ import { Facebook, Instagram, Twitter } from 'lucide-react';
 import InteractiveMap from '../home/InteractiveMap';
 import { Card } from '../ui/card';
 
+export const TikTokIcon = () => (
+    <svg 
+        xmlns="http://www.w3.org/2000/svg" 
+        width="24" 
+        height="24" 
+        viewBox="0 0 24 24" 
+        fill="none" 
+        stroke="currentColor" 
+        strokeWidth="2" 
+        strokeLinecap="round" 
+        strokeLinejoin="round" 
+        className="h-6 w-6"
+    >
+        <path d="M21 7.5a4.5 4.5 0 0 1-4.5 4.5H12V17a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 4.5-4.5V7.5a4.5 4.5 0 0 1 9 0Z"/>
+    </svg>
+  );
+
 export default function SiteFooter() {
   const currentYear = new Date().getFullYear();
   const Icon = () => (
@@ -21,23 +38,6 @@ export default function SiteFooter() {
       <path d="M10 20.5c-3.3 0-6-2.2-6-5v-5c0-2.8 2.7-5 6-5h4c3.3 0 6 2.2 6 5v5c0 2.8-2.7 5-6 5h-4z" />
       <path d="M16 10.5h.5c1.4 0 2.5 1.1 2.5 2.5v1c0 1.4-1.1 2.5-2.5 2.5H16" />
       <path d="M7 2h8" />
-    </svg>
-  );
-
-  const TikTokIcon = () => (
-    <svg 
-        xmlns="http://www.w3.org/2000/svg" 
-        width="24" 
-        height="24" 
-        viewBox="0 0 24 24" 
-        fill="none" 
-        stroke="currentColor" 
-        strokeWidth="2" 
-        strokeLinecap="round" 
-        strokeLinejoin="round" 
-        className="h-6 w-6"
-    >
-        <path d="M21 7.5a4.5 4.5 0 0 1-4.5 4.5H12V17a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 4.5-4.5V7.5a4.5 4.5 0 0 1 9 0Z"/>
     </svg>
   );
 

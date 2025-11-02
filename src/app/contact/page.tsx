@@ -1,12 +1,15 @@
 
 import type { Metadata } from 'next';
 import Image from 'next/image';
+import Link from 'next/link';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import ContactForm from '@/components/contact/ContactForm';
 import ContactInfo from '@/components/contact/ContactInfo';
 import InteractiveMap from '@/components/home/InteractiveMap';
 import { Card } from '@/components/ui/card';
 import { CtaSection } from '@/components/shared/CtaSection';
+import { Facebook, Instagram } from 'lucide-react';
+import { TikTokIcon } from '@/components/layout/Footer';
 
 export const metadata: Metadata = {
   title: 'Contact Us',
@@ -66,6 +69,22 @@ export default function ContactPage() {
                    </p>
                    <ContactInfo />
                  </div>
+
+                 <div className="bg-primary text-primary-foreground p-6 rounded-2xl flex items-center justify-center gap-8">
+                    <h3 className="font-headline text-xl font-semibold">Follow Us</h3>
+                    <div className="flex items-center gap-4">
+                        <Link href="#" className="hover:opacity-80 transition-opacity">
+                            <Facebook className="h-8 w-8" />
+                        </Link>
+                        <Link href="#" className="hover:opacity-80 transition-opacity">
+                            <Instagram className="h-8 w-8" />
+                        </Link>
+                        <Link href="#" className="hover:opacity-80 transition-opacity">
+                           <TikTokIcon />
+                        </Link>
+                    </div>
+                 </div>
+
                  <Card className="overflow-hidden shadow-lg rounded-2xl aspect-video border-zinc-800">
                   <InteractiveMap />
                 </Card>
