@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Facebook, Instagram, Twitter, Music2 } from 'lucide-react';
 import InteractiveMap from '../home/InteractiveMap';
 import { Card } from '../ui/card';
@@ -55,13 +56,8 @@ export default function SiteFooter() {
               <li><Link href="/news" className="text-gray-400 hover:text-primary">News</Link></li>
             </ul>
           </div>
-          <div className="md:col-span-1">
-            <h3 className="font-headline text-lg font-semibold text-white">
-              Our Locations
-            </h3>
-             <Card className="overflow-hidden shadow-lg rounded-3xl aspect-[4/3] mt-4">
-              <InteractiveMap />
-            </Card>
+          <div className="md:col-span-1 flex items-center justify-center">
+            <Image src="/image/1.svg" alt="Kopi Dua Darjat Logo" width={150} height={150} />
           </div>
         </div>
         <div className="mt-12 border-t border-gray-800 pt-8 text-center text-sm text-gray-500">
