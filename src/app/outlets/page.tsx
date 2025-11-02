@@ -1,4 +1,5 @@
 
+
 import type { Metadata } from 'next';
 import OutletsList from '@/components/outlets/OutletsList';
 import MalaysiaMap from '@/components/outlets/MalaysiaMap';
@@ -6,6 +7,7 @@ import FranchiseCta from '@/components/outlets/FranchiseCta';
 import InstaSync from '@/components/home/InstaSync';
 import FooterCta from '@/components/outlets/FooterCta';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
+import OutletShowcase from '@/components/outlets/OutletShowcase';
 
 export const metadata: Metadata = {
   title: 'Outlets',
@@ -34,7 +36,7 @@ export default function OutletsPage() {
         <OutletsList />
 
         {/* Our Presence Section */}
-        <MalaysiaMap />
+        <OutletShowcase />
         
         {/* Franchise CTA */}
         <FranchiseCta />
@@ -47,3 +49,4 @@ export default function OutletsPage() {
     </>
   );
 }
+
