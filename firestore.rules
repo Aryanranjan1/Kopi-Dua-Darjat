@@ -1,0 +1,88 @@
+/**
+ * @fileOverview Firestore Security Rules for Kopi Dua Darjat.
+ *
+ * Core Philosophy:
+ * This ruleset prioritizes a secure-by-default posture, emphasizing authorization independence and clarity.
+ * It uses path-based authorization and relies on the existence of admin role documents for elevated privileges.
+ *
+ * Data Structure:
+ * - /outlets/{outletId}: Stores outlet information. Publicly readable, writeable by admins only.
+ * - /drinks/{drinkId}: Stores drink menu items. Publicly readable, writeable by admins only.
+ * - /promotions/{promotionId}: Stores promotional offers. Publicly readable, writeable by admins only.
+ * - /franchiseLeads/{franchiseLeadId}: Stores franchise inquiry submissions. Writeable and readable by admins only
+ * - /blogArticles/{blogArticleId}: Stores blog articles. Publicly readable, writeable by admins only.
+ * - /siteSettings/{siteSettingId}: Stores site-wide settings. Publicly readable, writeable by admins only.
+ * - /roles_admin/{userId}: Indicates admin role. The existence of a document grants admin rights to the user.
+ *
+ * Key Security Decisions:
+ * - Public Read Access: The 'outlets', 'drinks', 'promotions', 'blogArticles' and 'siteSettings' collections are publicly readable to support the application's storefront functionality.
+ * - Admin-Only Writes: Write access to the 'outlets', 'drinks', 'promotions', 'blogArticles' and 'siteSettings' collections is restricted to users with an 'admin' role.
+ * - FranchiseLeads: Only admins can read and write franchise leads.
+ * - No User Listing: Listing all users is not permitted.
+ *
+ * Denormalization for Authorization:
+ * - Admin Roles: The `/roles_admin/{userId}` collection is used to quickly check if a user has admin privileges without needing to query a separate document or collection.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Checks if the user has admin privileges based on document existing in roles_admin.
+     * @returns {boolean} True if the user is an admin, false otherwise.
+     */
+    function isAdmin() {
+      return exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid));
+    }
+
+    match /outlets/{outletId} {
+      allow get, list: if true;
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    match /drinks/{drinkId} {
+      allow get, list: if true;
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    match /promotions/{promotionId} {
+      allow get, list: if true;
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    match /franchiseLeads/{franchiseLeadId} {
+      allow get, list: if isAdmin();
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    match /blogArticles/{blogArticleId} {
+      allow get, list: if true;
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    match /siteSettings/{siteSettingId} {
+      allow get, list: if true;
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    match /roles_admin/{userId} {
+        allow get: if isAdmin();
+        allow list: if false;
+        allow create: if isAdmin();
+        allow update: if isAdmin();
+        allow delete: if isAdmin();
+    }
+  }
+}
