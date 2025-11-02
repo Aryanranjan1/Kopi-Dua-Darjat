@@ -28,7 +28,7 @@ export default function AdminLayout({
     return <>{children}</>;
   }
 
-  if (isUserLoading || !user) {
+  if (isUserLoading || (!user && pathname !== '/admin/login')) {
     return (
       <div className="flex h-screen items-center justify-center bg-zinc-950">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
