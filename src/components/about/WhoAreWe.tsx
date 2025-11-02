@@ -13,13 +13,13 @@ export default function WhoAreWe() {
       <div className="container mx-auto px-6">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <AnimateOnScroll animationType="slideInFromLeft">
-            <div className="relative aspect-video rounded-2xl overflow-hidden shadow-lg">
+            <div className="relative aspect-video rounded-2xl overflow-hidden shadow-lg group">
                 {image && (
                     <Image
                         src={image.imageUrl}
                         alt={image.description}
                         fill
-                        className="object-cover"
+                        className="object-cover transition-transform duration-300 group-hover:scale-105 group-hover:rotate-2"
                         data-ai-hint={image.imageHint}
                     />
                 )}

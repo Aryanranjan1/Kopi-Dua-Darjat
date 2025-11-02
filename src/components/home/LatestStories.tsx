@@ -20,7 +20,7 @@ export default function LatestStories() {
     const featuredPostImage = getPostImage(featuredPost.imageUrl);
 
     return (
-        <section className="py-24 sm:py-32 bg-[#F7F4EF]">
+        <section className="py-24 sm:py-40 bg-[#F7F4EF]">
             <div className="container mx-auto px-12">
                 <AnimateOnScroll animationType="slideInFromBottom">
                     <div className="flex justify-between items-center mb-12">
