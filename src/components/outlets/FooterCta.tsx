@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -18,7 +17,7 @@ export default function FooterCta() {
                         Sip, snap, and share your moment with us.
                     </p>
                     <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-                        <Button asChild size="lg" className="rounded-full">
+                        <Button asChild size="lg" className="rounded-full bg-black text-white hover:bg-white hover:text-black">
                             <Link href="/outlets">
                                 <MapPin className="mr-2 h-5 w-5" />
                                 Locate Outlet
