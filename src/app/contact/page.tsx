@@ -54,17 +54,17 @@ export default function ContactPage() {
                    <ContactInfo />
                  </div>
 
-                 <div className="bg-transparent border border-zinc-700 text-white p-6 rounded-2xl flex items-center justify-center gap-8">
+                 <div className="bg-transparent border border-zinc-700 text-white p-4 rounded-2xl flex items-center justify-center gap-8">
                     <h3 className="font-headline text-xl font-semibold text-primary">Follow Us</h3>
                     <div className="flex items-center gap-4">
                         <Link href="#" className="hover:opacity-80 transition-opacity">
-                            <Facebook className="h-8 w-8 text-primary" />
+                            <Facebook className="h-6 w-6 text-primary" />
                         </Link>
                         <Link href="#" className="hover:opacity-80 transition-opacity">
-                            <Instagram className="h-8 w-8 text-primary" />
+                            <Instagram className="h-6 w-6 text-primary" />
                         </Link>
                         <Link href="#" className="hover:opacity-80 transition-opacity">
-                           <Music2 className="h-8 w-8 text-primary" />
+                           <Music2 className="h-6 w-6 text-primary" />
                         </Link>
                     </div>
                  </div>
