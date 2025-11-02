@@ -1,9 +1,11 @@
+
 export type NavItem = {
   title: string;
   href: string;
   disabled?: boolean;
 };
 
+// The existing Drink type, will be phased out in favor of MenuItem
 export type Drink = {
   id: string;
   name: string;
@@ -17,25 +19,69 @@ export type Drink = {
   promotionDetails?: string;
 };
 
+// New Data Models for Firestore-backed CMS
+
+export type MenuCategory = {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  parentId?: string | null;
+  createdAt: any; // Firestore Timestamp
+  updatedAt: any; // Firestore Timestamp
+};
+
+export type MenuItem = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  price: number;
+  imageUrl: string;
+  categoryId: string;
+  subcategoryId?: string | null;
+  promotionIds?: string[];
+  outletIds?: string[];
+  isGeneral: boolean;
+  status: 'draft' | 'published';
+  createdAt: any; // Firestore Timestamp
+  updatedAt: any; // Firestore Timestamp
+};
+
+export type Promotion = {
+  id: string;
+  title: string;
+  description: string;
+  discountType: 'percentage' | 'flat';
+  discountValue: number;
+  startDate: any; // Firestore Timestamp
+  endDate: any; // Firestore Timestamp
+  menuItemIds?: string[];
+  outletIds?: string[];
+  status: 'active' | 'expired';
+  createdAt: any; // Firestore Timestamp
+  updatedAt: any; // Firestore Timestamp
+};
+
 export type Outlet = {
   id: string;
   name: string;
   slug: string;
   address: string;
-  hours: string;
   city: string;
   lat: number;
   lng: number;
-  isOpenNow: boolean;
+  hours: string;
+  isOpenNow: boolean; // Retaining for now, can be computed if needed
+  // New fields from brief
+  state?: string;
+  phone?: string;
+  email?: string;
+  status?: 'active' | 'inactive';
+  createdAt?: any;
+  updatedAt?: any;
 };
 
-export type Promotion = {
-  id:string;
-  title: string;
-  description: string;
-  expiry: string;
-  image: string;
-};
 
 export type BlogPost = {
   id: string;
@@ -64,4 +110,31 @@ export type FaqItem = {
     category: 'General' | 'Product' | 'Franchise';
     question: string;
     answer: string;
+};
+
+// Types for form submissions in Firestore
+export type ContactMessage = {
+  id: string;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  createdAt: any; // Firestore Timestamp
+};
+
+export type FranchiseApplication = {
+  id: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  city: string;
+  budget: string;
+  message: string;
+  createdAt: any; // Firestore Timestamp
+};
+
+export type NewsletterSubscriber = {
+  id: string;
+  email: string;
+  createdAt: any; // Firestore Timestamp
 };
