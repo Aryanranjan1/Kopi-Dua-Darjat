@@ -84,15 +84,17 @@ export default function OutletFinder() {
   return (
     <section className="py-24 sm:py-32 bg-white">
       <div className="container mx-auto px-12">
-        <div className="grid lg:grid-cols-5 gap-8 items-center">
-          <div className="lg:col-span-2 text-center lg:text-left">
+        <div className="grid lg:grid-cols-5 gap-8">
+          <div className="lg:col-span-2 flex flex-col">
             <AnimateOnScroll animationType="slideInFromLeft">
-              <h2 className="text-4xl font-headline font-bold text-foreground inline-block underline decoration-primary/50 decoration-4 underline-offset-8">
-                Find Us Near You
-              </h2>
-              <p className="mt-4 text-lg text-muted-foreground">
-                Your daily dose of artisan Kopi Kampung is just around the corner.
-              </p>
+              <div className="text-center lg:text-left">
+                <h2 className="text-4xl font-headline font-bold text-foreground inline-block underline decoration-primary/50 decoration-4 underline-offset-8">
+                  Find Us Near You
+                </h2>
+                <p className="mt-4 text-lg text-muted-foreground">
+                  Your daily dose of artisan Kopi Kampung is just around the corner.
+                </p>
+              </div>
             </AnimateOnScroll>
             <AnimateOnScroll animationType="fadeIn" delay={0.2}>
               <div className="mt-6 flex flex-col gap-4">
@@ -121,7 +123,7 @@ export default function OutletFinder() {
             
             {geolocationError && <p className="mt-2 text-sm text-destructive">{geolocationError}</p>}
 
-            <div className="mt-4 space-y-4 min-h-[300px]">
+            <div className="mt-4 space-y-4 min-h-[300px] flex-grow">
               {paginatedOutlets.map((outlet, index) => (
                 <AnimateOnScroll key={outlet.id} animationType='slideInFromLeft' delay={index * 0.1}>
                   <OutletCard outlet={outlet} userLocation={position} />
@@ -134,20 +136,21 @@ export default function OutletFinder() {
               )}
             </div>
 
-            {totalPages > 1 && (
-              <Pagination 
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
-              />
-            )}
-
-            <Button asChild variant="link" className="text-accent hover:text-accent/80 pl-0 mt-4">
-                <Link href="/outlets">Or view all {outlets.length}+ outlets</Link>
-            </Button>
+            <div className="mt-4 flex items-center justify-between">
+              {totalPages > 1 ? (
+                <Pagination 
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                />
+              ) : <div />}
+              <Button asChild variant="link" className="text-accent hover:text-accent/80 p-0">
+                  <Link href="/outlets">Or view all {outlets.length}+ outlets</Link>
+              </Button>
+            </div>
           </div>
-          <AnimateOnScroll animationType='slideInFromRight' className="lg:col-span-3">
-            <Card className="overflow-hidden shadow-lg rounded-3xl aspect-[4/3]">
+          <AnimateOnScroll animationType='slideInFromRight' className="lg:col-span-3 min-h-[600px] h-full">
+            <Card className="overflow-hidden shadow-lg rounded-3xl h-full">
               <InteractiveMap />
             </Card>
           </AnimateOnScroll>
