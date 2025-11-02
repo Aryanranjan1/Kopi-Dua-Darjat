@@ -2,7 +2,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
@@ -19,10 +19,9 @@ import {
 import MenuShowcaseCard from './MenuShowcaseCard';
 import { Skeleton } from '../ui/skeleton';
 
-
 export default function MenuShowcase() {
   const firestore = useFirestore();
-  const [activeFilterId, setActiveFilterId] = useState<string | 'Specials'>('Specials');
+  const [activeFilter, setActiveFilter] = useState<string>('featured');
 
   const categoriesQuery = useMemoFirebase(
     () => firestore ? query(collection(firestore, 'menuCategories'), limit(4)) : null,
@@ -33,23 +32,29 @@ export default function MenuShowcase() {
   const itemsQuery = useMemoFirebase(
     () => {
       if (!firestore) return null;
-      let q = query(collection(firestore, 'menuItems'), where('status', '==', 'published'));
-      if (activeFilterId !== 'Specials' && activeFilterId) {
-        q = query(q, where('categoryId', '==', activeFilterId));
-      } else if (activeFilterId === 'Specials') {
-        // This is a simplification. A real "Specials" might be a tag or a separate flag.
-        // We'll just fetch a few popular ones as a stand-in.
-        q = query(q, limit(10));
+      let q = query(collection(firestore, 'menuItems'), where('status', '==', 'published'), limit(10));
+      
+      // If the filter is not a category ID, it's a tag like 'featured'
+      if (activeFilter && !categories?.find(c => c.id === activeFilter)) {
+        q = query(q, where('tags', 'array-contains', activeFilter));
+      } else if (activeFilter) {
+        q = query(q, where('categoryId', '==', activeFilter));
       }
       return q;
-    }, [firestore, activeFilterId]
+    },
+    [firestore, activeFilter, categories]
   );
   const { data: menuItems, isLoading: isLoadingItems } = useCollection<MenuItem>(itemsQuery);
 
-  const filterCategories = [
-    { id: 'Specials', name: 'Specials' },
-    ...(categories || [])
-  ];
+  const filterOptions = useMemo(() => {
+    const filters = [{ id: 'featured', name: 'Featured' }];
+    if (categories) {
+        filters.push(...categories.slice(0, 3)); // Add up to 3 categories
+    }
+    return filters;
+  }, [categories]);
+
+  const isLoading = isLoadingCategories || isLoadingItems;
 
   return (
     <section className="py-24 sm:py-32 bg-black text-white group/showcase overflow-hidden">
@@ -59,14 +64,14 @@ export default function MenuShowcase() {
             MENU
           </h1>
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
-            {filterCategories.map((category) => (
+            {filterOptions.map((option) => (
               <button
-                key={category.id}
-                onClick={() => setActiveFilterId(category.id)}
+                key={option.id}
+                onClick={() => setActiveFilter(option.id)}
                 className="relative text-lg font-medium text-white transition-colors hover:text-primary"
               >
-                {category.name}
-                {activeFilterId === category.id && (
+                {option.name}
+                {activeFilter === option.id && (
                   <span className="absolute -bottom-2 left-0 w-full h-1 bg-primary rounded-full" />
                 )}
               </button>
@@ -75,9 +80,9 @@ export default function MenuShowcase() {
         </div>
 
         <AnimateOnScroll animationType="fadeIn" delay={0.2} className="mt-16">
-          {(isLoadingCategories || isLoadingItems) ? (
+          {isLoading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-[450px] rounded-3xl" />)}
+              {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-[450px] rounded-3xl bg-zinc-800" />)}
             </div>
           ) : (
             <Carousel

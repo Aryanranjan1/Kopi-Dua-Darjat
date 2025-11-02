@@ -34,6 +34,7 @@ import {
 import { Loader2, PlusCircle, Edit, Trash2 } from 'lucide-react';
 import CategoryForm from './CategoryForm';
 import { useToast } from '@/hooks/use-toast';
+import { Badge } from '@/components/ui/badge';
 
 export default function CategoriesTable() {
   const firestore = useFirestore();
@@ -46,6 +47,8 @@ export default function CategoriesTable() {
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<MenuCategory | undefined>(undefined);
+  
+  const categoryMap = new Map(categories?.map(c => [c.id, c.name]));
 
   const handleAddNew = () => {
     setSelectedCategory(undefined);
@@ -79,19 +82,25 @@ export default function CategoriesTable() {
         <TableHeader>
           <TableRow className="border-zinc-700 hover:bg-zinc-800">
             <TableHead>Name</TableHead>
+            <TableHead>Group</TableHead>
+            <TableHead>Parent</TableHead>
             <TableHead>Slug</TableHead>
-            <TableHead>Description</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {isLoading && <TableRow><TableCell colSpan={4} className="text-center"><Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" /></TableCell></TableRow>}
-          {!isLoading && categories && categories.length === 0 && <TableRow><TableCell colSpan={4} className="text-center text-zinc-400 py-8">No categories found. Add one to get started.</TableCell></TableRow>}
+          {isLoading && <TableRow><TableCell colSpan={5} className="text-center"><Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" /></TableCell></TableRow>}
+          {!isLoading && categories && categories.length === 0 && <TableRow><TableCell colSpan={5} className="text-center text-zinc-400 py-8">No categories found. Add one to get started.</TableCell></TableRow>}
           {categories?.map(cat => (
             <TableRow key={cat.id} className="border-zinc-700 hover:bg-zinc-800">
               <TableCell className="font-medium">{cat.name}</TableCell>
+              <TableCell>
+                {cat.group && <Badge variant="secondary">{cat.group}</Badge>}
+              </TableCell>
+              <TableCell className="text-zinc-400">
+                {cat.parentId ? categoryMap.get(cat.parentId) : 'N/A'}
+              </TableCell>
               <TableCell className="font-mono text-sm">{cat.slug}</TableCell>
-              <TableCell className="text-zinc-400">{cat.description}</TableCell>
               <TableCell className="text-right">
                 <Button variant="ghost" size="icon" onClick={() => handleEdit(cat)}>
                   <Edit className="h-4 w-4" />

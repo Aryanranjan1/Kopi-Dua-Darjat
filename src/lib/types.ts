@@ -27,6 +27,7 @@ export type MenuCategory = {
   slug: string;
   description?: string;
   parentId?: string | null;
+  group?: string; // e.g., 'Nak Kopi', 'Taknak Kopi', 'Seasonal'
   createdAt: any; // Firestore Timestamp
   updatedAt: any; // Firestore Timestamp
 };
@@ -44,6 +45,7 @@ export type MenuItem = {
   outletIds?: string[];
   isGeneral: boolean;
   status: 'draft' | 'published';
+  tags?: string[]; // For 'featured', 'new', etc.
   createdAt: any; // Firestore Timestamp
   updatedAt: any; // Firestore Timestamp
 };

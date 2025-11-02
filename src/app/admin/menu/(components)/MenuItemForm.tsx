@@ -37,6 +37,7 @@ const formSchema = z.object({
   imageUrl: z.string().url('Please enter a valid image URL.'),
   categoryId: z.string({ required_error: 'Please select a category.' }),
   status: z.enum(['draft', 'published']),
+  tags: z.string().optional(),
 });
 
 type MenuItemFormValues = z.infer<typeof formSchema>;
@@ -66,6 +67,7 @@ export default function MenuItemForm({ menuItem, onSuccess }: MenuItemFormProps)
       imageUrl: menuItem?.imageUrl || '',
       categoryId: menuItem?.categoryId || '',
       status: menuItem?.status || 'draft',
+      tags: menuItem?.tags?.join(', ') || '',
     },
   });
 
@@ -77,6 +79,7 @@ export default function MenuItemForm({ menuItem, onSuccess }: MenuItemFormProps)
     try {
       const dataToSave = {
         ...values,
+        tags: values.tags ? values.tags.split(',').map(tag => tag.trim()) : [],
         updatedAt: serverTimestamp(),
         // Default values for fields not yet in the form
         isGeneral: menuItem?.isGeneral ?? true,
@@ -190,6 +193,19 @@ export default function MenuItemForm({ menuItem, onSuccess }: MenuItemFormProps)
             <FormItem>
               <FormLabel>Image URL</FormLabel>
               <FormControl><Input placeholder="https://example.com/image.png" {...field} className={inputStyles} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="tags"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Tags (Optional)</FormLabel>
+              <FormControl><Input placeholder="e.g., featured, new, best-seller" {...field} className={inputStyles} /></FormControl>
+              <FormDescription>Comma-separated tags for filtering (like on the homepage).</FormDescription>
               <FormMessage />
             </FormItem>
           )}

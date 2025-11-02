@@ -20,18 +20,20 @@ import Link from 'next/link';
 
 export default function FeaturedDrinks() {
   const firestore = useFirestore();
+  
+  // Query for items tagged with 'featured'
   const featuredQuery = useMemoFirebase(
     () => firestore ? query(
       collection(firestore, 'menuItems'), 
       where('status', '==', 'published'),
-      where('isFeatured', '==', true), // Assuming you add this boolean to your MenuItem model
+      where('tags', 'array-contains', 'featured'),
       limit(6)
     ) : null,
     [firestore]
   );
-  const { data: featured, isLoading } = useCollection<MenuItem>(featuredQuery);
+  const { data: featured, isLoading: isLoadingFeatured } = useCollection<MenuItem>(featuredQuery);
   
-  // A fallback in case 'isFeatured' isn't implemented or yields no results
+  // A fallback query in case 'featured' tag yields no results
   const popularQuery = useMemoFirebase(
     () => firestore ? query(
       collection(firestore, 'menuItems'), 
@@ -40,9 +42,15 @@ export default function FeaturedDrinks() {
     ) : null,
     [firestore]
   );
-  const { data: popular } = useCollection<MenuItem>(popularQuery);
+  const { data: popular, isLoading: isLoadingPopular } = useCollection<MenuItem>(popularQuery);
 
   const drinksToShow = featured && featured.length > 0 ? featured : popular;
+  const isLoading = isLoadingFeatured || isLoadingPopular;
+
+  if (isLoading) {
+    // You can return a skeleton loader here if you want
+    return null;
+  }
 
   return (
     <section className="py-24 sm:py-32 bg-[#F7F4EF] text-foreground">
