@@ -3,7 +3,6 @@ import type { Metadata } from 'next';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import LatestStories from '@/components/home/LatestStories';
 import NewsletterSignUp from '@/components/home/NewsletterSignUp';
-import StickyScroll from '@/components/ui/sticky-scroll';
 import WhoAreWe from '@/components/about/WhoAreWe';
 import Stats from '@/components/about/Stats';
 import { Check } from 'lucide-react';
@@ -228,7 +227,6 @@ export default function AboutPage() {
       </AnimateOnScroll>
 
 
-      <StickyScroll />
     </div>
     <LatestStories />
     <NewsletterSignUp />
