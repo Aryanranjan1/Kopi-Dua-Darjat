@@ -1,66 +1,8 @@
 
-import type { Drink, Outlet, Promotion, BlogPost, Testimonial, FaqItem } from './types';
+import type { Outlet, BlogPost, Testimonial, FaqItem } from './types';
 
-export const allDrinks: Drink[] = [
-  // Darjat Series
-  { id: 'd1', name: 'Darjat Vanilla', slug: 'darjat-vanilla', price: 9, image: '/image/a.png', description: 'Creamy vanilla goodness', tags: ['Darjat Series', 'Coffee'], isFeatured: false, hasPromotion: true, promotionDetails: 'RM2 Off Today' },
-  { id: 'd2', name: 'Darjat Caramel', slug: 'darjat-caramel', price: 9, image: '/image/d.png', description: 'Rich caramel swirls', tags: ['Darjat Series', 'Our Favourites', 'Daily Special', 'Coffee'], isFeatured: true },
-  { id: 'd3', name: 'Darjat Hazel', slug: 'darjat-hazel', price: 9, image: '/image/a.png', description: 'Nutty & aromatic', tags: ['Darjat Series', 'Coffee'], isFeatured: false },
-  { id: 'd4', name: 'Darjat Butterscotch', slug: 'darjat-butterscotch', price: 9, image: '/image/d.png', description: 'Sweet butterscotch notes', tags: ['Darjat Series', 'Daily Special', 'Coffee'], isFeatured: false, promotionDetails: 'Free Upsize' },
-  { id: 'd5', name: 'Darjat Borneo', slug: 'darjat-borneo', price: 9, image: '/image/a.png', description: 'dengan sirap Gula Apong Sarawak', tags: ['Darjat Series', 'Coffee'], isFeatured: false },
-  { id: 'd6', name: 'Darjat Malaya', slug: 'darjat-malaya', price: 8, image: '/image/d.png', description: 'kopi susu dan susu pekat', tags: ['Darjat Series', 'Coffee'], isFeatured: false },
-  { id: 'd7', name: 'Darjat Tamanis', slug: 'darjat-tamanis', price: 8, image: '/image/a.png', description: 'kopi susu tanpa gula/sirap', tags: ['Darjat Series', 'Coffee'], isFeatured: false },
-
-  // Kopitiam Series
-  { id: 'k1', name: 'Kopi Warisan', slug: 'kopi-warisan', price: 8, image: '/image/d.png', description: 'The original classic', tags: ['Kopitiam Series', 'Coffee'], isFeatured: false },
-  { id: 'k2', name: 'Kopi Karim', slug: 'kopi-karim', price: 8, image: '/image/b.png', description: 'kopi ekstra kaw dengan krim pekat manis', tags: ['Kopitiam Series', 'Our Favourites', 'Coffee'], isFeatured: true, hasPromotion: true, promotionDetails: 'Buy 1 Get 1' },
-  { id: 'k3', name: 'Kopi Melayo', slug: 'kopi-melayo', price: 5, image: '/image/a.png', description: 'kopi hitam dan sirap vanila', tags: ['Kopitiam Series', 'Coffee'], isFeatured: false },
-
-  // Espresso Series
-  { id: 'e1', name: 'Americano', slug: 'americano', price: 7, image: '/image/d.png', description: 'Bold and intense', tags: ['Espresso Series', 'Coffee'], isFeatured: false },
-  { id: 'e2', name: 'Latté', slug: 'latte', price: 9, image: '/image/a.png', description: 'Smooth and milky', tags: ['Espresso Series', 'Coffee'], isFeatured: false },
-  { id: 'e3', name: 'Creamy Latté', slug: 'creamy-latte', price: 10, image: '/image/d.png', description: 'cafe latte yang lebih creamy', tags: ['Espresso Series', 'Daily Special', 'Coffee'], isFeatured: false },
-  { id: 'e4', name: 'Borneo Latté', slug: 'borneo-latte', price: 10, image: '/image/a.png', description: 'latte dengan sirap gula apong Sarawak', tags: ['Espresso Series', 'Coffee'], isFeatured: false },
-  { id: 'e5', name: 'Latté Malaya', slug: 'latte-malaya', price: 10, image: '/image/d.png', description: 'latte dengan susu pekat', tags: ['Espresso Series', 'Coffee'], isFeatured: false },
-  { id: 'e6', name: 'Café Limone', slug: 'cafe-limone', price: 10, image: '/image/a.png', description: 'americano lemon', tags: ['Espresso Series', 'Coffee'], isFeatured: false },
-  { id: 'e7', name: 'Mocha', slug: 'mocha', price: 10, image: '/image/d.png', description: 'Chocolatey coffee delight', tags: ['Espresso Series', 'Daily Special', 'Coffee'], isFeatured: false, hasPromotion: true, promotionDetails: 'Free Espresso Shot' },
-  { id: 'e8', name: 'Dark Mocha', slug: 'dark-mocha', price: 11, image: '/image/a.png', description: 'mocha dengan extra coklat', tags: ['Espresso Series', 'Coffee'], isFeatured: false, hasPromotion: true, promotionDetails: 'RM1 Off' },
-  { id: 'e9', name: 'Dirty Matcha', slug: 'dirty-matcha', price: 11, image: '/image/d.png', description: 'matcha dipadankan dengan espreso', tags: ['Espresso Series', 'Daily Special', 'Coffee', 'Matcha'], isFeatured: false, hasPromotion: true, promotionDetails: 'Combo Deal' },
-
-  // Coklat Series
-  { id: 'cs1', name: 'Coklat Artisan', slug: 'coklat-artisan', price: 9, image: '/image/c.png', description: 'Rich chocolate indulgence', tags: ['Coklat Series', 'Tea'], isFeatured: false },
-  { id: 'cs2', name: 'Makha', slug: 'makha', price: 9, image: '/image/a.png', description: 'mocha versi Dua Darjat. Campuran kopi dan coklat', tags: ['Coklat Series', 'Coffee', 'Tea'], isFeatured: false },
-  { id: 'cs3', name: 'Triple Choc Makha', slug: 'triple-choc-makha', price: 10, image: '/image/d.png', description: 'makha dengan ekstra coklat', tags: ['Coklat Series', 'Coffee', 'Tea'], isFeatured: false },
-  { id: 'cs4', name: 'Coklat Caramel', slug: 'coklat-caramel', price: 10, image: '/image/c.png', description: 'Sweet caramel chocolate', tags: ['Coklat Series', 'Tea'], isFeatured: false, hasPromotion: true, promotionDetails: '20% Off' },
-
-  // Matcha Series
-  { id: 'ma1', name: 'Matcho', slug: 'matcho', price: 8, image: '/image/b.png', description: 'matcha O tanpa susu dengan pilihan sirap Dua Darjat', tags: ['Matcha Series', 'Matcha'], isFeatured: false },
-  { id: 'ma2', name: 'Matchaa', slug: 'matchaa', price: 9, image: '/image/b.png', description: 'matcha latte yang lebih berkrim', tags: ['Matcha Series', 'Daily Special', 'Matcha'], isFeatured: false },
-  { id: 'ma3', name: 'Choc Matchaa', slug: 'choc-matchaa', price: 10, image: '/image/b.png', description: 'Matcha with chocolate', tags: ['Matcha Series', 'Matcha'], isFeatured: false },
-  { id: 'ma4', name: 'Kopi Matchaa', slug: 'kopi-matchaa', price: 10, image: '/image/b.png', description: 'Matcha with coffee', tags: ['Matcha Series', 'Coffee', 'Matcha'], isFeatured: false, hasPromotion: true, promotionDetails: 'New Item Promo' },
-  { id: 'ma5', name: 'Matchaa Caramel', slug: 'matchaa-caramel', price: 10, image: '/image/b.png', description: 'Sweet caramel matcha', tags: ['Matcha Series', 'Our Favourites', 'Matcha'], isFeatured: true, hasPromotion: true, promotionDetails: 'Member Exclusive' },
-  
-  // Menet Series
-  { id: 'me1', name: 'Le Menet', slug: 'le-menet', price: 7, image: '/image/a.png', description: 'minuman sparkling berperisa lemon', tags: ['Menet Series', 'Tea'], isFeatured: false },
-  { id: 'me2', name: 'Kopi Leman', slug: 'kopi-leman', price: 7, image: '/image/d.png', description: 'kopi O dan sirap lemon', tags: ['Menet Series', 'Coffee'], isFeatured: false, hasPromotion: true, promotionDetails: 'Student Price' },
-  { id: 'me3', name: 'Matcho Leman', slug: 'matcho-leman', price: 9, image: '/image/b.png', description: 'matcha O dan sirap lemon', tags: ['Menet Series', 'Matcha'], isFeatured: false },
-  { id: 'me4', name: 'Berrygo Menet', slug: 'berrygo-menet', price: 9, image: '/image/c.png', description: 'gabungan strawberi, mangga dan lemon', tags: ['Menet Series', 'Our Favourites', 'Tea'], isFeatured: true, hasPromotion: true, promotionDetails: 'Limited Time' },
-  { id: 'me5', name: 'Strawberry Menet', slug: 'strawberry-menet', price: 9, image: '/image/a.png', description: 'Sparkling strawberry', tags: ['Menet Series', 'Daily Special', 'Tea'], isFeatured: false },
-  { id: 'me6', name: 'Mango Menet', slug: 'mango-menet', price: 9, image: '/image/d.png', description: 'Sparkling mango', tags: ['Menet Series', 'Tea'], isFeatured: false },
-  { id: 'me7', name: 'Blueberry Menet', slug: 'blueberry-menet', price: 9, image: '/image/c.png', description: 'Sparkling blueberry', tags: ['Menet Series', 'Tea'], isFeatured: false, hasPromotion: true, promotionDetails: 'Happy Hour Deal' },
-  { id: 'me8', name: 'Pomegranate Menet', slug: 'pomegranate-menet', price: 9, image: '/image/a.png', description: 'Sparkling pomegranate', tags: ['Menet Series', 'Tea'], isFeatured: false },
-  { id: 'me9', name: 'Rock Melon Menet', slug: 'rock-melon-menet', price: 9, image: '/image/d.png', description: 'Sparkling rock melon', tags: ['Menet Series', 'Tea'], isFeatured: false, hasPromotion: true, promotionDetails: 'Online Only' },
-];
-
-export const promotions: Promotion[] = [
-  {
-    id: '1',
-    title: 'Weekday Special',
-    description: 'Get any 2 drinks for RM10, Mon-Fri, 2-5 PM.',
-    expiry: 'Expires 31 Dec 2024',
-    image: 'promotion-banner',
-  },
-];
+// This file now contains only data that is not part of the main CMS.
+// Menu items, categories, and promotions are now fetched from Firestore.
 
 export const outlets: Outlet[] = [
     // Selangor
@@ -318,4 +260,57 @@ export const mockNewsletterSignups = [
   { id: 'nl003', email: 'subscriber3@email.com', date: '2023-10-24' },
   { id: 'nl004', email: 'subscriber4@email.com', date: '2023-10-23' },
   { id: 'nl005', email: 'subscriber5@email.com', date: '2023-10-22' },
+];
+
+// The old allDrinks data, to be used by the one-time migration script.
+export const allDrinks = [
+    // This data is now only for migration and will be removed later.
+    // Darjat Series
+  { id: 'd1', name: 'Darjat Vanilla', slug: 'darjat-vanilla', price: 9, image: '/image/a.png', description: 'Creamy vanilla goodness', tags: ['Darjat Series', 'Coffee'], isFeatured: false, hasPromotion: true, promotionDetails: 'RM2 Off Today' },
+  { id: 'd2', name: 'Darjat Caramel', slug: 'darjat-caramel', price: 9, image: '/image/d.png', description: 'Rich caramel swirls', tags: ['Darjat Series', 'Our Favourites', 'Daily Special', 'Coffee'], isFeatured: true },
+  { id: 'd3', name: 'Darjat Hazel', slug: 'darjat-hazel', price: 9, image: '/image/a.png', description: 'Nutty & aromatic', tags: ['Darjat Series', 'Coffee'], isFeatured: false },
+  { id: 'd4', name: 'Darjat Butterscotch', slug: 'darjat-butterscotch', price: 9, image: '/image/d.png', description: 'Sweet butterscotch notes', tags: ['Darjat Series', 'Daily Special', 'Coffee'], isFeatured: false, promotionDetails: 'Free Upsize' },
+  { id: 'd5', name: 'Darjat Borneo', slug: 'darjat-borneo', price: 9, image: '/image/a.png', description: 'dengan sirap Gula Apong Sarawak', tags: ['Darjat Series', 'Coffee'], isFeatured: false },
+  { id: 'd6', name: 'Darjat Malaya', slug: 'darjat-malaya', price: 8, image: '/image/d.png', description: 'kopi susu dan susu pekat', tags: ['Darjat Series', 'Coffee'], isFeatured: false },
+  { id: 'd7', name: 'Darjat Tamanis', slug: 'darjat-tamanis', price: 8, image: '/image/a.png', description: 'kopi susu tanpa gula/sirap', tags: ['Darjat Series', 'Coffee'], isFeatured: false },
+
+  // Kopitiam Series
+  { id: 'k1', name: 'Kopi Warisan', slug: 'kopi-warisan', price: 8, image: '/image/d.png', description: 'The original classic', tags: ['Kopitiam Series', 'Coffee'], isFeatured: false },
+  { id: 'k2', name: 'Kopi Karim', slug: 'kopi-karim', price: 8, image: '/image/b.png', description: 'kopi ekstra kaw dengan krim pekat manis', tags: ['Kopitiam Series', 'Our Favourites', 'Coffee'], isFeatured: true, hasPromotion: true, promotionDetails: 'Buy 1 Get 1' },
+  { id: 'k3', name: 'Kopi Melayo', slug: 'kopi-melayo', price: 5, image: '/image/a.png', description: 'kopi hitam dan sirap vanila', tags: ['Kopitiam Series', 'Coffee'], isFeatured: false },
+
+  // Espresso Series
+  { id: 'e1', name: 'Americano', slug: 'americano', price: 7, image: '/image/d.png', description: 'Bold and intense', tags: ['Espresso Series', 'Coffee'], isFeatured: false },
+  { id: 'e2', name: 'Latté', slug: 'latte', price: 9, image: '/image/a.png', description: 'Smooth and milky', tags: ['Espresso Series', 'Coffee'], isFeatured: false },
+  { id: 'e3', name: 'Creamy Latté', slug: 'creamy-latte', price: 10, image: '/image/d.png', description: 'cafe latte yang lebih creamy', tags: ['Espresso Series', 'Daily Special', 'Coffee'], isFeatured: false },
+  { id: 'e4', name: 'Borneo Latté', slug: 'borneo-latte', price: 10, image: '/image/a.png', description: 'latte dengan sirap gula apong Sarawak', tags: ['Espresso Series', 'Coffee'], isFeatured: false },
+  { id: 'e5', name: 'Latté Malaya', slug: 'latte-malaya', price: 10, image: '/image/d.png', description: 'latte dengan susu pekat', tags: ['Espresso Series', 'Coffee'], isFeatured: false },
+  { id: 'e6', name: 'Café Limone', slug: 'cafe-limone', price: 10, image: '/image/a.png', description: 'americano lemon', tags: ['Espresso Series', 'Coffee'], isFeatured: false },
+  { id: 'e7', name: 'Mocha', slug: 'mocha', price: 10, image: '/image/d.png', description: 'Chocolatey coffee delight', tags: ['Espresso Series', 'Daily Special', 'Coffee'], isFeatured: false, hasPromotion: true, promotionDetails: 'Free Espresso Shot' },
+  { id: 'e8', name: 'Dark Mocha', slug: 'dark-mocha', price: 11, image: '/image/a.png', description: 'mocha dengan extra coklat', tags: ['Espresso Series', 'Coffee'], isFeatured: false, hasPromotion: true, promotionDetails: 'RM1 Off' },
+  { id: 'e9', name: 'Dirty Matcha', slug: 'dirty-matcha', price: 11, image: '/image/d.png', description: 'matcha dipadankan dengan espreso', tags: ['Espresso Series', 'Daily Special', 'Coffee', 'Matcha'], isFeatured: false, hasPromotion: true, promotionDetails: 'Combo Deal' },
+
+  // Coklat Series
+  { id: 'cs1', name: 'Coklat Artisan', slug: 'coklat-artisan', price: 9, image: '/image/c.png', description: 'Rich chocolate indulgence', tags: ['Coklat Series', 'Tea'], isFeatured: false },
+  { id: 'cs2', name: 'Makha', slug: 'makha', price: 9, image: '/image/a.png', description: 'mocha versi Dua Darjat. Campuran kopi dan coklat', tags: ['Coklat Series', 'Coffee', 'Tea'], isFeatured: false },
+  { id: 'cs3', name: 'Triple Choc Makha', slug: 'triple-choc-makha', price: 10, image: '/image/d.png', description: 'makha dengan ekstra coklat', tags: ['Coklat Series', 'Coffee', 'Tea'], isFeatured: false },
+  { id: 'cs4', name: 'Coklat Caramel', slug: 'coklat-caramel', price: 10, image: '/image/c.png', description: 'Sweet caramel chocolate', tags: ['Coklat Series', 'Tea'], isFeatured: false, hasPromotion: true, promotionDetails: '20% Off' },
+
+  // Matcha Series
+  { id: 'ma1', name: 'Matcho', slug: 'matcho', price: 8, image: '/image/b.png', description: 'matcha O tanpa susu dengan pilihan sirap Dua Darjat', tags: ['Matcha Series', 'Matcha'], isFeatured: false },
+  { id: 'ma2', name: 'Matchaa', slug: 'matchaa', price: 9, image: '/image/b.png', description: 'matcha latte yang lebih berkrim', tags: ['Matcha Series', 'Daily Special', 'Matcha'], isFeatured: false },
+  { id: 'ma3', name: 'Choc Matchaa', slug: 'choc-matchaa', price: 10, image: '/image/b.png', description: 'Matcha with chocolate', tags: ['Matcha Series', 'Matcha'], isFeatured: false },
+  { id: 'ma4', name: 'Kopi Matchaa', slug: 'kopi-matchaa', price: 10, image: '/image/b.png', description: 'Matcha with coffee', tags: ['Matcha Series', 'Coffee', 'Matcha'], isFeatured: false, hasPromotion: true, promotionDetails: 'New Item Promo' },
+  { id: 'ma5', name: 'Matchaa Caramel', slug: 'matchaa-caramel', price: 10, image: '/image/b.png', description: 'Sweet caramel matcha', tags: ['Matcha Series', 'Our Favourites', 'Matcha'], isFeatured: true, hasPromotion: true, promotionDetails: 'Member Exclusive' },
+  
+  // Menet Series
+  { id: 'me1', name: 'Le Menet', slug: 'le-menet', price: 7, image: '/image/a.png', description: 'minuman sparkling berperisa lemon', tags: ['Menet Series', 'Tea'], isFeatured: false },
+  { id: 'me2', name: 'Kopi Leman', slug: 'kopi-leman', price: 7, image: '/image/d.png', description: 'kopi O dan sirap lemon', tags: ['Menet Series', 'Coffee'], isFeatured: false, hasPromotion: true, promotionDetails: 'Student Price' },
+  { id: 'me3', name: 'Matcho Leman', slug: 'matcho-leman', price: 9, image: '/image/b.png', description: 'matcha O dan sirap lemon', tags: ['Menet Series', 'Matcha'], isFeatured: false },
+  { id: 'me4', name: 'Berrygo Menet', slug: 'berrygo-menet', price: 9, image: '/image/c.png', description: 'gabungan strawberi, mangga dan lemon', tags: ['Menet Series', 'Our Favourites', 'Tea'], isFeatured: true, hasPromotion: true, promotionDetails: 'Limited Time' },
+  { id: 'me5', name: 'Strawberry Menet', slug: 'strawberry-menet', price: 9, image: '/image/a.png', description: 'Sparkling strawberry', tags: ['Menet Series', 'Daily Special', 'Tea'], isFeatured: false },
+  { id: 'me6', name: 'Mango Menet', slug: 'mango-menet', price: 9, image: '/image/d.png', description: 'Sparkling mango', tags: ['Menet Series', 'Tea'], isFeatured: false },
+  { id: 'me7', name: 'Blueberry Menet', slug: 'blueberry-menet', price: 9, image: '/image/c.png', description: 'Sparkling blueberry', tags: ['Menet Series', 'Tea'], isFeatured: false, hasPromotion: true, promotionDetails: 'Happy Hour Deal' },
+  { id: 'me8', name: 'Pomegranate Menet', slug: 'pomegranate-menet', price: 9, image: '/image/a.png', description: 'Sparkling pomegranate', tags: ['Menet Series', 'Tea'], isFeatured: false },
+  { id: 'me9', name: 'Rock Melon Menet', slug: 'rock-melon-menet', price: 9, image: '/image/d.png', description: 'Sparkling rock melon', tags: ['Menet Series', 'Tea'], isFeatured: false, hasPromotion: true, promotionDetails: 'Online Only' },
 ];

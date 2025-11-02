@@ -4,9 +4,11 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Star } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
-import { allDrinks } from '@/lib/data';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection, query, where, limit } from 'firebase/firestore';
+import type { MenuItem, MenuCategory } from '@/lib/types';
 import {
   Carousel,
   CarouselContent,
@@ -14,30 +16,40 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel';
-import type { Drink } from '@/lib/types';
 import MenuShowcaseCard from './MenuShowcaseCard';
+import { Skeleton } from '../ui/skeleton';
 
-
-const filterCategories = ['Specials', 'Coffee', 'Matcha', 'Tea'];
 
 export default function MenuShowcase() {
-  const [activeFilter, setActiveFilter] = useState('Specials');
+  const firestore = useFirestore();
+  const [activeFilterId, setActiveFilterId] = useState<string | 'Specials'>('Specials');
 
-  const filteredDrinks = allDrinks.filter((drink) => {
-    if (activeFilter === 'Specials') {
-      return drink.tags.includes('Daily Special');
-    }
-    if (activeFilter === 'Coffee') {
-        return drink.tags.includes('Coffee');
-    }
-     if (activeFilter === 'Matcha') {
-        return drink.tags.includes('Matcha');
-    }
-     if (activeFilter === 'Tea') {
-        return drink.tags.includes('Tea');
-    }
-    return drink.tags.includes(activeFilter);
-  });
+  const categoriesQuery = useMemoFirebase(
+    () => firestore ? query(collection(firestore, 'menuCategories'), limit(4)) : null,
+    [firestore]
+  );
+  const { data: categories, isLoading: isLoadingCategories } = useCollection<MenuCategory>(categoriesQuery);
+
+  const itemsQuery = useMemoFirebase(
+    () => {
+      if (!firestore) return null;
+      let q = query(collection(firestore, 'menuItems'), where('status', '==', 'published'));
+      if (activeFilterId !== 'Specials' && activeFilterId) {
+        q = query(q, where('categoryId', '==', activeFilterId));
+      } else if (activeFilterId === 'Specials') {
+        // This is a simplification. A real "Specials" might be a tag or a separate flag.
+        // We'll just fetch a few popular ones as a stand-in.
+        q = query(q, limit(10));
+      }
+      return q;
+    }, [firestore, activeFilterId]
+  );
+  const { data: menuItems, isLoading: isLoadingItems } = useCollection<MenuItem>(itemsQuery);
+
+  const filterCategories = [
+    { id: 'Specials', name: 'Specials' },
+    ...(categories || [])
+  ];
 
   return (
     <section className="py-24 sm:py-32 bg-black text-white group/showcase overflow-hidden">
@@ -49,12 +61,12 @@ export default function MenuShowcase() {
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
             {filterCategories.map((category) => (
               <button
-                key={category}
-                onClick={() => setActiveFilter(category)}
+                key={category.id}
+                onClick={() => setActiveFilterId(category.id)}
                 className="relative text-lg font-medium text-white transition-colors hover:text-primary"
               >
-                {category}
-                {activeFilter === category && (
+                {category.name}
+                {activeFilterId === category.id && (
                   <span className="absolute -bottom-2 left-0 w-full h-1 bg-primary rounded-full" />
                 )}
               </button>
@@ -63,26 +75,32 @@ export default function MenuShowcase() {
         </div>
 
         <AnimateOnScroll animationType="fadeIn" delay={0.2} className="mt-16">
-          <Carousel
-            opts={{
-              align: 'start',
-              loop: true,
-              slidesToScroll: 1,
-            }}
-            className="w-full relative"
-          >
-            <CarouselContent className="-ml-4 py-8">
-              {filteredDrinks.map((drink, index) => (
-                <CarouselItem key={index} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 pl-4">
-                  <div className="h-full">
-                    <MenuShowcaseCard drink={drink} />
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="absolute left-0 top-1/2 -translate-y-1/2 opacity-0 group-hover/showcase:opacity-100 transition-opacity bg-transparent border-white border-2 text-white hover:bg-primary hover:text-primary-foreground hover:border-primary hidden sm:flex" />
-            <CarouselNext className="absolute right-0 top-1/2 -translate-y-1/2 opacity-0 group-hover/showcase:opacity-100 transition-opacity bg-transparent border-white border-2 text-white hover:bg-primary hover:text-primary-foreground hover:border-primary hidden sm:flex" />
-          </Carousel>
+          {(isLoadingCategories || isLoadingItems) ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-[450px] rounded-3xl" />)}
+            </div>
+          ) : (
+            <Carousel
+              opts={{
+                align: 'start',
+                loop: menuItems && menuItems.length > 4,
+                slidesToScroll: 1,
+              }}
+              className="w-full relative"
+            >
+              <CarouselContent className="-ml-4 py-8">
+                {menuItems?.map((drink) => (
+                  <CarouselItem key={drink.id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 pl-4">
+                    <div className="h-full">
+                      <MenuShowcaseCard drink={drink as MenuItem} />
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="absolute left-0 top-1/2 -translate-y-1/2 opacity-0 group-hover/showcase:opacity-100 transition-opacity bg-transparent border-white border-2 text-white hover:bg-primary hover:text-primary-foreground hover:border-primary hidden sm:flex" />
+              <CarouselNext className="absolute right-0 top-1/2 -translate-y-1/2 opacity-0 group-hover/showcase:opacity-100 transition-opacity bg-transparent border-white border-2 text-white hover:bg-primary hover:text-primary-foreground hover:border-primary hidden sm:flex" />
+            </Carousel>
+          )}
         </AnimateOnScroll>
 
         <AnimateOnScroll animationType="fadeIn" delay={0.4} className="mt-12 text-center">

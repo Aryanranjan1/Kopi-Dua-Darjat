@@ -11,13 +11,13 @@ import {
     CarouselPrevious,
 } from '@/components/ui/carousel';
 import MenuItemCard from './MenuItemCard';
-import type { Drink } from '@/lib/types';
+import type { MenuItem } from '@/lib/types';
 import { Button } from '../ui/button';
 import { ArrowRight, ChevronsDown, ChevronsUp } from 'lucide-react';
 
 interface MenuCarouselProps {
     title: string;
-    items: Drink[];
+    items: MenuItem[];
 }
 
 export default function MenuCarousel({ title, items }: MenuCarouselProps) {

@@ -2,7 +2,9 @@
 "use client";
 
 import Image from 'next/image';
-import { allDrinks } from '@/lib/data';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection, query, where, limit } from 'firebase/firestore';
+import type { MenuItem } from '@/lib/types';
 import {
   Carousel,
   CarouselContent,
@@ -17,7 +19,31 @@ import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import Link from 'next/link';
 
 export default function FeaturedDrinks() {
-  const featured = allDrinks.filter(d => d.isFeatured);
+  const firestore = useFirestore();
+  const featuredQuery = useMemoFirebase(
+    () => firestore ? query(
+      collection(firestore, 'menuItems'), 
+      where('status', '==', 'published'),
+      where('isFeatured', '==', true), // Assuming you add this boolean to your MenuItem model
+      limit(6)
+    ) : null,
+    [firestore]
+  );
+  const { data: featured, isLoading } = useCollection<MenuItem>(featuredQuery);
+  
+  // A fallback in case 'isFeatured' isn't implemented or yields no results
+  const popularQuery = useMemoFirebase(
+    () => firestore ? query(
+      collection(firestore, 'menuItems'), 
+      where('status', '==', 'published'),
+      limit(6)
+    ) : null,
+    [firestore]
+  );
+  const { data: popular } = useCollection<MenuItem>(popularQuery);
+
+  const drinksToShow = featured && featured.length > 0 ? featured : popular;
+
   return (
     <section className="py-24 sm:py-32 bg-[#F7F4EF] text-foreground">
       <div className="container mx-auto px-4 sm:px-12">
@@ -33,19 +59,19 @@ export default function FeaturedDrinks() {
           <Carousel
             opts={{
               align: 'start',
-              loop: true,
+              loop: drinksToShow && drinksToShow.length > 3,
             }}
             className="w-full"
           >
             <CarouselContent className="-ml-4 py-16">
-              {featured.map((drink, index) => (
+              {drinksToShow?.map((drink) => (
                 <CarouselItem key={drink.id} className="basis-full md:basis-1/2 lg:basis-1/3 pl-4 overflow-visible">
                   <div className="p-1">
                     <Card className="rounded-3xl bg-primary/65 overflow-visible">
                       <CardContent className="relative p-4 pt-32 flex flex-col items-center text-center">
                         <div className="relative w-full h-80 -mt-48 mb-4 group">
                           <Image
-                            src={drink.image}
+                            src={drink.imageUrl}
                             alt={drink.name}
                             fill
                             className="object-contain drop-shadow-2xl transition-transform duration-300 group-hover:scale-105 rotate-12"

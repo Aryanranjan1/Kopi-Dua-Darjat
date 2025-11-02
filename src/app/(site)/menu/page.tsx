@@ -1,30 +1,38 @@
 
-import type { Metadata } from 'next';
-import { allDrinks } from '@/lib/data';
+'use client';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection, query, where } from 'firebase/firestore';
+import type { MenuCategory, MenuItem } from '@/lib/types';
 import MenuCarousel from '@/components/menu/MenuCarousel';
 import MenuPromotions from '@/components/menu/MenuPromotions';
 import { DailySpecials } from '@/components/menu/DailySpecials';
 import NewsletterSignUp from '@/components/home/NewsletterSignUp';
-
-export const metadata: Metadata = {
-  title: 'Menu',
-  description: 'Explore the full range of drinks and bites at Kopi Dua Darjat.',
-};
-
-const nakKopiCategories = [
-    { title: 'Darjat Series', tag: 'Darjat Series' },
-    { title: 'Kopitiam Series', tag: 'Kopitiam Series' },
-    { title: 'Espresso Series', tag: 'Espresso Series' },
-];
-
-const taknakKopiCategories = [
-    { title: 'Coklat Series', tag: 'Coklat Series' },
-    { title: 'Matcha Series', tag: 'Matcha Series' },
-    { title: 'Menet Series', tag: 'Menet Series' },
-];
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function MenuPage() {
-    const getDrinksByTag = (tag: string) => allDrinks.filter(drink => drink.tags.includes(tag));
+    const firestore = useFirestore();
+
+    const categoriesQuery = useMemoFirebase(
+      () => firestore ? collection(firestore, 'menuCategories') : null,
+      [firestore]
+    );
+    const { data: categories, isLoading: isLoadingCategories } = useCollection<MenuCategory>(categoriesQuery);
+    
+    const itemsQuery = useMemoFirebase(
+      () => firestore ? query(collection(firestore, 'menuItems'), where('status', '==', 'published')) : null,
+      [firestore]
+    );
+    const { data: menuItems, isLoading: isLoadingItems } = useCollection<MenuItem>(itemsQuery);
+
+    const getDrinksByCategoryId = (categoryId: string) => {
+        if (!menuItems) return [];
+        return menuItems.filter(item => item.categoryId === categoryId);
+    };
+
+    const nakKopiCategories = categories?.filter(c => c.name.includes('Series') && (c.name.includes('Darjat') || c.name.includes('Kopitiam') || c.name.includes('Espresso'))) || [];
+    const taknakKopiCategories = categories?.filter(c => c.name.includes('Series') && (c.name.includes('Coklat') || c.name.includes('Matcha') || c.name.includes('Menet'))) || [];
+
+    const isLoading = isLoadingCategories || isLoadingItems;
 
   return (
     <>
@@ -45,15 +53,23 @@ export default function MenuPage() {
             <DailySpecials />
 
             <div className="py-12 sm:py-20 space-y-16">
+                {isLoading ? (
+                    <div className="container mx-auto px-4 space-y-12">
+                        <Skeleton className="h-10 w-1/3 mx-auto" />
+                        <Skeleton className="h-96 w-full" />
+                        <Skeleton className="h-96 w-full" />
+                    </div>
+                ) : (
+                <>
                 {/* NAK KOPI Section */}
                 <section className="container mx-auto px-4">
                     <h2 className="text-5xl font-headline text-center font-bold tracking-widest text-foreground mb-12 underline decoration-primary decoration-4 underline-offset-8">NAK KOPI</h2>
                     <div className="space-y-12">
                         {nakKopiCategories.map(cat => (
                             <MenuCarousel 
-                                key={cat.tag}
-                                title={cat.title}
-                                items={getDrinksByTag(cat.tag)}
+                                key={cat.id}
+                                title={cat.name}
+                                items={getDrinksByCategoryId(cat.id)}
                             />
                         ))}
                     </div>
@@ -92,13 +108,15 @@ export default function MenuPage() {
                      <div className="space-y-12">
                         {taknakKopiCategories.map(cat => (
                             <MenuCarousel 
-                                key={cat.tag}
-                                title={cat.title}
-                                items={getDrinksByTag(cat.tag)}
+                                key={cat.id}
+                                title={cat.name}
+                                items={getDrinksByCategoryId(cat.id)}
                             />
                         ))}
                     </div>
                 </section>
+                </>
+                )}
             </div>
         </div>
         <NewsletterSignUp disableAnimations />

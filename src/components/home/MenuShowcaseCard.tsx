@@ -3,13 +3,13 @@
 
 import Image from 'next/image';
 import { ArrowUpRight } from 'lucide-react';
-import type { Drink } from '@/lib/types';
+import type { MenuItem } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
 interface MenuShowcaseCardProps {
-  drink: Drink;
+  drink: MenuItem;
 }
 
 export default function MenuShowcaseCard({ drink }: MenuShowcaseCardProps) {
@@ -18,7 +18,7 @@ export default function MenuShowcaseCard({ drink }: MenuShowcaseCardProps) {
       <CardContent className="p-4 flex flex-col flex-grow">
         <div className="relative aspect-[3/4] w-full rounded-lg overflow-hidden mb-4 bg-zinc-800/50">
           <Image
-            src={drink.image}
+            src={drink.imageUrl}
             alt={drink.name}
             fill
             className="object-contain"
