@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -24,6 +23,8 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
+import { useFirestore } from '@/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 const formSchema = z.object({
   fullName: z.string().min(2, { message: 'Full name must be at least 2 characters.' }),
@@ -36,6 +37,7 @@ const formSchema = z.object({
 
 export default function FranchiseApplicationForm() {
     const { toast } = useToast();
+    const firestore = useFirestore();
     
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -51,18 +53,27 @@ export default function FranchiseApplicationForm() {
     const { isSubmitting } = form.formState;
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        // Here you would typically send the data to your backend (e.g., Firestore)
-        console.log(values);
+        if (!firestore) return;
+        
+        try {
+            await addDoc(collection(firestore, "franchiseApplications"), {
+                ...values,
+                createdAt: serverTimestamp()
+            });
 
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1500));
-
-        toast({
-            title: "Application Submitted!",
-            description: "Thank you for your interest. Our team will get in touch with you soon.",
-            variant: "default",
-        });
-        form.reset();
+            toast({
+                title: "Application Submitted!",
+                description: "Thank you for your interest. Our team will get in touch with you soon.",
+            });
+            form.reset();
+        } catch (error) {
+            console.error("Error submitting application: ", error);
+            toast({
+                variant: "destructive",
+                title: "Submission Failed",
+                description: "Could not submit your application. Please try again later.",
+            });
+        }
   }
 
   const inputStyles = "bg-zinc-900 border-zinc-800 rounded-full text-white focus-visible:ring-primary";

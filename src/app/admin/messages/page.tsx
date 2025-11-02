@@ -1,6 +1,5 @@
-
 'use client';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Eye, Trash2, Reply } from 'lucide-react';
@@ -13,20 +12,33 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog';
-import { mockMessages } from '@/lib/data'; // Import mock data
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection, doc, deleteDoc, Timestamp, orderBy, query } from 'firebase/firestore';
+import { Loader2 } from 'lucide-react';
+
+interface ContactMessage {
+  id: string;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  createdAt: Timestamp;
+}
 
 export default function MessagesPage() {
-  const [messages, setMessages] = useState(mockMessages);
-  const [selectedMessage, setSelectedMessage] = useState<(typeof mockMessages)[0] | null>(null);
+  const firestore = useFirestore();
+  const messagesQuery = useMemoFirebase(
+    () => firestore ? query(collection(firestore, 'contactMessages'), orderBy('createdAt', 'desc')) : null,
+    [firestore]
+  );
+  const { data: messages, isLoading } = useCollection<Omit<ContactMessage, 'id'>>(messagesQuery);
+  const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(null);
 
-  const handleViewMessage = (message: (typeof mockMessages)[0]) => {
-    setSelectedMessage(message);
-    // Mark as read
-    setMessages(messages.map(m => m.id === message.id ? { ...m, read: true } : m));
-  };
-
-  const handleDeleteMessage = (id: string) => {
-    setMessages(messages.filter(m => m.id !== id));
+  const handleDeleteMessage = async (id: string) => {
+    if (!firestore) return;
+    const docRef = doc(firestore, 'contactMessages', id);
+    await deleteDoc(docRef);
   };
 
   return (
@@ -42,22 +54,34 @@ export default function MessagesPage() {
           <Table>
             <TableHeader>
               <TableRow className="border-zinc-700 hover:bg-zinc-800">
-                <TableHead className="w-[20px]"></TableHead>
                 <TableHead>From</TableHead>
                 <TableHead>Subject</TableHead>
+                <TableHead>Date</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {messages.map(message => (
-                <TableRow key={message.id} className="border-zinc-700 hover:bg-zinc-800">
-                  <TableCell>
-                    {!message.read && <div className="w-2 h-2 rounded-full bg-yellow-400"></div>}
+              {isLoading && (
+                <TableRow>
+                  <TableCell colSpan={4} className="text-center">
+                    <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" />
                   </TableCell>
+                </TableRow>
+              )}
+              {!isLoading && messages && messages.length === 0 && (
+                 <TableRow>
+                    <TableCell colSpan={4} className="text-center text-zinc-400 py-8">
+                        No messages found.
+                    </TableCell>
+                </TableRow>
+              )}
+              {messages?.map(message => (
+                <TableRow key={message.id} className="border-zinc-700 hover:bg-zinc-800">
                   <TableCell className="font-medium">{message.name}</TableCell>
                   <TableCell>{message.subject}</TableCell>
+                  <TableCell>{message.createdAt?.toDate().toLocaleDateString()}</TableCell>
                   <TableCell className="text-right">
-                    <Button variant="ghost" size="icon" onClick={() => handleViewMessage(message)}>
+                    <Button variant="ghost" size="icon" onClick={() => setSelectedMessage(message as ContactMessage)}>
                       <Eye className="h-4 w-4" />
                     </Button>
                     <a href={`mailto:${message.email}?subject=RE: ${message.subject}`} className="inline-flex items-center justify-center">
@@ -65,9 +89,25 @@ export default function MessagesPage() {
                         <Reply className="h-4 w-4" />
                       </Button>
                     </a>
-                    <Button variant="ghost" size="icon" onClick={() => handleDeleteMessage(message.id)}>
-                      <Trash2 className="h-4 w-4 text-red-500" />
-                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                          <Trash2 className="h-4 w-4 text-red-500" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                          <AlertDialogDescription className="text-zinc-400">
+                            This action cannot be undone. This will permanently delete the message.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
+                          <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleDeleteMessage(message.id)}>Delete</AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </TableCell>
                 </TableRow>
               ))}
@@ -83,7 +123,7 @@ export default function MessagesPage() {
             <DialogHeader>
               <DialogTitle>{selectedMessage.subject}</DialogTitle>
               <DialogDescription className="text-zinc-400">
-                From: {selectedMessage.name} ({selectedMessage.email})
+                From: {selectedMessage.name} ({selectedMessage.email}) on {selectedMessage.createdAt?.toDate().toLocaleString()}
               </DialogDescription>
             </DialogHeader>
             <div className="py-4">

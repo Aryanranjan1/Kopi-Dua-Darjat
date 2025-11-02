@@ -16,6 +16,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
+import { useFirestore } from '@/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -26,6 +28,7 @@ const formSchema = z.object({
 
 export default function ContactForm() {
     const { toast } = useToast();
+    const firestore = useFirestore();
     
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -40,13 +43,25 @@ export default function ContactForm() {
     const { isSubmitting } = form.formState;
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values);
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        toast({
-            title: "Message Sent!",
-            description: "Thanks for reaching out. We'll get back to you shortly.",
-        });
-        form.reset();
+        if (!firestore) return;
+        try {
+            await addDoc(collection(firestore, "contactMessages"), {
+                ...values,
+                createdAt: serverTimestamp()
+            });
+            toast({
+                title: "Message Sent!",
+                description: "Thanks for reaching out. We'll get back to you shortly.",
+            });
+            form.reset();
+        } catch (error) {
+            console.error("Error sending message: ", error);
+            toast({
+                variant: "destructive",
+                title: "Uh oh! Something went wrong.",
+                description: "Could not send your message. Please try again later.",
+            });
+        }
   }
 
   const inputStyles = "bg-zinc-800 border-zinc-700 text-white focus-visible:ring-primary";

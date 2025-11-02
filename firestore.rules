@@ -1,47 +1,31 @@
-
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Helper functions
-    function isSignedIn() {
+    
+    function isAdmin() {
+      // In a real app, you would check for a custom claim.
+      // For this MVP, we just check if the user is authenticated.
       return request.auth != null;
     }
 
-    function isOwner(userId) {
-      return request.auth.uid == userId;
+    match /contactMessages/{docId} {
+      allow read, delete: if isAdmin();
+      allow create: if true; // Anyone can send a message
     }
 
-    function hasRole(role) {
-      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.roles[role] == true;
-    }
-    
-    function isAdmin() {
-      return hasRole('admin');
+    match /franchiseApplications/{docId} {
+      allow read, delete: if isAdmin();
+      allow create: if true; // Anyone can apply
     }
 
-    // USER DATA: Users can read their own data. Admins can read/write any user data.
-    match /users/{userId} {
-      allow read: if isOwner(userId) || isAdmin();
-      allow write: if isAdmin();
+    match /newsletterSubscribers/{docId} {
+      allow read, delete: if isAdmin(); // Admin can manage subscribers
+      allow create: if true; // Anyone can subscribe
     }
-    
-    // CONTENT: Public read access for published content. Write access for admins only.
-    match /{collection}/{docId} {
-       // All collections like 'menu', 'outlets', 'promotions', 'blogPosts', 'siteSettings'
-       // are publicly readable but only writable by admins.
-       // The 'status' field can be used to distinguish between 'draft' and 'published'.
-       // Frontend queries should filter for `where('status', '==', 'published')`.
-      allow get, list: if true;
-      allow write: if isAdmin();
-    }
-    
-    // FORM SUBMISSIONS: Only admins can read/write messages and franchise leads.
-    match /messages/{messageId} {
-        allow read, write, delete: if isAdmin();
-    }
-    
-    match /franchiseLeads/{leadId} {
-      allow read, write, delete: if isAdmin();
+
+    // Default deny for other collections
+    match /{path=**}/_/{docId} {
+      allow read, write: if false;
     }
   }
 }
