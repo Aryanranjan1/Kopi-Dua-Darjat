@@ -84,8 +84,8 @@
     {
       "id": "founder-azad",
       "description": "Photo of founder Azad.",
-      "imageUrl": "https://images.unsplash.com/photo-1661170489141-fc9128eeae92?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxwb3J0cmFpdCUyMG1hbiUyMHNtaWxlfGVufDB8fHx8MTc2MjAxMzc0NXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "portrait man smile"
+      "imageUrl": "https://images.unsplash.com/photo-1533901567451-7a6e68d6cd8f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxmb3VuZGVyfGVufDB8fHx8MTc2MjA1NzI5Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "founder"
     },
     {
       "id": "brand-timeline",
@@ -159,7 +159,7 @@
     {
       "id": "insta-post-4",
       "description": "A close-up shot of our signature Kopi Darjat.",
-      "imageUrl": "https://images.unsplash.com/photo-1650964295437-82e0b7b4379d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxzaWduYXR1cmUlMjBjb2ZmZWV8ZW58MHx8fHwxNzYxOTgzODI3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1650964295437-82e0b7b4379d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxzaWduYXR1cmUlMjBjb2ZmZWV8ZW58MHx8fHwxNzYxOTgzODI3fDA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "signature coffee"
     },
     {
