@@ -70,14 +70,14 @@ export default function ContactPage() {
                    <ContactInfo />
                  </div>
 
-                 <div className="bg-primary text-primary-foreground p-6 rounded-2xl flex items-center justify-center gap-8">
-                    <h3 className="font-headline text-xl font-semibold">Follow Us</h3>
+                 <div className="bg-transparent border border-zinc-700 text-white p-6 rounded-2xl flex items-center justify-center gap-8">
+                    <h3 className="font-headline text-xl font-semibold text-primary">Follow Us</h3>
                     <div className="flex items-center gap-4">
                         <Link href="#" className="hover:opacity-80 transition-opacity">
-                            <Facebook className="h-8 w-8" />
+                            <Facebook className="h-8 w-8 text-primary" />
                         </Link>
                         <Link href="#" className="hover:opacity-80 transition-opacity">
-                            <Instagram className="h-8 w-8" />
+                            <Instagram className="h-8 w-8 text-primary" />
                         </Link>
                         <Link href="#" className="hover:opacity-80 transition-opacity">
                            <TikTokIcon />
