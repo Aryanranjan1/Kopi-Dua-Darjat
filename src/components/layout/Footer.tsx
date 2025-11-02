@@ -6,17 +6,13 @@ import { Card } from '../ui/card';
 export const TikTokIcon = () => (
     <svg 
         xmlns="http://www.w3.org/2000/svg" 
-        width="24" 
-        height="24" 
-        viewBox="0 0 24 24" 
-        fill="none" 
-        stroke="currentColor" 
-        strokeWidth="2" 
-        strokeLinecap="round" 
-        strokeLinejoin="round" 
-        className="h-6 w-6"
+        viewBox="0 0 448 512"
+        className="h-8 w-8"
     >
-        <path d="M21 7.5a4.5 4.5 0 0 1-4.5 4.5H12V17a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 4.5-4.5V7.5a4.5 4.5 0 0 1 9 0Z"/>
+      <path 
+        fill="hsl(var(--primary))"
+        d="M448 209.9a210.1 210.1 0 0 1 -122.8-39.25V349.38A162.6 162.6 0 1 1 185 188.31V278.2a74.62 74.62 0 1 0 52.23 71.18V0h88a121.18 121.18 0 0 0 122.77 122.77c0 29.12-10.86 56.83-30.05 78.13z"
+      />
     </svg>
   );
 
