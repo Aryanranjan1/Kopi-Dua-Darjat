@@ -7,6 +7,7 @@ import NewsletterSignUp from '@/components/home/NewsletterSignUp';
 import StickyScroll from '@/components/ui/sticky-scroll';
 import WhoAreWe from '@/components/about/WhoAreWe';
 import Stats from '@/components/about/Stats';
+import { Check } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Our Story',
@@ -154,7 +155,7 @@ export default function AboutPage() {
       <section className="py-24 sm:py-32 bg-black text-white">
         <div className="container mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-4xl md:text-5xl font-headline font-bold text-primary">A Message from Our Founders</h2>
+            <h2 className="text-4xl md:text-5xl font-headline font-bold text-white inline-block underline decoration-primary decoration-4 underline-offset-8">A Message from Our Founders</h2>
           </div>
           <div className="max-w-5xl mx-auto space-y-24">
              {founderHadi && (
@@ -179,29 +180,40 @@ export default function AboutPage() {
       </section>
 
       {/* Vision & Mission Section */}
-      <section className="py-24 sm:py-32 bg-black text-white">
-        <div className="container mx-auto px-6 text-center max-w-4xl">
-            <h2 className="text-4xl md:text-5xl font-headline font-bold text-primary">Our Vision & Mission</h2>
-            <p className="mt-4 text-lg md:text-xl max-w-3xl mx-auto text-white/80">
-                To be the leading purveyor of authentic Malaysian coffee culture, celebrated for our rich heritage, innovative spirit, and commitment to community.
-            </p>
-            <div className="mt-12 grid sm:grid-cols-2 gap-8 text-left">
-                <div className="border-l-4 border-accent pl-6">
-                    <h3 className="text-2xl font-headline font-bold">Vision</h3>
-                    <p className="mt-2 text-white/70">To become the most beloved and accessible artisan coffee brand in Southeast Asia, championing local flavors and empowering entrepreneurs.</p>
+      <section className="bg-background text-foreground">
+        <div className="container mx-auto px-0">
+            <div className="grid lg:grid-cols-2">
+                <div className="bg-primary text-primary-foreground p-12 lg:p-20 flex flex-col justify-center text-center lg:text-left">
+                     <h2 className="text-4xl md:text-5xl font-headline font-bold text-foreground">Our Vision</h2>
+                     <p className="mt-4 text-xl md:text-2xl font-serif text-foreground/80 max-w-md mx-auto lg:mx-0">
+                        To become the most beloved and accessible artisan coffee brand in Southeast Asia.
+                     </p>
                 </div>
-                <div className="border-l-4 border-accent pl-6">
-                    <h3 className="text-2xl font-headline font-bold">Mission</h3>
-                     <ul className="mt-2 space-y-2 text-white/70">
-                        <li>- To serve high-quality, ethically-sourced Malaysian coffee.</li>
-                        <li>- To foster connection and culture in every community we serve.</li>
-                        <li>- To preserve and promote the rich heritage of Malaysian coffee.</li>
-                        <li>- To innovate continuously with our products and experiences.</li>
+                <div className="bg-background text-foreground p-12 lg:p-20">
+                     <h3 className="text-3xl font-headline font-bold text-accent mb-6">Our Mission</h3>
+                     <ul className="space-y-4">
+                        <li className="flex items-start">
+                            <Check className="w-6 h-6 text-accent mr-3 mt-1 flex-shrink-0" />
+                            <span>To serve high-quality, ethically-sourced Malaysian coffee that champions local flavors.</span>
+                        </li>
+                         <li className="flex items-start">
+                            <Check className="w-6 h-6 text-accent mr-3 mt-1 flex-shrink-0" />
+                            <span>To foster connection and culture in every community we serve, one cup at a time.</span>
+                        </li>
+                         <li className="flex items-start">
+                            <Check className="w-6 h-6 text-accent mr-3 mt-1 flex-shrink-0" />
+                            <span>To preserve and promote the rich heritage of Malaysian coffee for future generations.</span>
+                        </li>
+                         <li className="flex items-start">
+                            <Check className="w-6 h-6 text-accent mr-3 mt-1 flex-shrink-0" />
+                            <span>To innovate continuously with our products and experiences, empowering local entrepreneurs along the way.</span>
+                        </li>
                     </ul>
                 </div>
             </div>
         </div>
       </section>
+
 
       <StickyScroll />
     </div>

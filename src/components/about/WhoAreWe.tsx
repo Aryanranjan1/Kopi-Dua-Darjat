@@ -26,7 +26,7 @@ export default function WhoAreWe() {
             </div>
           </AnimateOnScroll>
           <AnimateOnScroll animationType="slideInFromRight" className="text-center lg:text-left">
-            <h2 className="text-4xl md:text-5xl font-headline font-bold text-foreground inline-block underline decoration-foreground decoration-4 underline-offset-8">
+            <h2 className="text-4xl md:text-5xl font-headline font-bold text-foreground inline-block underline decoration-primary decoration-4 underline-offset-8">
               Who Are We?
             </h2>
             <p className="mt-4 text-xl text-muted-foreground">

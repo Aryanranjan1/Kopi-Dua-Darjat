@@ -24,7 +24,7 @@ export default function LatestStories() {
             <div className="container mx-auto px-12">
                 <AnimateOnScroll animationType="slideInFromBottom">
                     <div className="flex justify-between items-center mb-12">
-                        <h2 className="text-4xl md:text-5xl font-headline text-foreground">Latest Stories</h2>
+                        <h2 className="text-4xl md:text-5xl font-headline text-foreground inline-block underline decoration-primary decoration-4 underline-offset-8">Latest Stories</h2>
                         <Button asChild variant="outline" className="rounded-full border-foreground/50 hover:bg-foreground hover:text-background">
                             <Link href="/news">Read all articles</Link>
                         </Button>
