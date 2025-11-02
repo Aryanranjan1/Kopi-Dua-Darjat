@@ -2,6 +2,8 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import LatestStories from '@/components/home/LatestStories';
+import NewsletterSignUp from '@/components/home/NewsletterSignUp';
 
 export const metadata: Metadata = {
   title: 'Our Story',
@@ -46,8 +48,29 @@ const Milestone = ({
   </div>
 );
 
+const FounderMessage = ({ name, quote, imageUrl, imageHint, reverse = false }: { name: string; quote: string; imageUrl: string; imageHint: string; reverse?: boolean }) => (
+    <div className={`grid md:grid-cols-3 gap-12 items-center ${reverse ? 'md:grid-flow-col-dense' : ''}`}>
+        <div className={`relative aspect-square md:aspect-[3/4] rounded-2xl overflow-hidden shadow-lg ${reverse ? 'md:col-start-3' : ''}`}>
+            <Image
+                src={imageUrl}
+                alt={name}
+                fill
+                className="object-cover object-center"
+                data-ai-hint={imageHint}
+            />
+        </div>
+        <div className="md:col-span-2">
+            <p className="text-2xl md:text-3xl leading-snug font-serif text-foreground">
+                “{quote}”
+            </p>
+            <p className="mt-6 font-bold text-lg font-headline text-accent">- {name}</p>
+        </div>
+    </div>
+);
+
 export default function AboutPage() {
-  const founder = PlaceHolderImages.find((img) => img.id === 'founder-hadi');
+  const founderHadi = PlaceHolderImages.find((img) => img.id === 'founder-hadi');
+  const founderAzad = PlaceHolderImages.find((img) => img.id === 'founder-azad');
   
   const milestones = [
     {
@@ -88,6 +111,7 @@ export default function AboutPage() {
   ].map(id => PlaceHolderImages.find(img => img.id === id)).filter(Boolean);
 
   return (
+    <>
     <div className="bg-background text-foreground">
       {/* Hero Section */}
       <section className="py-24 sm:py-32 text-center bg-card">
@@ -129,29 +153,26 @@ export default function AboutPage() {
       <section className="py-24 sm:py-32 bg-card">
         <div className="container mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-4xl md:text-5xl font-headline font-bold text-foreground">A Message from Our Founder</h2>
+            <h2 className="text-4xl md:text-5xl font-headline font-bold text-foreground">A Message from Our Founders</h2>
           </div>
-          <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-12 items-center">
-            <div className="relative aspect-square md:aspect-[3/4] rounded-2xl overflow-hidden shadow-lg">
-                {founder && (
-                    <Image
-                        src={founder.imageUrl}
-                        alt="Kopi Dua Darjat Founder"
-                        fill
-                        className="object-cover object-center"
-                        data-ai-hint={founder.imageHint}
-                    />
-                )}
-            </div>
-            <div className="md:col-span-2">
-              <p className="text-2xl md:text-3xl leading-snug font-serif text-foreground">
-                “Every cup tells a story, a blend of heritage and dreams. We started Kopi Dua Darjat to share the true essence of Malaysian coffee with the world, one cup at a time.
-              </p>
-              <p className="mt-6 text-lg text-muted-foreground">
-                From our humble start to a national community, our goal has always been to craft an authentic coffee experience that feels both nostalgic and new. We balance tradition with artistry, ensuring our methods are sustainable and our partners are empowered. Thank you for being a part of our story.”
-              </p>
-              <p className="mt-6 font-bold text-lg font-headline text-accent">- Ahmad Hadi, Founder</p>
-            </div>
+          <div className="max-w-5xl mx-auto space-y-24">
+             {founderHadi && (
+                <FounderMessage 
+                    name="Ahmad Hadi"
+                    quote="Every cup tells a story, a blend of heritage and dreams. We started Kopi Dua Darjat to share the true essence of Malaysian coffee with the world, one cup at a time."
+                    imageUrl={founderHadi.imageUrl}
+                    imageHint={founderHadi.imageHint}
+                />
+             )}
+             {founderAzad && (
+                <FounderMessage 
+                    name="Azad"
+                    quote="Our goal has always been to craft an authentic coffee experience that feels both nostalgic and new. We balance tradition with artistry, ensuring our methods are sustainable and our partners are empowered."
+                    imageUrl={founderAzad.imageUrl}
+                    imageHint={founderAzad.imageHint}
+                    reverse
+                />
+             )}
           </div>
         </div>
       </section>
@@ -203,5 +224,10 @@ export default function AboutPage() {
          </div>
       </section>
     </div>
+    <LatestStories />
+    <NewsletterSignUp />
+    </>
   );
 }
+
+    
