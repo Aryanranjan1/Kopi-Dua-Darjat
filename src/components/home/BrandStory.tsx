@@ -13,7 +13,7 @@ export default function BrandStory() {
           {/* Left Side: Image */}
           <div className="relative lg:pl-16 h-full">
               <AnimateOnScroll animationType="slideInFromLeft" className="relative flex justify-center items-end h-full">
-                <div className="relative w-[48rem] h-[48rem] lg:w-[60rem] lg:h-[60rem] lg:max-w-none -ml-32 lg:-ml-48">
+                <div className="relative w-[30rem] h-[30rem] sm:w-[48rem] sm:h-[48rem] lg:w-[60rem] lg:h-[60rem] lg:max-w-none ml-0 lg:-ml-48">
                   <Image
                     src="/image/kdd-cup.png"
                     alt="Kopi Darjat"

@@ -56,15 +56,15 @@ export default function MenuCarousel({ title, items }: MenuCarouselProps) {
                 >
                     <CarouselContent className="-ml-4 py-16">
                     {items.map((drink) => (
-                        <CarouselItem key={drink.id} className="md:basis-1/3 lg:basis-1/4 xl:basis-1/5 pl-4 overflow-visible">
+                        <CarouselItem key={drink.id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 pl-4 overflow-visible">
                             <MenuItemCard drink={drink} />
                         </CarouselItem>
                     ))}
                     </CarouselContent>
                     {showControls && (
                         <>
-                            <CarouselPrevious className="ml-14" />
-                            <CarouselNext className="mr-14" />
+                            <CarouselPrevious className="left-2 sm:ml-14" />
+                            <CarouselNext className="right-2 sm:mr-14" />
                         </>
                     )}
                 </Carousel>
