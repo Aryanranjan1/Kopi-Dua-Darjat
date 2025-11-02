@@ -1,6 +1,5 @@
 
 import type { Metadata } from 'next';
-import Image from 'next/image';
 import Link from 'next/link';
 import ContactForm from '@/components/contact/ContactForm';
 import ContactInfo from '@/components/contact/ContactInfo';
@@ -38,7 +37,7 @@ export default function ContactPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
               {/* Left: Form */}
               <div className="space-y-12">
-                <Card className="bg-zinc-900/50 border-zinc-800 p-8 rounded-2xl">
+                <Card className="bg-zinc-900/50 border-zinc-800 p-8 rounded-2xl h-full">
                   <h2 className="text-3xl font-headline font-bold text-primary">Get In Touch</h2>
                   <p className="text-muted-foreground mt-2 mb-6">We'd love to hear from you. Drop us a line below.</p>
                   <ContactForm />
