@@ -137,6 +137,11 @@ const NewsletterTable = () => {
     );
     const { data: subscribers, isLoading } = useCollection<Omit<NewsletterSubscriber, 'id'>>(subscribersQuery);
 
+    const handleDeleteSubscriber = async (id: string) => {
+        if (!firestore) return;
+        await deleteDoc(doc(firestore, 'newsletterSubscribers', id));
+    };
+
     const exportToCSV = () => {
         if (!subscribers) return;
         const headers = ['Email', 'DateSubscribed'];
@@ -164,15 +169,37 @@ const NewsletterTable = () => {
                     <TableRow className="border-zinc-700 hover:bg-zinc-800">
                         <TableHead>Email</TableHead>
                         <TableHead>Date Subscribed</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {isLoading && <TableRow><TableCell colSpan={2} className="text-center"><Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" /></TableCell></TableRow>}
-                    {!isLoading && subscribers && subscribers.length === 0 && <TableRow><TableCell colSpan={2} className="text-center text-zinc-400 py-8">No subscribers found.</TableCell></TableRow>}
+                    {isLoading && <TableRow><TableCell colSpan={3} className="text-center"><Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" /></TableCell></TableRow>}
+                    {!isLoading && subscribers && subscribers.length === 0 && <TableRow><TableCell colSpan={3} className="text-center text-zinc-400 py-8">No subscribers found.</TableCell></TableRow>}
                     {subscribers?.map(signup => (
                         <TableRow key={signup.id} className="border-zinc-700 hover:bg-zinc-800">
                             <TableCell>{signup.email}</TableCell>
                             <TableCell>{signup.createdAt?.toDate().toLocaleDateString()}</TableCell>
+                            <TableCell className="text-right">
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <Button variant="ghost" size="icon">
+                                            <Trash2 className="h-4 w-4 text-red-500" />
+                                        </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                            <AlertDialogDescription className="text-zinc-400">
+                                                This will permanently delete the subscriber.
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
+                                            <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleDeleteSubscriber(signup.id)}>Delete</AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+                            </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
