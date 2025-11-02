@@ -18,7 +18,7 @@ export default function FranchiseCta() {
                         src={bgImage.imageUrl}
                         alt={bgImage.description}
                         fill
-                        className="object-cover hue-rotate-30"
+                        className="object-cover"
                         data-ai-hint={bgImage.imageHint}
                     />
                 </div>
