@@ -8,8 +8,7 @@ import ContactInfo from '@/components/contact/ContactInfo';
 import InteractiveMap from '@/components/home/InteractiveMap';
 import { Card } from '@/components/ui/card';
 import { CtaSection } from '@/components/shared/CtaSection';
-import { Facebook, Instagram } from 'lucide-react';
-import { TikTokIcon } from '@/components/layout/Footer';
+import { Facebook, Instagram, Music2 } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Contact Us',
@@ -51,9 +50,9 @@ export default function ContactPage() {
         {/* Main Content Section */}
         <section className="py-24 sm:py-32">
           <div className="container mx-auto px-6">
-            <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
+            <div className="grid lg:grid-cols-5 gap-12 lg:gap-16">
               {/* Left: Form */}
-              <div className="space-y-12">
+              <div className="space-y-12 lg:col-span-3">
                 <Card className="bg-zinc-900/50 border-zinc-800 p-8 rounded-2xl">
                   <h2 className="text-3xl font-headline font-bold text-primary">Get In Touch</h2>
                   <p className="text-muted-foreground mt-2 mb-6">We'd love to hear from you. Drop us a line below.</p>
@@ -62,7 +61,7 @@ export default function ContactPage() {
               </div>
 
               {/* Right: Details & Map */}
-              <div className="space-y-12">
+              <div className="space-y-12 lg:col-span-2">
                  <div>
                    <p className="text-muted-foreground">
                       Have a question, a partnership proposal, or just want to say hello? Use the form or contact us through one of the methods below. We're always happy to connect with our community.
@@ -80,7 +79,7 @@ export default function ContactPage() {
                             <Instagram className="h-8 w-8 text-primary" />
                         </Link>
                         <Link href="#" className="hover:opacity-80 transition-opacity">
-                           <TikTokIcon />
+                           <Music2 className="h-8 w-8 text-primary" />
                         </Link>
                     </div>
                  </div>
