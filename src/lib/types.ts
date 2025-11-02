@@ -48,6 +48,7 @@ export type BlogPost = {
   publishDateISO: string; // Add ISO string for sorting
   tags: string[];
   popularity: number; // Add for "Popular" sort
+  content: string; // Added for rich text content
 };
 
 export type Testimonial = {
@@ -64,4 +65,3 @@ export type FaqItem = {
     question: string;
     answer: string;
 };
-

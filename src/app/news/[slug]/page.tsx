@@ -5,9 +5,9 @@ import Image from 'next/image';
 import { blogPosts } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Calendar, User, Tag, ArrowLeft } from 'lucide-react';
-import NewsletterSignUp from '@/components/home/NewsletterSignUp';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import InstaSync from '@/components/home/InstaSync';
 
 type Props = {
   params: { slug: string };
@@ -31,6 +31,46 @@ export function generateMetadata({ params }: Props): Metadata {
     description: post.excerpt,
   };
 }
+
+const RecommendedPosts = ({ currentPostId }: { currentPostId: string }) => {
+    const recommended = blogPosts
+        .filter(p => p.id !== currentPostId)
+        .slice(0, 3);
+    
+    return (
+        <section className="py-16 bg-card">
+            <div className="container mx-auto px-6">
+                <h2 className="text-3xl font-headline font-bold text-foreground mb-8">Recommended For You</h2>
+                <div className="grid md:grid-cols-3 gap-8">
+                    {recommended.map(post => {
+                        const image = PlaceHolderImages.find(img => img.id === post.imageUrl);
+                        return (
+                             <Link key={post.id} href={`/news/${post.slug}`} className="group block">
+                                <div className="relative aspect-video rounded-2xl overflow-hidden mb-4">
+                                    {image && (
+                                    <Image
+                                        src={image.imageUrl}
+                                        alt={post.title}
+                                        fill
+                                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                                        data-ai-hint={image.imageHint}
+                                    />
+                                    )}
+                                </div>
+                                <p className="font-semibold text-accent text-sm">{post.tags.filter(t => t !== 'All').join(', ')}</p>
+                                <h4 className="text-xl font-headline font-bold text-foreground mt-1 group-hover:text-primary transition-colors">
+                                    {post.title}
+                                </h4>
+                                <p className="text-xs text-muted-foreground mt-2">{post.publishDate}</p>
+                            </Link>
+                        )
+                    })}
+                </div>
+            </div>
+        </section>
+    );
+}
+
 
 export default function NewsArticlePage({ params }: Props) {
   const post = getPostFromSlug(params.slug);
@@ -86,29 +126,15 @@ export default function NewsArticlePage({ params }: Props) {
                     </div>
                 )}
                 
-                <div className="prose prose-lg max-w-none text-foreground prose-headings:text-foreground prose-p:text-muted-foreground prose-a:text-accent hover:prose-a:text-accent/80 prose-strong:text-foreground">
-                    {/* Dummy content */}
-                    <p>{post.excerpt}</p>
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla.
-                    </p>
-                    <p>
-                        Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa. Fusce ac turpis quis ligula lacinia aliquet.
-                    </p>
-                    <figure>
-                        <blockquote>
-                            <p>"This is a blockquote. It's a great way to highlight a key point or a quote from someone relevant to the article."</p>
-                        </blockquote>
-                        <figcaption>- Kopi Dua Darjat Team</figcaption>
-                    </figure>
-                    <p>
-                        Mauris ipsum. Nulla metus metus, ullamcorper vel, tincidunt sed, euismod in, nibh. Quisque volutpat condimentum velit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nam nec ante. Sed lacinia, urna non tincidunt mattis, tortor neque adipiscing diam, a cursus ipsum ante quis turpis. Nulla facilisi. Ut fringilla. Suspendisse potenti. Nunc feugiat mi a tellus consequat imperdiet. Vestibulum sapien. Proin quam.
-                    </p>
-                </div>
+                <div 
+                    className="prose prose-lg max-w-none text-foreground prose-headings:text-foreground prose-p:text-muted-foreground prose-a:text-accent hover:prose-a:text-accent/80 prose-strong:text-foreground prose-blockquote:border-accent prose-blockquote:text-muted-foreground prose-figcaption:text-center prose-figcaption:text-sm prose-figcaption:text-muted-foreground prose-img:rounded-xl prose-img:shadow-lg"
+                    dangerouslySetInnerHTML={{ __html: post.content }}
+                />
                 </div>
             </article>
         </div>
-        <NewsletterSignUp disableAnimations />
+        <RecommendedPosts currentPostId={post.id} />
+        <InstaSync />
     </>
   );
 }

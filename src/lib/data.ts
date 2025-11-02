@@ -133,6 +133,31 @@ const generatePosts = (): BlogPost[] => {
       title: titles[i],
       slug: titles[i].toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, ''),
       excerpt: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      content: `
+        <p>This is the main body of the article, designed to be flexible for a CMS. It can contain various HTML elements that will be styled by the 'prose' classes.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla.</p>
+        <h3>A Subheading for a New Section</h3>
+        <p>You can structure your content with headings, paragraphs, and lists to create a readable and engaging article. Here is an example of an unordered list:</p>
+        <ul>
+          <li>Item one: High-quality, locally sourced beans.</li>
+          <li>Item two: Traditional brewing methods with a modern twist.</li>
+          <li>Item three: A commitment to community and affordability.</li>
+        </ul>
+        <figure>
+            <img src="https://images.unsplash.com/photo-1529892485617-25f63cd7b1e9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxsYXR0ZSUyMGFydHxlbnwwfHx8fDE3NjE4OTcwNDR8MA&ixlib=rb-4.1.0&q=80&w=1080" alt="Latte art" class="rounded-lg shadow-md" />
+            <figcaption>The 'prose' classes will even style image captions nicely.</figcaption>
+        </figure>
+        <p>And here's an ordered list:</p>
+        <ol>
+            <li>Apply for a franchise.</li>
+            <li>Complete our training program.</li>
+            <li>Launch your own Kopi Dua Darjat stall!</li>
+        </ol>
+        <blockquote>
+            <p>"This is a blockquote. It's a great way to highlight a key point or a quote from someone relevant to the article."</p>
+        </blockquote>
+        <p>Mauris ipsum. Nulla metus metus, ullamcorper vel, tincidunt sed, euismod in, nibh. Quisque volutpat condimentum velit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nam nec ante. Sed lacinia, urna non tincidunt mattis, tortor neque adipiscing diam, a cursus ipsum ante quis turpis. Nulla facilisi. Ut fringilla. Suspendisse potenti. Nunc feugiat mi a tellus consequat imperdiet. Vestibulum sapien. Proin quam.</p>
+      `,
       imageUrl: `blog-post-${(i % 4) + 1}`,
       author: authors[i % authors.length],
       publishDate: publishDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
@@ -228,4 +253,3 @@ export const faqItems: FaqItem[] = [
     }
 ];
     
-
