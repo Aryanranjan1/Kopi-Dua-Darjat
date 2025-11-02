@@ -1,7 +1,7 @@
+
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import ContactForm from '@/components/contact/ContactForm';
 import ContactInfo from '@/components/contact/ContactInfo';
 import InteractiveMap from '@/components/home/InteractiveMap';
@@ -34,14 +34,14 @@ export default function ContactPage() {
           </div>
           <div className="absolute inset-0 bg-black/70 z-[-1]"></div>
           <div className="container relative z-10 px-4">
-            <AnimateOnScroll animationType="slideInFromBottom">
+            <div>
               <h1 className="text-5xl md:text-7xl font-headline font-bold text-white drop-shadow-lg">
                 Contact Us
               </h1>
               <p className="mt-4 text-lg md:text-xl max-w-3xl mx-auto text-white/80">
                 Home / Contact
               </p>
-            </AnimateOnScroll>
+            </div>
           </div>
         </section>
 
@@ -50,16 +50,16 @@ export default function ContactPage() {
           <div className="container mx-auto px-6">
             <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
               {/* Left: Form */}
-              <AnimateOnScroll animationType="slideInFromLeft">
+              <div className="space-y-12">
                 <Card className="bg-zinc-900/50 border-zinc-800 p-8 rounded-2xl">
                   <h2 className="text-3xl font-headline font-bold text-primary">Get In Touch</h2>
                   <p className="text-muted-foreground mt-2 mb-6">We'd love to hear from you. Drop us a line below.</p>
                   <ContactForm />
                 </Card>
-              </AnimateOnScroll>
+              </div>
 
               {/* Right: Details & Map */}
-              <AnimateOnScroll animationType="slideInFromRight" className="space-y-12">
+              <div className="space-y-12">
                  <div>
                    <p className="text-muted-foreground">
                       Have a question, a partnership proposal, or just want to say hello? Use the form or contact us through one of the methods below. We're always happy to connect with our community.
@@ -69,7 +69,7 @@ export default function ContactPage() {
                  <Card className="overflow-hidden shadow-lg rounded-2xl aspect-video border-zinc-800">
                   <InteractiveMap />
                 </Card>
-              </AnimateOnScroll>
+              </div>
             </div>
           </div>
         </section>
