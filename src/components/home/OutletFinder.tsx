@@ -110,7 +110,7 @@ export default function OutletFinder() {
                     }}
                   />
                 </div>
-                <Button onClick={handleLocateMe} disabled={isGeolocationLoading} className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90">
+                <Button onClick={handleLocateMe} disabled={isGeolocationLoading} className="rounded-full bg-black text-white hover:bg-primary hover:text-black">
                   {isGeolocationLoading ? (
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                   ) : (

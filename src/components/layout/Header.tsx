@@ -78,7 +78,7 @@ export default function Header() {
 
         {/* Right Actions */}
         <div className="flex items-center gap-2">
-            <Button asChild className="hidden lg:flex rounded-full bg-accent hover:bg-accent/90 text-accent-foreground">
+            <Button asChild className="hidden lg:flex rounded-full bg-black text-white hover:bg-primary hover:text-black">
               <Link href="/franchise/apply">
                 Apply Now
               </Link>
@@ -112,7 +112,7 @@ export default function Header() {
                             ))}
                         </div>
                         <div className="mt-auto">
-                            <Button asChild className="w-full rounded-full bg-accent hover:bg-accent/90 text-accent-foreground">
+                            <Button asChild className="w-full rounded-full bg-black text-white hover:bg-primary hover:text-black">
                               <Link href="/franchise/apply">
                                 Apply Now
                               </Link>
