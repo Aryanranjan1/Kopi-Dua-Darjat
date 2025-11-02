@@ -78,7 +78,7 @@
     {
       "id": "founder-hadi",
       "description": "Photo of founder Hadi.",
-      "imageUrl": "https://images.unsplash.com/photo-1715838854648-ea200803934a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8cG9ydHJhaXQlMjBtYW58ZW58MHx8fHwxNzYxOTgyOTkwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1557862921-37829c790f19?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       "imageHint": "portrait man"
     },
     {
@@ -251,6 +251,84 @@
       "description": "A close-up of a cup of coffee on a wooden table.",
       "imageUrl": "https://images.unsplash.com/photo-1497515114629-f71d768fd07c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxjdXAlMjBvZiUyMGNvZmZlZXxlbnwwfHx8fDE3NjIwNTI4NDF8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "cup of coffee"
+    },
+    {
+      "id": "milestone-beginnings",
+      "description": "The storefront of the first Kopi Dua Darjat stall.",
+      "imageUrl": "https://images.unsplash.com/photo-1601288338087-61203c693fac?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjYWZlJTIwc3RvcmVmcm9udHxlbnwwfHx8fDE3NjIwMTM3NDV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cafe storefront"
+    },
+    {
+      "id": "milestone-recipes",
+      "description": "A close-up of delicious-looking pastries.",
+      "imageUrl": "https://images.unsplash.com/photo-1583337757-5503b41460a5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwYXN0cmllc3xlbnwwfHx8fDE3NjI0NjQ4Mjd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "pastries"
+    },
+    {
+      "id": "milestone-innovation",
+      "description": "A shot of creative coffee brewing.",
+      "imageUrl": "https://images.unsplash.com/photo-1627902520211-73c980850fe8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjb2ZmZWUlMjBicmV3aW5nfGVufDB8fHx8MTc2MjAxMzc0NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "coffee brewing"
+    },
+    {
+      "id": "milestone-community",
+      "description": "People enjoying themselves at a community event.",
+      "imageUrl": "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjb21tdW5pdHklMjBldmVudHxlbnwwfHx8fDE3NjE5Njk4NTd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "community event"
+    },
+    {
+      "id": "milestone-future",
+      "description": "A person inspecting coffee beans on a plant.",
+      "imageUrl": "https://images.unsplash.com/photo-1509395239591-59a68c07889b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjb2ZmZWUlMjBiZWFufGVufDB8fHx8fDE3NjI0NjQ5NDJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "coffee bean"
+    },
+    {
+      "id": "gallery-1",
+      "description": "A barista pouring latte art.",
+      "imageUrl": "https://images.unsplash.com/photo-1529892485617-25f63cd7b1e9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxsYXR0ZSUyMGFydHxlbnwwfHx8fDE3NjE4OTcwNDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "latte art"
+    },
+    {
+      "id": "gallery-2",
+      "description": "Friends laughing together in a cafe.",
+      "imageUrl": "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjYWZlJTIwZnJpZW5kc3xlbnwwfHx8fDE3NjI0NjUwNTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cafe friends"
+    },
+    {
+      "id": "gallery-3",
+      "description": "A traditional Malaysian coffee cup set.",
+      "imageUrl": "https://images.unsplash.com/photo-1626202157158-43d46f564883?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtYWxheXNpYW4lMjBjb2ZmZWV8ZW58MHx8fHwxNzYyNDY1MDk3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "malaysian coffee"
+    },
+    {
+      "id": "gallery-4",
+      "description": "The warm interior of a Kopi Dua Darjat outlet.",
+      "imageUrl": "https://images.unsplash.com/photo-1588253137728-1e4dd0fe9a93?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjYWZlJTIwaW50ZXJpb3J8ZW58MHx8fHwxNzYxOTgyODIwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cafe interior"
+    },
+    {
+      "id": "gallery-5",
+      "description": "A smiling couple enjoying their coffee.",
+      "imageUrl": "https://images.unsplash.com/photo-1559526323-cb2f2fe2591b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjb3VwbGUlMjBjb2ZmZWV8ZW58MHx8fHwxNzYyNDY1MTY5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "couple coffee"
+    },
+    {
+      "id": "gallery-6",
+      "description": "Coffee beans being roasted.",
+      "imageUrl": "https://images.unsplash.com/photo-1533550383838-67290886c99c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjb2ZmZWUlMjByb2FzdGluZ3xlbnwwfHx8fDE3NjI0NjUxOTd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "coffee roasting"
+    },
+    {
+      "id": "gallery-7",
+      "description": "A cozy corner in one of the cafes.",
+      "imageUrl": "https://images.unsplash.com/photo-1511920170033-f8329729c175?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjb3p5JTIwY2FmZXxlbnwwfHx8fDE3NjI0NjUyMjZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cozy cafe"
+    },
+    {
+      "id": "gallery-8",
+      "description": "A barista carefully preparing a drink.",
+      "imageUrl": "https://images.unsplash.com/photo-1564889785834-0374f386d314?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxiYXJpc3RhfGVufDB8fHx8fDE3NjI0NjUyNTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "barista"
     }
   ]
 }
