@@ -15,7 +15,7 @@ import InteractiveMap from '../home/InteractiveMap';
 import { Card } from '../ui/card';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 
-const OUTLETS_PER_PAGE = 10;
+const OUTLETS_PER_PAGE = 3;
 
 export default function OutletsList() {
   const {
