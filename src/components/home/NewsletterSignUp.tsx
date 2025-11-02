@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { PlaceHolderImages } from "@/lib/placeholder-images"
 import { AnimateOnScroll } from "@/components/animations/AnimateOnScroll"
 import { useFirestore } from '@/firebase';
-import { collection, addDoc, serverTimestamp, query, where, getDocs } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { z } from 'zod';
@@ -36,22 +36,9 @@ export default function NewsletterSignUp({ disableAnimations = false }: { disabl
     setIsSubmitting(true);
 
     try {
-      // Check for duplicates
       const subscribersRef = collection(firestore, "newsletterSubscribers");
-      const q = query(subscribersRef, where("email", "==", email));
-      const querySnapshot = await getDocs(q);
-
-      if (!querySnapshot.empty) {
-        toast({
-          variant: "destructive",
-          title: "Already Subscribed",
-          description: "You are already subscribed to our newsletter.",
-        });
-        setIsSubmitting(false);
-        return;
-      }
       
-      // Add new subscriber
+      // Add new subscriber without checking for duplicates to avoid permission errors
       await addDoc(subscribersRef, {
         email: email,
         createdAt: serverTimestamp(),
@@ -59,7 +46,7 @@ export default function NewsletterSignUp({ disableAnimations = false }: { disabl
       
       toast({
         title: "Subscribed!",
-        description: "Thanks for joining our newsletter.",
+        description: "Thanks for joining our newsletter. If you were already subscribed, you'll continue to receive our updates.",
       });
       setEmail('');
 
