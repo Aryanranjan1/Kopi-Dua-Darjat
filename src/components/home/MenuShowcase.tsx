@@ -40,7 +40,7 @@ export default function MenuShowcase() {
   });
 
   return (
-    <section className="py-24 sm:py-32 bg-black text-white group/showcase">
+    <section className="py-24 sm:py-32 bg-black text-white group/showcase overflow-hidden">
       <div className="container mx-auto px-4 sm:px-12">
         <div className="flex flex-col md:flex-row justify-between md:items-center gap-8 mb-12">
           <h1 className="text-5xl md:text-7xl font-headline font-bold text-primary tracking-widest text-center md:text-left">
