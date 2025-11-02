@@ -30,19 +30,13 @@ const Milestone = ({
   imageHint: string;
   reverse?: boolean;
 }) => (
-  <AnimateOnScroll animationType={reverse ? 'slideInFromLeft' : 'slideInFromRight'}>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center relative">
-      {/* Dotted line */}
-      <div className="hidden md:block absolute top-0 bottom-0 left-1/2 w-px bg-border -translate-x-1/2">
-          <div className="absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-accent ring-4 ring-background"></div>
-      </div>
-      
-      <div className={`md:text-right ${reverse ? 'md:order-2' : ''}`}>
+    <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-center">
+      <AnimateOnScroll animationType={reverse ? 'slideInFromLeft' : 'slideInFromRight'} className={`md:text-right ${reverse ? 'md:order-2' : ''}`}>
         <p className="text-sm font-semibold text-accent">{year}</p>
         <h3 className="mt-2 text-3xl font-headline font-bold text-foreground">{title}</h3>
         <p className="mt-4 text-muted-foreground">{description}</p>
-      </div>
-      <div className={`relative aspect-[4/3] rounded-2xl overflow-hidden group ${reverse ? 'md:order-1' : ''}`}>
+      </AnimateOnScroll>
+      <AnimateOnScroll animationType={reverse ? 'slideInFromRight' : 'slideInFromLeft'} className={`relative aspect-[4/3] rounded-2xl overflow-hidden group ${reverse ? 'md:order-1' : ''}`}>
         <TiltedCard 
           imageSrc={imageUrl}
           altText={title}
@@ -51,9 +45,8 @@ const Milestone = ({
           imageHeight="100%"
           captionText={title}
         />
-      </div>
+      </AnimateOnScroll>
     </div>
-  </AnimateOnScroll>
 );
 
 const FounderMessage = ({ name, quote, imageUrl, imageHint, reverse = false }: { name: string; quote: string; imageUrl: string; imageHint: string; reverse?: boolean }) => (
@@ -140,20 +133,27 @@ export default function AboutPage() {
           <AnimateOnScroll animationType="slideInFromBottom" className="text-center max-w-3xl mx-auto mb-20">
             <h2 className="text-4xl md:text-5xl font-headline font-bold text-foreground inline-block underline decoration-primary decoration-4 underline-offset-8">Our Milestones</h2>
           </AnimateOnScroll>
-          <div className="max-w-5xl mx-auto flex flex-col gap-24">
-            {milestones.map((milestone, index) =>
-              milestone?.image ? (
-                <Milestone
-                  key={index}
-                  year={milestone.year}
-                  title={milestone.title}
-                  description={milestone.description}
-                  imageUrl={milestone.image.imageUrl}
-                  imageHint={milestone.image.imageHint}
-                  reverse={index % 2 !== 0}
-                />
-              ) : null
-            )}
+          <div className="max-w-5xl mx-auto relative">
+              {/* Vertical Line */}
+              <div className="absolute left-1/2 -translate-x-1/2 h-full w-px bg-border hidden md:block"></div>
+              
+              <div className="space-y-24">
+                {milestones.map((milestone, index) =>
+                  milestone?.image ? (
+                    <div key={index} className="relative">
+                        <div className="hidden md:block absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-accent ring-8 ring-background"></div>
+                        <Milestone
+                            year={milestone.year}
+                            title={milestone.title}
+                            description={milestone.description}
+                            imageUrl={milestone.image.imageUrl}
+                            imageHint={milestone.image.imageHint}
+                            reverse={index % 2 !== 0}
+                        />
+                    </div>
+                  ) : null
+                )}
+              </div>
           </div>
         </div>
       </section>
