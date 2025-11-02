@@ -54,8 +54,8 @@ export default function Header() {
     >
       <div className="container mx-auto px-6 h-20 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/">
-            <Image src="/image/1.svg" alt="Kopi Dua Darjat Logo" width={64} height={64} />
+        <Link href="/" className="p-0 m-0 h-20 flex items-center">
+            <Image src="/image/1.svg" alt="Kopi Dua Darjat Logo" width={80} height={80} className="invert hue-rotate-180 brightness-50" />
         </Link>
 
 
@@ -96,8 +96,8 @@ export default function Header() {
                 </SheetTrigger>
                 <SheetContent side="left" className="w-[300px]">
                     <div className="flex flex-col h-full p-4">
-                        <Link href="/">
-                           <Image src="/image/1.svg" alt="Kopi Dua Darjat Logo" width={64} height={64} />
+                        <Link href="/" className="h-20 flex items-center p-0 m-0">
+                           <Image src="/image/1.svg" alt="Kopi Dua Darjat Logo" width={80} height={80} className="invert hue-rotate-180 brightness-50" />
                         </Link>
                         <div className="flex flex-col space-y-4 mt-8">
                             {navItems.map((item) => (
