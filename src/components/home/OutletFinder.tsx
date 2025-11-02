@@ -64,6 +64,7 @@ export default function OutletFinder() {
     if (position) {
       findClosestOutlets();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [position]);
 
 
@@ -85,13 +86,13 @@ export default function OutletFinder() {
                 <div className="flex gap-2">
                   <Input 
                     placeholder="Enter your city or postcode..." 
-                    className="bg-background rounded-full"
+                    className="bg-background/80 rounded-full"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
-                  <Button className="bg-foreground text-background hover:bg-foreground/80 rounded-full">Search</Button>
+                  <Button className="bg-foreground/80 text-background hover:bg-foreground/70 rounded-full">Search</Button>
                 </div>
-                <Button variant="outline" onClick={handleLocateMe} disabled={isGeolocationLoading} className="rounded-full">
+                <Button onClick={handleLocateMe} disabled={isGeolocationLoading} className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90">
                   {isGeolocationLoading ? (
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                   ) : (
