@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import LatestStories from '@/components/home/LatestStories';
 import NewsletterSignUp from '@/components/home/NewsletterSignUp';
+import StickyScroll from '@/components/ui/sticky-scroll';
 
 export const metadata: Metadata = {
   title: 'Our Story',
@@ -105,11 +106,6 @@ export default function AboutPage() {
     },
   ];
 
-  const galleryImages = [
-    'gallery-1', 'gallery-2', 'gallery-3', 'gallery-4',
-    'gallery-5', 'gallery-6', 'gallery-7', 'gallery-8'
-  ].map(id => PlaceHolderImages.find(img => img.id === id)).filter(Boolean);
-
   return (
     <>
     <div className="bg-background text-foreground">
@@ -200,34 +196,10 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Moments Gallery Section */}
-      <section className="py-24 sm:py-32 bg-card">
-         <div className="container mx-auto px-6">
-            <div className="text-center max-w-3xl mx-auto mb-16">
-                <h2 className="text-4xl md:text-5xl font-headline font-bold text-foreground">Moments from Our Journey</h2>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {galleryImages.map((image, index) => (
-                image && (
-                  <div key={index} className={`relative aspect-square rounded-2xl overflow-hidden shadow-lg ${index === 0 || index === 5 ? 'md:col-span-2 md:row-span-2' : ''}`}>
-                    <Image
-                      src={image.imageUrl}
-                      alt={image.description}
-                      fill
-                      className="object-cover transition-transform duration-300 hover:scale-105"
-                      data-ai-hint={image.imageHint}
-                    />
-                  </div>
-                )
-              ))}
-            </div>
-         </div>
-      </section>
+      <StickyScroll />
     </div>
     <LatestStories />
     <NewsletterSignUp />
     </>
   );
 }
-
-    
