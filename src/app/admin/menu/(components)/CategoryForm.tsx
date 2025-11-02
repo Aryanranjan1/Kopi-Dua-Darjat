@@ -53,7 +53,7 @@ export default function CategoryForm({ category, onSuccess }: CategoryFormProps)
       name: category?.name || '',
       slug: category?.slug || '',
       description: category?.description || '',
-      parentId: category?.parentId || '',
+      parentId: category?.parentId || 'null',
       group: category?.group || '',
     },
   });
@@ -65,7 +65,7 @@ export default function CategoryForm({ category, onSuccess }: CategoryFormProps)
 
     const dataToSave = {
         ...values,
-        parentId: values.parentId || null,
+        parentId: values.parentId === 'null' ? null : values.parentId,
         updatedAt: serverTimestamp(),
     };
 
@@ -137,7 +137,7 @@ export default function CategoryForm({ category, onSuccess }: CategoryFormProps)
                  <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl><SelectTrigger className={inputStyles}><SelectValue placeholder="Select a parent category..." /></SelectTrigger></FormControl>
                     <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                         <SelectItem value="">None (Top-Level Category)</SelectItem>
+                         <SelectItem value="null">None (Top-Level Category)</SelectItem>
                         {parentCategories?.filter(c => c.id !== category?.id).map(cat => (
                             <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
                         ))}
