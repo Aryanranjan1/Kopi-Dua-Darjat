@@ -28,13 +28,14 @@ export type MenuCategory = {
   description?: string;
   parentId?: string | null;
   group?: string; // e.g., 'Nak Kopi', 'Taknak Kopi', 'Seasonal'
+  displayOrder: number; // Add displayOrder field
   createdAt: any; // Firestore Timestamp
   updatedAt: any; // Firestore Timestamp
 };
 
 export type MenuItem = {
   id: string;
-  name: string;
+  name:string;
   slug: string;
   description: string;
   price: number;
@@ -46,6 +47,7 @@ export type MenuItem = {
   isGeneral: boolean;
   status: 'draft' | 'published';
   tags?: string[]; // For 'featured', 'new', etc.
+  displayOrder: number; // Add displayOrder field
   createdAt: any; // Firestore Timestamp
   updatedAt: any; // Firestore Timestamp
 };

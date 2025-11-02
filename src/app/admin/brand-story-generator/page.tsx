@@ -11,6 +11,23 @@ import { Loader2, CheckCircle, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { MenuCategory, MenuItem } from '@/lib/types';
 
+// Define the structure for categories with groups and order
+const categoryStructure = {
+  'Seasonal / Specials': {
+    order: 1,
+    series: ['Menet Series'],
+  },
+  'Nak Kopi': {
+    order: 2,
+    series: ['Espresso Series', 'Darjat Series', 'Kopitiam Series'],
+  },
+  'Taknak Kopi': {
+    order: 3,
+    series: ['Coklat Series', 'Matcha Series'],
+  },
+};
+
+
 export default function DataMigrationPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isClearing, setIsClearing] = useState(false);
@@ -54,26 +71,29 @@ export default function DataMigrationPage() {
       const itemsRef = collection(firestore, 'menuItems');
       const existingCategories = new Map<string, string>();
 
-      // 1. Create categories from tags
+      // 1. Create categories from the defined structure
       setStatus('Processing categories...');
-      const categoryTags = new Set(allDrinks.flatMap(d => d.tags.filter(t => t.endsWith('Series'))));
-
-      for (const tagName of categoryTags) {
-        const slug = tagName.toLowerCase().replace(/ /g, '-');
-        const newCategory: Omit<MenuCategory, 'id' | 'createdAt' | 'updatedAt'> = {
-          name: tagName,
-          slug: slug,
-          description: `Drinks from the ${tagName}.`,
-          parentId: null,
-        };
-        const docRef = doc(categoriesRef);
-        batch.set(docRef, { ...newCategory, createdAt: new Date(), updatedAt: new Date() });
-        existingCategories.set(tagName, docRef.id);
+      let categoryOrder = 0;
+      for (const [groupName, groupDetails] of Object.entries(categoryStructure)) {
+        for (const seriesName of groupDetails.series) {
+            const slug = seriesName.toLowerCase().replace(/ /g, '-');
+            const newCategory: Omit<MenuCategory, 'id' | 'createdAt' | 'updatedAt'> = {
+                name: seriesName,
+                slug: slug,
+                description: `Drinks from the ${seriesName}.`,
+                parentId: null,
+                group: groupName,
+                displayOrder: ++categoryOrder,
+            };
+            const docRef = doc(categoriesRef);
+            batch.set(docRef, { ...newCategory, createdAt: new Date(), updatedAt: new Date() });
+            existingCategories.set(seriesName, docRef.id);
+        }
       }
       
       // 2. Migrate drinks to menuItems
       setStatus('Migrating menu items...');
-      allDrinks.forEach(drink => {
+      allDrinks.forEach((drink, index) => {
         const categoryName = drink.tags.find(t => t.endsWith('Series'));
         const categoryId = categoryName ? existingCategories.get(categoryName) : null;
         
@@ -91,8 +111,10 @@ export default function DataMigrationPage() {
           categoryId: categoryId,
           promotionIds: [],
           outletIds: [],
-          isGeneral: true, // Default all to general availability
-          status: 'published', // Publish all mock items
+          isGeneral: true,
+          status: 'published',
+          tags: drink.isFeatured ? ['featured'] : [],
+          displayOrder: index + 1, // Simple ordering for now
         };
         const itemDocRef = doc(itemsRef);
         batch.set(itemDocRef, { ...newItem, createdAt: new Date(), updatedAt: new Date() });
@@ -103,7 +125,7 @@ export default function DataMigrationPage() {
       await batch.commit();
 
       setStatus('Migration completed successfully!');
-      toast({ title: 'Migration Complete', description: 'Mock data has been imported to Firestore.' });
+      toast({ title: 'Migration Complete', description: 'Mock data has been imported to Firestore with new structure.' });
     } catch (error: any) {
       console.error('Migration failed:', error);
       setStatus(`Error: ${error.message}`);
@@ -119,7 +141,7 @@ export default function DataMigrationPage() {
         <CardHeader>
           <CardTitle>One-Time Data Migration</CardTitle>
           <CardDescription className="text-zinc-400">
-            Use this tool to import the initial mock menu data into Firestore. This should only be run once.
+            Use this tool to import the initial mock menu data into Firestore. This will set up categories, groups, and items based on the defined structure.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
