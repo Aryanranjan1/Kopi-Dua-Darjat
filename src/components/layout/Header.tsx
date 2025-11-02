@@ -12,6 +12,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import Image from 'next/image';
 
 const navItems = [
   { title: 'Home', href: '/' },
@@ -54,7 +55,8 @@ export default function Header() {
       <div className="container mx-auto px-6 h-20 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-2">
-            
+            <Image src="/image/1.svg" alt="Kopi Dua Darjat Logo" width={40} height={40} className='invert' />
+            <span className="font-headline font-bold text-xl text-foreground">Kopi Dua Darjat</span>
         </Link>
 
 
@@ -96,7 +98,8 @@ export default function Header() {
                 <SheetContent side="left" className="w-[300px]">
                     <div className="flex flex-col h-full p-4">
                         <Link href="/" className="flex items-center space-x-2 mb-8">
-                            
+                           <Image src="/image/1.svg" alt="Kopi Dua Darjat Logo" width={40} height={40} className='invert' />
+                           <span className="font-headline font-bold text-xl text-foreground">Kopi Dua Darjat</span>
                         </Link>
                         <div className="flex flex-col space-y-4">
                             {navItems.map((item) => (
