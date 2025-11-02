@@ -39,7 +39,7 @@ export default function ContactPage() {
               <div className="space-y-12">
                 <Card className="bg-zinc-900/50 border-zinc-800 p-8 rounded-2xl h-full">
                   <h2 className="text-3xl font-headline font-bold text-primary">Get In Touch</h2>
-                  <p className="text-muted-foreground mt-2 mb-6">We'd love to hear from you. Drop us a line below.</p>
+                  <p className="text-white/80 mt-2 mb-6">We'd love to hear from you. Drop us a line below.</p>
                   <ContactForm />
                 </Card>
               </div>
@@ -47,7 +47,7 @@ export default function ContactPage() {
               {/* Right: Details & Map */}
               <div className="space-y-12">
                  <div>
-                   <p className="text-muted-foreground">
+                   <p className="text-white/80">
                       Have a question, a partnership proposal, or just want to say hello? Use the form or contact us through one of the methods below. We're always happy to connect with our community.
                    </p>
                    <ContactInfo />
