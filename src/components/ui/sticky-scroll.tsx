@@ -3,135 +3,59 @@
 import { ReactLenis } from 'lenis/react';
 import React, { forwardRef } from 'react';
 import Image from 'next/image';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 const StickyScroll = forwardRef<HTMLElement>((props, ref) => {
+  const images = PlaceHolderImages.filter(img => img.id.startsWith('gallery-'));
+  
+  const col1 = images.slice(0, 5);
+  const col2 = images.slice(5, 8);
+  const col3 = images.slice(8, 13);
+
+
   return (
     <ReactLenis root>
-      <main className='bg-black' ref={ref}>
-        <div className='wrapper'>
-          <section className='text-white  h-screen  w-full bg-slate-950  grid place-content-center sticky top-0'>
-            <div className='absolute bottom-0 left-0 right-0 top-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:54px_54px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]'></div>
-
-            <h1 className='2xl:text-7xl text-5xl px-8 font-semibold text-center tracking-tight leading-[120%]'>
-              Create Gallery In a Better Way
-              <br />
-              Using CSS sticky properties <br />
-              Scroll down! 👇
-            </h1>
-          </section>
-        </div>
-
-        <section className='text-white w-full bg-slate-950'>
+      <main className='bg-background' ref={ref}>
+        <section className='text-foreground w-full bg-background'>
           <div className='grid grid-cols-12 gap-2'>
             <div className='grid gap-2 col-span-4'>
-              <figure className=' w-full relative h-96'>
-                <Image
-                  src='https://images.unsplash.com/photo-1718838541476-d04e71caa347?w=500&auto=format&fit=crop'
-                  alt='gallery image'
-                  fill
-                  className='transition-all duration-300 align-bottom object-cover rounded-md '
-                />
-              </figure>
-              <figure className=' w-full relative h-96'>
-                <Image
-                  src='https://images.unsplash.com/photo-1715432362539-6ab2ab480db2?w=500&auto=format&fit=crop'
-                  alt='gallery image'
-                   fill
-                  className='transition-all duration-300 align-bottom object-cover rounded-md '
-                />
-              </figure>
-              <figure className=' w-full relative h-96'>
-                <Image
-                  src='https://images.unsplash.com/photo-1718601980986-0ce75101d52d?w=500&auto=format&fit=crop'
-                  alt='gallery image'
-                   fill
-                  className='transition-all duration-300 align-bottom object-cover rounded-md '
-                />
-              </figure>
-              <figure className='w-full relative h-96'>
-                <Image
-                  src='https://images.unsplash.com/photo-1685904042960-66242a0ac352?w=500&auto=format&fit=crop'
-                  alt='gallery image'
-                   fill
-                  className='transition-all duration-300 align-bottom object-cover rounded-md '
-                />
-              </figure>
-              <figure className='w-full relative h-96'>
-                <Image
-                  src='https://images.unsplash.com/photo-1719411182379-ffd97c1f7ebf?w=500&auto=format&fit=crop'
-                  alt='gallery image'
-                   fill
-                  className='transition-all duration-300 align-bottom object-cover rounded-md '
-                />
-              </figure>
+              {col1.map(image => image && (
+                <figure key={image.id} className='w-full relative h-96'>
+                  <Image
+                    src={image.imageUrl}
+                    alt={image.description}
+                    fill
+                    data-ai-hint={image.imageHint}
+                    className='transition-all duration-300 align-bottom object-cover rounded-md '
+                  />
+                </figure>
+              ))}
             </div>
             <div className='sticky top-0 h-screen w-full col-span-4 gap-2  grid grid-rows-3'>
-              <figure className='w-full h-full relative'>
-                <Image
-                  src='https://images.unsplash.com/photo-1718969604981-de826f44ce15?w=500&auto=format&fit=crop'
-                  alt='gallery image'
-                   fill
-                  className='transition-all duration-300 align-bottom object-cover rounded-md '
-                />
-              </figure>
-              <figure className='w-full h-full relative'>
-                <Image
-                  src='https://images.unsplash.com/photo-1476180814856-a36609db0493?w=500&auto=format&fit=crop'
-                  alt='gallery image'
-                   fill
-                  className='transition-all duration-300 align-bottom object-cover rounded-md '
-                />
-              </figure>
-              <figure className='w-full h-full relative'>
-                <Image
-                  src='https://images.unsplash.com/photo-1595407660626-db35dcd16609?w=500&auto=format&fit=crop'
-                  alt='gallery image'
-                   fill
-                  className='transition-all duration-300 align-bottom object-cover rounded-md '
-                />
-              </figure>
+              {col2.map(image => image && (
+                <figure key={image.id} className='w-full h-full relative'>
+                  <Image
+                    src={image.imageUrl}
+                    alt={image.description}
+                    fill
+                    data-ai-hint={image.imageHint}
+                    className='transition-all duration-300 align-bottom object-cover rounded-md '
+                  />
+                </figure>
+              ))}
             </div>
             <div className='grid gap-2 col-span-4'>
-              <figure className='w-full relative h-96'>
-                <Image
-                  src='https://images.unsplash.com/photo-1719547907790-f661a88302c2?w=500&auto=format&fit=crop'
-                  alt='gallery image'
-                   fill
-                  className='transition-all duration-300 align-bottom object-cover rounded-md '
-                />
-              </figure>
-              <figure className='w-full relative h-96'>
-                <Image
-                  src='https://images.unsplash.com/photo-1599054799131-4b09c73a63cf?w=500&auto=format&fit=crop'
-                  alt='gallery image'
-                   fill
-                  className='transition-all duration-300 align-bottom object-cover rounded-md '
-                />
-              </figure>
-              <figure className='w-full relative h-96'>
-                <Image
-                  src='https://images.unsplash.com/photo-1719963532023-01b573d1d584?w=500&auto=format&fit=crop'
-                  alt='gallery image'
-                   fill
-                  className='transition-all duration-300 align-bottom object-cover rounded-md '
-                />
-              </figure>
-              <figure className='w-full relative h-96'>
-                <Image
-                  src='https://images.unsplash.com/photo-1714328101501-3594de6cb80f?w=500&auto=format&fit=crop'
-                  alt='gallery image'
-                   fill
-                  className='transition-all duration-300 align-bottom object-cover rounded-md '
-                />
-              </figure>
-              <figure className='w-full relative h-96'>
-                <Image
-                  src='https://images.unsplash.com/photo-1719554873571-0fd6bf322bb1?w=500&auto=format&fit=crop'
-                  alt='gallery image'
-                   fill
-                  className='transition-all duration-300 align-bottom object-cover rounded-md '
-                />
-              </figure>
+              {col3.map(image => image && (
+                <figure key={image.id} className='w-full relative h-96'>
+                  <Image
+                    src={image.imageUrl}
+                    alt={image.description}
+                    fill
+                    data-ai-hint={image.imageHint}
+                    className='transition-all duration-300 align-bottom object-cover rounded-md '
+                  />
+                </figure>
+              ))}
             </div>
           </div>
         </section>

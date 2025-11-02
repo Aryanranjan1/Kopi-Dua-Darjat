@@ -23,56 +23,56 @@
     {
       "id": "drink-bottled",
       "description": "Bottled coffee series.",
-      "imageUrl": "https://images.unsplash.com/photo-1663407746753-bf168bc724f4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxib3R0bGVkJTIwY29mZmVlfGVufDB8fHx8MTc2MjAxMzc0NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1663407746753-bf168bc724f4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxib3R0bGVkJTIwY29mZmVlfGVufDB8fHx8MTc2MjAxMzc0NXww&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "bottled coffee",
       "linkUrl": "https://www.youtube.com/watch?v=LXb3EKWsInQ"
     },
     {
       "id": "drink-macchiato",
       "description": "Caramel Macchiato.",
-      "imageUrl": "https://images.unsplash.com/photo-1644418664318-40ce8982c6e6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjYXJhbWVsJTIwbWFjY2hpYXRvfGVufDB8fHx8MTc2MTk5MjA4Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1644418664318-40ce8982c6e6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjYXJhbWVsJTIwbWFjY2hpYXRvfGVufDB8fHx8MTc2MTk5MjA4Mnww&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "caramel macchiato"
     },
     {
       "id": "promotion-banner",
       "description": "Banner for a current promotion.",
-      "imageUrl": "https://images.unsplash.com/photo-1697724779999-c9e1697bea17?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y29mZmVlJTIwcHJvbW90aW9ufGVufDB8fHx8MTc2MjAxMzc0NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1697724779999-c9e1697bea17?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y29mZmVlJTIwcHJvbW90aW9ufGVufDB8fHx8MTc2MjAxMzc0NXww&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "coffee promotion"
     },
     {
       "id": "outlet-map",
       "description": "A map showing outlet locations.",
-      "imageUrl": "https://images.unsplash.com/photo-1603466183710-70b84997a93f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjaXR5JTIwbWFwfGVufDB8fHx8MTc2MTkxMTUzM3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1603466183710-70b84997a93f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjaXR5JTIwbWFwfGVufDB8fHx8MTc2MTkxMTUzM3ww&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "city map"
     },
     {
       "id": "franchise-teaser",
       "description": "Image for the franchise teaser section.",
-      "imageUrl": "https://images.unsplash.com/photo-1556740758-90de374c12ad?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzbWFsbCUyMGJ1c2luZXNzfGVufDB8fHx8MTc2MTk0NDQ3Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1556740758-90de374c12ad?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzbWFsbCUyMGJ1c2luZXNzfGVufDB8fHx8MTc2MTk0NDQ3Mnww&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "small business"
     },
     {
       "id": "blog-post-1",
       "description": "Image for the first blog post.",
-      "imageUrl": "https://images.unsplash.com/photo-1690983326555-8b8e27843a32?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxjb2ZmZWUlMjBiZWFuc3xlbnwwfHx8fDE3NjE5NDQ1NTR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1690983326555-8b8e27843a32?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxjb2ZmZWUlMjBiZWFuc3xlbnwwfHx8fDE3NjE5NDQ1NTR8MA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "coffee beans"
     },
     {
       "id": "blog-post-2",
       "description": "Image for the second blog post.",
-      "imageUrl": "https://images.unsplash.com/photo-1529892485617-25f63cd7b1e9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxsYXR0ZSUyMGFydHxlbnwwfHx8fDE3NjE4OTcwNDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1529892485617-25f63cd7b1e9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxsYXR0ZSUyMGFydHxlbnwwfHx8fDE3NjE4OTcwNDR8MA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "latte art"
     },
     {
       "id": "blog-post-3",
       "description": "Image for the third blog post.",
-      "imageUrl": "https://images.unsplash.com/photo-1601288338087-61203c693fac?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjYWZlJTIwc3RvcmVmcm9udHxlbnwwfHx8fDE3NjIwMTM3NDV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1601288338087-61203c693fac?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjYWZlJTIwc3RvcmVmcm9udHxlbnwwfHx8fDE3NjIwMTM3NDV8MA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "cafe storefront"
     },
     {
       "id": "blog-post-4",
       "description": "Image for the fourth blog post.",
-      "imageUrl": "https://images.unsplash.com/photo-1566373049939-704ea187ef98?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxtYXRjaGF8ZW58MHx8fHwxNzYyMDEzNzQ1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1566373049939-704ea187ef98?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxtYXRjaGF8ZW58MHx8fHwxNzYyMDEzNzQ1fDA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "matcha"
     },
     {
@@ -96,58 +96,58 @@
     {
       "id": "brewing-method",
       "description": "Image showing traditional coffee brewing.",
-      "imageUrl": "https://images.unsplash.com/photo-1627902520211-73c980850fe8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjb2ZmZWUlMjBicmV3aW5nfGVufDB8fHx8MTc2MjAxMzc0NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1627902520211-73c980850fe8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjb2ZmZWUlMjBicmV3aW5nfGVufDB8fHx8MTc2MjAxMzc0NXww&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "coffee brewing"
     },
     {
       "id": "new-section-image",
       "description": "A visually interesting coffee-related image.",
-      "imageUrl": "https://images.unsplash.com/photo-1519174467875-72be1307eb40?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjb2ZmZWUlMjBhcnR8ZW58MHx8fHwxNzYxODkwODUyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1519174467875-72be1307eb40?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjb2ZmZWUlMjBhcnR8ZW58MHx8fHwxNzYxODkwODUyfDA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "coffee art"
     },
     {
       "id": "community-event-1",
       "description": "People at a Kopi Dua Darjat community event.",
-      "imageUrl": "https://images.unsplash.com/photo-1564759299848-b4aa8ca64ced?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjYWZlJTIwY29tbXVuaXR5fGVufDB8fHx8MTc2MjAxMzc0NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1564759299848-b4aa8ca64ced?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjYWZlJTIwY29tbXVuaXR5fGVufDB8fHx8MTc2MjAxMzc0NXww&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "cafe community",
       "linkUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
     },
     {
       "id": "community-event-2",
       "description": "A close-up of people enjoying coffee at an event.",
-      "imageUrl": "https://images.unsplash.com/photo-1574847052651-02b57f7f5a4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxtZWV0dXB8ZW58MHx8fHwxNzYyMDEzNzQ1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1574847052651-02b57f7f5a4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxtZWV0dXB8ZW58MHx8fHwxNzYyMDEzNzQ1fDA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "meetup",
       "linkUrl": "https://www.youtube.com/watch?v=L_LUpnjgPso"
     },
     {
       "id": "community-event-3",
       "description": "A barista crafting a specialty coffee for an event.",
-      "imageUrl": "https://images.unsplash.com/photo-1637059396137-363973e2e37b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y29mZmVlJTIwZXZlbnR8ZW58MHx8fHwxNzYyMDEzNzQ1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1637059396137-363973e2e37b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y29mZmVlJTIwZXZlbnR8ZW58MHx8fHwxNzYyMDEzNzQ1fDA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "coffee event",
       "linkUrl": "https://www.youtube.com/watch?v=LXb3EKWsInQ"
     },
     {
       "id": "newsletter-background",
       "description": "A flat lay of different coffee cups.",
-      "imageUrl": "https://images.unsplash.com/photo-1506619216599-9d16d0903dfd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjb2ZmZWV8ZW58MHx8fHwxNzYyMDAwNDgwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1506619216599-9d16d0903dfd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjb2ZmZWV8ZW58MHx8fHwxNzYyMDAwNDgwfDA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "coffee"
     },
     {
       "id": "parallax-promo-bg",
       "description": "A close-up shot of rich, dark coffee beans.",
-      "imageUrl": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjb2ZmZWV8ZW58MHx8fHwxNzYyMDAwNDgwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjb2ZmZWV8ZW58MHx8fHwxNzYyMDAwNDgwfDA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "coffee"
     },
     {
       "id": "insta-post-1",
       "description": "A flat lay of coffee and a croissant.",
-      "imageUrl": "https://images.unsplash.com/photo-1555092643-32474e97e8b7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjb2ZmZWUlMjBmbGF0bGF5fGVufDB8fHx8MTc2MTk4MzgyN3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1555092643-32474e97e8b7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjb2ZmZWUlMjBmbGF0bGF5fGVufDB8fHx8MTc2MTk4MzgyN3ww&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "coffee flatlay"
     },
     {
       "id": "insta-post-2",
       "description": "A smiling customer holding a cup of Kopi Dua Darjat.",
-      "imageUrl": "https://images.unsplash.com/photo-1543269664-56d93c1b41a6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxoYXBweSUyMGN1c3RvbWVyfGVufDB8fHx8MTc2MTkxNTY5N3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1543269664-56d93c1b41a6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxoYXBweSUyMGN1c3RvbWVyfGVufDB8fHx8MTc2MTkxNTY5N3ww&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "happy customer"
     },
     {
@@ -165,7 +165,7 @@
     {
       "id": "community-grid-1",
       "description": "A close-up of a perfectly crafted coffee cup.",
-      "imageUrl": "https://images.unsplash.com/photo-1554600740-951beab4712b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjb2ZmZWUlMjBjdXB8ZW58MHx8fHwxNzYxOTg5NDE4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1554600740-951beab4712b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjb2ZmZWUlMjBjdXB8ZW58MHx8fHwxNzYxOTg5NDE4fDA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "coffee cup"
     },
     {
@@ -225,7 +225,7 @@
     {
       "id": "testimonial-2",
       "description": "Portrait of a confident female entrepreneur.",
-      "imageUrl": "https://images.unsplash.com/photo-1662850886700-4ec19bd30d11?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzbWlsaW5nJTIwd29tYW58ZW58MHx8fHwxNzYyMDA3Mzk0fDA&ixlibrb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1662850886700-4ec19bd30d11?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzbWlsaW5nJTIwd29tYW58ZW58MHx8fHwxNzYyMDA3Mzk0fDA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "smiling woman"
     },
     {
@@ -285,50 +285,80 @@
     {
       "id": "gallery-1",
       "description": "A barista pouring latte art.",
-      "imageUrl": "https://images.unsplash.com/photo-1529892485617-25f63cd7b1e9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxsYXR0ZSUyMGFydHxlbnwwfHx8fDE3NjE4OTcwNDR8MA&ixlibrb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1718838541476-d04e71caa347?w=500&auto=format&fit=crop",
       "imageHint": "latte art"
     },
     {
       "id": "gallery-2",
       "description": "Friends laughing together in a cafe.",
-      "imageUrl": "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjYWZlJTIwZnJpZW5kc3xlbnwwfHx8fDE3NjI0NjUwNTV8MA&ixlibrb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1715432362539-6ab2ab480db2?w=500&auto=format&fit=crop",
       "imageHint": "cafe friends"
     },
     {
       "id": "gallery-3",
       "description": "A traditional Malaysian coffee cup set.",
-      "imageUrl": "https://images.unsplash.com/photo-1626202157158-43d46f564883?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtYWxheXNpYW4lMjBjb2ZmZWV8ZW58MHx8fHwxNzYyNDY1MDk3fDA&ixlibrb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1718601980986-0ce75101d52d?w=500&auto=format&fit=crop",
       "imageHint": "malaysian coffee"
     },
     {
       "id": "gallery-4",
       "description": "The warm interior of a Kopi Dua Darjat outlet.",
-      "imageUrl": "https://images.unsplash.com/photo-1588253137728-1e4dd0fe9a93?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjYWZlJTIwaW50ZXJpb3J8ZW58MHx8fHwxNzYxOTgyODIwfDA&ixlibrb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1685904042960-66242a0ac352?w=500&auto=format&fit=crop",
       "imageHint": "cafe interior"
     },
     {
       "id": "gallery-5",
       "description": "A smiling couple enjoying their coffee.",
-      "imageUrl": "https://images.unsplash.com/photo-1559526323-cb2f2fe2591b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjb3VwbGUlMjBjb2ZmZWV8ZW58MHx8fHwxNzYyNDY1MTY5fDA&ixlibrb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1719411182379-ffd97c1f7ebf?w=500&auto=format&fit=crop",
       "imageHint": "couple coffee"
     },
     {
       "id": "gallery-6",
       "description": "Coffee beans being roasted.",
-      "imageUrl": "https://images.unsplash.com/photo-1533550383838-67290886c99c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjb2ZmZWUlMjByb2FzdGluZ3xlbnwwfHx8fDE3NjI0NjUxOTd8MA&ixlibrb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1718969604981-de826f44ce15?w=500&auto=format&fit=crop",
       "imageHint": "coffee roasting"
     },
     {
       "id": "gallery-7",
       "description": "A cozy corner in one of the cafes.",
-      "imageUrl": "https://images.unsplash.com/photo-1511920170033-f8329729c175?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjb3p5JTIwY2FmZXxlbnwwfHx8fDE3NjI0NjUyMjZ8MA&ixlibrb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1476180814856-a36609db0493?w=500&auto=format&fit=crop",
       "imageHint": "cozy cafe"
     },
     {
       "id": "gallery-8",
       "description": "A barista carefully preparing a drink.",
-      "imageUrl": "https://images.unsplash.com/photo-1564889785834-0374f386d314?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxiYXJpc3RhfGVufDB8fHx8fDE3NjI0NjUyNTB8MA&ixlibrb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1595407660626-db35dcd16609?w=500&auto=format&fit=crop",
       "imageHint": "barista"
+    },
+    {
+      "id": "gallery-9",
+      "description": "A close up of a coffee being poured",
+      "imageUrl": "https://images.unsplash.com/photo-1719547907790-f661a88302c2?w=500&auto=format&fit=crop",
+      "imageHint": "coffee pour"
+    },
+    {
+      "id": "gallery-10",
+      "description": "A flat-lay of coffee and pastries",
+      "imageUrl": "https://images.unsplash.com/photo-1599054799131-4b09c73a63cf?w=500&auto=format&fit=crop",
+      "imageHint": "coffee flatlay"
+    },
+    {
+      "id": "gallery-11",
+      "description": "A group of friends enjoying coffee",
+      "imageUrl": "https://images.unsplash.com/photo-1719963532023-01b573d1d584?w=500&auto=format&fit=crop",
+      "imageHint": "friends coffee"
+    },
+    {
+      "id": "gallery-12",
+      "description": "A coffee shop interior",
+      "imageUrl": "https://images.unsplash.com/photo-1714328101501-3594de6cb80f?w=500&auto=format&fit=crop",
+      "imageHint": "cafe interior"
+    },
+    {
+      "id": "gallery-13",
+      "description": "A cup of coffee on a saucer",
+      "imageUrl": "https://images.unsplash.com/photo-1719554873571-0fd6bf322bb1?w=500&auto=format&fit=crop",
+      "imageHint": "coffee cup"
     }
   ]
 }
