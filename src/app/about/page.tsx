@@ -1,6 +1,5 @@
 
 import type { Metadata } from 'next';
-import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import LatestStories from '@/components/home/LatestStories';
 import NewsletterSignUp from '@/components/home/NewsletterSignUp';
@@ -9,6 +8,7 @@ import WhoAreWe from '@/components/about/WhoAreWe';
 import Stats from '@/components/about/Stats';
 import { Check } from 'lucide-react';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
+import TiltedCard from '@/components/animations/TiltedCard';
 
 export const metadata: Metadata = {
   title: 'Our Story',
@@ -42,13 +42,14 @@ const Milestone = ({
         <h3 className="mt-2 text-3xl font-headline font-bold text-foreground">{title}</h3>
         <p className="mt-4 text-muted-foreground">{description}</p>
       </div>
-      <div className={`relative aspect-[4/3] rounded-2xl overflow-hidden shadow-lg group ${reverse ? 'md:order-1' : ''}`}>
-        <Image
-          src={imageUrl}
-          alt={title}
-          fill
-          className="object-cover transition-transform duration-300 group-hover:scale-105 group-hover:rotate-[-2deg]"
-          data-ai-hint={imageHint}
+      <div className={`relative aspect-[4/3] rounded-2xl overflow-hidden group ${reverse ? 'md:order-1' : ''}`}>
+        <TiltedCard 
+          imageSrc={imageUrl}
+          altText={title}
+          containerHeight="100%"
+          imageWidth="100%"
+          imageHeight="100%"
+          captionText={title}
         />
       </div>
     </div>
@@ -57,13 +58,14 @@ const Milestone = ({
 
 const FounderMessage = ({ name, quote, imageUrl, imageHint, reverse = false }: { name: string; quote: string; imageUrl: string; imageHint: string; reverse?: boolean }) => (
     <div className={`grid md:grid-cols-3 gap-12 items-center ${reverse ? 'md:grid-flow-col-dense' : ''}`}>
-        <div className={`relative aspect-square md:aspect-[3/4] rounded-2xl overflow-hidden shadow-lg group ${reverse ? 'md:col-start-3' : ''}`}>
-            <Image
-                src={imageUrl}
-                alt={name}
-                fill
-                className="object-cover object-center transition-transform duration-300 group-hover:scale-105 group-hover:rotate-2"
-                data-ai-hint={imageHint}
+        <div className={`relative aspect-square md:aspect-[3/4] rounded-2xl overflow-hidden group ${reverse ? 'md:col-start-3' : ''}`}>
+            <TiltedCard 
+              imageSrc={imageUrl}
+              altText={name}
+              containerHeight="100%"
+              imageWidth="100%"
+              imageHeight="100%"
+              captionText={name}
             />
         </div>
         <div className="md:col-span-2">
