@@ -8,7 +8,7 @@ import { FirebaseClientProvider } from '@/firebase';
 import AppLayout from './AppLayout';
 import { SettingsProvider } from '@/components/layout/SettingsProvider';
 import { doc, getDoc, getFirestore } from 'firebase/firestore';
-import { initializeFirebase } from '@/firebase';
+import { initializeServerSideFirebase } from '@/firebase/server-init';
 import type { SiteSettings } from '@/lib/types';
 
 
@@ -30,8 +30,8 @@ const ptSans = PT_Sans({
 async function getSiteSettings(): Promise<SiteSettings | null> {
     try {
         // We need a Firestore instance on the server.
-        // We can create a temporary one or use a dedicated server-side helper.
-        const { firestore } = initializeFirebase();
+        // We use a dedicated server-side helper for this.
+        const { firestore } = initializeServerSideFirebase();
         const settingsDoc = await getDoc(doc(firestore, "settings", "main"));
         if (settingsDoc.exists()) {
             return settingsDoc.data() as SiteSettings;
