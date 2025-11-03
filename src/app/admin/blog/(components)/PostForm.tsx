@@ -104,6 +104,11 @@ export default function PostForm({ post, onSuccess }: PostFormProps) {
       const isPublished = values.status === 'published';
       const dataToSave = {
         ...values,
+        author: {
+          name: values.author.name,
+          photo: values.author.photo || null,
+          bio: values.author.bio || null,
+        },
         tags: values.tags ? values.tags.split(',').map(tag => tag.trim()) : [],
         seo: {
             ...values.seo,
