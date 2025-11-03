@@ -35,11 +35,6 @@ export default function MenuCarousel({ title, items }: MenuCarouselProps) {
             <div className="flex justify-between items-center mb-6">
                 <h3 className="text-3xl font-headline font-bold text-foreground tracking-wider">{title}</h3>
                 <div className="flex items-center gap-4">
-                    <Button asChild variant="ghost" className="hidden sm:inline-flex text-accent hover:text-accent/80">
-                      <Link href={`/outlets?category=${categorySlug}`}>
-                        Find in Outlets <ArrowRight className="ml-2 h-4 w-4" />
-                      </Link>
-                    </Button>
                     <Button variant="link" onClick={() => setIsExpanded(!isExpanded)} className="text-accent hover:text-accent/80">
                         {isExpanded ? 'Show Less' : 'View All'}
                         {isExpanded ? <ChevronsUp className="ml-2 h-4 w-4" /> : <ChevronsDown className="ml-2 h-4 w-4" />}
