@@ -47,9 +47,10 @@ export default function DataSeedingPage() {
       
       // 2. Add new blog posts from seed data
       blogSeedData.forEach(blogData => {
-        const blogRef = doc(collection(firestore, 'blogs')); // Auto-generate ID
+        const { id, ...data } = blogData;
+        const blogRef = doc(firestore, 'blogs', id); // Use slug as the document ID
         batch.set(blogRef, {
-            ...blogData,
+            ...data,
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp(),
             publishedAt: blogData.publishedAt || serverTimestamp(), // Ensure publishedAt exists

@@ -3,7 +3,7 @@
 
 import { notFound, useParams } from 'next/navigation';
 import Image from 'next/image';
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { useDoc, useFirestore, useMemoFirebase, useCollection } from '@/firebase';
 import { collection, doc, query, where, limit } from 'firebase/firestore';
 import type { Blog } from '@/lib/types';
 import { Calendar, User, Tag, ArrowLeft } from 'lucide-react';
@@ -73,14 +73,13 @@ export default function NewsArticlePage() {
   const slug = params.slug as string;
   const firestore = useFirestore();
 
-  // Fetch document by slug, but without the status filter initially
-  const postQuery = useMemoFirebase(
-    () => firestore ? query(collection(firestore, 'blogs'), where('slug', '==', slug), limit(1)) : null,
+  // Fetch document by its ID, which is the slug
+  const postRef = useMemoFirebase(
+    () => (firestore && slug) ? doc(firestore, 'blogs', slug) : null,
     [firestore, slug]
   );
   
-  const { data: postData, isLoading } = useCollection<Blog>(postQuery);
-  const post = postData?.[0];
+  const { data: post, isLoading } = useDoc<Blog>(postRef);
 
   if (isLoading) {
     return (

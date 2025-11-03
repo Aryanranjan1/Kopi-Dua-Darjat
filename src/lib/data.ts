@@ -88,8 +88,9 @@ export const outlets: Omit<Outlet, 'id' | 'createdAt' | 'updatedAt'>[] = [
     { name: 'Sibu', slug: 'sibu', address: 'Jalan Channel, Sibu', city: 'Sarawak', lat: 2.29, lng: 111.82, hours: '8 AM - 9 PM', isOpenNow: false },
 ];
 
-export const blogSeedData: Omit<Blog, 'id' | 'createdAt' | 'updatedAt' | 'views' | 'likes'>[] = [
+export const blogSeedData: Omit<Blog, 'createdAt' | 'updatedAt' | 'views' | 'likes'>[] = [
     {
+      id: "story-behind-antara-warisan-artisan",
       title: "The Story Behind 'Antara Warisan & Artisan'",
       slug: "story-behind-antara-warisan-artisan",
       excerpt: "Explore the philosophy that fuels Kopi Dua Darjat, blending Malaysia's rich coffee heritage with modern artisanal craftsmanship.",
@@ -111,6 +112,7 @@ export const blogSeedData: Omit<Blog, 'id' | 'createdAt' | 'updatedAt' | 'views'
       publishedAt: Timestamp.fromDate(new Date('2023-10-26T10:00:00Z'))
     },
     {
+      id: "why-darjat-borneo-is-a-must-try",
       title: "Why Our Gula Apong 'Darjat Borneo' is a Must-Try",
       slug: "why-darjat-borneo-is-a-must-try",
       excerpt: "Discover the sweet, smoky, and utterly unique flavor of Gula Apong, the heart of our best-selling Darjat Borneo coffee.",
@@ -128,6 +130,7 @@ export const blogSeedData: Omit<Blog, 'id' | 'createdAt' | 'updatedAt' | 'views'
       publishedAt: Timestamp.fromDate(new Date('2023-11-05T10:00:00Z'))
     },
     {
+      id: "5-reasons-to-start-franchise",
       title: "5 Reasons to Start a Kopi Dua Darjat Franchise in Your Town",
       slug: "5-reasons-to-start-franchise",
       excerpt: "Thinking of starting your own business? Here are five compelling reasons why a Kopi Dua Darjat franchise is a recipe for success.",
@@ -145,6 +148,7 @@ export const blogSeedData: Omit<Blog, 'id' | 'createdAt' | 'updatedAt' | 'views'
       publishedAt: Timestamp.fromDate(new Date('2023-11-15T10:00:00Z'))
     },
     {
+      id: "taknak-kopi-menu-for-you",
       title: "Not a Coffee Person? Our 'Taknak Kopi' Menu is for You!",
       slug: "taknak-kopi-menu-for-you",
       excerpt: "From rich, decadent chocolate to earthy, premium matcha, our 'Taknak Kopi' (Don't Want Coffee) menu has something for everyone.",
@@ -162,6 +166,7 @@ export const blogSeedData: Omit<Blog, 'id' | 'createdAt' | 'updatedAt' | 'views'
       publishedAt: Timestamp.fromDate(new Date('2023-11-25T10:00:00Z'))
     },
     {
+      id: "franchisee-success-story-ahmad",
       title: "From Customer to Owner: A Franchisee Success Story",
       slug: "franchisee-success-story-ahmad",
       excerpt: "Meet Ahmad, a long-time Kopi Dua Darjat fan who took the leap and opened his own successful stall in Shah Alam.",
