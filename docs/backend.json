@@ -85,6 +85,29 @@
         "slug": { "type": "string" },
         "address": { "type": "string" }
       }
+    },
+    "Testimonial": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Testimonial",
+      "type": "object",
+      "description": "Represents a customer or franchisee testimonial.",
+      "properties": {
+        "quote": { "type": "string" },
+        "name": { "type": "string" },
+        "designation": { "type": "string" },
+        "image": { "type": "string" }
+      }
+    },
+    "FaqItem": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "FAQ Item",
+      "type": "object",
+      "description": "A single frequently asked question and its answer.",
+      "properties": {
+        "category": { "type": "string", "enum": ["General", "Product", "Franchise"] },
+        "question": { "type": "string" },
+        "answer": { "type": "string" }
+      }
     }
   },
   "auth": {
@@ -111,6 +134,24 @@
           "schema": { "$ref": "#/entities/SiteSettings" },
           "description": "Stores global website settings in a single document, typically with ID 'main'.",
           "params": [{ "name": "docId", "description": "The ID of the settings document (e.g., 'main')." }]
+        }
+      },
+       {
+        "path": "/testimonials/{testimonialId}",
+        "definition": {
+          "entityName": "Testimonial",
+          "schema": { "$ref": "#/entities/Testimonial" },
+          "description": "Stores testimonial data.",
+          "params": [{ "name": "testimonialId", "description": "Unique identifier for the testimonial." }]
+        }
+      },
+      {
+        "path": "/faq/{faqId}",
+        "definition": {
+          "entityName": "FaqItem",
+          "schema": { "$ref": "#/entities/FaqItem" },
+          "description": "Stores individual FAQ items.",
+          "params": [{ "name": "faqId", "description": "Unique identifier for the FAQ item." }]
         }
       },
       {

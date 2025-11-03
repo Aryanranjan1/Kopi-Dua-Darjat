@@ -1,10 +1,11 @@
 
-import type { Outlet, BlogPost, Testimonial, FaqItem, Blog } from './types';
+import type { Outlet, Blog } from './types';
 
 // This file now contains only data that is not part of the main CMS.
 // Menu items, categories, and promotions are now fetched from Firestore.
 
 export const outlets: Omit<Outlet, 'id' | 'createdAt' | 'updatedAt'>[] = [
+    // This data is now only for migration and will be removed later.
     // Selangor
     { name: 'Kajang Prima', slug: 'kajang-prima', address: '123 Jalan Prima, Kajang', city: 'Selangor', lat: 2.9935, lng: 101.7874, hours: '8 AM - 10 PM', isOpenNow: true },
     { name: 'Bandar Baru Bangi', slug: 'bangi', address: '456 Seksyen 9, Bangi', city: 'Selangor', lat: 2.9555, lng: 101.7616, hours: '8 AM - 10 PM', isOpenNow: true },
@@ -86,81 +87,61 @@ export const outlets: Omit<Outlet, 'id' | 'createdAt' | 'updatedAt'>[] = [
     { name: 'Sibu', slug: 'sibu', address: 'Jalan Channel, Sibu', city: 'Sarawak', lat: 2.29, lng: 111.82, hours: '8 AM - 9 PM', isOpenNow: false },
 ];
 
-const generatePosts = (): BlogPost[] => {
-  const posts: BlogPost[] = [];
-  const authors = ['Hadi & Azad', 'KopiVerse Team', 'Franchise Team', 'Azad', 'Guest Writer'];
-  const tags = ['Heritage', 'Brand Story', 'Franchise', 'Menu', 'Community', 'Tips'];
-  const titles = [
-    'The Secret Behind Our Kopi Kampung',
-    'From One Stall to 50+ Outlets: Our Journey',
-    'Why Kopi Dua Darjat is Your Next Franchise Opportunity',
-    'A Guide to Our Signature Matcha Blends',
-    'Connecting Communities, One Cup at a Time',
-    'Top 5 Iced Coffees to Beat the Malaysian Heat',
-    'The Art of the Perfect Kopi Tarik',
-    'Meet the Farmers: Sourcing Our Local Beans',
-    'Celebrating Our 1 Millionth Customer!',
-    'New Outlet Opening in Johor Bahru!',
-    'A Deep Dive into Gula Apong',
-    'Pairing Pastries with Your Favorite Kopi',
-    'Behind the Scenes: A Day in the Life of a Barista',
-    'Sustainability Efforts at Kopi Dua Darjat',
-    'Your Guide to Our "Menet" Sparkling Series',
-    'How We Keep Our Prices Affordable',
-    'The Kopi Dua Darjat Foundation: Giving Back',
-    'Customer Spotlight: Stories from Our Regulars',
-    'Franchise Success Story: From Customer to Owner',
-    'The Perfect Brew: Tips for Making Coffee at Home',
-    'Our Response to the Latest Coffee Trends',
-  ];
+// The old allDrinks data, to be used by the one-time migration script.
+type DrinkSeed = { name: string; slug: string; price: number; image: string; description: string; tags: string[]; };
+export const allDrinks: DrinkSeed[] = [
+    // This data is now only for migration and will be removed later.
+    // Darjat Series
+  { name: 'Darjat Vanilla', slug: 'darjat-vanilla', price: 9, image: '/image/a.png', description: 'Creamy vanilla goodness', tags: ['Darjat Series', 'Coffee', 'featured'] },
+  { name: 'Darjat Caramel', slug: 'darjat-caramel', price: 9, image: '/image/d.png', description: 'Rich caramel swirls', tags: ['Darjat Series', 'Coffee', 'featured'] },
+  { name: 'Darjat Hazel', slug: 'darjat-hazel', price: 9, image: '/image/a.png', description: 'Nutty & aromatic', tags: ['Darjat Series', 'Coffee'] },
+  { name: 'Darjat Butterscotch', slug: 'darjat-butterscotch', price: 9, image: '/image/d.png', description: 'Sweet butterscotch notes', tags: ['Darjat Series', 'Coffee'] },
+  { name: 'Darjat Borneo', slug: 'darjat-borneo', price: 9, image: '/image/a.png', description: 'dengan sirap Gula Apong Sarawak', tags: ['Darjat Series', 'Coffee'] },
+  { name: 'Darjat Malaya', slug: 'darjat-malaya', price: 8, image: '/image/d.png', description: 'kopi susu dan susu pekat', tags: ['Darjat Series', 'Coffee'] },
+  { name: 'Darjat Tamanis', slug: 'darjat-tamanis', price: 8, image: '/image/a.png', description: 'kopi susu tanpa gula/sirap', tags: ['Darjat Series', 'Coffee'] },
 
-  for (let i = 0; i < titles.length; i++) {
-    const publishDate = new Date(2024, 6, 20 - i);
-    posts.push({
-      id: `${i + 1}`,
-      title: titles[i],
-      slug: titles[i].toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, ''),
-      excerpt: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      content: `
-        <p>This is the main body of the article, designed to be flexible for a CMS. It can contain various HTML elements that will be styled by the 'prose' classes.</p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla.</p>
-        <h3>A Subheading for a New Section</h3>
-        <p>You can structure your content with headings, paragraphs, and lists to create a readable and engaging article. Here is an example of an unordered list:</p>
-        <ul>
-          <li>Item one: High-quality, locally sourced beans.</li>
-          <li>Item two: Traditional brewing methods with a modern twist.</li>
-          <li>Item three: A commitment to community and affordability.</li>
-        </ul>
-        <figure>
-            <img src="https://images.unsplash.com/photo-1529892485617-25f63cd7b1e9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxsYXR0ZSUyMGFydHxlbnwwfHx8fDE3NjE4OTcwNDR8MA&ixlib=rb-4.1.0&q=80&w=1080" alt="Latte art" class="rounded-lg shadow-md" />
-            <figcaption>The 'prose' classes will even style image captions nicely.</figcaption>
-        </figure>
-        <p>And here's an ordered list:</p>
-        <ol>
-            <li>Apply for a franchise.</li>
-            <li>Complete our training program.</li>
-            <li>Launch your own Kopi Dua Darjat stall!</li>
-        </ol>
-        <blockquote>
-            <p>"This is a blockquote. It's a great way to highlight a key point or a quote from someone relevant to the article."</p>
-        </blockquote>
-        <p>Mauris ipsum. Nulla metus metus, ullamcorper vel, tincidunt sed, euismod in, nibh. Quisque volutpat condimentum velit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nam nec ante. Sed lacinia, urna non tincidunt mattis, tortor neque adipiscing diam, a cursus ipsum ante quis turpis. Nulla facilisi. Ut fringilla. Suspendisse potenti. Nunc feugiat mi a tellus consequat imperdiet. Vestibulum sapien. Proin quam.</p>
-      `,
-      imageUrl: `blog-post-${(i % 4) + 1}`,
-      author: authors[i % authors.length],
-      publishDate: publishDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
-      publishDateISO: publishDate.toISOString(),
-      tags: [tags[i % tags.length], 'All'],
-      popularity: Math.floor(Math.random() * 1000) + 50,
-    });
-  }
-  return posts;
-};
+  // Kopitiam Series
+  { name: 'Kopi Warisan', slug: 'kopi-warisan', price: 8, image: '/image/d.png', description: 'The original classic', tags: ['Kopitiam Series', 'Coffee'] },
+  { name: 'Kopi Karim', slug: 'kopi-karim', price: 8, image: '/image/b.png', description: 'kopi ekstra kaw dengan krim pekat manis', tags: ['Kopitiam Series', 'Coffee'] },
+  { name: 'Kopi Melayo', slug: 'kopi-melayo', price: 5, image: '/image/a.png', description: 'kopi hitam dan sirap vanila', tags: ['Kopitiam Series', 'Coffee'] },
 
-export const blogPosts: BlogPost[] = generatePosts();
+  // Espresso Series
+  { name: 'Americano', slug: 'americano', price: 7, image: '/image/d.png', description: 'Bold and intense', tags: ['Espresso Series', 'Coffee'] },
+  { name: 'Latté', slug: 'latte', price: 9, image: '/image/a.png', description: 'Smooth and milky', tags: ['Espresso Series', 'Coffee'] },
+  { name: 'Creamy Latté', slug: 'creamy-latte', price: 10, image: '/image/d.png', description: 'cafe latte yang lebih creamy', tags: ['Espresso Series', 'Coffee'] },
+  { name: 'Borneo Latté', slug: 'borneo-latte', price: 10, image: '/image/a.png', description: 'latte dengan sirap gula apong Sarawak', tags: ['Espresso Series', 'Coffee'] },
+  { name: 'Latté Malaya', slug: 'latte-malaya', price: 10, image: '/image/d.png', description: 'latte dengan susu pekat', tags: ['Espresso Series', 'Coffee'] },
+  { name: 'Café Limone', slug: 'cafe-limone', price: 10, image: '/image/a.png', description: 'americano lemon', tags: ['Espresso Series', 'Coffee'] },
+  { name: 'Mocha', slug: 'mocha', price: 10, image: '/image/d.png', description: 'Chocolatey coffee delight', tags: ['Espresso Series', 'Coffee'] },
+  { name: 'Dark Mocha', slug: 'dark-mocha', price: 11, image: '/image/a.png', description: 'mocha dengan extra coklat', tags: ['Espresso Series', 'Coffee'] },
+  { name: 'Dirty Matcha', slug: 'dirty-matcha', price: 11, image: '/image/d.png', description: 'matcha dipadankan dengan espreso', tags: ['Espresso Series', 'Coffee', 'Matcha'] },
 
+  // Coklat Series
+  { name: 'Coklat Artisan', slug: 'coklat-artisan', price: 9, image: '/image/c.png', description: 'Rich chocolate indulgence', tags: ['Coklat Series'] },
+  { name: 'Makha', slug: 'makha', price: 9, image: '/image/a.png', description: 'mocha versi Dua Darjat. Campuran kopi dan coklat', tags: ['Coklat Series', 'Coffee'] },
+  { name: 'Triple Choc Makha', slug: 'triple-choc-makha', price: 10, image: '/image/d.png', description: 'makha dengan ekstra coklat', tags: ['Coklat Series', 'Coffee'] },
+  { name: 'Coklat Caramel', slug: 'coklat-caramel', price: 10, image: '/image/c.png', description: 'Sweet caramel chocolate', tags: ['Coklat Series'] },
 
-export const testimonials: Testimonial[] = [
+  // Matcha Series
+  { name: 'Matcho', slug: 'matcho', price: 8, image: '/image/b.png', description: 'matcha O tanpa susu dengan pilihan sirap Dua Darjat', tags: ['Matcha Series', 'Matcha'] },
+  { name: 'Matchaa', slug: 'matchaa', price: 9, image: '/image/b.png', description: 'matcha latte yang lebih berkrim', tags: ['Matcha Series', 'Matcha'] },
+  { name: 'Choc Matchaa', slug: 'choc-matchaa', price: 10, image: '/image/b.png', description: 'Matcha with chocolate', tags: ['Matcha Series', 'Matcha'] },
+  { name: 'Kopi Matchaa', slug: 'kopi-matchaa', price: 10, image: '/image/b.png', description: 'Matcha with coffee', tags: ['Matcha Series', 'Coffee', 'Matcha'] },
+  { name: 'Matchaa Caramel', slug: 'matchaa-caramel', price: 10, image: '/image/b.png', description: 'Sweet caramel matcha', tags: ['Matcha Series', 'Matcha'] },
+  
+  // Menet Series (Fruity Sparkling)
+  { name: 'Le Menet', slug: 'le-menet', price: 7, image: '/image/a.png', description: 'minuman sparkling berperisa lemon', tags: ['Menet Series'] },
+  { name: 'Kopi Leman', slug: 'kopi-leman', price: 7, image: '/image/d.png', description: 'kopi O dan sirap lemon', tags: ['Menet Series', 'Coffee'] },
+  { name: 'Matcho Leman', slug: 'matcho-leman', price: 9, image: '/image/b.png', description: 'matcha O dan sirap lemon', tags: ['Menet Series', 'Matcha'] },
+  { name: 'Berrygo Menet', slug: 'berrygo-menet', price: 9, image: '/image/c.png', description: 'gabungan strawberi, mangga dan lemon', tags: ['Menet Series', 'featured'] },
+  { name: 'Strawberry Menet', slug: 'strawberry-menet', price: 9, image: '/image/a.png', description: 'Sparkling strawberry', tags: ['Menet Series'] },
+  { name: 'Mango Menet', slug: 'mango-menet', price: 9, image: '/image/d.png', description: 'Sparkling mango', tags: ['Menet Series'] },
+  { name: 'Blueberry Menet', slug: 'blueberry-menet', price: 9, image: '/image/c.png', description: 'Sparkling blueberry', tags: ['Menet Series'] },
+  { name: 'Pomegranate Menet', slug: 'pomegranate-menet', price: 9, image: '/image/a.png', description: 'Sparkling pomegranate', tags: ['Menet Series'] },
+  { name: 'Rock Melon Menet', slug: 'rock-melon-menet', price: 9, image: '/image/d.png', description: 'Sparkling rock melon', tags: ['Menet Series'] },
+];
+
+export const testimonials = [
     {
       id: '1',
       quote: 'I started my stall in Shah Alam — sold out every morning within 2 weeks! The training and marketing support made everything easy.',
@@ -182,9 +163,9 @@ export const testimonials: Testimonial[] = [
       designation: 'Franchisee, Putrajaya',
       image: 'testimonial-3',
     },
-  ];
+];
 
-export const faqItems: FaqItem[] = [
+export const faqItems = [
     {
         id: 'faq-gen-1',
         category: 'General',
@@ -239,60 +220,6 @@ export const faqItems: FaqItem[] = [
         question: 'What kind of support do you provide to franchisees?',
         answer: 'We provide end-to-end support, including location scouting assistance, full operational training, supply chain management, and continuous brand-level marketing to drive customers to your outlet.'
     }
-];
-
-// The old allDrinks data, to be used by the one-time migration script.
-type DrinkSeed = { name: string; slug: string; price: number; image: string; description: string; tags: string[]; };
-export const allDrinks: DrinkSeed[] = [
-    // This data is now only for migration and will be removed later.
-    // Darjat Series
-  { name: 'Darjat Vanilla', slug: 'darjat-vanilla', price: 9, image: '/image/a.png', description: 'Creamy vanilla goodness', tags: ['Darjat Series', 'Coffee', 'featured'] },
-  { name: 'Darjat Caramel', slug: 'darjat-caramel', price: 9, image: '/image/d.png', description: 'Rich caramel swirls', tags: ['Darjat Series', 'Coffee', 'featured'] },
-  { name: 'Darjat Hazel', slug: 'darjat-hazel', price: 9, image: '/image/a.png', description: 'Nutty & aromatic', tags: ['Darjat Series', 'Coffee'] },
-  { name: 'Darjat Butterscotch', slug: 'darjat-butterscotch', price: 9, image: '/image/d.png', description: 'Sweet butterscotch notes', tags: ['Darjat Series', 'Coffee'] },
-  { name: 'Darjat Borneo', slug: 'darjat-borneo', price: 9, image: '/image/a.png', description: 'dengan sirap Gula Apong Sarawak', tags: ['Darjat Series', 'Coffee'] },
-  { name: 'Darjat Malaya', slug: 'darjat-malaya', price: 8, image: '/image/d.png', description: 'kopi susu dan susu pekat', tags: ['Darjat Series', 'Coffee'] },
-  { name: 'Darjat Tamanis', slug: 'darjat-tamanis', price: 8, image: '/image/a.png', description: 'kopi susu tanpa gula/sirap', tags: ['Darjat Series', 'Coffee'] },
-
-  // Kopitiam Series
-  { name: 'Kopi Warisan', slug: 'kopi-warisan', price: 8, image: '/image/d.png', description: 'The original classic', tags: ['Kopitiam Series', 'Coffee'] },
-  { name: 'Kopi Karim', slug: 'kopi-karim', price: 8, image: '/image/b.png', description: 'kopi ekstra kaw dengan krim pekat manis', tags: ['Kopitiam Series', 'Coffee'] },
-  { name: 'Kopi Melayo', slug: 'kopi-melayo', price: 5, image: '/image/a.png', description: 'kopi hitam dan sirap vanila', tags: ['Kopitiam Series', 'Coffee'] },
-
-  // Espresso Series
-  { name: 'Americano', slug: 'americano', price: 7, image: '/image/d.png', description: 'Bold and intense', tags: ['Espresso Series', 'Coffee'] },
-  { name: 'Latté', slug: 'latte', price: 9, image: '/image/a.png', description: 'Smooth and milky', tags: ['Espresso Series', 'Coffee'] },
-  { name: 'Creamy Latté', slug: 'creamy-latte', price: 10, image: '/image/d.png', description: 'cafe latte yang lebih creamy', tags: ['Espresso Series', 'Coffee'] },
-  { name: 'Borneo Latté', slug: 'borneo-latte', price: 10, image: '/image/a.png', description: 'latte dengan sirap gula apong Sarawak', tags: ['Espresso Series', 'Coffee'] },
-  { name: 'Latté Malaya', slug: 'latte-malaya', price: 10, image: '/image/d.png', description: 'latte dengan susu pekat', tags: ['Espresso Series', 'Coffee'] },
-  { name: 'Café Limone', slug: 'cafe-limone', price: 10, image: '/image/a.png', description: 'americano lemon', tags: ['Espresso Series', 'Coffee'] },
-  { name: 'Mocha', slug: 'mocha', price: 10, image: '/image/d.png', description: 'Chocolatey coffee delight', tags: ['Espresso Series', 'Coffee'] },
-  { name: 'Dark Mocha', slug: 'dark-mocha', price: 11, image: '/image/a.png', description: 'mocha dengan extra coklat', tags: ['Espresso Series', 'Coffee'] },
-  { name: 'Dirty Matcha', slug: 'dirty-matcha', price: 11, image: '/image/d.png', description: 'matcha dipadankan dengan espreso', tags: ['Espresso Series', 'Coffee', 'Matcha'] },
-
-  // Coklat Series
-  { name: 'Coklat Artisan', slug: 'coklat-artisan', price: 9, image: '/image/c.png', description: 'Rich chocolate indulgence', tags: ['Coklat Series'] },
-  { name: 'Makha', slug: 'makha', price: 9, image: '/image/a.png', description: 'mocha versi Dua Darjat. Campuran kopi dan coklat', tags: ['Coklat Series', 'Coffee'] },
-  { name: 'Triple Choc Makha', slug: 'triple-choc-makha', price: 10, image: '/image/d.png', description: 'makha dengan ekstra coklat', tags: ['Coklat Series', 'Coffee'] },
-  { name: 'Coklat Caramel', slug: 'coklat-caramel', price: 10, image: '/image/c.png', description: 'Sweet caramel chocolate', tags: ['Coklat Series'] },
-
-  // Matcha Series
-  { name: 'Matcho', slug: 'matcho', price: 8, image: '/image/b.png', description: 'matcha O tanpa susu dengan pilihan sirap Dua Darjat', tags: ['Matcha Series', 'Matcha'] },
-  { name: 'Matchaa', slug: 'matchaa', price: 9, image: '/image/b.png', description: 'matcha latte yang lebih berkrim', tags: ['Matcha Series', 'Matcha'] },
-  { name: 'Choc Matchaa', slug: 'choc-matchaa', price: 10, image: '/image/b.png', description: 'Matcha with chocolate', tags: ['Matcha Series', 'Matcha'] },
-  { name: 'Kopi Matchaa', slug: 'kopi-matchaa', price: 10, image: '/image/b.png', description: 'Matcha with coffee', tags: ['Matcha Series', 'Coffee', 'Matcha'] },
-  { name: 'Matchaa Caramel', slug: 'matchaa-caramel', price: 10, image: '/image/b.png', description: 'Sweet caramel matcha', tags: ['Matcha Series', 'Matcha'] },
-  
-  // Menet Series (Fruity Sparkling)
-  { name: 'Le Menet', slug: 'le-menet', price: 7, image: '/image/a.png', description: 'minuman sparkling berperisa lemon', tags: ['Menet Series'] },
-  { name: 'Kopi Leman', slug: 'kopi-leman', price: 7, image: '/image/d.png', description: 'kopi O dan sirap lemon', tags: ['Menet Series', 'Coffee'] },
-  { name: 'Matcho Leman', slug: 'matcho-leman', price: 9, image: '/image/b.png', description: 'matcha O dan sirap lemon', tags: ['Menet Series', 'Matcha'] },
-  { name: 'Berrygo Menet', slug: 'berrygo-menet', price: 9, image: '/image/c.png', description: 'gabungan strawberi, mangga dan lemon', tags: ['Menet Series', 'featured'] },
-  { name: 'Strawberry Menet', slug: 'strawberry-menet', price: 9, image: '/image/a.png', description: 'Sparkling strawberry', tags: ['Menet Series'] },
-  { name: 'Mango Menet', slug: 'mango-menet', price: 9, image: '/image/d.png', description: 'Sparkling mango', tags: ['Menet Series'] },
-  { name: 'Blueberry Menet', slug: 'blueberry-menet', price: 9, image: '/image/c.png', description: 'Sparkling blueberry', tags: ['Menet Series'] },
-  { name: 'Pomegranate Menet', slug: 'pomegranate-menet', price: 9, image: '/image/a.png', description: 'Sparkling pomegranate', tags: ['Menet Series'] },
-  { name: 'Rock Melon Menet', slug: 'rock-melon-menet', price: 9, image: '/image/d.png', description: 'Sparkling rock melon', tags: ['Menet Series'] },
 ];
 
 export const blogSeedData: Omit<Blog, 'id' | 'createdAt' | 'updatedAt' | 'views' | 'likes'>[] = [
@@ -562,4 +489,3 @@ export const blogSeedData: Omit<Blog, 'id' | 'createdAt' | 'updatedAt' | 'views'
       seo: { title: "Meet the Kopi Dua Darjat Team | Our People" }
     }
   ];
-

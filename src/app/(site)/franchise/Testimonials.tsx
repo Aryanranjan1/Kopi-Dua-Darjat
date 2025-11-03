@@ -6,7 +6,7 @@ import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query } from 'firebase/firestore';
 import type { Testimonial } from '@/lib/types';
 import { useMediaAsset } from '@/lib/media';
-import { AnimateOnScroll } from '../animations/AnimateOnScroll';
+import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import { Card, CardContent } from '@/components/ui/card';
 import {
   Carousel,
@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/carousel';
 import Autoplay from "embla-carousel-autoplay"
 import React from 'react';
-import { Skeleton } from '../ui/skeleton';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Loader2 } from 'lucide-react';
 
 const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {

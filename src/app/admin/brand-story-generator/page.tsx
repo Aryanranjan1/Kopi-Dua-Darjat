@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -5,10 +6,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { useFirestore } from '@/firebase';
 import { collection, getDocs, writeBatch, doc, DocumentReference, addDoc, serverTimestamp, query, limit } from 'firebase/firestore';
-import { allDrinks, blogSeedData } from '@/lib/data';
-import { Loader2, CheckCircle, AlertTriangle, Sparkles, BookOpen, Image as ImageIcon } from 'lucide-react';
+import { allDrinks, testimonials as testimonialSeedData, faqItems as faqSeedData } from '@/lib/data';
+import { Loader2, CheckCircle, AlertTriangle, Sparkles, BookOpen, Image as ImageIcon, Users, HelpCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import type { MenuGroup, MenuCategory, MenuItem, Promotion, Outlet, Blog } from '@/lib/types';
+import type { MenuGroup, MenuCategory, MenuItem, Promotion, Outlet, Blog, Testimonial, FaqItem } from '@/lib/types';
 import { seedMediaData } from '@/lib/media';
 import {
   AlertDialog,
@@ -240,123 +241,67 @@ export default function DataMigrationPage() {
       setIsLoading(false);
     }
   };
-
-  const handleSeedPromotions = async () => {
+  
+  const handleSeedTestimonials = async () => {
     if (!firestore) return;
-    if (!confirm('This will create 15 new promotions and link them to the first 15 menu items found. Existing promotions will not be affected. Continue?')) return;
-  
+    if (!confirm('This will seed 3 testimonials into Firestore. Existing testimonials will not be affected. Continue?')) return;
+    
     setIsLoading(true);
-    setStatus(['Starting to seed 15 promotions...']);
-  
+    setStatus(['Starting to seed testimonials...']);
+    
     try {
-      const itemsQuery = query(collection(firestore, 'menuItems'), limit(15));
-      const itemsSnapshot = await getDocs(itemsQuery);
-  
-      if (itemsSnapshot.empty) {
-        throw new Error("No menu items found to create promotions for. Please seed menu items first.");
-      }
-  
       const batch = writeBatch(firestore);
-      let promoCount = 0;
-  
-      for (const itemDoc of itemsSnapshot.docs) {
-        const itemRef = itemDoc.ref;
-        const itemData = itemDoc.data() as MenuItem;
-        const promoRef = doc(collection(firestore, 'promotions'));
-        const startDate = new Date();
-        const endDate = new Date();
-        endDate.setDate(startDate.getDate() + 30); // Promotions valid for 30 days
-  
-        let discountType: Promotion['discountType'] = 'percentage';
-        let discountValue = 10;
-        if (promoCount % 3 === 1) {
-          discountType = 'flat';
-          discountValue = 2;
-        } else if (promoCount % 3 === 2) {
-          discountType = 'bogo';
-          discountValue = 0;
-        }
-  
-        const newPromo: Omit<Promotion, 'id' | 'createdAt' | 'updatedAt'> = {
-          title: `Special Offer: ${itemData.name}`,
-          description: `Limited time deal on ${itemData.name}!`,
-          discountType,
-          discountValue,
-          startDate,
-          endDate,
-          menuItemIds: [itemDoc.id],
-          outletIds: [],
-          status: 'active',
-        };
-  
-        batch.set(promoRef, { ...newPromo, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
-        const currentPromoIds = itemData.promotionIds || [];
-        batch.update(itemRef, { promotionIds: [...currentPromoIds, promoRef.id] });
-  
-        addStatus(`- Created ${discountType} promo for "${itemData.name}"`);
-        promoCount++;
+      let count = 0;
+      for (const testimonial of testimonialSeedData) {
+        const { id, ...data } = testimonial; // Exclude static ID
+        const docRef = doc(collection(firestore, 'testimonials'));
+        batch.set(docRef, { ...data, createdAt: serverTimestamp() });
+        addStatus(`- Preparing testimonial from "${data.name}"`);
+        count++;
       }
-  
-      addStatus('Committing promotions to database...');
+      
       await batch.commit();
-  
       addStatus('----------------------------------');
-      addStatus(`${promoCount} promotions created and linked successfully!`);
-      toast({ title: 'Promotions Seeded', description: `${promoCount} new promotions have been created.` });
-  
+      addStatus(`${count} testimonials seeded successfully!`);
+      toast({ title: 'Testimonials Seeded', description: `${count} testimonials have been added.` });
     } catch (error: any) {
-      console.error('Error seeding promotions:', error);
       addStatus(`FATAL ERROR: ${error.message}`);
-      toast({ variant: 'destructive', title: 'Promotion Seeding Failed', description: error.message });
+      toast({ variant: 'destructive', title: 'Testimonial Seeding Failed', description: error.message });
     } finally {
       setIsLoading(false);
     }
   };
-  
-  const handleSeedBlogs = async () => {
+
+  const handleSeedFaqs = async () => {
     if (!firestore) return;
-    if (!confirm('This will inject 20 pre-written blog posts into your database. Existing blog posts will not be affected. Continue?')) return;
+    if (!confirm('This will seed 9 FAQ items into Firestore. Existing FAQs will not be affected. Continue?')) return;
 
     setIsLoading(true);
-    setStatus(['Starting to seed 20 blog posts...']);
+    setStatus(['Starting to seed FAQ items...']);
 
     try {
-        const batch = writeBatch(firestore);
-        let blogCount = 0;
-
-        for (const post of blogSeedData) {
-            const blogRef = doc(collection(firestore, 'blogs'));
-            const dataToSave: Partial<Blog> = {
-                ...post,
-                createdAt: serverTimestamp(),
-                updatedAt: serverTimestamp(),
-                views: Math.floor(Math.random() * 2000) + 100,
-                likes: Math.floor(Math.random() * 500) + 10,
-            };
-            if (post.status === 'published') {
-                dataToSave.publishedAt = serverTimestamp();
-            }
-
-            batch.set(blogRef, dataToSave);
-            addStatus(`- Preparing post: "${post.title}"`);
-            blogCount++;
-        }
-
-        addStatus(`Committing ${blogCount} blog posts to the database...`);
-        await batch.commit();
-
-        addStatus('----------------------------------');
-        addStatus(`${blogCount} blog posts seeded successfully!`);
-        toast({ title: 'Blogs Seeded', description: `${blogCount} new blog posts have been added.` });
-
+      const batch = writeBatch(firestore);
+      let count = 0;
+      for (const faq of faqSeedData) {
+        const { id, ...data } = faq; // Exclude static ID
+        const docRef = doc(collection(firestore, 'faq'));
+        batch.set(docRef, { ...data, createdAt: serverTimestamp() });
+        addStatus(`- Preparing FAQ: "${data.question}"`);
+        count++;
+      }
+      
+      await batch.commit();
+      addStatus('----------------------------------');
+      addStatus(`${count} FAQs seeded successfully!`);
+      toast({ title: 'FAQs Seeded', description: `${count} FAQ items have been added.` });
     } catch (error: any) {
-        console.error('Error seeding blog posts:', error);
-        addStatus(`FATAL ERROR: ${error.message}`);
-        toast({ variant: 'destructive', title: 'Blog Seeding Failed', description: error.message });
+      addStatus(`FATAL ERROR: ${error.message}`);
+      toast({ variant: 'destructive', title: 'FAQ Seeding Failed', description: error.message });
     } finally {
-        setIsLoading(false);
+      setIsLoading(false);
     }
   };
+
 
   const handleSeedMedia = async () => {
     if (!firestore) return;
@@ -424,13 +369,13 @@ export default function DataMigrationPage() {
               <h3 className="text-lg font-semibold">Quick Actions</h3>
               <p className="text-zinc-400 text-sm mb-4">Use these to add specific data without clearing everything.</p>
                <div className="flex flex-col sm:flex-row gap-4">
-                <Button onClick={handleSeedPromotions} disabled={isLoading} variant="secondary" className="bg-blue-600 hover:bg-blue-700 text-white">
-                  {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
-                  Seed 15 Promotions
+                <Button onClick={handleSeedTestimonials} disabled={isLoading} variant="secondary" className="bg-green-600 hover:bg-green-700 text-white">
+                  {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Users className="mr-2 h-4 w-4" />}
+                  Seed Testimonials
                 </Button>
-                <Button onClick={handleSeedBlogs} disabled={isLoading} variant="secondary" className="bg-teal-600 hover:bg-teal-700 text-white">
-                  {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <BookOpen className="mr-2 h-4 w-4" />}
-                  Seed 20 Blog Posts
+                <Button onClick={handleSeedFaqs} disabled={isLoading} variant="secondary" className="bg-cyan-600 hover:bg-cyan-700 text-white">
+                  {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <HelpCircle className="mr-2 h-4 w-4" />}
+                  Seed FAQs
                 </Button>
                 <Button onClick={handleSeedMedia} disabled={isLoading} variant="secondary" className="bg-purple-600 hover:bg-purple-700 text-white">
                   {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ImageIcon className="mr-2 h-4 w-4" />}

@@ -6,7 +6,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection } from 'firebase/firestore';
+import { collection, query } from 'firebase/firestore';
 import type { FaqItem } from '@/lib/types';
 import { useMediaAsset } from '@/lib/media';
 import {
@@ -46,7 +46,7 @@ const faqCategories = [
 export default function FaqPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const firestore = useFirestore();
-  const faqQuery = useMemoFirebase(() => firestore ? collection(firestore, 'faq') : null, [firestore]);
+  const faqQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'faq')) : null, [firestore]);
   const { data: faqItems, isLoading: isLoadingFaqs } = useCollection<FaqItem>(faqQuery);
 
   const { asset: heroImage, isLoading: isLoadingImage } = useMediaAsset('faq-hero');

@@ -10,7 +10,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { AnimateOnScroll } from '../animations/AnimateOnScroll';
+import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import { Loader2 } from 'lucide-react';
 
 export default function Faq() {
