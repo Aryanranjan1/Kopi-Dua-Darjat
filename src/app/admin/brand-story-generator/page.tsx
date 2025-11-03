@@ -7,9 +7,9 @@ import { Button } from '@/components/ui/button';
 import { useFirestore } from '@/firebase';
 import { collection, getDocs, writeBatch, doc } from 'firebase/firestore';
 import { allDrinks } from '@/lib/data';
-import { Loader2, CheckCircle, AlertTriangle } from 'lucide-react';
+import { Loader2, CheckCircle, AlertTriangle, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import type { MenuGroup, MenuCategory, MenuItem } from '@/lib/types';
+import type { MenuGroup, MenuCategory, MenuItem, Promotion } from '@/lib/types';
 
 // Define the structure for categories with groups and order
 const groupStructure: { name: string, order: number, series: { name: string, order: number }[] }[] = [
@@ -43,6 +43,7 @@ const groupStructure: { name: string, order: number, series: { name: string, ord
 export default function DataMigrationPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isClearing, setIsClearing] = useState(false);
+  const [isSeedingPromos, setIsSeedingPromos] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
   const firestore = useFirestore();
   const { toast } = useToast();
@@ -52,14 +53,14 @@ export default function DataMigrationPage() {
     setStatus('Clearing all existing menu data...');
     try {
       const batch = writeBatch(firestore);
-      const collectionsToClear = ['menuGroups', 'menuCategories', 'menuItems', 'dailySpecials'];
+      const collectionsToClear = ['menuGroups', 'menuCategories', 'menuItems', 'dailySpecials', 'promotions'];
       for (const col of collectionsToClear) {
         const snapshot = await getDocs(collection(firestore, col));
         snapshot.forEach(doc => batch.delete(doc.ref));
       }
       await batch.commit();
-      setStatus('All menu data has been cleared.');
-      toast({ title: 'Success', description: 'All menu data cleared from Firestore.' });
+      setStatus('All menu and promotion data has been cleared.');
+      toast({ title: 'Success', description: 'All menu and promotion data cleared from Firestore.' });
     } catch (error: any) {
       console.error('Error clearing data:', error);
       setStatus(`Error: ${error.message}`);
@@ -70,12 +71,78 @@ export default function DataMigrationPage() {
 
   const handleClear = async () => {
     if (!firestore) return;
-    if (!confirm('Are you sure you want to delete ALL menu groups, categories, items, and specials? This cannot be undone.')) {
+    if (!confirm('Are you sure you want to delete ALL menu groups, categories, items, specials, and promotions? This cannot be undone.')) {
       return;
     }
     setIsClearing(true);
     await clearAllData();
     setIsClearing(false);
+  };
+
+  const handleSeedPromotions = async () => {
+    if (!firestore) return;
+    setIsSeedingPromos(true);
+    setStatus('Seeding 15 promotions...');
+    try {
+      // 1. Fetch menu items
+      const itemsSnapshot = await getDocs(collection(firestore, 'menuItems'));
+      const menuItems = itemsSnapshot.docs.map(d => ({ ...d.data(), id: d.id })) as MenuItem[];
+      
+      if (menuItems.length < 15) {
+        throw new Error('Not enough menu items to create 15 promotions. Please migrate menu data first.');
+      }
+
+      const itemsToPromote = menuItems.slice(0, 15);
+      const batch = writeBatch(firestore);
+
+      for (let i = 0; i < itemsToPromote.length; i++) {
+        const item = itemsToPromote[i];
+        const promoRef = doc(collection(firestore, 'promotions'));
+        const startDate = new Date();
+        const endDate = new Date();
+        endDate.setDate(startDate.getDate() + (i + 1) * 2); // Stagger end dates
+
+        let discountType: Promotion['discountType'] = 'percentage';
+        let discountValue = 10;
+        if (i % 3 === 1) {
+            discountType = 'flat';
+            discountValue = 2;
+        } else if (i % 3 === 2) {
+            discountType = 'bogo';
+            discountValue = 0;
+        }
+
+        const newPromo: Omit<Promotion, 'id'> = {
+          title: `${item.name} Special`,
+          description: `A limited-time offer for our beloved ${item.name}.`,
+          discountType,
+          discountValue,
+          startDate,
+          endDate,
+          menuItemIds: [item.id],
+          outletIds: [], // Global promotion
+          status: 'active',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
+
+        batch.set(promoRef, newPromo);
+
+        // Link promotion to menu item
+        const itemRef = doc(firestore, 'menuItems', item.id);
+        const currentPromoIds = item.promotionIds || [];
+        batch.update(itemRef, { promotionIds: [...currentPromoIds, promoRef.id] });
+      }
+
+      await batch.commit();
+      setStatus('Successfully created and linked 15 new promotions.');
+      toast({ title: 'Success', description: '15 promotions have been seeded.' });
+    } catch (error: any) {
+      console.error('Error seeding promotions:', error);
+      setStatus(`Error seeding promotions: ${error.message}`);
+      toast({ variant: 'destructive', title: 'Error', description: error.message });
+    }
+    setIsSeedingPromos(false);
   };
 
   const handleMigrate = async () => {
@@ -103,6 +170,7 @@ export default function DataMigrationPage() {
           name: group.name,
           slug: groupSlug,
           displayOrder: group.order,
+          status: 'published',
         };
         const groupDocRef = doc(groupsRef);
         batch.set(groupDocRef, { ...newGroup, createdAt: new Date(), updatedAt: new Date() });
@@ -123,6 +191,7 @@ export default function DataMigrationPage() {
             description: `Drinks from the ${series.name}.`,
             groupId: groupId,
             displayOrder: series.order,
+            status: 'published',
           };
           const catDocRef = doc(categoriesRef);
           batch.set(catDocRef, { ...newCategory, createdAt: new Date(), updatedAt: new Date() });
@@ -153,6 +222,7 @@ export default function DataMigrationPage() {
           isGeneral: true,
           status: 'published',
           tags: drink.isFeatured ? ['featured'] : [],
+          isPopular: drink.isFeatured,
           displayOrder: index + 1, // Simple ordering for now
         };
         const itemDocRef = doc(itemsRef);
@@ -178,26 +248,29 @@ export default function DataMigrationPage() {
     <div className="space-y-8">
       <Card className="bg-zinc-900 border-zinc-800 text-white">
         <CardHeader>
-          <CardTitle>One-Time Data Migration</CardTitle>
+          <CardTitle>One-Time Data Tools</CardTitle>
           <CardDescription className="text-zinc-400">
-            Use this tool to import the initial mock menu data into Firestore. This will set up groups, categories, and items based on the defined structure.
-            Running this will first CLEAR all existing menu data.
+            Use these tools to manage mock data in Firestore. These are for development and setup purposes.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="flex flex-col sm:flex-row gap-4">
-            <Button onClick={handleMigrate} disabled={isLoading || isClearing} className="w-full sm:w-auto">
+            <Button onClick={handleMigrate} disabled={isLoading || isClearing || isSeedingPromos} className="w-full sm:w-auto">
               {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckCircle className="mr-2 h-4 w-4" />}
-              Clear and Migrate Mock Menu Data
+              Clear and Migrate Mock Menu
             </Button>
-            <Button onClick={handleClear} disabled={isLoading || isClearing} variant="destructive" className="w-full sm:w-auto">
+            <Button onClick={handleSeedPromotions} disabled={isLoading || isClearing || isSeedingPromos} className="w-full sm:w-auto bg-green-600 hover:bg-green-700">
+                {isSeedingPromos ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
+                Seed 15 Promotions
+            </Button>
+            <Button onClick={handleClear} disabled={isLoading || isClearing || isSeedingPromos} variant="destructive" className="w-full sm:w-auto">
               {isClearing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <AlertTriangle className="mr-2 h-4 w-4" />}
-              Clear All Menu Data Only
+              Clear All Menu Data
             </Button>
           </div>
-          {(isLoading || isClearing || status) && (
+          {(isLoading || isClearing || isSeedingPromos || status) && (
             <div className="p-4 bg-zinc-800 rounded-md">
-              <h3 className="font-semibold text-zinc-300">Migration Status:</h3>
+              <h3 className="font-semibold text-zinc-300">Status:</h3>
               <p className="text-sm text-zinc-400 font-mono">{status}</p>
             </div>
           )}
@@ -206,3 +279,5 @@ export default function DataMigrationPage() {
     </div>
   );
 }
+
+    
