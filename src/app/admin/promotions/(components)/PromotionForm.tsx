@@ -38,8 +38,8 @@ const formSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters.'),
   description: z.string().optional(),
   bannerImage: z.string().url('Must be a valid URL.').optional().or(z.literal('')),
-  discountType: z.enum(['percentage', 'flat']),
-  discountValue: z.coerce.number().positive('Discount value must be positive.'),
+  discountType: z.enum(['percentage', 'flat', 'bogo']),
+  discountValue: z.coerce.number().positive('Discount value must be positive.').optional(),
   startDate: z.date({ required_error: "A start date is required." }),
   endDate: z.date({ required_error: "An end date is required." }),
   menuItemIds: z.array(z.string()).optional(),
@@ -47,7 +47,11 @@ const formSchema = z.object({
 }).refine(data => data.endDate > data.startDate, {
   message: 'End date must be after the start date.',
   path: ['endDate'],
+}).refine(data => data.discountType === 'bogo' || (data.discountValue !== undefined && data.discountValue > 0), {
+    message: 'Discount value is required for this discount type.',
+    path: ['discountValue'],
 });
+
 
 type FormValues = z.infer<typeof formSchema>;
 
@@ -75,7 +79,8 @@ export default function PromotionForm({ promotion, onSuccess }: PromotionFormPro
     },
   });
 
-  const { isSubmitting } = form.formState;
+  const { isSubmitting, watch } = form;
+  const discountType = watch("discountType");
 
   const getStatus = (start: Date, end: Date): 'scheduled' | 'active' | 'expired' => {
       const now = new Date();
@@ -89,7 +94,12 @@ export default function PromotionForm({ promotion, onSuccess }: PromotionFormPro
 
     try {
       const status = getStatus(values.startDate, values.endDate);
-      const dataToSave = { ...values, status, updatedAt: serverTimestamp() };
+      const dataToSave: any = { 
+          ...values,
+          discountValue: values.discountType === 'bogo' ? 0 : values.discountValue,
+          status, 
+          updatedAt: serverTimestamp()
+      };
       
       const oldMenuItemIds = promotion?.menuItemIds || [];
       const newMenuItemIds = values.menuItemIds || [];
@@ -97,6 +107,7 @@ export default function PromotionForm({ promotion, onSuccess }: PromotionFormPro
       const idsToRemove = oldMenuItemIds.filter(id => !newMenuItemIds.includes(id));
 
       const batch = writeBatch(firestore);
+      let promoId = promotion?.id;
 
       // Create or update promotion
       if (promotion) {
@@ -104,27 +115,31 @@ export default function PromotionForm({ promotion, onSuccess }: PromotionFormPro
         batch.set(promoRef, dataToSave, { merge: true });
       } else {
         const promoRef = doc(collection(firestore, 'promotions'));
+        promoId = promoRef.id;
         batch.set(promoRef, { ...dataToSave, createdAt: serverTimestamp() });
       }
       
-      // Update menu items
-      for (const itemId of idsToAdd) {
-        const itemRef = doc(firestore, 'menuItems', itemId);
-        const itemSnap = await getDoc(itemRef);
-        if (itemSnap.exists()) {
-          const currentPromoIds = itemSnap.data().promotionIds || [];
-          batch.update(itemRef, { promotionIds: [...currentPromoIds, promotion?.id] });
+      if(promoId) {
+        // Update menu items
+        for (const itemId of idsToAdd) {
+            const itemRef = doc(firestore, 'menuItems', itemId);
+            const itemSnap = await getDoc(itemRef);
+            if (itemSnap.exists()) {
+            const currentPromoIds = itemSnap.data().promotionIds || [];
+            batch.update(itemRef, { promotionIds: [...currentPromoIds, promoId] });
+            }
+        }
+
+        for (const itemId of idsToRemove) {
+            const itemRef = doc(firestore, 'menuItems', itemId);
+            const itemSnap = await getDoc(itemRef);
+            if (itemSnap.exists()) {
+                const currentPromoIds = itemSnap.data().promotionIds || [];
+                batch.update(itemRef, { promotionIds: currentPromoIds.filter((id: string) => id !== promoId) });
+            }
         }
       }
 
-      for (const itemId of idsToRemove) {
-          const itemRef = doc(firestore, 'menuItems', itemId);
-          const itemSnap = await getDoc(itemRef);
-          if (itemSnap.exists()) {
-              const currentPromoIds = itemSnap.data().promotionIds || [];
-              batch.update(itemRef, { promotionIds: currentPromoIds.filter((id: string) => id !== promotion?.id) });
-          }
-      }
 
       await batch.commit();
 
@@ -178,23 +193,26 @@ export default function PromotionForm({ promotion, onSuccess }: PromotionFormPro
                   <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
                     <SelectItem value="percentage">Percentage (%)</SelectItem>
                     <SelectItem value="flat">Flat (RM)</SelectItem>
+                    <SelectItem value="bogo">Buy One Get One</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="discountValue"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Discount Value</FormLabel>
-                <FormControl><Input type="number" step="0.01" {...field} className={inputStyles} /></FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          {discountType !== 'bogo' && (
+            <FormField
+              control={form.control}
+              name="discountValue"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Discount Value</FormLabel>
+                  <FormControl><Input type="number" step="0.01" {...field} className={inputStyles} /></FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField

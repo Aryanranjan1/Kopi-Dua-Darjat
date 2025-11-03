@@ -3,26 +3,35 @@
 import { useMemo, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, doc, writeBatch, query, where, getDocs, deleteDoc, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, doc, writeBatch, query, where, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
 import type { MenuItem, DailySpecial } from '@/lib/types';
 import { Loader2, Sparkles, Search } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
+import Image from 'next/image';
 
 const SpecialsItemRow = ({ item, isSpecial, onToggle }: { item: MenuItem; isSpecial: boolean; onToggle: (itemId: string, isCurrentlySpecial: boolean) => void; }) => {
   return (
-    <div className="flex items-center justify-between p-4 border-b border-zinc-800">
-      <div className="flex flex-col">
-        <p className="font-medium text-white">{item.name}</p>
-        <p className="text-sm text-zinc-400">RM{item.price.toFixed(2)}</p>
+    <div className="flex items-center justify-between p-4 border-b border-zinc-800 last:border-b-0">
+      <div className="flex items-center gap-4">
+        <Image src={item.imageUrl} alt={item.name} width={40} height={40} className="rounded-md object-contain bg-zinc-700 p-1" />
+        <div>
+            <p className="font-medium text-white">{item.name}</p>
+            <p className="text-sm text-zinc-400">RM{item.price.toFixed(2)}</p>
+        </div>
       </div>
-      <Switch
-        id={`special-${item.id}`}
-        checked={isSpecial}
-        onCheckedChange={() => onToggle(item.id, isSpecial)}
-      />
+      <div className="flex items-center gap-2">
+        <Label htmlFor={`special-${item.id}`} className="text-sm text-zinc-400">
+            {isSpecial ? 'On Special' : 'Add to Specials'}
+        </Label>
+        <Switch
+            id={`special-${item.id}`}
+            checked={isSpecial}
+            onCheckedChange={() => onToggle(item.id, isSpecial)}
+        />
+      </div>
     </div>
   );
 };
@@ -91,7 +100,7 @@ export default function DailySpecialsPage() {
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2"><Sparkles className="text-primary"/>Daily Specials Management</CardTitle>
                     <CardDescription className="text-zinc-400">
-                        Toggle any published menu item to feature it on the "Daily Specials" section of the public menu page.
+                        Toggle any published menu item to feature it on the "Daily Specials" section of the public menu page. This is a simple way to manage a list of discounted items.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
