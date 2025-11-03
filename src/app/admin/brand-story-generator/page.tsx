@@ -12,7 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import type { MenuCategory, MenuItem } from '@/lib/types';
 
 // Define the structure for categories with groups and order
-const categoryStructure = {
+const categoryStructure: Record<string, { order: number, series: string[] }> = {
   'Seasonal / Specials': {
     order: 1,
     series: ['Menet Series'],
@@ -71,7 +71,14 @@ export default function DataMigrationPage() {
       const itemsRef = collection(firestore, 'menuItems');
       const existingCategories = new Map<string, string>();
 
-      // 1. Create categories from the defined structure
+      // 1. Clear existing data
+      setStatus('Clearing existing menu data...');
+      const categoriesSnapshot = await getDocs(collection(firestore, 'menuCategories'));
+      categoriesSnapshot.forEach(doc => batch.delete(doc.ref));
+      const itemsSnapshot = await getDocs(collection(firestore, 'menuItems'));
+      itemsSnapshot.forEach(doc => batch.delete(doc.ref));
+      
+      // 2. Create categories from the defined structure
       setStatus('Processing categories...');
       let categoryOrder = 0;
       for (const [groupName, groupDetails] of Object.entries(categoryStructure)) {
@@ -81,7 +88,6 @@ export default function DataMigrationPage() {
                 name: seriesName,
                 slug: slug,
                 description: `Drinks from the ${seriesName}.`,
-                parentId: null,
                 group: groupName,
                 displayOrder: ++categoryOrder,
             };
@@ -91,7 +97,7 @@ export default function DataMigrationPage() {
         }
       }
       
-      // 2. Migrate drinks to menuItems
+      // 3. Migrate drinks to menuItems
       setStatus('Migrating menu items...');
       allDrinks.forEach((drink, index) => {
         const categoryName = drink.tags.find(t => t.endsWith('Series'));
@@ -120,12 +126,12 @@ export default function DataMigrationPage() {
         batch.set(itemDocRef, { ...newItem, createdAt: new Date(), updatedAt: new Date() });
       });
 
-      // 3. Commit batch
+      // 4. Commit batch
       setStatus('Writing to database...');
       await batch.commit();
 
-      setStatus('Migration completed successfully!');
-      toast({ title: 'Migration Complete', description: 'Mock data has been imported to Firestore with new structure.' });
+      setStatus('Migration completed successfully! All old data was cleared.');
+      toast({ title: 'Migration Complete', description: 'Menu data has been cleared and re-imported successfully.' });
     } catch (error: any) {
       console.error('Migration failed:', error);
       setStatus(`Error: ${error.message}`);
@@ -142,17 +148,18 @@ export default function DataMigrationPage() {
           <CardTitle>One-Time Data Migration</CardTitle>
           <CardDescription className="text-zinc-400">
             Use this tool to import the initial mock menu data into Firestore. This will set up categories, groups, and items based on the defined structure.
+            Running this will first CLEAR all existing menu data.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="flex flex-col sm:flex-row gap-4">
             <Button onClick={handleMigrate} disabled={isLoading || isClearing} className="w-full sm:w-auto">
               {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckCircle className="mr-2 h-4 w-4" />}
-              Migrate Mock Menu Data
+              Clear and Migrate Mock Menu Data
             </Button>
             <Button onClick={handleClear} disabled={isLoading || isClearing} variant="destructive" className="w-full sm:w-auto">
               {isClearing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <AlertTriangle className="mr-2 h-4 w-4" />}
-              Clear All Menu Data
+              Clear All Menu Data Only
             </Button>
           </div>
           {(isLoading || isClearing || status) && (
