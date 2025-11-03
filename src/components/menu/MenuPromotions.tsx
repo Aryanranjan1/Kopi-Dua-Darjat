@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -19,6 +20,7 @@ import {
 const MenuPromotionsContent = () => {
     const firestore = useFirestore();
     const [promotedItems, setPromotedItems] = useState<MenuItem[]>([]);
+    const [promotions, setPromotions] = useState<Promotion[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -33,9 +35,10 @@ const MenuPromotionsContent = () => {
                     limit(10)
                 );
                 const promoSnap = await getDocs(promotionsQuery);
-                const promotions = promoSnap.docs.map(d => ({ id: d.id, ...d.data() } as Promotion));
+                const fetchedPromotions = promoSnap.docs.map(d => ({ id: d.id, ...d.data() } as Promotion));
+                setPromotions(fetchedPromotions);
                 
-                const allMenuItemIds = promotions.flatMap(p => p.menuItemIds || []);
+                const allMenuItemIds = fetchedPromotions.flatMap(p => p.menuItemIds || []);
                 if (allMenuItemIds.length === 0) {
                     setPromotedItems([]);
                     setIsLoading(false);
@@ -44,8 +47,6 @@ const MenuPromotionsContent = () => {
 
                 const uniqueMenuItemIds = [...new Set(allMenuItemIds)];
                 
-                // Firestore 'in' query is limited to 30 items per query.
-                // We'll fetch in chunks if necessary, though 10 promotions are unlikely to exceed this.
                 const itemsQuery = query(collection(firestore, 'menuItems'), where('__name__', 'in', uniqueMenuItemIds));
                 const itemsSnap = await getDocs(itemsQuery);
                 const items = itemsSnap.docs.map(d => ({ id: d.id, ...d.data() } as MenuItem));
@@ -94,41 +95,42 @@ const MenuPromotionsContent = () => {
         <div className="py-12 sm:py-16">
             <div className="container mx-auto px-4">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {mainPromoItem && <BigPromotionCard drink={mainPromoItem} />}
+                    {mainPromoItem && <BigPromotionCard drink={mainPromoItem} promotions={promotions} />}
                     <div className="grid grid-cols-2 gap-6">
                         {gridPromoItems.map((drink) => (
-                        <PromotionCard key={drink.id} drink={drink} />
+                        <PromotionCard key={drink.id} drink={drink} promotions={promotions} />
                         ))}
                     </div>
                 </div>
             </div>
 
             {showRemainingCarousel && (
-                <div className="container mx-auto px-4 mt-16">
-                <Carousel
-                    opts={{
-                    align: 'start',
-                    loop: remainingPromoItems.length > 4,
-                    }}
-                    className="w-full"
-                >
-                    <CarouselContent className="-ml-4 py-24">
-                    {remainingPromoItems.map((drink) => (
-                        <CarouselItem
-                        key={drink.id}
-                        className="basis-1/2 md:basis-1/3 lg:basis-1/4 pl-4 overflow-visible"
-                        >
-                        <PromotionCarouselCard drink={drink} />
-                        </CarouselItem>
-                    ))}
-                    </CarouselContent>
-                    {remainingPromoItems.length > 4 && (
-                    <>
-                        <CarouselPrevious className="ml-14" />
-                        <CarouselNext className="mr-14" />
-                    </>
-                    )}
-                </Carousel>
+                 <div className="container mx-auto px-4 mt-16">
+                    <h3 className="text-3xl font-headline font-bold text-foreground tracking-wider text-center mb-8">More Great Offers</h3>
+                    <Carousel
+                        opts={{
+                        align: 'start',
+                        loop: remainingPromoItems.length > 4,
+                        }}
+                        className="w-full"
+                    >
+                        <CarouselContent className="-ml-4 py-24">
+                        {remainingPromoItems.map((drink) => (
+                            <CarouselItem
+                            key={drink.id}
+                            className="basis-1/2 md:basis-1/3 lg:basis-1/4 pl-4 overflow-visible"
+                            >
+                            <PromotionCarouselCard drink={drink} promotions={promotions} />
+                            </CarouselItem>
+                        ))}
+                        </CarouselContent>
+                        {remainingPromoItems.length > 4 && (
+                        <>
+                            <CarouselPrevious className="ml-14" />
+                            <CarouselNext className="mr-14" />
+                        </>
+                        )}
+                    </Carousel>
                 </div>
             )}
         </div>

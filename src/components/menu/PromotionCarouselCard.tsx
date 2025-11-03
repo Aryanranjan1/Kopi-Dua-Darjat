@@ -2,25 +2,29 @@
 "use client";
 
 import Image from 'next/image';
-import type { MenuItem } from '@/lib/types';
+import type { MenuItem, Promotion } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '../ui/badge';
+import { getDiscountDisplay } from '@/lib/utils';
 
 interface PromotionCarouselCardProps {
   drink: MenuItem;
+  promotions: Promotion[];
 }
 
-export default function PromotionCarouselCard({ drink }: PromotionCarouselCardProps) {
-  const hasPromotion = drink.promotionIds && drink.promotionIds.length > 0;
+export default function PromotionCarouselCard({ drink, promotions }: PromotionCarouselCardProps) {
+  const promotion = promotions.find(p => p.menuItemIds?.includes(drink.id));
+  const offerText = promotion ? getDiscountDisplay(promotion) : null;
+  
   return (
     <div className="p-1">
       <Card className="rounded-3xl bg-primary/65 overflow-visible">
         <CardContent className="relative p-4 pt-32 flex flex-col items-center text-center">
-          {hasPromotion && (
-            <Badge className="absolute top-2 right-2 bg-accent text-accent-foreground z-10 shadow-lg">On Offer</Badge>
+          {offerText && (
+            <Badge className="absolute top-2 right-2 bg-accent text-accent-foreground z-10 shadow-lg">{offerText}</Badge>
           )}
           <div className="relative w-full h-80 -mt-48 mb-4 group">
             <Image

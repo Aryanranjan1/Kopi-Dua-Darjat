@@ -17,10 +17,21 @@ import { Skeleton } from '../ui/skeleton';
 const DailySpecialsContent = () => {
   const firestore = useFirestore();
   const specialsQuery = useMemoFirebase(
-    () => firestore ? query(collection(firestore, 'menuItems'), where('status', '==', 'published'), limit(7)) : null,
+    () => firestore ? query(collection(firestore, 'dailySpecials'), limit(7)) : null,
     [firestore]
   );
-  const { data: dailySpecials, isLoading } = useCollection<MenuItem>(specialsQuery);
+  const { data: dailySpecials, isLoading: isLoadingSpecials } = useCollection<any>(specialsQuery);
+
+  const specialItemIds = useMemoFirebase(() => dailySpecials?.map(s => s.menuItemId) || [], [dailySpecials]);
+  
+  const itemsQuery = useMemoFirebase(
+    () => (firestore && specialItemIds.length > 0) ? query(collection(firestore, 'menuItems'), where('__name__', 'in', specialItemIds)) : null,
+    [firestore, specialItemIds]
+  );
+  const { data: specialItems, isLoading: isLoadingItems } = useCollection<MenuItem>(itemsQuery);
+
+
+  const isLoading = isLoadingSpecials || isLoadingItems;
 
   if (isLoading) {
     return (
@@ -35,12 +46,12 @@ const DailySpecialsContent = () => {
     )
   }
 
-  if (!dailySpecials || dailySpecials.length === 0) {
+  if (!specialItems || specialItems.length === 0) {
     return null;
   }
   
-  const visibleSpecials = dailySpecials.slice(0, 3);
-  const hiddenSpecials = dailySpecials.slice(3);
+  const visibleSpecials = specialItems.slice(0, 3);
+  const hiddenSpecials = specialItems.slice(3);
 
 
   return (
@@ -73,6 +84,7 @@ const DailySpecialsContent = () => {
               <p className="font-bold text-lg text-accent">
                 RM{drink.price.toFixed(2)}
               </p>
+              <Badge variant="secondary" className="bg-accent/20 text-accent font-semibold mt-1">Special Offer</Badge>
             </div>
           </div>
         ))}
@@ -106,6 +118,7 @@ const DailySpecialsContent = () => {
                           <p className="font-bold text-lg text-accent">
                           RM{drink.price.toFixed(2)}
                           </p>
+                          <Badge variant="secondary" className="bg-accent/20 text-accent font-semibold mt-1">Special Offer</Badge>
                       </div>
                     </div>
                   ))}

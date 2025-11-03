@@ -2,25 +2,30 @@
 "use client";
 
 import Image from 'next/image';
-import type { MenuItem } from '@/lib/types';
+import type { MenuItem, Promotion } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '../ui/badge';
+import { getDiscountDisplay } from '@/lib/utils';
+
 
 interface BigPromotionCardProps {
   drink: MenuItem;
+  promotions: Promotion[];
 }
 
-export default function BigPromotionCard({ drink }: BigPromotionCardProps) {
-  const hasPromotion = drink.promotionIds && drink.promotionIds.length > 0;
+export default function BigPromotionCard({ drink, promotions }: BigPromotionCardProps) {
+  const promotion = promotions.find(p => p.menuItemIds?.includes(drink.id));
+  const offerText = promotion ? getDiscountDisplay(promotion) : null;
+
   return (
     <div className="p-1 h-full">
         <Card className="rounded-3xl bg-primary/65 overflow-hidden h-full flex flex-col">
             <CardContent className="relative p-4 flex flex-col items-center text-center flex-grow">
-              {hasPromotion && (
-                <Badge className="absolute top-2 right-2 bg-accent text-accent-foreground z-10 shadow-lg">On Offer</Badge>
+              {offerText && (
+                <Badge className="absolute top-2 right-2 bg-accent text-accent-foreground z-10 shadow-lg">{offerText}</Badge>
               )}
             <div className="relative w-full aspect-[1] mb-4 group">
                 <Image
