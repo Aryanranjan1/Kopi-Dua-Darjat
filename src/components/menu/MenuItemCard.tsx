@@ -2,26 +2,41 @@
 "use client";
 
 import Image from 'next/image';
-import type { MenuItem } from '@/lib/types';
+import type { MenuItem, Promotion, DailySpecial } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowUpRight, Plus, Star } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '../ui/badge';
+import { getDiscountDisplay } from '@/lib/utils';
 
 interface MenuItemCardProps {
   drink: MenuItem;
+  promotions: Promotion[];
+  dailySpecials: DailySpecial[];
 }
 
-export default function MenuItemCard({ drink }: MenuItemCardProps) {
-  const hasPromotion = drink.promotionIds && drink.promotionIds.length > 0;
+export default function MenuItemCard({ drink, promotions, dailySpecials }: MenuItemCardProps) {
+  
+  const getOfferBadge = (): string | null => {
+    const promotion = promotions.find(p => p.menuItemIds?.includes(drink.id));
+    if (promotion) {
+      return getDiscountDisplay(promotion);
+    }
+    if (dailySpecials.some(s => s.menuItemId === drink.id)) {
+      return 'Special';
+    }
+    return null;
+  };
+
+  const offerText = getOfferBadge();
 
   return (
     <div className="p-1">
       <Card className="rounded-3xl bg-primary/65 overflow-visible">
         <CardContent className="relative p-4 pt-32 flex flex-col items-center text-center">
-          {hasPromotion && (
-             <Badge className="absolute top-2 right-2 bg-accent text-accent-foreground z-10 shadow-lg">On Offer</Badge>
+          {offerText && (
+             <Badge className="absolute top-2 right-2 bg-accent text-accent-foreground z-10 shadow-lg">{offerText}</Badge>
           )}
           <div className="relative w-full h-80 -mt-48 mb-4 group">
             <Image

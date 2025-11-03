@@ -2,13 +2,13 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, query, where, limit } from 'firebase/firestore';
-import type { MenuItem, MenuCategory } from '@/lib/types';
+import { collection, query, where, limit, getDocs } from 'firebase/firestore';
+import type { MenuItem, MenuCategory, Promotion, DailySpecial } from '@/lib/types';
 import {
   Carousel,
   CarouselContent,
@@ -22,6 +22,8 @@ import { Skeleton } from '../ui/skeleton';
 export default function MenuShowcase() {
   const firestore = useFirestore();
   const [activeFilter, setActiveFilter] = useState<string>('featured');
+  const [promotions, setPromotions] = useState<Promotion[]>([]);
+  const [dailySpecials, setDailySpecials] = useState<DailySpecial[]>([]);
 
   const categoriesQuery = useMemoFirebase(
     () => firestore ? query(collection(firestore, 'menuCategories'), limit(4)) : null,
@@ -34,7 +36,6 @@ export default function MenuShowcase() {
       if (!firestore) return null;
       let q = query(collection(firestore, 'menuItems'), where('status', '==', 'published'), limit(10));
       
-      // If the filter is not a category ID, it's a tag like 'featured'
       if (activeFilter && !categories?.find(c => c.id === activeFilter)) {
         q = query(q, where('tags', 'array-contains', activeFilter));
       } else if (activeFilter) {
@@ -46,10 +47,24 @@ export default function MenuShowcase() {
   );
   const { data: menuItems, isLoading: isLoadingItems } = useCollection<MenuItem>(itemsQuery);
 
+  useEffect(() => {
+    if (!firestore) return;
+    const fetchOffers = async () => {
+      const promosQuery = query(collection(firestore, 'promotions'), where('status', '==', 'active'));
+      const promosSnap = await getDocs(promosQuery);
+      setPromotions(promosSnap.docs.map(d => ({id: d.id, ...d.data()} as Promotion)));
+      
+      const specialsQuery = query(collection(firestore, 'dailySpecials'));
+      const specialsSnap = await getDocs(specialsQuery);
+      setDailySpecials(specialsSnap.docs.map(d => d.data() as DailySpecial));
+    }
+    fetchOffers();
+  }, [firestore]);
+
   const filterOptions = useMemo(() => {
     const filters = [{ id: 'featured', name: 'Featured' }];
     if (categories) {
-        filters.push(...categories.slice(0, 3)); // Add up to 3 categories
+        filters.push(...categories.slice(0, 3));
     }
     return filters;
   }, [categories]);
@@ -97,7 +112,11 @@ export default function MenuShowcase() {
                 {menuItems?.map((drink) => (
                   <CarouselItem key={drink.id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 pl-4">
                     <div className="h-full">
-                      <MenuShowcaseCard drink={drink as MenuItem} />
+                      <MenuShowcaseCard 
+                        drink={drink as MenuItem} 
+                        promotions={promotions}
+                        dailySpecials={dailySpecials}
+                      />
                     </div>
                   </CarouselItem>
                 ))}

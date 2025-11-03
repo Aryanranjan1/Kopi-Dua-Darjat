@@ -1,14 +1,14 @@
 
 'use client';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, query, where, orderBy } from 'firebase/firestore';
-import type { MenuCategory, MenuItem, MenuGroup } from '@/lib/types';
+import { collection, query, where, orderBy, getDocs } from 'firebase/firestore';
+import type { MenuCategory, MenuItem, MenuGroup, Promotion, DailySpecial } from '@/lib/types';
 import MenuCarousel from '@/components/menu/MenuCarousel';
 import MenuPromotions from '@/components/menu/MenuPromotions';
 import { DailySpecials } from '@/components/menu/DailySpecials';
 import NewsletterSignUp from '@/components/home/NewsletterSignUp';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 
 export default function MenuPage() {
     const firestore = useFirestore();
@@ -30,6 +30,23 @@ export default function MenuPage() {
       [firestore]
     );
     const { data: menuItems, isLoading: isLoadingItems } = useCollection<MenuItem>(itemsQuery);
+
+    const [promotions, setPromotions] = useState<Promotion[]>([]);
+    const [dailySpecials, setDailySpecials] = useState<DailySpecial[]>([]);
+
+    useEffect(() => {
+        if (!firestore) return;
+        const fetchOffers = async () => {
+            const promosQuery = query(collection(firestore, 'promotions'), where('status', '==', 'active'));
+            const promosSnap = await getDocs(promosQuery);
+            setPromotions(promosSnap.docs.map(d => ({id: d.id, ...d.data()} as Promotion)));
+            
+            const specialsQuery = query(collection(firestore, 'dailySpecials'));
+            const specialsSnap = await getDocs(specialsQuery);
+            setDailySpecials(specialsSnap.docs.map(d => d.data() as DailySpecial));
+        }
+        fetchOffers();
+    }, [firestore]);
 
     const getItemsByCategoryId = (categoryId: string) => {
         if (!menuItems) return [];
@@ -111,6 +128,8 @@ export default function MenuPage() {
                                                 key={cat.id}
                                                 title={cat.name}
                                                 items={getItemsByCategoryId(cat.id)}
+                                                promotions={promotions}
+                                                dailySpecials={dailySpecials}
                                             />
                                         ))}
                                     </div>

@@ -3,8 +3,8 @@
 
 import Image from 'next/image';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, query, where, limit } from 'firebase/firestore';
-import type { MenuItem } from '@/lib/types';
+import { collection, query, where, limit, getDocs } from 'firebase/firestore';
+import type { MenuItem, Promotion, DailySpecial } from '@/lib/types';
 import {
   Carousel,
   CarouselContent,
@@ -12,15 +12,18 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '../ui/button';
 import { ArrowUpRight, Star } from 'lucide-react';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import Link from 'next/link';
 import { Badge } from '../ui/badge';
+import { useEffect, useState } from 'react';
+import { getDiscountDisplay } from '@/lib/utils';
 
 export default function FeaturedDrinks() {
   const firestore = useFirestore();
+  const [promotions, setPromotions] = useState<Promotion[]>([]);
+  const [dailySpecials, setDailySpecials] = useState<DailySpecial[]>([]);
   
   // Query for items marked as popular
   const popularQuery = useMemoFirebase(
@@ -45,6 +48,22 @@ export default function FeaturedDrinks() {
   );
   const { data: genericItems, isLoading: isLoadingGeneric } = useCollection<MenuItem>(genericQuery);
 
+  useEffect(() => {
+    if (!firestore) return;
+    const fetchOffers = async () => {
+      const promosQuery = query(collection(firestore, 'promotions'), where('status', '==', 'active'));
+      const promosSnap = await getDocs(promosQuery);
+      setPromotions(promosSnap.docs.map(d => ({id: d.id, ...d.data()} as Promotion)));
+      
+      const specialsQuery = query(collection(firestore, 'dailySpecials'));
+      const specialsSnap = await getDocs(specialsQuery);
+      setDailySpecials(specialsSnap.docs.map(d => d.data() as DailySpecial));
+    }
+    fetchOffers();
+  }, [firestore]);
+  
+  const specialItemIds = useMemoFirebase(() => new Set(dailySpecials.map(s => s.menuItemId)), [dailySpecials]);
+
   const drinksToShow = popularItems && popularItems.length > 0 ? popularItems : genericItems;
   const isLoading = isLoadingPopular || isLoadingGeneric;
 
@@ -52,6 +71,17 @@ export default function FeaturedDrinks() {
     // You can return a skeleton loader here if you want
     return null;
   }
+  
+  const getOfferBadge = (drink: MenuItem): string | null => {
+    const promotion = promotions.find(p => p.menuItemIds?.includes(drink.id));
+    if (promotion) {
+      return getDiscountDisplay(promotion);
+    }
+    if (specialItemIds.has(drink.id)) {
+      return 'Special';
+    }
+    return null;
+  };
 
   return (
     <section className="py-24 sm:py-32 bg-[#F7F4EF] text-foreground">
@@ -74,14 +104,14 @@ export default function FeaturedDrinks() {
           >
             <CarouselContent className="-ml-4 py-16">
               {drinksToShow?.map((drink) => {
-                const hasPromotion = drink.promotionIds && drink.promotionIds.length > 0;
+                const offerText = getOfferBadge(drink);
                 return (
                 <CarouselItem key={drink.id} className="basis-full md:basis-1/2 lg:basis-1/3 pl-4 overflow-visible">
                   <div className="p-1">
                     <Card className="rounded-3xl bg-primary/65 overflow-visible">
                       <CardContent className="relative p-4 pt-32 flex flex-col items-center text-center">
-                        {hasPromotion && (
-                            <Badge className="absolute top-2 right-2 bg-accent text-accent-foreground z-10 shadow-lg">On Offer</Badge>
+                        {offerText && (
+                            <Badge className="absolute top-2 right-2 bg-accent text-accent-foreground z-10 shadow-lg">{offerText}</Badge>
                         )}
                         <div className="relative w-full h-80 -mt-48 mb-4 group">
                           <Image

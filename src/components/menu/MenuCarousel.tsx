@@ -11,16 +11,18 @@ import {
     CarouselPrevious,
 } from '@/components/ui/carousel';
 import MenuItemCard from './MenuItemCard';
-import type { MenuItem } from '@/lib/types';
+import type { MenuItem, Promotion, DailySpecial } from '@/lib/types';
 import { Button } from '../ui/button';
-import { ArrowRight, ChevronsDown, ChevronsUp } from 'lucide-react';
+import { ChevronsDown, ChevronsUp } from 'lucide-react';
 
 interface MenuCarouselProps {
     title: string;
     items: MenuItem[];
+    promotions: Promotion[];
+    dailySpecials: DailySpecial[];
 }
 
-export default function MenuCarousel({ title, items }: MenuCarouselProps) {
+export default function MenuCarousel({ title, items, promotions, dailySpecials }: MenuCarouselProps) {
     const [isExpanded, setIsExpanded] = useState(false);
 
     if (!items || items.length === 0) {
@@ -45,7 +47,11 @@ export default function MenuCarousel({ title, items }: MenuCarouselProps) {
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-4 gap-y-24 py-16">
                     {items.map((drink) => (
                         <div key={drink.id} className="overflow-visible">
-                            <MenuItemCard drink={drink} />
+                            <MenuItemCard 
+                                drink={drink}
+                                promotions={promotions}
+                                dailySpecials={dailySpecials}
+                            />
                         </div>
                     ))}
                 </div>
@@ -60,7 +66,11 @@ export default function MenuCarousel({ title, items }: MenuCarouselProps) {
                     <CarouselContent className="-ml-4 py-16">
                     {items.map((drink) => (
                         <CarouselItem key={drink.id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 pl-4 overflow-visible">
-                            <MenuItemCard drink={drink} />
+                            <MenuItemCard 
+                                drink={drink} 
+                                promotions={promotions}
+                                dailySpecials={dailySpecials}
+                            />
                         </CarouselItem>
                     ))}
                     </CarouselContent>
