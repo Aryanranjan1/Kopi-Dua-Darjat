@@ -6,13 +6,13 @@ import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useMediaAsset } from '@/lib/media';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
+import { Skeleton } from '../ui/skeleton';
 
-export default function LatestBlog() {
-  const communityImage = PlaceHolderImages.find((img) => img.id === 'community-event-1');
-  const parallaxBg = PlaceHolderImages.find((img) => img.id === 'parallax-promo-bg');
-
+export default function ActivePromotions() {
+  const { asset: communityImage, isLoading: isLoadingCommunity } = useMediaAsset('community-event-1');
+  const { asset: parallaxBg, isLoading: isLoadingParallax } = useMediaAsset('parallax-promo-bg');
 
   return (
     <section className="py-24 sm:py-32 bg-black">
@@ -77,7 +77,7 @@ export default function LatestBlog() {
             {/* Card 3: Stay Informed */}
             <AnimateOnScroll animationType="slideInFromRight" amount={0.5} delay={0.2}>
               <Card className="bg-zinc-900 shadow-lg rounded-3xl p-8 flex flex-col justify-between min-h-[210px] relative overflow-hidden">
-                  {communityImage && (
+                  {isLoadingCommunity ? <Skeleton className="absolute bottom-0 right-0 h-3/4 w-1/2"/> : communityImage && (
                       <div className="absolute bottom-0 right-0 h-3/4 w-1/2">
                           <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900 to-transparent"></div>
                           <Image

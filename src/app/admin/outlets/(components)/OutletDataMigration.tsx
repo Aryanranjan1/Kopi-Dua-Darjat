@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -46,7 +47,7 @@ export default function OutletDataMigration() {
 
       // Add new outlets
       outletSeedData.forEach(outletData => {
-        const outletRef = doc(outletsCollection);
+        const outletRef = doc(collection(firestore, 'outlets'));
         batch.set(outletRef, { ...outletData, createdAt: new Date(), updatedAt: new Date() });
       });
 
@@ -75,36 +76,11 @@ export default function OutletDataMigration() {
       <CardHeader>
         <CardTitle>Outlet Data Seeder</CardTitle>
         <CardDescription className="text-zinc-400">
-          Use this tool to populate your Firestore database with 50 mock outlet locations. This will overwrite any existing outlet data.
+          This tool is now deprecated. Please use the Master Data Seeding Tool in the main Admin Panel to manage all data, including outlets.
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="secondary" disabled={isLoading} className="bg-emerald-600 hover:bg-emerald-700 text-white">
-              {isLoading ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Database className="mr-2 h-4 w-4" />
-              )}
-              Seed 50 Outlets
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-              <AlertDialogDescription className="text-zinc-400">
-                This will delete all current outlets in your database and replace them with 50 new mock outlets. This action cannot be undone.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
-              <AlertDialogAction className="bg-emerald-600 hover:bg-emerald-700" onClick={handleMigrateOutlets}>
-                Yes, Seed Outlets
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        <p className="text-sm text-zinc-500">This component is kept for reference but its functionality has been moved to a centralized seeder.</p>
       </CardContent>
     </Card>
   );

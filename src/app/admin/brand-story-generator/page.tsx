@@ -7,9 +7,10 @@ import { Button } from '@/components/ui/button';
 import { useFirestore } from '@/firebase';
 import { collection, getDocs, writeBatch, doc, DocumentReference, addDoc, serverTimestamp, query, limit } from 'firebase/firestore';
 import { allDrinks, blogSeedData } from '@/lib/data';
-import { Loader2, CheckCircle, AlertTriangle, Sparkles, BookOpen } from 'lucide-react';
+import { Loader2, CheckCircle, AlertTriangle, Sparkles, BookOpen, Image as ImageIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { MenuGroup, MenuCategory, MenuItem, Promotion, Outlet, Blog } from '@/lib/types';
+import { seedMediaData } from '@/lib/media';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -326,7 +327,7 @@ export default function DataMigrationPage() {
 
         for (const post of blogSeedData) {
             const blogRef = doc(collection(firestore, 'blogs'));
-            const dataToSave: Omit<Blog, 'id'> = {
+            const dataToSave: Partial<Blog> = {
                 ...post,
                 createdAt: serverTimestamp(),
                 updatedAt: serverTimestamp(),
@@ -334,7 +335,7 @@ export default function DataMigrationPage() {
                 likes: Math.floor(Math.random() * 500) + 10,
             };
             if (post.status === 'published') {
-                (dataToSave as Blog).publishedAt = serverTimestamp();
+                dataToSave.publishedAt = serverTimestamp();
             }
 
             batch.set(blogRef, dataToSave);
@@ -357,6 +358,35 @@ export default function DataMigrationPage() {
         setIsLoading(false);
     }
   };
+
+  const handleSeedMedia = async () => {
+    if (!firestore) return;
+    if (!confirm('This will populate the Media Library from the original placeholder images. It will not delete existing media. Continue?')) return;
+    
+    setIsLoading(true);
+    setStatus(['Starting to seed media assets into Firestore...']);
+
+    try {
+        const result = await seedMediaData(firestore);
+        if (result.success) {
+            if (result.error === 'already_seeded') {
+                addStatus('Media data has already been seeded. No new assets were added.');
+                toast({ title: 'Media Already Seeded', description: 'No action was taken as media assets appear to be in the database.' });
+            } else {
+                addStatus(`Successfully seeded ${result.count} media assets.`);
+                toast({ title: 'Media Seeded', description: `${result.count} assets have been added to the Media Library.` });
+            }
+        } else {
+            throw new Error(result.error || 'An unknown error occurred.');
+        }
+    } catch (error: any) {
+        console.error('Error seeding media:', error);
+        addStatus(`FATAL ERROR: ${error.message}`);
+        toast({ variant: 'destructive', title: 'Media Seeding Failed', description: error.message });
+    } finally {
+        setIsLoading(false);
+    }
+};
 
 
   return (
@@ -402,6 +432,10 @@ export default function DataMigrationPage() {
                 <Button onClick={handleSeedBlogs} disabled={isLoading} variant="secondary" className="bg-teal-600 hover:bg-teal-700 text-white">
                   {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <BookOpen className="mr-2 h-4 w-4" />}
                   Seed 20 Blog Posts
+                </Button>
+                <Button onClick={handleSeedMedia} disabled={isLoading} variant="secondary" className="bg-purple-600 hover:bg-purple-700 text-white">
+                  {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ImageIcon className="mr-2 h-4 w-4" />}
+                  Seed Media Assets
                 </Button>
                </div>
             </div>

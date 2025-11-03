@@ -1,10 +1,11 @@
+
 'use client';
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { type BlogPost } from '@/lib/types';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useMedia } from '@/lib/media';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Search, Calendar, User, ArrowRight } from 'lucide-react';
@@ -17,14 +18,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Pagination } from './Pagination';
+import { Skeleton } from '../ui/skeleton';
 
 const POSTS_PER_PAGE = 9;
 
 type SortOption = 'Latest' | 'Popular';
-
-const getPostImage = (imageUrlId: string) => {
-  return PlaceHolderImages.find((img) => img.id === imageUrlId);
-};
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -49,6 +47,13 @@ export default function NewsContent({ allPosts }: { allPosts: BlogPost[] }) {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  
+  const { data: media, isLoading: isLoadingMedia } = useMedia();
+
+  const getPostImage = (imageUrlId: string) => {
+    if (!media) return null;
+    return media.find((img) => img.id === imageUrlId);
+  };
   
   const allCategories = useMemo(() => {
     const tags = new Set<string>(['All']);
@@ -158,7 +163,7 @@ export default function NewsContent({ allPosts }: { allPosts: BlogPost[] }) {
           <Link href={`/news/${featuredPost.slug}`} className="group block">
             <div className="grid md:grid-cols-2 gap-8 items-center">
               <div className="relative aspect-video rounded-2xl overflow-hidden">
-                {featuredImage && (
+                {isLoadingMedia ? <Skeleton className="w-full h-full"/> : featuredImage && (
                   <Image
                     src={featuredImage.imageUrl}
                     alt={featuredImage.description}
@@ -207,7 +212,7 @@ export default function NewsContent({ allPosts }: { allPosts: BlogPost[] }) {
                   <motion.div key={post.id} variants={itemVariants}>
                     <Link href={`/news/${post.slug}`} className="group block">
                       <div className="relative aspect-video rounded-2xl overflow-hidden mb-4">
-                        {image && (
+                        {isLoadingMedia ? <Skeleton className="w-full h-full"/> : image && (
                           <Image
                             src={image.imageUrl}
                             alt={post.title}

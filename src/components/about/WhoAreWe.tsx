@@ -2,12 +2,13 @@
 'use client';
 
 import Image from 'next/image';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useMediaAsset } from '@/lib/media';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import TiltedCard from '../animations/TiltedCard';
+import { Skeleton } from '../ui/skeleton';
 
 export default function WhoAreWe() {
-  const image = PlaceHolderImages.find((img) => img.id === 'brewing-method');
+  const { asset: image, isLoading } = useMediaAsset('brewing-method');
 
   return (
     <section className="py-24 sm:py-32">
@@ -15,7 +16,7 @@ export default function WhoAreWe() {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <AnimateOnScroll animationType="slideInFromLeft">
             <div className="relative aspect-video rounded-2xl overflow-hidden group">
-                {image && (
+                {isLoading ? <Skeleton className="w-full h-full" /> : image && (
                     <TiltedCard 
                       imageSrc={image.imageUrl}
                       altText={image.description}

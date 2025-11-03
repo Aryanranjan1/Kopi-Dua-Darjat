@@ -1,11 +1,13 @@
+
 "use client";
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useMedia } from '@/lib/media';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, User, Users } from 'lucide-react';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
+import { Skeleton } from '../ui/skeleton';
 
 const ImageCard = ({
   id,
@@ -16,7 +18,13 @@ const ImageCard = ({
   className?: string;
   overlayText?: string;
 }) => {
-  const image = PlaceHolderImages.find((img) => img.id === id);
+  const { data: media, isLoading } = useMedia();
+  const image = media?.find((img) => img.id === id);
+
+  if (isLoading) {
+    return <Skeleton className={`rounded-2xl bg-muted ${className}`} />;
+  }
+  
   if (!image) return null;
 
   return (

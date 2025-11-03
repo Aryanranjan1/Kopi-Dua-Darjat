@@ -1,6 +1,8 @@
 
+'use client';
+
 import type { Metadata } from 'next';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useMediaAsset, useMedia } from '@/lib/media';
 import LatestStories from '@/components/home/LatestStories';
 import NewsletterSignUp from '@/components/home/NewsletterSignUp';
 import WhoAreWe from '@/components/about/WhoAreWe';
@@ -8,11 +10,12 @@ import Stats from '@/components/about/Stats';
 import { Check } from 'lucide-react';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import TiltedCard from '@/components/animations/TiltedCard';
+import { Skeleton } from '@/components/ui/skeleton';
 
-export const metadata: Metadata = {
-  title: 'Our Story',
-  description: 'Learn about the history and passion behind Kopi Dua Darjat.',
-};
+// export const metadata: Metadata = {
+//   title: 'Our Story',
+//   description: 'Learn about the history and passion behind Kopi Dua Darjat.',
+// };
 
 const Milestone = ({
   year,
@@ -69,40 +72,61 @@ const FounderMessage = ({ name, quote, imageUrl, imageHint, reverse = false }: {
     </div>
 );
 
+const MilestoneSkeleton = () => (
+    <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-center">
+      <Skeleton className="h-24" />
+      <Skeleton className="aspect-[4/3] rounded-2xl" />
+    </div>
+)
+
+const FounderSkeleton = () => (
+     <div className="grid md:grid-cols-3 gap-12 items-center">
+        <Skeleton className="aspect-square md:aspect-[3/4] rounded-2xl" />
+        <div className="md:col-span-2 space-y-4">
+            <Skeleton className="h-20" />
+            <Skeleton className="h-6 w-1/4" />
+        </div>
+    </div>
+)
+
 export default function AboutPage() {
-  const founderHadi = PlaceHolderImages.find((img) => img.id === 'founder-hadi');
-  const founderAzad = PlaceHolderImages.find((img) => img.id === 'founder-azad');
+  const { data: media, isLoading: isLoadingMedia } = useMedia();
+
+  const getAsset = (id: string) => media?.find(m => m.id === id);
+
+  const founderHadi = getAsset('founder-hadi');
+  const founderAzad = getAsset('founder-azad');
   
-  const milestones = [
+  const milestonesData = [
     {
       year: '2020',
       title: 'Humble Beginnings',
       description: 'Kopi Dua Darjat was born from a simple cart, with a big dream: to share authentic Malaysian kopi with everyone, affordably.',
-      image: PlaceHolderImages.find((img) => img.id === 'milestone-beginnings'),
+      image: getAsset('milestone-beginnings'),
     },
     {
       year: '2021',
       title: 'Perfecting Recipes',
       description: 'Our obsession with quality led us to refine our recipes, balancing heritage flavors with artisan techniques to create our signature taste.',
-      image: PlaceHolderImages.find((img) => img.id === 'milestone-recipes'),
+      image: getAsset('milestone-recipes'),
     },
     {
       year: '2022',
       title: 'Culinary Innovation',
       description: 'We started innovating, introducing new series like Matcha and Menet, pushing the boundaries of what local coffee culture can be.',
-      image: PlaceHolderImages.find((img) => img.id === 'milestone-innovation'),
+      image: getAsset('milestone-innovation'),
     },
     {
       year: '2023',
       title: 'Community & Culture',
       description: 'More than just coffee, we became a community hub. Our stalls turned into meeting points for friends, family, and neighbors.',
-      image: PlaceHolderImages.find((img) => img.id === 'milestone-community'),
+      image: getAsset('milestone-community'),
     },
      {
       year: '2024',
       title: 'Future Forward',
       description: 'With over 50 outlets, we’re now looking ahead. Our focus is on sustainability, empowering local entrepreneurs, and continuing to innovate.',
-      image: PlaceHolderImages.find((img) => img.id === 'milestone-future'),
+      image: getAsset('milestone-future'),
     },
   ];
 
@@ -137,8 +161,10 @@ export default function AboutPage() {
               <div className="absolute left-1/2 -translate-x-1/2 h-full w-px bg-border hidden md:block"></div>
               
               <div className="space-y-24">
-                {milestones.map((milestone, index) =>
-                  milestone?.image ? (
+                {isLoadingMedia ? (
+                    [...Array(5)].map((_, i) => <MilestoneSkeleton key={i} />)
+                ) : milestonesData.map((milestone, index) =>
+                  milestone.image ? (
                     <div key={index} className="relative">
                         <div className="hidden md:block absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-accent ring-8 ring-background"></div>
                         <Milestone
@@ -164,27 +190,36 @@ export default function AboutPage() {
             <h2 className="text-4xl md:text-5xl font-headline font-bold text-white inline-block underline decoration-primary decoration-4 underline-offset-8">A Message from Our Founders</h2>
           </AnimateOnScroll>
           <div className="max-w-5xl mx-auto space-y-24">
-            <AnimateOnScroll animationType="slideInFromLeft">
-              {founderHadi && (
-                  <FounderMessage 
-                      name="Ahmad Hadi"
-                      quote="Every cup tells a story, a blend of heritage and dreams. We started Kopi Dua Darjat to share the true essence of Malaysian coffee with the world, one cup at a time."
-                      imageUrl={founderHadi.imageUrl}
-                      imageHint={founderHadi.imageHint}
-                  />
-              )}
-            </AnimateOnScroll>
-            <AnimateOnScroll animationType="slideInFromRight">
-              {founderAzad && (
-                  <FounderMessage 
-                      name="Azad"
-                      quote="Our goal has always been to craft an authentic coffee experience that feels both nostalgic and new. We balance tradition with artistry, ensuring our methods are sustainable and our partners are empowered."
-                      imageUrl={founderAzad.imageUrl}
-                      imageHint={founderAzad.imageHint}
-                      reverse
-                  />
-              )}
-            </AnimateOnScroll>
+             {isLoadingMedia ? (
+                <>
+                    <FounderSkeleton />
+                    <FounderSkeleton />
+                </>
+            ) : (
+                <>
+                <AnimateOnScroll animationType="slideInFromLeft">
+                {founderHadi && (
+                    <FounderMessage 
+                        name="Ahmad Hadi"
+                        quote="Every cup tells a story, a blend of heritage and dreams. We started Kopi Dua Darjat to share the true essence of Malaysian coffee with the world, one cup at a time."
+                        imageUrl={founderHadi.imageUrl}
+                        imageHint={founderHadi.imageHint}
+                    />
+                )}
+                </AnimateOnScroll>
+                <AnimateOnScroll animationType="slideInFromRight">
+                {founderAzad && (
+                    <FounderMessage 
+                        name="Azad"
+                        quote="Our goal has always been to craft an authentic coffee experience that feels both nostalgic and new. We balance tradition with artistry, ensuring our methods are sustainable and our partners are empowered."
+                        imageUrl={founderAzad.imageUrl}
+                        imageHint={founderAzad.imageHint}
+                        reverse
+                    />
+                )}
+                </AnimateOnScroll>
+                </>
+            )}
           </div>
         </div>
       </section>

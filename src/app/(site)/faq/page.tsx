@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo } from 'react';
@@ -5,7 +6,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { faqItems } from '@/lib/data';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useMediaAsset } from '@/lib/media';
 import {
   Accordion,
   AccordionContent,
@@ -15,6 +16,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
+import { Skeleton } from '@/components/ui/skeleton';
 
 // export const metadata: Metadata = {
 //   title: 'FAQ',
@@ -41,7 +43,7 @@ const faqCategories = [
 
 export default function FaqPage() {
   const [searchTerm, setSearchTerm] = useState('');
-  const heroImage = PlaceHolderImages.find((img) => img.id === 'faq-hero');
+  const { asset: heroImage, isLoading } = useMediaAsset('faq-hero');
 
   const filteredFaqItems = useMemo(() => {
     if (!searchTerm) {
@@ -86,7 +88,7 @@ export default function FaqPage() {
                 </div>
               </div>
               <div className="relative aspect-video rounded-2xl overflow-hidden hidden lg:block">
-                {heroImage && (
+                {isLoading ? <Skeleton className="w-full h-full" /> : heroImage && (
                   <Image
                     src={heroImage.imageUrl}
                     alt={heroImage.description}

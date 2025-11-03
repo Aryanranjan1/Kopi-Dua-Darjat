@@ -1,21 +1,23 @@
+
 "use client"
 
 import { useState } from 'react';
 import Image from "next/image"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { PlaceHolderImages } from "@/lib/placeholder-images"
+import { useMediaAsset } from "@/lib/media"
 import { AnimateOnScroll } from "@/components/animations/AnimateOnScroll"
 import { useFirestore } from '@/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { z } from 'zod';
+import { Skeleton } from '../ui/skeleton';
 
 const emailSchema = z.string().email({ message: 'Please enter a valid email.' });
 
 export default function NewsletterSignUp({ disableAnimations = false }: { disableAnimations?: boolean }) {
-  const bgImage = PlaceHolderImages.find((img) => img.id === 'newsletter-background');
+  const { asset: bgImage, isLoading: isLoadingImage } = useMediaAsset('newsletter-background');
   const firestore = useFirestore();
   const { toast } = useToast();
   const [email, setEmail] = useState('');
@@ -71,7 +73,7 @@ export default function NewsletterSignUp({ disableAnimations = false }: { disabl
   return (
     <section className="relative py-24 sm:py-32 text-white">
       <div className="absolute inset-0 z-[-2]">
-        {bgImage && (
+        {isLoadingImage ? <Skeleton className="w-full h-full" /> : bgImage && (
             <Image
                 src={bgImage.imageUrl}
                 alt={bgImage.description}

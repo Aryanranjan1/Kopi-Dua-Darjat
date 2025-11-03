@@ -3,17 +3,18 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useMediaAsset } from '@/lib/media';
 import { Button } from '@/components/ui/button';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import { ArrowRight } from 'lucide-react';
+import { Skeleton } from '../ui/skeleton';
 
 export function CtaSection() {
-  const bgImage = PlaceHolderImages.find((img) => img.id === 'cta-bg');
+  const { asset: bgImage, isLoading } = useMediaAsset('cta-bg');
 
   return (
     <section className="relative py-24 sm:py-32 text-white bg-black">
-      {bgImage && (
+      {isLoading ? <Skeleton className="absolute inset-0" /> : bgImage && (
         <div className="absolute inset-0 z-0">
           <Image
             src={bgImage.imageUrl}

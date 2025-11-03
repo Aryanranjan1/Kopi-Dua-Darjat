@@ -1,11 +1,13 @@
+
 'use client';
 
 import Image from 'next/image';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useMediaAsset } from '@/lib/media';
 import { Button } from '@/components/ui/button';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { CheckCircle } from 'lucide-react';
 import Link from 'next/link';
+import { Skeleton } from '../ui/skeleton';
 
 const supportItems = [
     'Comprehensive Barista Training',
@@ -16,7 +18,7 @@ const supportItems = [
 ]
 
 export default function SupportAndTraining() {
-  const trainingImage = PlaceHolderImages.find((img) => img.id === 'franchise-training');
+  const { asset: trainingImage, isLoading } = useMediaAsset('franchise-training');
 
   return (
     <section className="py-24 sm:py-32 bg-background">
@@ -24,7 +26,7 @@ export default function SupportAndTraining() {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <AnimateOnScroll animationType="slideInFromRight">
             <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-lg">
-              {trainingImage && (
+              {isLoading ? <Skeleton className="w-full h-full" /> : trainingImage && (
                 <Image
                   src={trainingImage.imageUrl}
                   alt={trainingImage.description}

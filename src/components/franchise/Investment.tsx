@@ -1,13 +1,15 @@
+
 'use client';
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useMediaAsset } from '@/lib/media';
 import { Button } from '@/components/ui/button';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
+import { Skeleton } from '../ui/skeleton';
 
 export default function Investment() {
-  const stallImage = PlaceHolderImages.find((img) => img.id === 'franchise-stall');
+  const { asset: stallImage, isLoading } = useMediaAsset('franchise-stall');
 
   return (
     <section className="py-24 sm:py-32 bg-background">
@@ -31,7 +33,7 @@ export default function Investment() {
 
           <AnimateOnScroll animationType="slideInFromRight">
             <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-lg">
-              {stallImage && (
+              {isLoading ? <Skeleton className="w-full h-full" /> : stallImage && (
                 <Image
                   src={stallImage.imageUrl}
                   alt={stallImage.description}

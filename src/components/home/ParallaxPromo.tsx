@@ -1,12 +1,14 @@
+
 "use client";
 
 import { useRef } from 'react';
 import Image from 'next/image';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useMediaAsset } from '@/lib/media';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { Skeleton } from '../ui/skeleton';
 
 export function ParallaxPromo() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -16,7 +18,7 @@ export function ParallaxPromo() {
   });
 
   const y = useTransform(scrollYProgress, [0, 1], ['-20%', '20%']);
-  const bgImage = PlaceHolderImages.find((img) => img.id === 'parallax-promo-bg');
+  const { asset: bgImage, isLoading } = useMediaAsset('parallax-promo-bg');
 
   return (
     <div
@@ -27,7 +29,7 @@ export function ParallaxPromo() {
         className="absolute inset-0 z-0"
         style={{ y }}
       >
-        {bgImage && (
+        {isLoading ? <Skeleton className="w-full h-full" /> : bgImage && (
             <Image
             src={bgImage.imageUrl}
             alt={bgImage.description}

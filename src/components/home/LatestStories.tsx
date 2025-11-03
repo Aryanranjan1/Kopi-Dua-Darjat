@@ -3,17 +3,21 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useMedia } from '@/lib/media';
 import { blogPosts } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
-
-const getPostImage = (imageUrlId: string) => {
-    return PlaceHolderImages.find((img) => img.id === imageUrlId);
-};
+import { Skeleton } from '../ui/skeleton';
 
 export default function LatestStories() {
+    const { data: media, isLoading: isLoadingMedia } = useMedia();
+
+    const getPostImage = (imageUrlId: string) => {
+        if (!media) return null;
+        return media.find((img) => img.id === imageUrlId);
+    };
+
     const featuredPost = blogPosts[0];
     const otherPosts = blogPosts.slice(1, 4);
   
@@ -36,7 +40,7 @@ export default function LatestStories() {
                     <AnimateOnScroll animationType="fadeIn">
                         <Link href={`/news/${featuredPost.slug}`} className="group block rounded-2xl p-2 transition-all hover:ring-2 hover:ring-foreground/50">
                             <div className="overflow-hidden rounded-2xl mb-4">
-                                {featuredPostImage && (
+                                {isLoadingMedia ? <Skeleton className="w-full h-[600px]"/> : featuredPostImage && (
                                     <Image 
                                         src={featuredPostImage.imageUrl} 
                                         alt={featuredPost.title} 
@@ -62,7 +66,7 @@ export default function LatestStories() {
                                 <AnimateOnScroll key={post.id} animationType="slideInFromRight" delay={index * 0.1}>
                                     <Link href={`/news/${post.slug}`} className="group flex items-center gap-6 rounded-2xl p-2 transition-all hover:ring-2 hover:ring-foreground/50">
                                         <div className="relative w-32 h-32 shrink-0">
-                                            {postImage && (
+                                            {isLoadingMedia ? <Skeleton className="w-full h-full"/> : postImage && (
                                                  <Image 
                                                     src={postImage.imageUrl} 
                                                     alt={post.title}

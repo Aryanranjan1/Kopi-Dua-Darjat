@@ -2,7 +2,7 @@
 'use client';
 
 import Image from 'next/image';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useMediaAsset } from '@/lib/media';
 import { testimonials } from '@/lib/data';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { Card, CardContent } from '@/components/ui/card';
@@ -15,6 +15,40 @@ import {
 } from '@/components/ui/carousel';
 import Autoplay from "embla-carousel-autoplay"
 import React from 'react';
+import { Skeleton } from '../ui/skeleton';
+
+const TestimonialCard = ({ testimonial }: { testimonial: typeof testimonials[0] }) => {
+  const { asset: image, isLoading } = useMediaAsset(testimonial.image);
+  
+  return (
+    <div className="p-4 h-full">
+        <div className="relative h-full mt-10">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full overflow-hidden border-4 border-accent shadow-lg z-10">
+                {isLoading ? <Skeleton className="w-full h-full" /> : image && (
+                    <Image
+                        src={image.imageUrl}
+                        alt={testimonial.name}
+                        fill
+                        className="object-cover"
+                        data-ai-hint={image.imageHint}
+                    />
+                )}
+            </div>
+            <Card className="bg-zinc-900/50 border-zinc-800 rounded-3xl h-full pt-20 shadow-lg text-center">
+                <CardContent className="p-8 min-h-[320px] flex flex-col justify-center">
+                <blockquote className="text-lg font-medium text-white/90">
+                “{testimonial.quote}”
+                </blockquote>
+                <footer className="mt-6">
+                <p className="font-bold text-accent text-xl">{testimonial.name}</p>
+                <p className="text-white/60">{testimonial.designation}</p>
+                </footer>
+                </CardContent>
+            </Card>
+        </div>
+    </div>
+  );
+}
 
 export default function Testimonials() {
   const plugin = React.useRef(
@@ -43,39 +77,11 @@ export default function Testimonials() {
             onMouseLeave={plugin.current.reset}
           >
             <CarouselContent className="-ml-8">
-              {testimonials.map((testimonial) => {
-                const image = PlaceHolderImages.find((img) => img.id === testimonial.image);
-                return (
-                  <CarouselItem key={testimonial.id} className="md:basis-1/2 pl-8">
-                    <div className="p-4 h-full">
-                        <div className="relative h-full mt-10">
-                            {image && (
-                                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full overflow-hidden border-4 border-accent shadow-lg z-10">
-                                    <Image
-                                        src={image.imageUrl}
-                                        alt={testimonial.name}
-                                        fill
-                                        className="object-cover"
-                                        data-ai-hint={image.imageHint}
-                                    />
-                                </div>
-                            )}
-                            <Card className="bg-zinc-900/50 border-zinc-800 rounded-3xl h-full pt-20 shadow-lg text-center">
-                                <CardContent className="p-8 min-h-[320px] flex flex-col justify-center">
-                                <blockquote className="text-lg font-medium text-white/90">
-                                “{testimonial.quote}”
-                                </blockquote>
-                                <footer className="mt-6">
-                                <p className="font-bold text-accent text-xl">{testimonial.name}</p>
-                                <p className="text-white/60">{testimonial.designation}</p>
-                                </footer>
-                                </CardContent>
-                            </Card>
-                        </div>
-                    </div>
-                  </CarouselItem>
-                );
-              })}
+              {testimonials.map((testimonial) => (
+                <CarouselItem key={testimonial.id} className="md:basis-1/2 pl-8">
+                  <TestimonialCard testimonial={testimonial} />
+                </CarouselItem>
+              ))}
             </CarouselContent>
             <CarouselPrevious className="-left-4 md:-left-12 bg-zinc-800 border-zinc-700 text-white hover:bg-primary hover:text-black" />
             <CarouselNext className="-right-4 md:-right-12 bg-zinc-800 border-zinc-700 text-white hover:bg-primary hover:text-black" />

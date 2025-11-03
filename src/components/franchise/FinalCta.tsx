@@ -3,12 +3,13 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useMediaAsset } from '@/lib/media';
 import { Button } from '@/components/ui/button';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
+import { Skeleton } from '../ui/skeleton';
 
 export default function FinalCta() {
-  const ctaImage = PlaceHolderImages.find((img) => img.id === 'franchise-cta');
+  const { asset: ctaImage, isLoading } = useMediaAsset('franchise-cta');
 
   return (
     <section className="bg-background">
@@ -33,7 +34,7 @@ export default function FinalCta() {
 
           {/* Right side: Image */}
           <div className="relative min-h-[50vh] lg:min-h-0">
-            {ctaImage && (
+            {isLoading ? <Skeleton className="w-full h-full" /> : ctaImage && (
               <Image
                 src={ctaImage.imageUrl}
                 alt={ctaImage.description}

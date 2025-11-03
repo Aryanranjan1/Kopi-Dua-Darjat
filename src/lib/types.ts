@@ -22,6 +22,13 @@ export type Drink = {
 
 // New Data Models for Firestore-backed CMS
 
+export type Media = {
+  id: string;
+  description: string;
+  imageUrl: string;
+  imageHint: string;
+}
+
 export type MenuGroup = {
   id: string;
   name: string;

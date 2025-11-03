@@ -4,15 +4,16 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useMediaAsset } from '@/lib/media';
 import Image from 'next/image';
+import { Skeleton } from '../ui/skeleton';
 
 export default function FranchiseCta() {
-    const bgImage = PlaceHolderImages.find((img) => img.id === 'franchise-cta');
+    const { asset: bgImage, isLoading } = useMediaAsset('franchise-cta');
 
     return (
         <section className="relative py-24 sm:py-32 text-white">
-             {bgImage && (
+             {isLoading ? <Skeleton className="absolute inset-0 z-[-2]" /> : bgImage && (
                 <div className="absolute inset-0 z-[-2]">
                     <Image
                         src={bgImage.imageUrl}

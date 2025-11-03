@@ -1,13 +1,16 @@
 
+'use client';
+
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import { blogPosts } from '@/lib/data';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useMedia, useMediaAsset } from '@/lib/media';
 import { Calendar, User, Tag, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { CtaSection } from '@/components/shared/CtaSection';
+import { Skeleton } from '@/components/ui/skeleton';
 
 type Props = {
   params: { slug: string };
@@ -17,22 +20,23 @@ const getPostFromSlug = (slug: string) => {
   return blogPosts.find((post) => post.slug === slug);
 };
 
-export function generateMetadata({ params }: Props): Metadata {
-  const post = getPostFromSlug(params.slug);
+// export function generateMetadata({ params }: Props): Metadata {
+//   const post = getPostFromSlug(params.slug);
 
-  if (!post) {
-    return {
-      title: 'Post Not Found',
-    };
-  }
+//   if (!post) {
+//     return {
+//       title: 'Post Not Found',
+//     };
+//   }
 
-  return {
-    title: post.title,
-    description: post.excerpt,
-  };
-}
+//   return {
+//     title: post.title,
+//     description: post.excerpt,
+//   };
+// }
 
 const RecommendedPosts = ({ currentPostId }: { currentPostId: string }) => {
+    const { data: media, isLoading } = useMedia();
     const recommended = blogPosts
         .filter(p => p.id !== currentPostId)
         .slice(0, 3);
@@ -43,11 +47,11 @@ const RecommendedPosts = ({ currentPostId }: { currentPostId: string }) => {
                 <h2 className="text-3xl font-headline font-bold text-foreground mb-8">Recommended For You</h2>
                 <div className="grid md:grid-cols-3 gap-8">
                     {recommended.map(post => {
-                        const image = PlaceHolderImages.find(img => img.id === post.imageUrl);
+                        const image = media?.find(img => img.id === post.imageUrl);
                         return (
                              <Link key={post.id} href={`/news/${post.slug}`} className="group block">
                                 <div className="relative aspect-video rounded-2xl overflow-hidden mb-4">
-                                    {image && (
+                                    {isLoading ? <Skeleton className="w-full h-full" /> : image && (
                                     <Image
                                         src={image.imageUrl}
                                         alt={post.title}
@@ -79,7 +83,7 @@ export default function NewsArticlePage({ params }: Props) {
     notFound();
   }
 
-  const image = PlaceHolderImages.find((img) => img.id === post.imageUrl);
+  const { asset: image, isLoading } = useMediaAsset(post.imageUrl);
 
   return (
     <>
@@ -113,7 +117,7 @@ export default function NewsArticlePage({ params }: Props) {
                     </div>
                 </div>
 
-                {image && (
+                {isLoading ? <Skeleton className="relative aspect-video rounded-2xl my-8 shadow-lg" /> : image && (
                     <div className="relative aspect-video rounded-2xl overflow-hidden my-8 shadow-lg">
                     <Image
                         src={image.imageUrl}

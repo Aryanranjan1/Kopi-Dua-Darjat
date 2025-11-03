@@ -6,15 +6,17 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { blogPosts } from '@/lib/data';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useMediaAsset } from '@/lib/media';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import NewsletterSignUp from '@/components/home/NewsletterSignUp';
 import NewsContent from '@/components/news/NewsContent';
 import { motion } from 'framer-motion';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const getPostImage = (imageUrlId: string) => {
-    return PlaceHolderImages.find((img) => img.id === imageUrlId);
+    const { asset, isLoading } = useMediaAsset(imageUrlId);
+    return { image: asset, isLoading };
 };
 
 const pageVariants = {
@@ -34,7 +36,7 @@ const heroVariants = {
 
 export default function NewsPage() {
     const heroPost = blogPosts[Math.floor(Math.random() * blogPosts.length)];
-    const heroImage = getPostImage(heroPost.imageUrl);
+    const { image: heroImage, isLoading } = getPostImage(heroPost.imageUrl);
 
     return (
         <>
@@ -62,7 +64,7 @@ export default function NewsPage() {
                             </Button>
                         </div>
                         <div className="relative aspect-video rounded-2xl overflow-hidden">
-                             {heroImage && (
+                             {isLoading ? <Skeleton className="w-full h-full" /> : heroImage && (
                                 <Image
                                     src={heroImage.imageUrl}
                                     alt={heroImage.description}
@@ -85,4 +87,3 @@ export default function NewsPage() {
         </>
     );
 }
-
