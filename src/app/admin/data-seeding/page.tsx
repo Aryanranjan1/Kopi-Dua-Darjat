@@ -45,15 +45,20 @@ export default function DataSeedingPage() {
         batch.delete(document.ref);
       });
       
-      // 2. Add new blog posts from seed data
+      // 2. Add new blog posts from seed data, using slug as ID
       blogSeedData.forEach(blogData => {
         const { id, ...data } = blogData;
         const blogRef = doc(firestore, 'blogs', id); // Use slug as the document ID
         batch.set(blogRef, {
             ...data,
+            // Ensure all necessary fields from the type are present
+            slug: id, // Explicitly set slug from the id
+            id: id, // Ensure id field is part of the document data as well
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp(),
-            publishedAt: blogData.publishedAt || serverTimestamp(), // Ensure publishedAt exists
+            publishedAt: blogData.publishedAt || serverTimestamp(),
+            views: 0,
+            likes: 0,
         });
       });
 

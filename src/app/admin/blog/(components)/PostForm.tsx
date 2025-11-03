@@ -112,6 +112,7 @@ export default function PostForm({ post, onSuccess }: PostFormProps) {
       const isPublished = values.status === 'published';
       const dataToSave = {
         ...values,
+        id: values.slug, // Use slug as the ID
         author: {
           name: values.author.name,
           photo: values.author.photo || null,
@@ -126,20 +127,22 @@ export default function PostForm({ post, onSuccess }: PostFormProps) {
         ...(isPublished && !post?.publishedAt && { publishedAt: serverTimestamp() }),
       };
 
+      const docId = post ? post.id : values.slug;
+      const postRef = doc(firestore, 'blogs', docId);
+
       if (post) {
-        const postRef = doc(firestore, 'blogs', post.id);
         await setDoc(postRef, dataToSave, { merge: true });
         toast({ title: 'Post Updated', description: `"${values.title}" has been saved.` });
-        onSuccess(post.id);
+        onSuccess(docId);
       } else {
-        const docRef = await addDoc(collection(firestore, 'blogs'), {
+        await setDoc(postRef, {
           ...dataToSave,
           createdAt: serverTimestamp(),
           views: 0,
           likes: 0,
         });
         toast({ title: 'Post Created', description: `"${values.title}" has been saved.` });
-        onSuccess(docRef.id);
+        onSuccess(docId);
       }
     } catch (error: any) {
       console.error('Error saving post:', error);
@@ -256,10 +259,10 @@ export default function PostForm({ post, onSuccess }: PostFormProps) {
                         <FormItem><FormLabel>Author Name</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                     )} />
                     <FormField control={form.control} name="author.photo" render={({ field }) => (
-                        <FormItem><FormLabel>Author Photo URL</FormLabel><FormControl><Input type="url" placeholder="https://..." {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Author Photo URL</FormLabel><FormControl><Input type="url" placeholder="https://..." value={field.value || ''} onChange={field.onChange} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                     )} />
                      <FormField control={form.control} name="author.bio" render={({ field }) => (
-                        <FormItem><FormLabel>Author Bio</FormLabel><FormControl><Textarea placeholder="A short bio about the author" {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Author Bio</FormLabel><FormControl><Textarea placeholder="A short bio about the author" value={field.value || ''} onChange={field.onChange} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                     )} />
                 </CardContent>
             </Card>
