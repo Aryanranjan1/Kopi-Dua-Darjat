@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, doc, deleteDoc, orderBy, query, getDocs, where } from 'firebase/firestore';
+import { collection, doc, deleteDoc, orderBy, query, getDocs, where, writeBatch } from 'firebase/firestore';
 import type { MenuGroup } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import {
@@ -31,10 +31,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Loader2, PlusCircle, Edit, Trash2, Search } from 'lucide-react';
+import { Loader2, PlusCircle, Edit, Trash2, Search, ArrowUp, ArrowDown } from 'lucide-react';
 import GroupForm from './GroupForm';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
+import { Badge } from '@/components/ui/badge';
 
 export default function GroupsManager() {
   const firestore = useFirestore();
@@ -66,10 +68,45 @@ export default function GroupsManager() {
     setIsDialogOpen(true);
   };
 
+  const handleReorder = async (group: MenuGroup, direction: 'up' | 'down') => {
+    if (!groups) return;
+
+    const currentIndex = groups.findIndex(g => g.id === group.id);
+    if (currentIndex === -1) return;
+
+    const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+    if (targetIndex < 0 || targetIndex >= groups.length) return;
+
+    const batch = writeBatch(firestore!);
+    const currentGroupRef = doc(firestore!, 'menuGroups', group.id);
+    const targetGroupRef = doc(firestore!, 'menuGroups', groups[targetIndex].id);
+
+    batch.update(currentGroupRef, { displayOrder: groups[targetIndex].displayOrder });
+    batch.update(targetGroupRef, { displayOrder: group.displayOrder });
+
+    try {
+      await batch.commit();
+      toast({ title: 'Success', description: 'Group order updated.' });
+    } catch (error: any) {
+      toast({ variant: 'destructive', title: 'Error', description: `Could not reorder groups: ${error.message}` });
+    }
+  };
+
+  const handleToggleStatus = async (group: MenuGroup) => {
+    if (!firestore) return;
+    const groupRef = doc(firestore, 'menuGroups', group.id);
+    const newStatus = group.status === 'published' ? 'draft' : 'published';
+    try {
+        await writeBatch(firestore).update(groupRef, { status: newStatus }).commit();
+        toast({ title: 'Status Updated', description: `${group.name} is now ${newStatus}.` });
+    } catch (error: any) {
+        toast({ variant: 'destructive', title: 'Error', description: `Could not update status: ${error.message}` });
+    }
+  }
+
   const handleDelete = async (id: string) => {
     if (!firestore) return;
 
-    // Check if any categories are using this group
     const categoriesInGroupQuery = query(collection(firestore, 'menuCategories'), where('groupId', '==', id));
     const categoriesSnapshot = await getDocs(categoriesInGroupQuery);
 
@@ -112,18 +149,29 @@ export default function GroupsManager() {
           <TableRow className="border-zinc-700 hover:bg-zinc-800">
             <TableHead>Order</TableHead>
             <TableHead>Name</TableHead>
-            <TableHead>Slug</TableHead>
+            <TableHead>Status</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {isLoading && <TableRow><TableCell colSpan={4} className="text-center"><Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" /></TableCell></TableRow>}
           {!isLoading && filteredGroups.length === 0 && <TableRow><TableCell colSpan={4} className="text-center text-zinc-400 py-8">No groups found. Add one to get started.</TableCell></TableRow>}
-          {filteredGroups?.map(g => (
+          {filteredGroups?.map((g, index) => (
             <TableRow key={g.id} className="border-zinc-700 hover:bg-zinc-800">
-              <TableCell className="font-mono text-sm w-16 text-center">{g.displayOrder}</TableCell>
+              <TableCell className="w-28">
+                  <div className="flex items-center gap-1">
+                      <Button variant="ghost" size="icon" disabled={index === 0} onClick={() => handleReorder(g, 'up')}><ArrowUp className="h-4 w-4"/></Button>
+                      <Button variant="ghost" size="icon" disabled={index === filteredGroups.length - 1} onClick={() => handleReorder(g, 'down')}><ArrowDown className="h-4 w-4"/></Button>
+                  </div>
+              </TableCell>
               <TableCell className="font-medium">{g.name}</TableCell>
-              <TableCell className="font-mono text-sm">{g.slug}</TableCell>
+              <TableCell>
+                 <Switch
+                    checked={g.status === 'published'}
+                    onCheckedChange={() => handleToggleStatus(g)}
+                    aria-label={`Publish status for ${g.name}`}
+                 />
+              </TableCell>
               <TableCell className="text-right">
                 <Button variant="ghost" size="icon" onClick={() => handleEdit(g)}>
                   <Edit className="h-4 w-4" />

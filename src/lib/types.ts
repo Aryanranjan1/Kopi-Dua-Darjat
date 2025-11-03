@@ -26,6 +26,7 @@ export type MenuGroup = {
   name: string;
   slug: string;
   displayOrder: number;
+  status: 'draft' | 'published';
   createdAt: any; // Firestore Timestamp
   updatedAt: any; // Firestore Timestamp
 };
@@ -37,6 +38,7 @@ export type MenuCategory = {
   description?: string;
   groupId: string;
   displayOrder: number;
+  status: 'draft' | 'published';
   createdAt: any; // Firestore Timestamp
   updatedAt: any; // Firestore Timestamp
 };
@@ -53,6 +55,7 @@ export type MenuItem = {
   outletIds?: string[];
   isGeneral: boolean;
   status: 'draft' | 'published';
+  isPopular: boolean;
   tags?: string[]; // For 'featured', 'new', etc.
   displayOrder: number;
   createdAt: any; // Firestore Timestamp

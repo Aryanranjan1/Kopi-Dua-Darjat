@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, Fragment } from 'react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, doc, deleteDoc, orderBy, query, where } from 'firebase/firestore';
+import { collection, doc, deleteDoc, orderBy, query, where, writeBatch, getDocs, setDoc } from 'firebase/firestore';
 import type { MenuCategory, MenuGroup } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import {
@@ -31,11 +31,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Loader2, PlusCircle, Edit, Trash2, Search } from 'lucide-react';
+import { Loader2, PlusCircle, Edit, Trash2, Search, ArrowUp, ArrowDown } from 'lucide-react';
 import CategoryForm from './CategoryForm';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
 
 export default function CategoriesManager() {
   const firestore = useFirestore();
@@ -48,25 +49,29 @@ export default function CategoriesManager() {
   const { data: categories, isLoading: isLoadingCategories } = useCollection<MenuCategory>(categoriesQuery);
 
   const groupsQuery = useMemoFirebase(
-    () => firestore ? query(collection(firestore, 'menuGroups')) : null,
+    () => firestore ? query(collection(firestore, 'menuGroups'), orderBy('displayOrder', 'asc')) : null,
     [firestore]
   );
   const { data: groups } = useCollection<MenuGroup>(groupsQuery);
-  const groupMap = useMemo(() => new Map(groups?.map(g => [g.id, g.name])), [groups]);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<MenuCategory | undefined>(undefined);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const filteredCategories = useMemo(() => {
-    if (!categories) return [];
-    if (!searchQuery) return categories;
-    const lowercasedQuery = searchQuery.toLowerCase();
-    return categories.filter(cat => 
-      cat.name.toLowerCase().includes(lowercasedQuery) ||
-      (groupMap.get(cat.groupId) || '').toLowerCase().includes(lowercasedQuery)
-    );
-  }, [categories, searchQuery, groupMap]);
+  const categoriesByGroup = useMemo(() => {
+    const grouped = new Map<string, MenuCategory[]>();
+    if (!categories || !groups) return grouped;
+
+    groups.forEach(group => {
+      const groupCategories = categories
+        .filter(cat => cat.groupId === group.id)
+        .filter(cat => cat.name.toLowerCase().includes(searchQuery.toLowerCase()));
+      if (groupCategories.length > 0 || searchQuery === '') {
+        grouped.set(group.id, groupCategories);
+      }
+    });
+    return grouped;
+  }, [categories, groups, searchQuery]);
   
   const handleAddNew = () => {
     setSelectedCategory(undefined);
@@ -78,10 +83,47 @@ export default function CategoriesManager() {
     setIsDialogOpen(true);
   };
 
+  const handleReorder = async (category: MenuCategory, direction: 'up' | 'down') => {
+    if (!categories) return;
+    const itemsInGroup = categories.filter(c => c.groupId === category.groupId).sort((a,b) => a.displayOrder - b.displayOrder);
+    
+    const currentIndex = itemsInGroup.findIndex(c => c.id === category.id);
+    if (currentIndex === -1) return;
+
+    const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+    if (targetIndex < 0 || targetIndex >= itemsInGroup.length) return;
+
+    const batch = writeBatch(firestore!);
+    const currentCatRef = doc(firestore!, 'menuCategories', category.id);
+    const targetCatRef = doc(firestore!, 'menuCategories', itemsInGroup[targetIndex].id);
+
+    batch.update(currentCatRef, { displayOrder: itemsInGroup[targetIndex].displayOrder });
+    batch.update(targetCatRef, { displayOrder: category.displayOrder });
+
+    try {
+      await batch.commit();
+      toast({ title: 'Success', description: 'Category order updated.' });
+    } catch (error: any) {
+      toast({ variant: 'destructive', title: 'Error', description: `Could not reorder categories: ${error.message}` });
+    }
+  };
+
+  const handleToggleStatus = async (category: MenuCategory) => {
+    if (!firestore) return;
+    const catRef = doc(firestore, 'menuCategories', category.id);
+    const newStatus = category.status === 'published' ? 'draft' : 'published';
+    try {
+      await setDoc(catRef, { status: newStatus }, { merge: true });
+      toast({ title: 'Status Updated', description: `${category.name} is now ${newStatus}.` });
+    } catch (error: any) {
+      toast({ variant: 'destructive', title: 'Error', description: `Could not update status: ${error.message}` });
+    }
+  };
+
+
   const handleDelete = async (id: string) => {
     if (!firestore) return;
 
-    // Check if any menu items are using this category
     const itemsInCatQuery = query(collection(firestore, 'menuItems'), where('categoryId', '==', id));
     const itemsSnapshot = await getDocs(itemsInCatQuery);
 
@@ -101,6 +143,8 @@ export default function CategoriesManager() {
       toast({ variant: 'destructive', title: 'Error', description: `Could not delete category: ${error.message}` });
     }
   };
+
+  const groupMap = useMemo(() => new Map(groups?.map(g => [g.id, g.name])), [groups]);
 
   return (
     <>
@@ -122,45 +166,61 @@ export default function CategoriesManager() {
       <Table>
         <TableHeader>
           <TableRow className="border-zinc-700 hover:bg-zinc-800">
-            <TableHead>Order</TableHead>
+            <TableHead className="w-28">Order</TableHead>
             <TableHead>Name</TableHead>
-            <TableHead>Group</TableHead>
-            <TableHead>Slug</TableHead>
+            <TableHead>Status</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {isLoadingCategories && <TableRow><TableCell colSpan={5} className="text-center"><Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" /></TableCell></TableRow>}
-          {!isLoadingCategories && filteredCategories.length === 0 && <TableRow><TableCell colSpan={5} className="text-center text-zinc-400 py-8">No categories found. Add one to get started.</TableCell></TableRow>}
-          {filteredCategories?.map(cat => (
-            <TableRow key={cat.id} className="border-zinc-700 hover:bg-zinc-800">
-              <TableCell className="font-mono text-sm w-16 text-center">{cat.displayOrder}</TableCell>
-              <TableCell className="font-medium">{cat.name}</TableCell>
-              <TableCell>
-                <Badge variant="secondary">{groupMap.get(cat.groupId) || 'N/A'}</Badge>
-              </TableCell>
-              <TableCell className="font-mono text-sm">{cat.slug}</TableCell>
-              <TableCell className="text-right">
-                <Button variant="ghost" size="icon" onClick={() => handleEdit(cat)}>
-                  <Edit className="h-4 w-4" />
-                </Button>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="ghost" size="icon"><Trash2 className="h-4 w-4 text-red-500" /></Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                        <AlertDialogDescription className="text-zinc-400">This will permanently delete the "{cat.name}" category.</AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
-                      <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleDelete(cat.id)}>Delete</AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </TableCell>
-            </TableRow>
+          {isLoadingCategories && <TableRow><TableCell colSpan={4} className="text-center"><Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" /></TableCell></TableRow>}
+          {!isLoadingCategories && categoriesByGroup.size === 0 && <TableRow><TableCell colSpan={4} className="text-center text-zinc-400 py-8">No categories found. Add one to get started.</TableCell></TableRow>}
+          {Array.from(categoriesByGroup.entries()).map(([groupId, groupCategories]) => (
+            <Fragment key={groupId}>
+              <TableRow className="bg-zinc-800/50 border-zinc-700">
+                <TableCell colSpan={4} className="font-bold text-base text-white">
+                  {groupMap.get(groupId) || 'Uncategorized'}
+                </TableCell>
+              </TableRow>
+              {groupCategories.map((cat, index) => (
+                <TableRow key={cat.id} className="border-zinc-700 hover:bg-zinc-800/80">
+                  <TableCell>
+                     <div className="flex items-center gap-1">
+                      <Button variant="ghost" size="icon" disabled={index === 0} onClick={() => handleReorder(cat, 'up')}><ArrowUp className="h-4 w-4"/></Button>
+                      <Button variant="ghost" size="icon" disabled={index === groupCategories.length - 1} onClick={() => handleReorder(cat, 'down')}><ArrowDown className="h-4 w-4"/></Button>
+                    </div>
+                  </TableCell>
+                  <TableCell className="font-medium">{cat.name}</TableCell>
+                  <TableCell>
+                    <Switch
+                      checked={cat.status === 'published'}
+                      onCheckedChange={() => handleToggleStatus(cat)}
+                      aria-label={`Publish status for ${cat.name}`}
+                    />
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Button variant="ghost" size="icon" onClick={() => handleEdit(cat)}>
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="ghost" size="icon"><Trash2 className="h-4 w-4 text-red-500" /></Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                            <AlertDialogDescription className="text-zinc-400">This will permanently delete the "{cat.name}" category.</AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
+                          <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleDelete(cat.id)}>Delete</AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </Fragment>
           ))}
         </TableBody>
       </Table>

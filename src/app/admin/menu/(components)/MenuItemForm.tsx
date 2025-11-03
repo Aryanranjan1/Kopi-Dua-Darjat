@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -27,8 +27,9 @@ import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, addDoc, doc, setDoc, serverTimestamp, query } from 'firebase/firestore';
-import type { MenuItem, MenuCategory } from '@/lib/types';
+import { collection, addDoc, doc, setDoc, serverTimestamp, query, orderBy } from 'firebase/firestore';
+import type { MenuItem, MenuCategory, MenuGroup } from '@/lib/types';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface MenuItemFormProps {
   menuItem?: MenuItem;
@@ -36,55 +37,38 @@ interface MenuItemFormProps {
   onSuccess: () => void;
 }
 
+const formSchema = z.object({
+    name: z.string().min(2, 'Name must be at least 2 characters.'),
+    slug: z.string().min(2, 'Slug must be at least 2 characters.'),
+    description: z.string().min(10, 'Description must be at least 10 characters.'),
+    price: z.coerce.number().min(0, 'Price must be a positive number.'),
+    imageUrl: z.string().url('Please enter a valid image URL.'),
+    groupId: z.string({ required_error: 'Please select a group.' }),
+    categoryId: z.string({ required_error: 'Please select a category.' }),
+    status: z.enum(['draft', 'published']),
+    isPopular: z.boolean().default(false),
+    tags: z.string().optional(),
+});
+
+
 export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItemFormProps) {
   const { toast } = useToast();
   const firestore = useFirestore();
 
-  const categoriesQuery = useMemoFirebase(
-    () => (firestore ? query(collection(firestore, 'menuCategories')) : null),
+  const groupsQuery = useMemoFirebase(
+    () => (firestore ? query(collection(firestore, 'menuGroups'), orderBy('displayOrder')) : null),
     [firestore]
   );
-  const { data: categories } = useCollection<MenuCategory>(categoriesQuery);
+  const { data: groups } = useCollection<MenuGroup>(groupsQuery);
+
+  const categoriesQuery = useMemoFirebase(
+    () => (firestore ? query(collection(firestore, 'menuCategories'), orderBy('displayOrder')) : null),
+    [firestore]
+  );
+  const { data: allCategories } = useCollection<MenuCategory>(categoriesQuery);
   
-  const generateFormSchema = (existingItem?: MenuItem) => {
-      return z.object({
-        name: z.string().min(2, 'Name must be at least 2 characters.'),
-        slug: z.string().min(2, 'Slug must be at least 2 characters.'),
-        description: z.string().min(10, 'Description must be at least 10 characters.'),
-        price: z.coerce.number().min(0, 'Price must be a positive number.'),
-        imageUrl: z.string().url('Please enter a valid image URL.'),
-        categoryId: z.string({ required_error: 'Please select a category.' }),
-        status: z.enum(['draft', 'published']),
-        tags: z.string().optional(),
-        displayOrder: z.coerce.number().int().min(1, 'Order number cannot be 0 or negative.'),
-    }).refine(data => {
-        const itemsInSameCategory = allItems.filter(item => item.categoryId === data.categoryId && item.id !== existingItem?.id);
-        const isDuplicate = itemsInSameCategory.some(item => item.displayOrder === data.displayOrder);
-        if (isDuplicate) {
-            return false;
-        }
-        return true;
-    }, {
-        message: 'This order number is already in use for this category.',
-        path: ['displayOrder'],
-    }).refine(data => {
-        if (!existingItem) { // Only for new items
-            const itemsInSameCategory = allItems.filter(item => item.categoryId === data.categoryId);
-            const maxOrder = itemsInSameCategory.reduce((max, item) => Math.max(max, item.displayOrder), 0);
-            if (data.displayOrder > maxOrder + 1) {
-                return false;
-            }
-        }
-        return true;
-    }, {
-        message: 'Order number cannot skip a value.',
-        path: ['displayOrder'],
-    });
-  }
-
-
-  const form = useForm<z.infer<ReturnType<typeof generateFormSchema>>>({
-    resolver: zodResolver(generateFormSchema(menuItem)),
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
     defaultValues: menuItem ? {
         name: menuItem.name,
         slug: menuItem.slug,
@@ -92,47 +76,59 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
         price: menuItem.price,
         imageUrl: menuItem.imageUrl,
         categoryId: menuItem.categoryId,
+        groupId: allCategories?.find(c => c.id === menuItem.categoryId)?.groupId || '',
         status: menuItem.status,
+        isPopular: menuItem.isPopular || false,
         tags: menuItem.tags?.join(', ') || '',
-        displayOrder: menuItem.displayOrder,
     } : {
         name: '',
         slug: '',
         description: '',
         price: 0,
         imageUrl: '',
+        groupId: undefined,
         categoryId: undefined,
         status: 'draft',
+        isPopular: false,
         tags: '',
-        displayOrder: 1,
     }
   });
 
   const { isSubmitting, watch, setValue } = form;
-  const watchedCategoryId = watch('categoryId');
+  const watchedGroupId = watch('groupId');
+
+  const filteredCategories = useMemo(() => {
+    if (!watchedGroupId || !allCategories) return [];
+    return allCategories.filter(c => c.groupId === watchedGroupId);
+  }, [watchedGroupId, allCategories]);
 
   useEffect(() => {
-    if (!menuItem && watchedCategoryId) {
-        const itemsInCategory = allItems.filter(item => item.categoryId === watchedCategoryId);
-        const nextOrder = itemsInCategory.length > 0 
-            ? Math.max(...itemsInCategory.map(item => item.displayOrder)) + 1 
-            : 1;
-        setValue('displayOrder', nextOrder);
+    // When group changes, reset category if it's not in the new group
+    if (menuItem && watchedGroupId && allCategories) {
+        const currentCategory = allCategories.find(c => c.id === menuItem.categoryId);
+        if (currentCategory && currentCategory.groupId !== watchedGroupId) {
+            setValue('categoryId', '');
+        }
+    } else if (!menuItem) {
+      setValue('categoryId', '');
     }
-  }, [watchedCategoryId, allItems, setValue, menuItem]);
+  }, [watchedGroupId, menuItem, allCategories, setValue]);
 
-
-  const onSubmit = async (values: z.infer<ReturnType<typeof generateFormSchema>>) => {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (!firestore) return;
 
     try {
       const dataToSave = {
-        ...values,
+        name: values.name,
+        slug: values.slug,
+        description: values.description,
+        price: values.price,
+        imageUrl: values.imageUrl,
+        categoryId: values.categoryId,
+        status: values.status,
+        isPopular: values.isPopular,
         tags: values.tags ? values.tags.split(',').map(tag => tag.trim()) : [],
         updatedAt: serverTimestamp(),
-        isGeneral: menuItem?.isGeneral ?? true,
-        outletIds: menuItem?.outletIds ?? [],
-        promotionIds: menuItem?.promotionIds ?? [],
       };
 
       if (menuItem) {
@@ -141,9 +137,16 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
         toast({ title: 'Menu Item Updated', description: `"${values.name}" has been successfully updated.` });
       } else {
         const itemsRef = collection(firestore, 'menuItems');
+        const itemsInCategory = allItems.filter(item => item.categoryId === values.categoryId);
+        const nextOrder = itemsInCategory.length > 0 ? Math.max(...itemsInCategory.map(i => i.displayOrder)) + 1 : 1;
+
         await addDoc(itemsRef, {
           ...dataToSave,
+          displayOrder: nextOrder,
           createdAt: serverTimestamp(),
+          isGeneral: true,
+          outletIds: [],
+          promotionIds: [],
         });
         toast({ title: 'Menu Item Created', description: `"${values.name}" has been successfully added.` });
       }
@@ -203,11 +206,18 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormField
             control={form.control}
-            name="price"
+            name="groupId"
             render={({ field }) => (
                 <FormItem>
-                <FormLabel>Price (RM)</FormLabel>
-                <FormControl><Input type="number" step="0.10" placeholder="e.g., 9.50" {...field} className={inputStyles} /></FormControl>
+                <FormLabel>Group</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl><SelectTrigger className={inputStyles}><SelectValue placeholder="Select a group" /></SelectTrigger></FormControl>
+                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                        {groups?.map(g => (
+                            <SelectItem key={g.id} value={g.id}>{g.name}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
                 <FormMessage />
                 </FormItem>
             )}
@@ -218,10 +228,10 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
             render={({ field }) => (
                 <FormItem>
                 <FormLabel>Category</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value} disabled={!watchedGroupId || filteredCategories.length === 0}>
                     <FormControl><SelectTrigger className={inputStyles}><SelectValue placeholder="Select a category" /></SelectTrigger></FormControl>
                     <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                        {categories?.map(cat => (
+                        {filteredCategories.map(cat => (
                             <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
                         ))}
                     </SelectContent>
@@ -231,6 +241,18 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
             )}
             />
         </div>
+
+         <FormField
+            control={form.control}
+            name="price"
+            render={({ field }) => (
+                <FormItem>
+                <FormLabel>Price (RM)</FormLabel>
+                <FormControl><Input type="number" step="0.10" placeholder="e.g., 9.50" {...field} className={inputStyles} /></FormControl>
+                <FormMessage />
+                </FormItem>
+            )}
+            />
 
         <FormField
           control={form.control}
@@ -244,54 +266,57 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
           )}
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <FormField
+        control={form.control}
+        name="tags"
+        render={({ field }) => (
+            <FormItem>
+            <FormLabel>Tags (Optional)</FormLabel>
+            <FormControl><Input placeholder="e.g., featured, new" {...field} className={inputStyles} /></FormControl>
+            <FormDescription>Comma-separated tags for filtering.</FormDescription>
+            <FormMessage />
+            </FormItem>
+        )}
+        />
+        
+        <div className="space-y-4">
             <FormField
-            control={form.control}
-            name="tags"
-            render={({ field }) => (
-                <FormItem>
-                <FormLabel>Tags (Optional)</FormLabel>
-                <FormControl><Input placeholder="e.g., featured, new" {...field} className={inputStyles} /></FormControl>
-                <FormDescription>Comma-separated tags for filtering.</FormDescription>
-                <FormMessage />
-                </FormItem>
-            )}
-            />
-             <FormField
                 control={form.control}
-                name="displayOrder"
+                name="isPopular"
                 render={({ field }) => (
-                    <FormItem>
-                    <FormLabel>Display Order</FormLabel>
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border border-zinc-700 p-4">
+                    <div className="space-y-0.5">
+                    <FormLabel className="text-base">Popular Item</FormLabel>
+                    <FormDescription>Feature this on the homepage "Popular" section.</FormDescription>
+                    </div>
                     <FormControl>
-                        <Input type="number" placeholder="1" {...field} className={inputStyles} />
+                    <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                    />
                     </FormControl>
-                    <FormDescription>Order within the category (lower numbers first).</FormDescription>
-                    <FormMessage />
-                    </FormItem>
+                </FormItem>
+                )}
+            />
+            <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border border-zinc-700 p-4">
+                    <div className="space-y-0.5">
+                    <FormLabel className="text-base">Publish</FormLabel>
+                    <FormDescription>Make this item visible on the public website.</FormDescription>
+                    </div>
+                    <FormControl>
+                    <Switch
+                        checked={field.value === 'published'}
+                        onCheckedChange={(checked) => field.onChange(checked ? 'published' : 'draft')}
+                    />
+                    </FormControl>
+                </FormItem>
                 )}
             />
         </div>
-
-        
-        <FormField
-            control={form.control}
-            name="status"
-            render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border border-zinc-700 p-4">
-                <div className="space-y-0.5">
-                <FormLabel className="text-base">Publish</FormLabel>
-                <FormDescription>Make this item visible on the public website.</FormDescription>
-                </div>
-                <FormControl>
-                <Switch
-                    checked={field.value === 'published'}
-                    onCheckedChange={(checked) => field.onChange(checked ? 'published' : 'draft')}
-                />
-                </FormControl>
-            </FormItem>
-            )}
-        />
         
         <Button type="submit" disabled={isSubmitting} className="w-full">
           {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

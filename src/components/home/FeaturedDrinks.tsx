@@ -21,31 +21,31 @@ import Link from 'next/link';
 export default function FeaturedDrinks() {
   const firestore = useFirestore();
   
-  // Query for items tagged with 'featured'
-  const featuredQuery = useMemoFirebase(
-    () => firestore ? query(
-      collection(firestore, 'menuItems'), 
-      where('status', '==', 'published'),
-      where('tags', 'array-contains', 'featured'),
-      limit(6)
-    ) : null,
-    [firestore]
-  );
-  const { data: featured, isLoading: isLoadingFeatured } = useCollection<MenuItem>(featuredQuery);
-  
-  // A fallback query in case 'featured' tag yields no results
+  // Query for items marked as popular
   const popularQuery = useMemoFirebase(
     () => firestore ? query(
       collection(firestore, 'menuItems'), 
       where('status', '==', 'published'),
+      where('isPopular', '==', true),
       limit(6)
     ) : null,
     [firestore]
   );
-  const { data: popular, isLoading: isLoadingPopular } = useCollection<MenuItem>(popularQuery);
+  const { data: popularItems, isLoading: isLoadingPopular } = useCollection<MenuItem>(popularQuery);
+  
+  // A fallback query in case no items are marked as popular
+  const genericQuery = useMemoFirebase(
+    () => firestore ? query(
+      collection(firestore, 'menuItems'), 
+      where('status', '==', 'published'),
+      limit(6)
+    ) : null,
+    [firestore]
+  );
+  const { data: genericItems, isLoading: isLoadingGeneric } = useCollection<MenuItem>(genericQuery);
 
-  const drinksToShow = featured && featured.length > 0 ? featured : popular;
-  const isLoading = isLoadingFeatured || isLoadingPopular;
+  const drinksToShow = popularItems && popularItems.length > 0 ? popularItems : genericItems;
+  const isLoading = isLoadingPopular || isLoadingGeneric;
 
   if (isLoading) {
     // You can return a skeleton loader here if you want

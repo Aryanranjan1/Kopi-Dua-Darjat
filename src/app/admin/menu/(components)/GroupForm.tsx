@@ -20,6 +20,7 @@ import { useFirestore } from '@/firebase';
 import { collection, addDoc, doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import type { MenuGroup } from '@/lib/types';
 import { useEffect } from 'react';
+import { Switch } from '@/components/ui/switch';
 
 interface GroupFormProps {
   group?: MenuGroup;
@@ -27,79 +28,51 @@ interface GroupFormProps {
   onSuccess: () => void;
 }
 
+const formSchema = z.object({
+    name: z.string().min(2, 'Group name must be at least 2 characters.'),
+    slug: z.string().min(2, 'Slug must be at least 2 characters.').regex(/^[a-z0-9-]+$/, 'Slug can only contain lowercase letters, numbers, and hyphens.'),
+    status: z.enum(['draft', 'published']),
+});
+
+
 export default function GroupForm({ group, allGroups, onSuccess }: GroupFormProps) {
   const { toast } = useToast();
   const firestore = useFirestore();
 
-  const generateFormSchema = (existingGroup?: MenuGroup) => {
-    return z.object({
-      name: z.string().min(2, 'Group name must be at least 2 characters.'),
-      slug: z.string().min(2, 'Slug must be at least 2 characters.').regex(/^[a-z0-9-]+$/, 'Slug can only contain lowercase letters, numbers, and hyphens.'),
-      displayOrder: z.coerce.number().int().min(1, 'Order number cannot be 0 or negative.'),
-    }).refine(data => {
-        const otherGroups = allGroups.filter(g => g.id !== existingGroup?.id);
-        const isDuplicate = otherGroups.some(g => g.displayOrder === data.displayOrder);
-        if (isDuplicate) {
-            return false;
-        }
-        return true;
-    }, {
-        message: 'This order number is already in use.',
-        path: ['displayOrder'],
-    }).refine(data => {
-        if (!existingGroup) { // Only for new groups
-            const maxOrder = allGroups.reduce((max, g) => Math.max(max, g.displayOrder), 0);
-            if (data.displayOrder > maxOrder + 1) {
-                return false;
-            }
-        }
-        return true;
-    }, {
-        message: 'Order number cannot skip a value. The next available is ' + (allGroups.reduce((max, g) => Math.max(max, g.displayOrder), 0) + 1),
-        path: ['displayOrder'],
-    });
-  }
-
-  const form = useForm<z.infer<ReturnType<typeof generateFormSchema>>>({
-    resolver: zodResolver(generateFormSchema(group)),
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
     defaultValues: group ? {
         name: group.name,
         slug: group.slug,
-        displayOrder: group.displayOrder,
+        status: group.status,
     } : {
         name: '',
         slug: '',
-        displayOrder: allGroups.reduce((max, g) => Math.max(max, g.displayOrder), 0) + 1,
+        status: 'draft',
     },
   });
 
-  useEffect(() => {
-    if (!group) {
-      const nextOrder = allGroups.reduce((max, g) => Math.max(max, g.displayOrder), 0) + 1;
-      form.setValue('displayOrder', nextOrder);
-    }
-  }, [allGroups, form, group]);
-
   const { isSubmitting } = form.formState;
 
-  const onSubmit = async (values: z.infer<ReturnType<typeof generateFormSchema>>) => {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (!firestore) return;
-
-    const dataToSave = {
-        ...values,
-        updatedAt: serverTimestamp(),
-    };
 
     try {
       if (group) {
         const groupRef = doc(firestore, 'menuGroups', group.id);
-        await setDoc(groupRef, dataToSave, { merge: true });
+        await setDoc(groupRef, { 
+            ...values,
+            updatedAt: serverTimestamp(),
+        }, { merge: true });
         toast({ title: 'Group Updated', description: `"${values.name}" has been successfully updated.` });
       } else {
         const groupsRef = collection(firestore, 'menuGroups');
+        const nextOrder = allGroups.length > 0 ? Math.max(...allGroups.map(g => g.displayOrder)) + 1 : 1;
         await addDoc(groupsRef, {
-          ...dataToSave,
+          ...values,
+          displayOrder: nextOrder,
           createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
         });
         toast({ title: 'Group Created', description: `"${values.name}" has been successfully created.` });
       }
@@ -147,16 +120,20 @@ export default function GroupForm({ group, allGroups, onSuccess }: GroupFormProp
         />
         <FormField
             control={form.control}
-            name="displayOrder"
+            name="status"
             render={({ field }) => (
-                <FormItem>
-                <FormLabel>Display Order</FormLabel>
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border border-zinc-700 p-4">
+                <div className="space-y-0.5">
+                <FormLabel className="text-base">Publish</FormLabel>
+                <FormDescription>Make this group visible on the public menu.</FormDescription>
+                </div>
                 <FormControl>
-                    <Input type="number" placeholder="1" {...field} className={inputStyles} />
+                <Switch
+                    checked={field.value === 'published'}
+                    onCheckedChange={(checked) => field.onChange(checked ? 'published' : 'draft')}
+                />
                 </FormControl>
-                <FormDescription>Order on the menu page (lower numbers first).</FormDescription>
-                <FormMessage />
-                </FormItem>
+            </FormItem>
             )}
         />
 

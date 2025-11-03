@@ -21,12 +21,22 @@ import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, addDoc, doc, setDoc, serverTimestamp, query } from 'firebase/firestore';
 import type { MenuCategory, MenuGroup } from '@/lib/types';
 import { useEffect } from 'react';
+import { Switch } from '@/components/ui/switch';
 
 interface CategoryFormProps {
   category?: MenuCategory;
   allCategories: MenuCategory[];
   onSuccess: () => void;
 }
+
+const formSchema = z.object({
+    name: z.string().min(2, 'Category name must be at least 2 characters.'),
+    slug: z.string().min(2, 'Slug must be at least 2 characters.').regex(/^[a-z0-9-]+$/, 'Slug can only contain lowercase letters, numbers, and hyphens.'),
+    description: z.string().optional(),
+    groupId: z.string({ required_error: 'Please select a group.' }),
+    status: z.enum(['draft', 'published']),
+});
+
 
 export default function CategoryForm({ category, allCategories, onSuccess }: CategoryFormProps) {
   const { toast } = useToast();
@@ -37,87 +47,44 @@ export default function CategoryForm({ category, allCategories, onSuccess }: Cat
     [firestore]
   );
   const { data: groups, isLoading: isLoadingGroups } = useCollection<MenuGroup>(groupsQuery);
-
-  const generateFormSchema = (existingCategory?: MenuCategory) => {
-    return z.object({
-        name: z.string().min(2, 'Category name must be at least 2 characters.'),
-        slug: z.string().min(2, 'Slug must be at least 2 characters.').regex(/^[a-z0-9-]+$/, 'Slug can only contain lowercase letters, numbers, and hyphens.'),
-        description: z.string().optional(),
-        groupId: z.string({ required_error: 'Please select a group.' }),
-        displayOrder: z.coerce.number().int().min(1, 'Order number cannot be 0 or negative.'),
-    }).refine(data => {
-        const categoriesInSameGroup = allCategories.filter(c => c.groupId === data.groupId && c.id !== existingCategory?.id);
-        const isDuplicate = categoriesInSameGroup.some(c => c.displayOrder === data.displayOrder);
-        if (isDuplicate) {
-            return false;
-        }
-        return true;
-    }, {
-        message: 'This order number is already in use for this group.',
-        path: ['displayOrder'],
-    }).refine(data => {
-        if (!existingCategory) { // Only for new categories
-            const categoriesInSameGroup = allCategories.filter(c => c.groupId === data.groupId);
-            const maxOrder = categoriesInSameGroup.reduce((max, c) => Math.max(max, c.displayOrder), 0);
-            if (data.displayOrder > maxOrder + 1) {
-                return false;
-            }
-        }
-        return true;
-    }, {
-        message: 'Order number cannot skip a value.',
-        path: ['displayOrder'],
-    });
-  }
   
-  const form = useForm<z.infer<ReturnType<typeof generateFormSchema>>>({
-    resolver: zodResolver(generateFormSchema(category)),
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
     defaultValues: category ? {
         name: category.name,
         slug: category.slug,
         description: category.description || '',
         groupId: category.groupId,
-        displayOrder: category.displayOrder,
+        status: category.status,
     } : {
         name: '',
         slug: '',
         description: '',
         groupId: undefined,
-        displayOrder: 1,
+        status: 'draft',
     },
   });
 
-  const { isSubmitting, watch, setValue } = form;
-  const watchedGroupId = watch('groupId');
+  const { isSubmitting } = form;
 
-  useEffect(() => {
-    if (!category && watchedGroupId) {
-      const categoriesInGroup = allCategories.filter(c => c.groupId === watchedGroupId);
-      const nextOrder = categoriesInGroup.length > 0
-        ? Math.max(...categoriesInGroup.map(c => c.displayOrder)) + 1
-        : 1;
-      setValue('displayOrder', nextOrder);
-    }
-  }, [watchedGroupId, allCategories, setValue, category]);
-
-
-  const onSubmit = async (values: z.infer<ReturnType<typeof generateFormSchema>>) => {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (!firestore) return;
-
-    const dataToSave = {
-        ...values,
-        updatedAt: serverTimestamp(),
-    };
 
     try {
       if (category) {
         const categoryRef = doc(firestore, 'menuCategories', category.id);
-        await setDoc(categoryRef, dataToSave, { merge: true });
+        await setDoc(categoryRef, { 
+            ...values,
+            updatedAt: serverTimestamp(),
+        }, { merge: true });
         toast({ title: 'Category Updated', description: `"${values.name}" has been successfully updated.` });
       } else {
         const categoriesRef = collection(firestore, 'menuCategories');
+        const categoriesInGroup = allCategories.filter(c => c.groupId === values.groupId);
+        const nextOrder = categoriesInGroup.length > 0 ? Math.max(...categoriesInGroup.map(c => c.displayOrder)) + 1 : 1;
         await addDoc(categoriesRef, {
-          ...dataToSave,
+          ...values,
+          displayOrder: nextOrder,
           createdAt: serverTimestamp(),
         });
         toast({ title: 'Category Created', description: `"${values.name}" has been successfully created.` });
@@ -187,21 +154,6 @@ export default function CategoryForm({ category, allCategories, onSuccess }: Cat
         />
         
         <FormField
-            control={form.control}
-            name="displayOrder"
-            render={({ field }) => (
-                <FormItem>
-                <FormLabel>Display Order</FormLabel>
-                <FormControl>
-                    <Input type="number" placeholder="1" {...field} className={inputStyles} />
-                </FormControl>
-                <FormDescription>Order within the group (lower numbers first).</FormDescription>
-                <FormMessage />
-                </FormItem>
-            )}
-        />
-
-        <FormField
           control={form.control}
           name="description"
           render={({ field }) => (
@@ -214,6 +166,26 @@ export default function CategoryForm({ category, allCategories, onSuccess }: Cat
             </FormItem>
           )}
         />
+        
+        <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border border-zinc-700 p-4">
+                <div className="space-y-0.5">
+                <FormLabel className="text-base">Publish</FormLabel>
+                <FormDescription>Make this category visible on the public menu.</FormDescription>
+                </div>
+                <FormControl>
+                <Switch
+                    checked={field.value === 'published'}
+                    onCheckedChange={(checked) => field.onChange(checked ? 'published' : 'draft')}
+                />
+                </FormControl>
+            </FormItem>
+            )}
+        />
+
         <Button type="submit" disabled={isSubmitting} className="w-full">
           {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {category ? 'Save Changes' : 'Create Category'}
