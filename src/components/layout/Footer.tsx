@@ -55,7 +55,9 @@ export default function SiteFooter() {
             </ul>
           </div>
           <div className="md:col-span-1 flex items-center justify-center">
-             <Logo />
+             <div className="relative w-40 h-40">
+                <Image src="/image/1.svg" alt="Kopi Dua Darjat Logo" fill className="object-contain" />
+              </div>
           </div>
         </div>
         <div className="mt-12 border-t border-gray-800 pt-8 text-center text-sm text-gray-500">
