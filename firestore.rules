@@ -46,8 +46,11 @@ service cloud.firestore {
     }
 
     match /promotions/{docId} {
-      allow get: if resource.data.status == 'active';
-      allow list, create, update, delete: if isAdmin();
+      // Public users can get single promotions or list active ones.
+      // Admins can read everything.
+      allow read: if (resource.data.status == 'active') || isAdmin();
+      // Only admins can write.
+      allow create, update, delete: if isAdmin();
     }
 
     match /outlets/{docId} {
