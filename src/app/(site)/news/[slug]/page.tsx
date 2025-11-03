@@ -56,7 +56,7 @@ const RecommendedPosts = ({ currentPostId }: { currentPostId: string }) => {
                                     {post.title}
                                 </h4>
                                 <p className="text-xs text-muted-foreground mt-2">
-                                    {post.publishedAt ? format(post.publishedAt.toDate(), 'PPP') : ''}
+                                    {post.createdAt ? format(post.createdAt.toDate(), 'PPP') : ''}
                                 </p>
                             </Link>
                         )
@@ -125,10 +125,10 @@ export default function NewsArticlePage() {
                         <User className="w-5 h-5" />
                         <span>{post.author.name}</span>
                     </div>
-                    {post.publishedAt && (
+                    {post.createdAt && (
                       <div className="flex items-center gap-2">
                           <Calendar className="w-5 h-5" />
-                          <span>{format(post.publishedAt.toDate(), 'PPP')}</span>
+                          <span>{format(post.createdAt.toDate(), 'PPP')}</span>
                       </div>
                     )}
                     {post.tags && post.tags.length > 0 && (
