@@ -73,8 +73,9 @@ export default function NewsArticlePage() {
   const slug = params.slug as string;
   const firestore = useFirestore();
 
+  // Fetch document by slug, but without the status filter initially
   const postQuery = useMemoFirebase(
-    () => firestore ? query(collection(firestore, 'blogs'), where('slug', '==', slug), where('status', '==', 'published'), limit(1)) : null,
+    () => firestore ? query(collection(firestore, 'blogs'), where('slug', '==', slug), limit(1)) : null,
     [firestore, slug]
   );
   
@@ -99,7 +100,8 @@ export default function NewsArticlePage() {
     )
   }
 
-  if (!post) {
+  // After loading, if no post is found OR if the found post is not published, show 404
+  if (!post || post.status !== 'published') {
     notFound();
   }
 
