@@ -15,7 +15,8 @@ import {
   Settings,
   X,
   Sparkles,
-  Database
+  Database,
+  MessageSquareQuestion,
 } from 'lucide-react';
 import { Logo } from '@/components/layout/Logo';
 import { Button } from '@/components/ui/button';
@@ -30,6 +31,7 @@ const navItems = [
   { href: '/admin/outlets', icon: Store, label: 'Outlets' },
   { href: '/admin/blog', icon: BookOpen, label: 'Blog' },
   { href: '/admin/media', icon: ImageIcon, label: 'Media Library' },
+  { href: '/admin/faq-testimonials', icon: MessageSquareQuestion, label: 'FAQ & Testimonials' },
   { href: '/admin/settings', icon: Settings, label: 'Settings' },
   { href: '/admin/data-seeding', icon: Database, label: 'Data Seeding' },
 ];
