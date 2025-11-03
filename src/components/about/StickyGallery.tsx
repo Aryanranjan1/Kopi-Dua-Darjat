@@ -1,6 +1,7 @@
 
 'use client';
-import { ReactLenis, useLenis } from '@studio-freight/lenis/react';
+
+import { ReactLenis, useLenis } from "@studio-freight/lenis/react";
 import React, { forwardRef, useEffect } from 'react';
 import { useMedia } from '@/lib/media';
 import Image from 'next/image';
