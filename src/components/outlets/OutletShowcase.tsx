@@ -7,7 +7,7 @@ import type { Outlet, MenuItem } from '@/lib/types';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { calculateDistance } from '@/lib/geolocation';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
-import { Pagination } from '@/components/news/Pagination';
+import { Pagination } from '@/components/shared/Pagination';
 import OutletShowcaseCard from './OutletShowcaseCard';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
