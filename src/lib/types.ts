@@ -181,7 +181,6 @@ export type FaqItem = {
     answer: string;
 };
 
-// Types for form submissions in Firestore
 export type ContactMessage = {
   id: string;
   name: string;

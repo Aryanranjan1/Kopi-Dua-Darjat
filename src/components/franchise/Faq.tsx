@@ -1,7 +1,9 @@
 
 'use client';
 
-import { faqItems } from '@/lib/data';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection, query, where } from 'firebase/firestore';
+import type { FaqItem } from '@/lib/types';
 import {
   Accordion,
   AccordionContent,
@@ -9,8 +11,16 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
+import { Loader2 } from 'lucide-react';
 
 export default function Faq() {
+  const firestore = useFirestore();
+  const faqQuery = useMemoFirebase(
+    () => firestore ? query(collection(firestore, 'faq'), where('category', '==', 'Franchise')) : null,
+    [firestore]
+  );
+  const { data: faqItems, isLoading } = useCollection<FaqItem>(faqQuery);
+
   return (
     <section className="py-24 sm:py-32 bg-black text-white">
       <div className="container mx-auto px-4">
@@ -24,18 +34,24 @@ export default function Faq() {
         </AnimateOnScroll>
 
         <AnimateOnScroll animationType="fadeIn" delay={0.2} className="max-w-4xl mx-auto mt-16">
-          <Accordion type="single" collapsible className="w-full space-y-4">
-            {faqItems.map((item) => (
-              <AccordionItem key={item.id} value={item.id} className="bg-zinc-900 border-zinc-800 rounded-2xl px-6 border-none shadow-sm">
-                <AccordionTrigger className="text-lg font-headline text-left hover:no-underline text-white">
-                  {item.question}
-                </AccordionTrigger>
-                <AccordionContent className="text-white/60">
-                  {item.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+          {isLoading ? (
+            <div className="flex justify-center items-center h-48">
+              <Loader2 className="h-10 w-10 animate-spin text-primary" />
+            </div>
+          ) : (
+            <Accordion type="single" collapsible className="w-full space-y-4">
+              {faqItems?.map((item) => (
+                <AccordionItem key={item.id} value={item.id} className="bg-zinc-900 border-zinc-800 rounded-2xl px-6 border-none shadow-sm">
+                  <AccordionTrigger className="text-lg font-headline text-left hover:no-underline text-white">
+                    {item.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-white/60">
+                    {item.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          )}
         </AnimateOnScroll>
       </div>
     </section>

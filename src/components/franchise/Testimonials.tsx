@@ -2,8 +2,10 @@
 'use client';
 
 import Image from 'next/image';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection, query } from 'firebase/firestore';
+import type { Testimonial } from '@/lib/types';
 import { useMediaAsset } from '@/lib/media';
-import { testimonials } from '@/lib/data';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -16,8 +18,9 @@ import {
 import Autoplay from "embla-carousel-autoplay"
 import React from 'react';
 import { Skeleton } from '../ui/skeleton';
+import { Loader2 } from 'lucide-react';
 
-const TestimonialCard = ({ testimonial }: { testimonial: typeof testimonials[0] }) => {
+const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
   const { asset: image, isLoading } = useMediaAsset(testimonial.image);
   
   return (
@@ -54,6 +57,10 @@ export default function Testimonials() {
   const plugin = React.useRef(
     Autoplay({ delay: 5000, stopOnInteraction: true })
   )
+
+  const firestore = useFirestore();
+  const testimonialsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'testimonials')) : null, [firestore]);
+  const { data: testimonials, isLoading } = useCollection<Testimonial>(testimonialsQuery);
   
   return (
     <section className="py-24 sm:py-32 bg-black text-white">
@@ -66,26 +73,32 @@ export default function Testimonials() {
         </AnimateOnScroll>
 
         <AnimateOnScroll animationType="fadeIn" delay={0.2}>
-          <Carousel
-            plugins={[plugin.current]}
-            opts={{
-              align: 'start',
-              loop: true,
-            }}
-            className="w-full max-w-5xl mx-auto mt-24"
-            onMouseEnter={plugin.current.stop}
-            onMouseLeave={plugin.current.reset}
-          >
-            <CarouselContent className="-ml-8">
-              {testimonials.map((testimonial) => (
-                <CarouselItem key={testimonial.id} className="md:basis-1/2 pl-8">
-                  <TestimonialCard testimonial={testimonial} />
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="-left-4 md:-left-12 bg-zinc-800 border-zinc-700 text-white hover:bg-primary hover:text-black" />
-            <CarouselNext className="-right-4 md:-right-12 bg-zinc-800 border-zinc-700 text-white hover:bg-primary hover:text-black" />
-          </Carousel>
+          {isLoading ? (
+            <div className="flex justify-center items-center h-64">
+              <Loader2 className="h-12 w-12 animate-spin text-primary" />
+            </div>
+          ) : (
+            <Carousel
+              plugins={[plugin.current]}
+              opts={{
+                align: 'start',
+                loop: true,
+              }}
+              className="w-full max-w-5xl mx-auto mt-24"
+              onMouseEnter={plugin.current.stop}
+              onMouseLeave={plugin.current.reset}
+            >
+              <CarouselContent className="-ml-8">
+                {testimonials?.map((testimonial) => (
+                  <CarouselItem key={testimonial.id} className="md:basis-1/2 pl-8">
+                    <TestimonialCard testimonial={testimonial} />
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="-left-4 md:-left-12 bg-zinc-800 border-zinc-700 text-white hover:bg-primary hover:text-black" />
+              <CarouselNext className="-right-4 md:-right-12 bg-zinc-800 border-zinc-700 text-white hover:bg-primary hover:text-black" />
+            </Carousel>
+          )}
         </AnimateOnScroll>
       </div>
     </section>

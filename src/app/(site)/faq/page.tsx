@@ -5,7 +5,9 @@ import { useState, useMemo } from 'react';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { faqItems } from '@/lib/data';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection } from 'firebase/firestore';
+import type { FaqItem } from '@/lib/types';
 import { useMediaAsset } from '@/lib/media';
 import {
   Accordion,
@@ -14,7 +16,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Input } from '@/components/ui/input';
-import { Search } from 'lucide-react';
+import { Search, Loader2 } from 'lucide-react';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -43,9 +45,14 @@ const faqCategories = [
 
 export default function FaqPage() {
   const [searchTerm, setSearchTerm] = useState('');
-  const { asset: heroImage, isLoading } = useMediaAsset('faq-hero');
+  const firestore = useFirestore();
+  const faqQuery = useMemoFirebase(() => firestore ? collection(firestore, 'faq') : null, [firestore]);
+  const { data: faqItems, isLoading: isLoadingFaqs } = useCollection<FaqItem>(faqQuery);
+
+  const { asset: heroImage, isLoading: isLoadingImage } = useMediaAsset('faq-hero');
 
   const filteredFaqItems = useMemo(() => {
+    if (!faqItems) return [];
     if (!searchTerm) {
       return faqItems;
     }
@@ -54,11 +61,13 @@ export default function FaqPage() {
         item.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.answer.toLowerCase().includes(searchTerm.toLowerCase())
     );
-  }, [searchTerm]);
+  }, [searchTerm, faqItems]);
 
   const getItemsForCategory = (category: string) => {
     return filteredFaqItems.filter((item) => item.category === category);
   };
+
+  const isLoading = isLoadingFaqs || isLoadingImage;
 
   return (
     <div className="bg-background text-foreground">
@@ -88,7 +97,7 @@ export default function FaqPage() {
                 </div>
               </div>
               <div className="relative aspect-video rounded-2xl overflow-hidden hidden lg:block">
-                {isLoading ? <Skeleton className="w-full h-full" /> : heroImage && (
+                {isLoadingImage ? <Skeleton className="w-full h-full" /> : heroImage && (
                   <Image
                     src={heroImage.imageUrl}
                     alt={heroImage.description}
@@ -107,60 +116,68 @@ export default function FaqPage() {
       {/* FAQ Content Section */}
       <div className="py-24 sm:py-32">
         <div className="container mx-auto px-6">
-          {faqCategories.map((category, catIndex) => {
-            const items = getItemsForCategory(category.tag);
-            if (items.length === 0) return null;
-            return (
-              <AnimateOnScroll
-                key={category.tag}
-                animationType="fadeIn"
-                delay={catIndex * 0.1}
-                className="grid lg:grid-cols-3 gap-8 lg:gap-16 mb-24 last:mb-0"
-              >
-                {/* Left Column: Category Title */}
-                <div className="lg:col-span-1">
-                  <h2 className="text-3xl font-headline font-bold text-foreground">
-                    {category.title}
-                  </h2>
-                  <p className="mt-2 text-muted-foreground">
-                    {category.description} Can't find an answer?{' '}
-                    <Link href="/contact" className="text-accent hover:underline">
-                      Chat to our team
-                    </Link>
-                    .
-                  </p>
-                </div>
+          {isLoadingFaqs ? (
+             <div className="flex justify-center items-center h-64">
+                <Loader2 className="h-12 w-12 animate-spin text-primary" />
+             </div>
+          ) : (
+            <>
+              {faqCategories.map((category, catIndex) => {
+                const items = getItemsForCategory(category.tag);
+                if (items.length === 0) return null;
+                return (
+                  <AnimateOnScroll
+                    key={category.tag}
+                    animationType="fadeIn"
+                    delay={catIndex * 0.1}
+                    className="grid lg:grid-cols-3 gap-8 lg:gap-16 mb-24 last:mb-0"
+                  >
+                    {/* Left Column: Category Title */}
+                    <div className="lg:col-span-1">
+                      <h2 className="text-3xl font-headline font-bold text-foreground">
+                        {category.title}
+                      </h2>
+                      <p className="mt-2 text-muted-foreground">
+                        {category.description} Can't find an answer?{' '}
+                        <Link href="/contact" className="text-accent hover:underline">
+                          Chat to our team
+                        </Link>
+                        .
+                      </p>
+                    </div>
 
-                {/* Right Column: Accordion */}
-                <div className="lg:col-span-2">
-                  <Accordion type="single" collapsible defaultValue={items[0].id}>
-                    {items.map((item) => (
-                      <AccordionItem
-                        key={item.id}
-                        value={item.id}
-                        className="border-b-2 border-border"
-                      >
-                        <AccordionTrigger className="text-lg text-left font-semibold text-foreground hover:no-underline py-6">
-                          {item.question}
-                        </AccordionTrigger>
-                        <AccordionContent className="text-base text-muted-foreground pb-6">
-                          {item.answer}
-                        </AccordionContent>
-                      </AccordionItem>
-                    ))}
-                  </Accordion>
-                </div>
-              </AnimateOnScroll>
-            );
-          })}
-           {filteredFaqItems.length === 0 && searchTerm && (
-              <div className="text-center py-16">
-                <h3 className="text-2xl font-bold">No results found</h3>
-                <p className="text-muted-foreground mt-2">
-                  We couldn't find any answers for "{searchTerm}". Try a different search.
-                </p>
-              </div>
-            )}
+                    {/* Right Column: Accordion */}
+                    <div className="lg:col-span-2">
+                      <Accordion type="single" collapsible defaultValue={items[0]?.id}>
+                        {items.map((item) => (
+                          <AccordionItem
+                            key={item.id}
+                            value={item.id}
+                            className="border-b-2 border-border"
+                          >
+                            <AccordionTrigger className="text-lg text-left font-semibold text-foreground hover:no-underline py-6">
+                              {item.question}
+                            </AccordionTrigger>
+                            <AccordionContent className="text-base text-muted-foreground pb-6">
+                              {item.answer}
+                            </AccordionContent>
+                          </AccordionItem>
+                        ))}
+                      </Accordion>
+                    </div>
+                  </AnimateOnScroll>
+                );
+              })}
+              {filteredFaqItems.length === 0 && searchTerm && (
+                  <div className="text-center py-16">
+                    <h3 className="text-2xl font-bold">No results found</h3>
+                    <p className="text-muted-foreground mt-2">
+                      We couldn't find any answers for "{searchTerm}". Try a different search.
+                    </p>
+                  </div>
+              )}
+            </>
+          )}
         </div>
       </div>
     </div>
