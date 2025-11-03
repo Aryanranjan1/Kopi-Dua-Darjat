@@ -17,7 +17,7 @@ import Hero from '@/components/news/Hero';
 //   description: 'The latest updates, stories, and announcements from Kopi Dua Darjat.',
 // };
 
-function NewsPageClient() {
+export default function NewsPage() {
   const firestore = useFirestore();
   const blogsQuery = useMemoFirebase(
     () =>
@@ -77,19 +77,5 @@ function NewsPageClient() {
       </div>
       <NewsletterSignUp disableAnimations />
     </>
-  );
-}
-
-export default function NewsPage() {
-  return (
-    <Suspense
-      fallback={
-        <div className="flex h-screen items-center justify-center bg-background">
-          <Loader2 className="h-12 w-12 animate-spin text-primary" />
-        </div>
-      }
-    >
-      <NewsPageClient />
-    </Suspense>
   );
 }
