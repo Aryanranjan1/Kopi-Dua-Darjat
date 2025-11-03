@@ -46,6 +46,7 @@ const HeroSection = () => {
                                 src={heroImage.imageUrl}
                                 alt={heroImage.description}
                                 fill
+                                sizes="(max-width: 1024px) 100vw, 50vw"
                                 className="object-cover"
                                 data-ai-hint={heroImage.imageHint}
                             />
