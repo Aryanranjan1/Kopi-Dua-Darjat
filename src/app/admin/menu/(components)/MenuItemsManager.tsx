@@ -86,7 +86,7 @@ export default function MenuItemsManager() {
   };
 
   const handleReorder = async (item: MenuItem, direction: 'up' | 'down') => {
-    if (!menuItems) return;
+    if (!menuItems || !firestore) return;
     const itemsInCategory = menuItems.filter(i => i.categoryId === item.categoryId).sort((a,b) => a.displayOrder - b.displayOrder);
     
     const currentIndex = itemsInCategory.findIndex(i => i.id === item.id);
@@ -95,9 +95,9 @@ export default function MenuItemsManager() {
     const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
     if (targetIndex < 0 || targetIndex >= itemsInCategory.length) return;
 
-    const batch = writeBatch(firestore!);
-    const currentItemRef = doc(firestore!, 'menuItems', item.id);
-    const targetItemRef = doc(firestore!, 'menuItems', itemsInCategory[targetIndex].id);
+    const batch = writeBatch(firestore);
+    const currentItemRef = doc(firestore, 'menuItems', item.id);
+    const targetItemRef = doc(firestore, 'menuItems', itemsInCategory[targetIndex].id);
 
     batch.update(currentItemRef, { displayOrder: itemsInCategory[targetIndex].displayOrder });
     batch.update(targetItemRef, { displayOrder: item.displayOrder });

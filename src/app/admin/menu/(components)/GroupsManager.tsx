@@ -69,7 +69,7 @@ export default function GroupsManager() {
   };
 
   const handleReorder = async (group: MenuGroup, direction: 'up' | 'down') => {
-    if (!groups) return;
+    if (!groups || !firestore) return;
 
     const currentIndex = groups.findIndex(g => g.id === group.id);
     if (currentIndex === -1) return;
@@ -77,9 +77,9 @@ export default function GroupsManager() {
     const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
     if (targetIndex < 0 || targetIndex >= groups.length) return;
 
-    const batch = writeBatch(firestore!);
-    const currentGroupRef = doc(firestore!, 'menuGroups', group.id);
-    const targetGroupRef = doc(firestore!, 'menuGroups', groups[targetIndex].id);
+    const batch = writeBatch(firestore);
+    const currentGroupRef = doc(firestore, 'menuGroups', group.id);
+    const targetGroupRef = doc(firestore, 'menuGroups', groups[targetIndex].id);
 
     batch.update(currentGroupRef, { displayOrder: groups[targetIndex].displayOrder });
     batch.update(targetGroupRef, { displayOrder: group.displayOrder });

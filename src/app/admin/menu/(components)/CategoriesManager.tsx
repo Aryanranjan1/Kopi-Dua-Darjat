@@ -84,7 +84,7 @@ export default function CategoriesManager() {
   };
 
   const handleReorder = async (category: MenuCategory, direction: 'up' | 'down') => {
-    if (!categories) return;
+    if (!categories || !firestore) return;
     const itemsInGroup = categories.filter(c => c.groupId === category.groupId).sort((a,b) => a.displayOrder - b.displayOrder);
     
     const currentIndex = itemsInGroup.findIndex(c => c.id === category.id);
@@ -93,9 +93,9 @@ export default function CategoriesManager() {
     const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
     if (targetIndex < 0 || targetIndex >= itemsInGroup.length) return;
 
-    const batch = writeBatch(firestore!);
-    const currentCatRef = doc(firestore!, 'menuCategories', category.id);
-    const targetCatRef = doc(firestore!, 'menuCategories', itemsInGroup[targetIndex].id);
+    const batch = writeBatch(firestore);
+    const currentCatRef = doc(firestore, 'menuCategories', category.id);
+    const targetCatRef = doc(firestore, 'menuCategories', itemsInGroup[targetIndex].id);
 
     batch.update(currentCatRef, { displayOrder: itemsInGroup[targetIndex].displayOrder });
     batch.update(targetCatRef, { displayOrder: category.displayOrder });
