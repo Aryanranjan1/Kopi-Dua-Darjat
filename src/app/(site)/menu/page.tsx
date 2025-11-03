@@ -2,7 +2,7 @@
 'use client';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, where, orderBy } from 'firebase/firestore';
-import type { MenuCategory, MenuItem } from '@/lib/types';
+import type { MenuCategory, MenuItem, MenuGroup } from '@/lib/types';
 import MenuCarousel from '@/components/menu/MenuCarousel';
 import MenuPromotions from '@/components/menu/MenuPromotions';
 import { DailySpecials } from '@/components/menu/DailySpecials';
@@ -13,8 +13,14 @@ import { useMemo } from 'react';
 export default function MenuPage() {
     const firestore = useFirestore();
 
+    const groupsQuery = useMemoFirebase(
+      () => firestore ? query(collection(firestore, 'menuGroups'), orderBy('displayOrder')) : null,
+      [firestore]
+    );
+    const { data: menuGroups, isLoading: isLoadingGroups } = useCollection<MenuGroup>(groupsQuery);
+
     const categoriesQuery = useMemoFirebase(
-      () => firestore ? query(collection(firestore, 'menuCategories'), orderBy('name')) : null,
+      () => firestore ? query(collection(firestore, 'menuCategories'), orderBy('displayOrder')) : null,
       [firestore]
     );
     const { data: categories, isLoading: isLoadingCategories } = useCollection<MenuCategory>(categoriesQuery);
@@ -25,49 +31,17 @@ export default function MenuPage() {
     );
     const { data: menuItems, isLoading: isLoadingItems } = useCollection<MenuItem>(itemsQuery);
 
-    const { groupedCategories, standaloneCategories } = useMemo(() => {
-        if (!categories) return { groupedCategories: new Map(), standaloneCategories: [] };
-
-        const grouped = new Map<string, MenuCategory[]>();
-        const standalone: MenuCategory[] = [];
-        const subCategories = new Map<string, MenuCategory[]>();
-
-        categories.forEach(cat => {
-            if (cat.parentId) {
-                if (!subCategories.has(cat.parentId)) {
-                    subCategories.set(cat.parentId, []);
-                }
-                subCategories.get(cat.parentId)!.push(cat);
-            }
-        });
-
-        const topLevelCategories = categories.filter(c => !c.parentId);
-
-        topLevelCategories.forEach(cat => {
-            if (cat.group) {
-                if (!grouped.has(cat.group)) {
-                    grouped.set(cat.group, []);
-                }
-                grouped.get(cat.group)!.push(cat);
-                // Also add its subcategories under the same group for display logic
-                const subs = subCategories.get(cat.id) || [];
-                grouped.get(cat.group)!.push(...subs);
-            } else {
-                standalone.push(cat);
-                const subs = subCategories.get(cat.id) || [];
-                standalone.push(...subs);
-            }
-        });
-
-        return { groupedCategories: grouped, standaloneCategories: standalone };
-    }, [categories]);
-
     const getItemsByCategoryId = (categoryId: string) => {
         if (!menuItems) return [];
         return menuItems.filter(item => item.categoryId === categoryId);
     };
 
-    const isLoading = isLoadingCategories || isLoadingItems;
+    const getCategoriesByGroupId = (groupId: string) => {
+        if (!categories) return [];
+        return categories.filter(cat => cat.groupId === groupId);
+    }
+
+    const isLoading = isLoadingGroups || isLoadingCategories || isLoadingItems;
 
     const AddonsSection = () => (
         <div className="py-16 bg-black">
@@ -123,14 +97,16 @@ export default function MenuPage() {
                         </div>
                     ) : (
                     <>
-                        {Array.from(groupedCategories.entries()).map(([groupName, groupCategories], index) => (
-                            <div key={groupName}>
+                        {menuGroups?.map((group, index) => {
+                            const groupCategories = getCategoriesByGroupId(group.id);
+                            return (
+                            <div key={group.id}>
                                 <section className="container mx-auto px-4">
                                     <h2 className="text-5xl font-headline text-center font-bold tracking-widest text-foreground mb-12 underline decoration-primary decoration-4 underline-offset-8 uppercase">
-                                        {groupName}
+                                        {group.name}
                                     </h2>
                                     <div className="space-y-12">
-                                        {groupCategories.filter(c => !c.parentId).map(cat => (
+                                        {groupCategories.map(cat => (
                                             <MenuCarousel 
                                                 key={cat.id}
                                                 title={cat.name}
@@ -139,28 +115,9 @@ export default function MenuPage() {
                                         ))}
                                     </div>
                                 </section>
-                                {(index === 0 && Array.from(groupedCategories.entries()).length > 1) && <AddonsSection />}
+                                {index === 0 && <AddonsSection />}
                             </div>
-                        ))}
-                        
-                        {Array.from(groupedCategories.entries()).length <= 1 && <AddonsSection />}
-                        
-                        {standaloneCategories.length > 0 && (
-                             <section className="container mx-auto px-4">
-                                <h2 className="text-5xl font-headline text-center font-bold tracking-widest text-foreground mb-12 underline decoration-primary decoration-4 underline-offset-8 uppercase">
-                                    More To Explore
-                                </h2>
-                                <div className="space-y-12">
-                                    {standaloneCategories.filter(c => !c.parentId).map(cat => (
-                                        <MenuCarousel 
-                                            key={cat.id}
-                                            title={cat.name}
-                                            items={getItemsByCategoryId(cat.id)}
-                                        />
-                                    ))}
-                                </div>
-                            </section>
-                        )}
+                        )})}
                     </>
                     )}
                 </div>
