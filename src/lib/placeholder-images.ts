@@ -1,3 +1,6 @@
+// This file is deprecated and will be removed in a future update.
+// All image data is now managed by src/lib/media.ts and fetched dynamically.
+
 import data from './placeholder-images.json';
 
 export type ImagePlaceholder = {
