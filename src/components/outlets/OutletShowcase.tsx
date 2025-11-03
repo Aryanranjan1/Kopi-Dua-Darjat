@@ -3,7 +3,6 @@
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { outlets } from '@/lib/data';
 import type { Outlet, MenuItem } from '@/lib/types';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { calculateDistance } from '@/lib/geolocation';
@@ -39,6 +38,10 @@ function OutletShowcaseContent() {
     getPosition,
   } = useGeolocation();
   
+  const { data: outlets, isLoading: isLoadingOutlets } = useCollection<Outlet>(
+    useMemoFirebase(() => firestore ? query(collection(firestore, 'outlets')) : null, [firestore])
+  );
+  
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [activeSort, setActiveSort] = useState<SortOption>('Nearest');
@@ -47,10 +50,11 @@ function OutletShowcaseContent() {
   const [isLoadingMenuItems, setIsLoadingMenuItems] = useState(false);
 
   const allStates = useMemo(() => {
+    if (!outlets) return ['All'];
     const states = new Set<string>(['All']);
     outlets.forEach(outlet => states.add(outlet.city));
     return Array.from(states);
-  }, []);
+  }, [outlets]);
 
   useEffect(() => {
     if (!position) {
@@ -73,7 +77,7 @@ function OutletShowcaseContent() {
 
 
   const { filteredAndSortedOutlets, dynamicTitle } = useMemo(() => {
-    let processedOutlets: Outlet[] = outlets.map(outlet => ({
+    let processedOutlets: Outlet[] = (outlets || []).map(outlet => ({
       ...outlet,
       distance: position
         ? calculateDistance(position.latitude, position.longitude, outlet.lat, outlet.lng)
@@ -82,27 +86,21 @@ function OutletShowcaseContent() {
     
     let dynamicTitle = "Outlet Showcase";
 
-    // Handle redirection filtering by item slug
     if (itemParam && menuItems.length > 0) {
       const selectedItem = menuItems.find(item => item.slug === itemParam);
       if (selectedItem) {
         dynamicTitle = `Outlets for ${selectedItem.name}`;
-        if (selectedItem.isGeneral || !selectedItem.outletIds || selectedItem.outletIds.length === 0) {
-          // Available everywhere, no change to processedOutlets
-        } else {
-          // Filter outlets to only those that carry the item
+        if (!selectedItem.isGeneral && selectedItem.outletIds && selectedItem.outletIds.length > 0) {
           const itemOutletIds = new Set(selectedItem.outletIds);
           processedOutlets = processedOutlets.filter(outlet => itemOutletIds.has(outlet.id));
         }
       }
     }
 
-    // Filter by state
     if (selectedState !== 'All') {
       processedOutlets = processedOutlets.filter(outlet => outlet.city === selectedState);
     }
 
-    // Filter by search query
     if (searchQuery) {
       const lowercasedQuery = searchQuery.toLowerCase();
       processedOutlets = processedOutlets.filter(outlet =>
@@ -111,20 +109,16 @@ function OutletShowcaseContent() {
       );
     }
 
-    // Sort
     processedOutlets.sort((a, b) => {
       if (activeSort === 'Nearest') {
-        if (!position) return 0;
-        if (a.distance === undefined) return 1;
-        if (b.distance === undefined) return -1;
+        if (!position || a.distance === undefined || b.distance === undefined) return a.name.localeCompare(b.name);
         return a.distance - b.distance;
       }
-      // Alphabetical sort
       return a.name.localeCompare(b.name);
     });
 
     return { filteredAndSortedOutlets: processedOutlets, dynamicTitle };
-  }, [position, selectedState, searchQuery, activeSort, itemParam, menuItems]);
+  }, [outlets, position, selectedState, searchQuery, activeSort, itemParam, menuItems]);
 
   const totalPages = Math.ceil(filteredAndSortedOutlets.length / OUTLETS_PER_PAGE);
   const paginatedOutlets = filteredAndSortedOutlets.slice(
@@ -140,14 +134,16 @@ function OutletShowcaseContent() {
   const handleStateChange = (value: string) => {
     setSelectedState(value);
     setCurrentPage(1);
-    setItemParam(null); // Clear item filter when changing state
+    setItemParam(null); 
   }
   
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
     setCurrentPage(1);
-    setItemParam(null); // Clear item filter when searching
+    setItemParam(null); 
   }
+
+  const isLoading = isLoadingOutlets || isLoadingMenuItems;
 
   return (
     <section id="outlet-showcase" className="py-24 sm:py-32 bg-white text-foreground scroll-mt-20">
@@ -158,7 +154,6 @@ function OutletShowcaseContent() {
           </h2>
         </AnimateOnScroll>
         
-        {/* Controls */}
         <div className="flex flex-col md:flex-row gap-4 mb-8 justify-center items-center">
             <div className="relative w-full md:flex-grow-0 md:w-auto">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -197,7 +192,7 @@ function OutletShowcaseContent() {
         </div>
         
         <AnimateOnScroll animationType="fadeIn" delay={0.2}>
-          {isLoadingMenuItems ? (
+          {isLoading ? (
              <div className="flex justify-center py-16 text-muted-foreground">
                 <Loader2 className="h-8 w-8 animate-spin" />
              </div>
