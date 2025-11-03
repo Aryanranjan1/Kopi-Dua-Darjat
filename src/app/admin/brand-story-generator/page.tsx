@@ -164,7 +164,7 @@ export default function DataMigrationPage() {
             assignedOutletIds = [outletIds[i % outletIds.length]];
         } else if (availabilityType === 2 && outletIds.length > 5) { // A few random
             assignedOutletIds = [...outletIds].sort(() => 0.5 - Math.random()).slice(0, 5);
-        } else if (outletIds.length > 20) { // Most
+        } else if (availabilityType === 3 && outletIds.length > 20) { // Most
             assignedOutletIds = [...outletIds].sort(() => 0.5 - Math.random()).slice(0, 20);
         } else {
              assignedOutletIds = []; // Default to all if not enough outlets
