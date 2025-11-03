@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { useFirestore } from '@/firebase';
 import { collection, getDocs, writeBatch, doc, DocumentReference, addDoc, serverTimestamp, query, limit } from 'firebase/firestore';
-import { allDrinks, allDesserts, outlets } from '@/lib/data';
+import { allDrinks, outlets } from '@/lib/data';
 import { Loader2, CheckCircle, AlertTriangle, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { MenuGroup, MenuCategory, MenuItem, Promotion, Outlet } from '@/lib/types';
@@ -45,11 +45,6 @@ const groupStructure: { name: string; order: number; series: { name: string; ord
     order: 3,
     series: [{ name: 'Fruity Sparkling', order: 1 }],
   },
-  {
-    name: 'Pencuci Mulut',
-    order: 4,
-    series: [{ name: 'Desserts', order: 1 }],
-  },
 ];
 
 
@@ -88,7 +83,7 @@ export default function DataMigrationPage() {
 
   const handleMigrate = async () => {
     if (!firestore) return;
-    if (!confirm('This will DELETE ALL current outlets, menu data, and promotions and replace it with a new dataset of 100+ items. Are you sure?')) return;
+    if (!confirm('This will DELETE ALL current outlets, menu data, and promotions and replace it with the original curated dataset. Are you sure?')) return;
     
     setIsLoading(true);
     setStatus([]);
@@ -135,20 +130,15 @@ export default function DataMigrationPage() {
       }
       addStatus('Groups and categories created.');
 
-      // 4. Migrate items (drinks + desserts)
-      addStatus('Migrating over 100 menu items and desserts...');
-      const allItems = [...allDrinks, ...allDesserts];
+      // 4. Migrate items (drinks)
+      addStatus('Migrating original menu items...');
       const createdItemRefs: DocumentReference[] = [];
 
-      for(let i=0; i<allItems.length; i++) {
-        const item = allItems[i];
+      for(let i=0; i<allDrinks.length; i++) {
+        const item = allDrinks[i];
         let categoryName: string | undefined = '';
-
-        if ('category' in item) { // It's a dessert
-          categoryName = 'Desserts';
-        } else { // It's a drink
-          categoryName = item.tags.find(t => t.endsWith('Series'));
-        }
+        
+        categoryName = item.tags.find(t => t.endsWith('Series'));
 
         const categoryId = categoryName ? categoryMap.get(categoryName) : null;
         if (!categoryId) {
@@ -192,16 +182,18 @@ export default function DataMigrationPage() {
       addStatus(`${createdItemRefs.length} items processed.`);
 
       // 5. Create Daily Specials
-      addStatus('Creating 15 daily specials...');
-      const specialsToCreate = createdItemRefs.slice(0, 15);
+      const numSpecials = Math.min(15, createdItemRefs.length);
+      addStatus(`Creating ${numSpecials} daily specials...`);
+      const specialsToCreate = createdItemRefs.slice(0, numSpecials);
       for(const itemRef of specialsToCreate) {
         const specialRef = doc(collection(firestore, 'dailySpecials'));
         batch.set(specialRef, { menuItemId: itemRef.id, addedAt: new Date() });
       }
 
       // 6. Create Promotions
-      addStatus('Creating 15 promotions...');
-      const promosToCreate = createdItemRefs.slice(0, 15);
+      const numPromos = Math.min(15, createdItemRefs.length);
+      addStatus(`Creating ${numPromos} promotions...`);
+      const promosToCreate = createdItemRefs.slice(0, numPromos);
       for(let i=0; i < promosToCreate.length; i++) {
         const itemRef = promosToCreate[i];
         const promoRef = doc(collection(firestore, 'promotions'));
@@ -331,7 +323,7 @@ export default function DataMigrationPage() {
         <CardHeader>
           <CardTitle>One-Click Data Setup</CardTitle>
           <CardDescription className="text-zinc-400">
-            Use this tool to completely reset and seed your database with a full set of mock data including outlets, menu items, desserts, promotions, and specials.
+            Use this tool to completely reset and seed your database with a full set of mock data including outlets, menu items, promotions, and specials.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">

@@ -295,26 +295,6 @@ export const allDrinks: DrinkSeed[] = [
   { name: 'Rock Melon Menet', slug: 'rock-melon-menet', price: 9, image: '/image/d.png', description: 'Sparkling rock melon', tags: ['Menet Series'] },
 ];
 
-// Add more drinks to reach ~100
-for (let i = 0; i < 50; i++) {
-    const series = allDrinks[i % allDrinks.length].tags[0];
-    const newDrink = {
-        name: `Generated Drink ${i + 1}`,
-        slug: `gen-drink-${i + 1}`,
-        price: 5 + Math.floor(Math.random() * 10),
-        image: `/image/${['a', 'b', 'c', 'd'][i % 4]}.png`,
-        description: `A delicious generated drink, number ${i + 1}.`,
-        tags: [series],
-    };
-    if (newDrink.tags[0].includes('Espresso') || newDrink.tags[0].includes('Kopitiam') || newDrink.tags[0].includes('Darjat')) {
-        newDrink.tags.push('Coffee');
-    }
-    if (newDrink.tags[0].includes('Matcha')) {
-        newDrink.tags.push('Matcha');
-    }
-    allDrinks.push(newDrink);
-}
-
 type DessertSeed = { name: string; slug: string; price: number; image: string; description: string; category: string; };
 export const allDesserts: DessertSeed[] = [
     { name: 'Kek Batik Indulgence', slug: 'kek-batik-indulgence', price: 8, image: '/image/dessert1.png', description: 'Classic Malaysian layered cake with a chocolatey twist.', category: 'Desserts'},
