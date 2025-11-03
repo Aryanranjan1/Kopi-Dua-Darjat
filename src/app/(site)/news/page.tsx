@@ -22,14 +22,14 @@ const POSTS_PER_PAGE = 6;
 const HeroSection = () => {
     const { asset: heroImage, isLoading } = useMediaAsset('brewing-method');
     return (
-        <section className="bg-card/50 py-24 sm:py-32">
+        <section className="bg-primary py-24 sm:py-32">
             <div className="container mx-auto px-6">
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                     <div>
-                        <h1 className="text-4xl lg:text-5xl font-headline font-bold text-foreground">
+                        <h1 className="text-4xl lg:text-5xl font-headline font-bold text-primary-foreground">
                             Unlocking Insights: Your Guide to Modern Content Creation
                         </h1>
-                        <p className="mt-4 text-muted-foreground">
+                        <p className="mt-4 text-primary-foreground/80">
                             Explore strategies, tips, and inspiration for creators, marketers, and entrepreneurs navigating the digital landscape. Stay ahead with our expert analysis and practical advice.
                         </p>
                     </div>
@@ -55,7 +55,7 @@ const FeaturedPost = ({ post }: { post: Blog }) => (
     <AnimateOnScroll animationType="fadeIn">
         <div className="container mx-auto px-6 pt-16 pb-12">
              <h2 className="text-3xl font-headline font-bold mb-8">Featured Post</h2>
-            <div className="bg-card/50 rounded-2xl p-8 grid md:grid-cols-2 gap-8 items-center">
+            <div className="bg-primary/80 rounded-2xl p-8 grid md:grid-cols-2 gap-8 items-center text-primary-foreground">
                 <Link href={`/news/${post.slug}`} className="relative aspect-video rounded-lg overflow-hidden group">
                     <Image
                         src={post.coverImage.url}
@@ -69,11 +69,11 @@ const FeaturedPost = ({ post }: { post: Blog }) => (
                 </Link>
                 <div className="max-w-lg">
                     <p className="font-semibold text-accent text-sm">{post.category}</p>
-                    <h3 className="text-2xl font-headline font-bold text-foreground mt-2 group-hover:text-primary transition-colors">
+                    <h3 className="text-2xl font-headline font-bold text-primary-foreground mt-2 group-hover:text-black transition-colors">
                         <Link href={`/news/${post.slug}`}>{post.title}</Link>
                     </h3>
-                    <p className="mt-4 text-base text-muted-foreground line-clamp-3">{post.excerpt}</p>
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground mt-4">
+                    <p className="mt-4 text-base text-primary-foreground/80 line-clamp-3">{post.excerpt}</p>
+                    <div className="flex items-center gap-4 text-xs text-primary-foreground/70 mt-4">
                         <div className="flex items-center gap-1.5">
                             <Calendar className="w-3.5 h-3.5" />
                             <span>{post.publishedAt ? format(post.publishedAt.toDate(), 'PPP') : ''}</span>
@@ -97,7 +97,7 @@ const FeaturedPost = ({ post }: { post: Blog }) => (
 const ArticleCard = ({ post }: { post: Blog }) => (
      <AnimateOnScroll animationType="fadeIn">
         <Link href={`/news/${post.slug}`} className="group block h-full">
-            <div className="flex flex-col h-full bg-card/50 rounded-2xl p-6 transition-shadow hover:shadow-lg">
+            <div className="flex flex-col h-full bg-primary/80 text-primary-foreground rounded-2xl p-6 transition-shadow hover:shadow-lg">
                 <div className="relative aspect-video rounded-lg overflow-hidden mb-4">
                     <Image
                         src={post.coverImage.url}
@@ -109,10 +109,10 @@ const ArticleCard = ({ post }: { post: Blog }) => (
                     />
                 </div>
                 <p className="font-semibold text-accent text-sm">{post.category}</p>
-                <h4 className="text-xl font-headline font-bold text-foreground mt-1 group-hover:text-primary transition-colors">
+                <h4 className="text-xl font-headline font-bold text-primary-foreground mt-1 group-hover:text-black transition-colors">
                     {post.title}
                 </h4>
-                 <div className="flex items-center gap-4 text-xs text-muted-foreground mt-2">
+                 <div className="flex items-center gap-4 text-xs text-primary-foreground/70 mt-2">
                     <div className="flex items-center gap-1.5">
                         <Calendar className="w-3.5 h-3.5" />
                         <span>{post.publishedAt ? format(post.publishedAt.toDate(), 'PPP') : ''}</span>
@@ -183,7 +183,7 @@ function NewsPageClient() {
         currentPage * POSTS_PER_PAGE
     );
     
-    if (isLoading) {
+    if (isLoading || !allPosts) {
         return (
             <div className="flex h-screen items-center justify-center bg-background">
                 <Loader2 className="h-12 w-12 animate-spin text-primary" />
@@ -191,7 +191,7 @@ function NewsPageClient() {
         );
     }
     
-    if (!publishedPosts || publishedPosts.length === 0) {
+    if (publishedPosts.length === 0) {
         return (
             <div className="bg-background text-foreground">
                 <HeroSection />
