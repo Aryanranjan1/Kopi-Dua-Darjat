@@ -14,7 +14,7 @@ import { format } from 'date-fns';
 export default function LatestStories() {
     const firestore = useFirestore();
     const blogsQuery = useMemoFirebase(
-      () => firestore ? query(collection(firestore, 'blogs'), where('status', '==', 'published'), orderBy('createdAt', 'desc'), limit(4)) : null,
+      () => firestore ? query(collection(firestore, 'blogs'), where('status', '==', 'published'), orderBy('publishedAt', 'desc'), limit(4)) : null,
       [firestore]
     );
     const { data: blogPosts, isLoading: isLoadingBlogs } = useCollection<Blog>(blogsQuery);
@@ -79,7 +79,7 @@ export default function LatestStories() {
                             <p className="text-sm font-semibold text-accent mb-2">{featuredPost.category}</p>
                             <h3 className="text-2xl font-bold text-foreground mb-2 transition-colors">{featuredPost.title}</h3>
                             <p className="text-sm text-muted-foreground mb-4">
-                                {featuredPost.createdAt ? format(featuredPost.createdAt.toDate(), 'PPP') : ''} • by {featuredPost.author.name}
+                                {featuredPost.publishedAt ? format(featuredPost.publishedAt.toDate(), 'PPP') : ''} • by {featuredPost.author.name}
                             </p>
                             <p className="text-muted-foreground">{featuredPost.excerpt}</p>
                         </Link>
@@ -104,7 +104,7 @@ export default function LatestStories() {
                                         <p className="text-sm font-semibold text-accent mb-1">{post.category}</p>
                                         <h4 className="font-bold text-lg text-foreground transition-colors">{post.title}</h4>
                                         <p className="text-xs text-muted-foreground mt-1">
-                                            {post.createdAt ? format(post.createdAt.toDate(), 'PPP') : ''}
+                                            {post.publishedAt ? format(post.publishedAt.toDate(), 'PPP') : ''}
                                         </p>
                                     </div>
                                 </Link>

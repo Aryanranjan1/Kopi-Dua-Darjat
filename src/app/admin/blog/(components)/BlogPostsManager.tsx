@@ -46,7 +46,7 @@ export default function BlogPostsManager() {
   const { toast } = useToast();
   
   const postsQuery = useMemoFirebase(
-    () => firestore ? query(collection(firestore, 'blogs'), orderBy('updatedAt', 'desc')) : null,
+    () => firestore ? query(collection(firestore, 'blogs'), orderBy('publishedAt', 'desc')) : null,
     [firestore]
   );
   const { data: posts, isLoading } = useCollection<Blog>(postsQuery);
@@ -110,15 +110,14 @@ export default function BlogPostsManager() {
             <TableHead>Cover</TableHead>
             <TableHead>Title</TableHead>
             <TableHead>Category</TableHead>
-            <TableHead>Author</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead>Last Updated</TableHead>
+            <TableHead>Published On</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {isLoading && <TableRow><TableCell colSpan={7} className="text-center"><Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" /></TableCell></TableRow>}
-          {!isLoading && filteredPosts.length === 0 && <TableRow><TableCell colSpan={7} className="text-center text-zinc-400 py-8">No posts found.</TableCell></TableRow>}
+          {isLoading && <TableRow><TableCell colSpan={6} className="text-center"><Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" /></TableCell></TableRow>}
+          {!isLoading && filteredPosts.length === 0 && <TableRow><TableCell colSpan={6} className="text-center text-zinc-400 py-8">No posts found.</TableCell></TableRow>}
           {filteredPosts?.map(post => (
             <TableRow key={post.id} className="border-zinc-700 hover:bg-zinc-800/80">
               <TableCell>
@@ -126,7 +125,6 @@ export default function BlogPostsManager() {
               </TableCell>
               <TableCell className="font-medium">{post.title}</TableCell>
               <TableCell>{post.category}</TableCell>
-              <TableCell>{post.author.name}</TableCell>
               <TableCell>
                 <Badge variant={post.status === 'published' ? 'default' : 'secondary'} className={cn(
                   post.status === 'published' ? 'bg-green-600' : 'bg-zinc-600'
@@ -135,11 +133,11 @@ export default function BlogPostsManager() {
                 </Badge>
               </TableCell>
               <TableCell className="text-xs">
-                {post.updatedAt ? format(post.updatedAt.toDate(), 'dd MMM yyyy') : 'N/A'}
+                {post.publishedAt ? format(post.publishedAt.toDate(), 'dd MMM yyyy') : 'N/A'}
               </TableCell>
               <TableCell className="text-right">
-                <Button asChild variant="ghost" size="icon">
-                  <Link href={`/blog/${post.slug}`} target="_blank"><ExternalLink className="h-4 w-4" /></Link>
+                <Button asChild variant="ghost" size="icon" disabled={post.status === 'draft'}>
+                  <Link href={`/news/${post.slug}`} target="_blank"><ExternalLink className="h-4 w-4" /></Link>
                 </Button>
                 <Button asChild variant="ghost" size="icon">
                   <Link href={`/admin/blog/edit/${post.id}`}><Edit className="h-4 w-4" /></Link>

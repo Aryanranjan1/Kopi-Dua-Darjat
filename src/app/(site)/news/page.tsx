@@ -1,11 +1,11 @@
 
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, query, where, orderBy } from 'firebase/firestore';
+import { collection, query, where, orderBy, Timestamp } from 'firebase/firestore';
 import type { Blog } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -24,7 +24,7 @@ import { Pagination } from '@/components/shared/Pagination';
 import { useMediaAsset } from '@/lib/media';
 import { Skeleton } from '@/components/ui/skeleton';
 
-const POSTS_PER_PAGE = 6; // To make it a 3x2 grid
+const POSTS_PER_PAGE = 6;
 
 const HeroSection = () => {
     const { asset: heroImage, isLoading } = useMediaAsset('brewing-method');
@@ -82,7 +82,7 @@ const FeaturedPost = ({ post }: { post: Blog }) => (
                     <div className="flex items-center gap-4 text-xs text-muted-foreground mt-4">
                         <div className="flex items-center gap-1.5">
                             <Calendar className="w-3.5 h-3.5" />
-                            <span>{post.createdAt ? format(post.createdAt.toDate(), 'PPP') : ''}</span>
+                            <span>{post.publishedAt ? format(post.publishedAt.toDate(), 'PPP') : ''}</span>
                         </div>
                         <div className="flex items-center gap-1.5">
                             <User className="w-3.5 h-3.5" />
@@ -121,7 +121,7 @@ const ArticleCard = ({ post }: { post: Blog }) => (
                  <div className="flex items-center gap-4 text-xs text-muted-foreground mt-2">
                     <div className="flex items-center gap-1.5">
                         <Calendar className="w-3.5 h-3.5" />
-                        <span>{post.createdAt ? format(post.createdAt.toDate(), 'PPP') : ''}</span>
+                        <span>{post.publishedAt ? format(post.publishedAt.toDate(), 'PPP') : ''}</span>
                     </div>
                 </div>
                  <Button asChild variant="link" className="p-0 h-auto mt-auto text-accent justify-start">
@@ -138,7 +138,7 @@ const ArticleCard = ({ post }: { post: Blog }) => (
 function NewsPageClient() {
     const firestore = useFirestore();
     const blogsQuery = useMemoFirebase(
-        () => firestore ? query(collection(firestore, 'blogs'), where('status', '==', 'published'), orderBy('createdAt', 'desc')) : null,
+        () => firestore ? query(collection(firestore, 'blogs'), where('status', '==', 'published'), orderBy('publishedAt', 'desc')) : null,
         [firestore]
     );
     const { data: allPosts, isLoading } = useCollection<Blog>(blogsQuery);
@@ -182,7 +182,7 @@ function NewsPageClient() {
         (currentPage - 1) * POSTS_PER_PAGE,
         currentPage * POSTS_PER_PAGE
     );
-
+    
     if (isLoading) {
         return (
             <div className="flex h-screen items-center justify-center bg-background">
@@ -205,7 +205,6 @@ function NewsPageClient() {
             </div>
         );
     }
-    
 
     return (
         <div className="bg-background text-foreground">
