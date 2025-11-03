@@ -154,9 +154,27 @@ function NewsPageClient() {
         });
         return Array.from(categories);
     }, [publishedPosts]);
+    
+    const { featuredPost, otherPosts } = useMemo(() => {
+        if (!publishedPosts || publishedPosts.length === 0) {
+            return { featuredPost: null, otherPosts: [] };
+        }
+        
+        const featuredCandidates = publishedPosts.filter(p => p.isFeatured);
+        
+        let featurePost;
+        if (featuredCandidates.length > 0) {
+            // Randomly select one of the featured posts
+            featurePost = featuredCandidates[Math.floor(Math.random() * featuredCandidates.length)];
+        } else {
+            // Fallback to the most recent post
+            featurePost = publishedPosts[0];
+        }
 
-    const featuredPost = publishedPosts?.[0];
-    const otherPosts = publishedPosts ? publishedPosts.slice(1) : [];
+        const remainingPosts = publishedPosts.filter(p => p.id !== featurePost.id);
+        
+        return { featuredPost: featurePost, otherPosts: remainingPosts };
+    }, [publishedPosts]);
 
     const filteredPosts = useMemo(() => {
         let posts = otherPosts;

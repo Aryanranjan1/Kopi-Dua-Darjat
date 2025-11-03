@@ -48,6 +48,7 @@ const formSchema = z.object({
   tags: z.string().optional(),
   category: z.string().min(2, 'Category is required.'),
   status: z.enum(['draft', 'published']),
+  isFeatured: z.boolean().default(false),
   content: z.string().min(10, 'Content cannot be empty.'),
   seo: z.object({
     title: z.string().optional(),
@@ -68,6 +69,7 @@ export default function PostForm({ post, onSuccess }: PostFormProps) {
         ...post,
         tags: post.tags?.join(', '),
         status: post.status as 'draft' | 'published',
+        isFeatured: post.isFeatured || false,
         seo: {
             title: post.seo?.title || '',
             description: post.seo?.description || '',
@@ -82,6 +84,7 @@ export default function PostForm({ post, onSuccess }: PostFormProps) {
       tags: '',
       category: '',
       status: 'draft',
+      isFeatured: false,
       content: '',
       seo: { title: '', description: '', keywords: '' },
     },
@@ -182,6 +185,17 @@ export default function PostForm({ post, onSuccess }: PostFormProps) {
             <Card className="bg-zinc-900 border-zinc-800 text-white">
                 <CardHeader><CardTitle>Publishing</CardTitle></CardHeader>
                 <CardContent className="space-y-4">
+                    <FormField control={form.control} name="isFeatured" render={({ field }) => (
+                        <FormItem className="flex flex-row items-center justify-between rounded-lg border border-zinc-700 p-4">
+                            <div className="space-y-0.5">
+                                <FormLabel>Feature Post</FormLabel>
+                                <FormDescription>Mark this post to be featured.</FormDescription>
+                            </div>
+                            <FormControl>
+                                <Switch checked={field.value} onCheckedChange={field.onChange} />
+                            </FormControl>
+                        </FormItem>
+                    )} />
                     <FormField control={form.control} name="status" render={({ field }) => (
                         <FormItem className="flex flex-row items-center justify-between rounded-lg border border-zinc-700 p-4">
                             <div className="space-y-0.5">

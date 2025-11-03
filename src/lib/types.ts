@@ -134,6 +134,7 @@ export type Blog = {
   tags?: string[];
   category: string;
   status: 'published' | 'draft';
+  isFeatured?: boolean;
   seo?: {
     title?: string;
     description?: string;
