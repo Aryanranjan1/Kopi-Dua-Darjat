@@ -4,11 +4,23 @@ import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useFirestore } from '@/firebase';
-import { collection, getDocs, writeBatch, doc, DocumentReference } from 'firebase/firestore';
+import { collection, getDocs, writeBatch, doc, DocumentReference, addDoc, serverTimestamp } from 'firebase/firestore';
 import { allDrinks, allDesserts, outlets } from '@/lib/data';
 import { Loader2, CheckCircle, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { MenuGroup, MenuCategory, MenuItem, Promotion, Outlet } from '@/lib/types';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+
 
 const groupStructure: { name: string; order: number; series: { name: string; order: number }[] }[] = [
   {
@@ -239,6 +251,79 @@ export default function DataMigrationPage() {
     }
   };
 
+  const handleSeedPromotions = async () => {
+    if (!firestore) return;
+    if (!confirm('This will create 15 new promotions and link them to the first 15 menu items found. Existing promotions will not be affected. Continue?')) return;
+  
+    setIsLoading(true);
+    setStatus(['Starting to seed 15 promotions...']);
+  
+    try {
+      const itemsQuery = query(collection(firestore, 'menuItems'), limit(15));
+      const itemsSnapshot = await getDocs(itemsQuery);
+  
+      if (itemsSnapshot.empty) {
+        throw new Error("No menu items found to create promotions for. Please seed menu items first.");
+      }
+  
+      const batch = writeBatch(firestore);
+      let promoCount = 0;
+  
+      for (const itemDoc of itemsSnapshot.docs) {
+        const itemRef = itemDoc.ref;
+        const itemData = itemDoc.data() as MenuItem;
+        const promoRef = doc(collection(firestore, 'promotions'));
+        const startDate = new Date();
+        const endDate = new Date();
+        endDate.setDate(startDate.getDate() + 30); // Promotions valid for 30 days
+  
+        let discountType: Promotion['discountType'] = 'percentage';
+        let discountValue = 10;
+        if (promoCount % 3 === 1) {
+          discountType = 'flat';
+          discountValue = 2;
+        } else if (promoCount % 3 === 2) {
+          discountType = 'bogo';
+          discountValue = 0;
+        }
+  
+        const newPromo: Omit<Promotion, 'id' | 'createdAt' | 'updatedAt'> = {
+          title: `Special Offer: ${itemData.name}`,
+          description: `Limited time deal on ${itemData.name}!`,
+          discountType,
+          discountValue,
+          startDate,
+          endDate,
+          menuItemIds: [itemDoc.id],
+          outletIds: [],
+          status: 'active',
+        };
+  
+        batch.set(promoRef, { ...newPromo, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
+        const currentPromoIds = itemData.promotionIds || [];
+        batch.update(itemRef, { promotionIds: [...currentPromoIds, promoRef.id] });
+  
+        addStatus(`- Created ${discountType} promo for "${itemData.name}"`);
+        promoCount++;
+      }
+  
+      addStatus('Committing promotions to database...');
+      await batch.commit();
+  
+      addStatus('----------------------------------');
+      addStatus(`${promoCount} promotions created and linked successfully!`);
+      toast({ title: 'Promotions Seeded', description: `${promoCount} new promotions have been created.` });
+  
+    } catch (error: any) {
+      console.error('Error seeding promotions:', error);
+      addStatus(`FATAL ERROR: ${error.message}`);
+      toast({ variant: 'destructive', title: 'Promotion Seeding Failed', description: error.message });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+
   return (
     <div className="space-y-8">
       <h1 className="text-3xl font-headline font-bold text-white">Master Data Seeding Tool</h1>
@@ -271,6 +356,14 @@ export default function DataMigrationPage() {
                 </AlertDialogContent>
             </AlertDialog>
           </div>
+           <div className="border-t border-zinc-700 pt-6">
+              <h3 className="text-lg font-semibold">Quick Actions</h3>
+              <p className="text-zinc-400 text-sm mb-4">Use these to add specific data without clearing everything.</p>
+               <Button onClick={handleSeedPromotions} disabled={isLoading} variant="secondary" className="bg-blue-600 hover:bg-blue-700 text-white">
+                {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
+                Seed 15 Promotions
+              </Button>
+            </div>
           {(isLoading || status.length > 0) && (
             <div className="p-4 bg-zinc-950 border border-zinc-800 rounded-md max-h-60 overflow-y-auto">
               <h3 className="font-semibold text-zinc-300">Migration Status:</h3>
