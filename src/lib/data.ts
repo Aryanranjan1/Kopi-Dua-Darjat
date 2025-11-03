@@ -489,3 +489,4 @@ export const blogSeedData: Omit<Blog, 'id' | 'createdAt' | 'updatedAt' | 'views'
       seo: { title: "Meet the Kopi Dua Darjat Team | Our People" }
     }
   ];
+
