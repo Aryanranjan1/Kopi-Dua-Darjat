@@ -51,8 +51,6 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const logoUrl = settings?.brand?.logoDark || '/image/kdd-logo-black.svg';
-
   return (
     <header
       className={cn(
@@ -63,7 +61,7 @@ export default function Header() {
       <div className="container mx-auto px-6 h-20 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="p-0 m-0 h-20 flex items-center">
-            <Image priority src={logoUrl} alt={settings?.brand?.name || 'Kopi Dua Darjat'} width={80} height={80} className="object-contain hue-rotate-180 brightness-0" />
+            <Logo />
         </Link>
 
 
@@ -109,7 +107,7 @@ export default function Header() {
                     </SheetHeader>
                     <div className="flex flex-col h-full p-4">
                         <Link href="/" className="h-20 flex items-center p-0 m-0">
-                           <Image src={logoUrl} alt={settings?.brand?.name || 'Kopi Dua Darjat'} width={80} height={80} className="object-contain hue-rotate-180 brightness-0" />
+                           <Logo />
                         </Link>
                         <div className="flex flex-col space-y-4 mt-8">
                             {navItems.map((item) => (

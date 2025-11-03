@@ -1,9 +1,11 @@
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { Facebook, Instagram, Twitter, Music2 } from 'lucide-react';
 import InteractiveMap from '../home/InteractiveMap';
 import { Card } from '../ui/card';
 import { useSettings } from './SettingsProvider';
+import { Logo } from './Logo';
 
 export default function SiteFooter() {
   const { settings } = useSettings();
@@ -53,7 +55,7 @@ export default function SiteFooter() {
             </ul>
           </div>
           <div className="md:col-span-1 flex items-center justify-center">
-             {settings?.brand?.logoLight && <Image src={settings.brand.logoLight} alt={settings.brand.name} width={300} height={300} />}
+             <Logo />
           </div>
         </div>
         <div className="mt-12 border-t border-gray-800 pt-8 text-center text-sm text-gray-500">

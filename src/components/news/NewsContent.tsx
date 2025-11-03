@@ -4,8 +4,7 @@
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { type BlogPost } from '@/lib/types';
-import { useMedia } from '@/lib/media';
+import type { Blog } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Search, Calendar, User, ArrowRight } from 'lucide-react';
@@ -19,6 +18,7 @@ import {
 } from '@/components/ui/select';
 import { Pagination } from './Pagination';
 import { Skeleton } from '../ui/skeleton';
+import { format } from 'date-fns';
 
 const POSTS_PER_PAGE = 9;
 
@@ -42,23 +42,17 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
 };
 
-export default function NewsContent({ allPosts }: { allPosts: BlogPost[] }) {
+export default function NewsContent({ allPosts }: { allPosts: Blog[] }) {
   const [activeSort, setActiveSort] = useState<SortOption>('Latest');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   
-  const { data: media, isLoading: isLoadingMedia } = useMedia();
-
-  const getPostImage = (imageUrlId: string) => {
-    if (!media) return null;
-    return media.find((img) => img.id === imageUrlId);
-  };
-  
   const allCategories = useMemo(() => {
+    if (!allPosts) return ['All'];
     const tags = new Set<string>(['All']);
     allPosts.forEach(post => {
-        post.tags.forEach(tag => {
+        post.tags?.forEach(tag => {
             if(tag !== 'All') tags.add(tag)
         });
     });
@@ -66,6 +60,7 @@ export default function NewsContent({ allPosts }: { allPosts: BlogPost[] }) {
   }, [allPosts]);
 
   const filteredAndSortedPosts = useMemo(() => {
+    if(!allPosts) return [];
     let posts = allPosts;
 
     // Filter by search query
@@ -78,15 +73,15 @@ export default function NewsContent({ allPosts }: { allPosts: BlogPost[] }) {
     
     // Filter by category
     if (selectedCategory !== 'All') {
-      posts = posts.filter(post => post.tags.includes(selectedCategory));
+      posts = posts.filter(post => post.tags?.includes(selectedCategory));
     }
 
     // Sort
     if (activeSort === 'Popular') {
-      posts.sort((a, b) => b.popularity - a.popularity);
+      posts.sort((a, b) => (b.views || 0) - (a.views || 0));
     } else {
       // Default to 'Latest'
-      posts.sort((a, b) => new Date(b.publishDateISO).getTime() - new Date(a.publishDateISO).getTime());
+      posts.sort((a, b) => (b.publishedAt?.toDate().getTime() || 0) - (a.publishedAt?.toDate().getTime() || 0));
     }
 
     return posts;
@@ -99,16 +94,19 @@ export default function NewsContent({ allPosts }: { allPosts: BlogPost[] }) {
   );
   
   const featuredPost = useMemo(() => {
+    if (!allPosts || allPosts.length === 0) return null;
     // Find a post that's not in the current paginated view if possible
     const nonPaginated = allPosts.filter(p => !paginatedPosts.some(pp => pp.id === p.id));
     return nonPaginated.length > 0 ? nonPaginated[0] : allPosts[0];
   }, [paginatedPosts, allPosts]);
   
-  const featuredImage = getPostImage(featuredPost.imageUrl);
-
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
     setCurrentPage(1); // Reset to first page
+  }
+
+  if(!featuredPost) {
+    return <div className="container mx-auto px-6 py-16 text-center text-muted-foreground">No featured posts to display.</div>
   }
 
   return (
@@ -163,18 +161,17 @@ export default function NewsContent({ allPosts }: { allPosts: BlogPost[] }) {
           <Link href={`/news/${featuredPost.slug}`} className="group block">
             <div className="grid md:grid-cols-2 gap-8 items-center">
               <div className="relative aspect-video rounded-2xl overflow-hidden">
-                {isLoadingMedia ? <Skeleton className="w-full h-full"/> : featuredImage && (
-                  <Image
-                    src={featuredImage.imageUrl}
-                    alt={featuredImage.description}
+                 <Image
+                    src={featuredPost.coverImage.url}
+                    alt={featuredPost.coverImage.alt}
                     fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
                     className="object-cover transition-transform duration-300 group-hover:scale-105"
-                    data-ai-hint={featuredImage.imageHint}
+                    data-ai-hint={featuredPost.coverImage.alt}
                   />
-                )}
               </div>
               <div>
-                <p className="font-semibold text-accent">{featuredPost.tags[0]}</p>
+                <p className="font-semibold text-accent">{featuredPost.category}</p>
                 <h3 className="text-3xl font-headline font-bold text-foreground mt-2 group-hover:text-primary transition-colors">
                   {featuredPost.title}
                 </h3>
@@ -184,11 +181,11 @@ export default function NewsContent({ allPosts }: { allPosts: BlogPost[] }) {
                 <div className="flex items-center gap-6 text-sm text-muted-foreground mt-4">
                   <div className="flex items-center gap-2">
                     <User className="w-4 h-4" />
-                    <span>{featuredPost.author}</span>
+                    <span>{featuredPost.author.name}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Calendar className="w-4 h-4" />
-                    <span>{featuredPost.publishDate}</span>
+                    <span>{featuredPost.publishedAt ? format(featuredPost.publishedAt.toDate(), 'PPP') : ''}</span>
                   </div>
                 </div>
                 <span className="mt-4 inline-block font-semibold text-primary group-hover:underline">
@@ -207,33 +204,31 @@ export default function NewsContent({ allPosts }: { allPosts: BlogPost[] }) {
           {paginatedPosts.length > 0 ? (
             <motion.div variants={gridVariants} initial="hidden" animate="visible" className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {paginatedPosts.map((post) => {
-                const image = getPostImage(post.imageUrl);
                 return (
                   <motion.div key={post.id} variants={itemVariants}>
                     <Link href={`/news/${post.slug}`} className="group block">
                       <div className="relative aspect-video rounded-2xl overflow-hidden mb-4">
-                        {isLoadingMedia ? <Skeleton className="w-full h-full"/> : image && (
-                          <Image
-                            src={image.imageUrl}
+                        <Image
+                            src={post.coverImage.url}
                             alt={post.title}
                             fill
+                            sizes="(max-width: 768px) 100vw, 33vw"
                             className="object-cover transition-transform duration-300 group-hover:scale-105"
-                            data-ai-hint={image.imageHint}
-                          />
-                        )}
+                            data-ai-hint={post.coverImage.alt}
+                        />
                       </div>
-                      <p className="font-semibold text-accent text-sm">{post.tags.filter(t => t !== 'All').join(', ')}</p>
+                      <p className="font-semibold text-accent text-sm">{post.category}</p>
                       <h4 className="text-xl font-headline font-bold text-foreground mt-1 group-hover:text-primary transition-colors">
                         {post.title}
                       </h4>
                       <div className="flex items-center gap-4 text-xs text-muted-foreground mt-2">
                         <div className="flex items-center gap-1.5">
                           <User className="w-3.5 h-3.5" />
-                          <span>{post.author}</span>
+                          <span>{post.author.name}</span>
                         </div>
                         <div className="flex items-center gap-1.5">
                           <Calendar className="w-3.5 h-3.5" />
-                          <span>{post.publishDate}</span>
+                          <span>{post.publishedAt ? format(post.publishedAt.toDate(), 'PPP') : ''}</span>
                         </div>
                       </div>
                       <span className="mt-3 inline-block text-sm font-semibold text-primary group-hover:underline">

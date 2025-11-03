@@ -7,7 +7,7 @@ import { Playfair_Display, PT_Sans } from 'next/font/google';
 import { FirebaseClientProvider } from '@/firebase';
 import AppLayout from './AppLayout';
 import { SettingsProvider } from '@/components/layout/SettingsProvider';
-import { doc, getDoc, getFirestore } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import { initializeServerSideFirebase } from '@/firebase/server-init';
 import type { SiteSettings } from '@/lib/types';
 
