@@ -108,7 +108,7 @@ const MenuPromotionsContent = () => {
                 <Carousel
                     opts={{
                     align: 'start',
-                    loop: remainingPromoItems.length > 5,
+                    loop: remainingPromoItems.length > 4,
                     }}
                     className="w-full"
                 >
@@ -122,7 +122,7 @@ const MenuPromotionsContent = () => {
                         </CarouselItem>
                     ))}
                     </CarouselContent>
-                    {remainingPromoItems.length > 5 && (
+                    {remainingPromoItems.length > 4 && (
                     <>
                         <CarouselPrevious className="ml-14" />
                         <CarouselNext className="mr-14" />
