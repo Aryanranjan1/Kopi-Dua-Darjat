@@ -67,6 +67,11 @@ export default function PostForm({ post, onSuccess }: PostFormProps) {
     resolver: zodResolver(formSchema),
     defaultValues: post ? {
         ...post,
+        author: {
+            ...post.author,
+            photo: post.author.photo || '',
+            bio: post.author.bio || '',
+        },
         tags: post.tags?.join(', '),
         status: post.status as 'draft' | 'published',
         isFeatured: post.isFeatured || false,
