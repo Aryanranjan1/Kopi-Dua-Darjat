@@ -9,23 +9,35 @@ import { collection, getDocs, writeBatch, doc } from 'firebase/firestore';
 import { allDrinks } from '@/lib/data';
 import { Loader2, CheckCircle, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import type { MenuCategory, MenuItem } from '@/lib/types';
+import type { MenuGroup, MenuCategory, MenuItem } from '@/lib/types';
 
 // Define the structure for categories with groups and order
-const categoryStructure: Record<string, { order: number, series: string[] }> = {
-  'Seasonal / Specials': {
+const groupStructure: { name: string, order: number, series: { name: string, order: number }[] }[] = [
+  {
+    name: 'Seasonal / Specials',
     order: 1,
-    series: ['Menet Series'],
+    series: [
+      { name: 'Menet Series', order: 1 },
+    ],
   },
-  'Nak Kopi': {
+  {
+    name: 'Nak Kopi',
     order: 2,
-    series: ['Espresso Series', 'Darjat Series', 'Kopitiam Series'],
+    series: [
+      { name: 'Espresso Series', order: 1 },
+      { name: 'Darjat Series', order: 2 },
+      { name: 'Kopitiam Series', order: 3 },
+    ],
   },
-  'Taknak Kopi': {
+  {
+    name: 'Taknak Kopi',
     order: 3,
-    series: ['Coklat Series', 'Matcha Series'],
+    series: [
+      { name: 'Coklat Series', order: 1 },
+      { name: 'Matcha Series', order: 2 },
+    ],
   },
-};
+];
 
 
 export default function DataMigrationPage() {
@@ -35,19 +47,16 @@ export default function DataMigrationPage() {
   const firestore = useFirestore();
   const { toast } = useToast();
 
-  const handleClear = async () => {
+  const clearAllData = async () => {
     if (!firestore) return;
-    if (!confirm('Are you sure you want to delete ALL menu items and categories? This cannot be undone.')) {
-      return;
-    }
-    setIsClearing(true);
-    setStatus('Clearing existing data...');
+    setStatus('Clearing all existing menu data...');
     try {
       const batch = writeBatch(firestore);
-      const categoriesSnapshot = await getDocs(collection(firestore, 'menuCategories'));
-      categoriesSnapshot.forEach(doc => batch.delete(doc.ref));
-      const itemsSnapshot = await getDocs(collection(firestore, 'menuItems'));
-      itemsSnapshot.forEach(doc => batch.delete(doc.ref));
+      const collectionsToClear = ['menuGroups', 'menuCategories', 'menuItems', 'dailySpecials'];
+      for (const col of collectionsToClear) {
+        const snapshot = await getDocs(collection(firestore, col));
+        snapshot.forEach(doc => batch.delete(doc.ref));
+      }
       await batch.commit();
       setStatus('All menu data has been cleared.');
       toast({ title: 'Success', description: 'All menu data cleared from Firestore.' });
@@ -55,9 +64,18 @@ export default function DataMigrationPage() {
       console.error('Error clearing data:', error);
       setStatus(`Error: ${error.message}`);
       toast({ variant: 'destructive', title: 'Error', description: 'Could not clear data.' });
-    } finally {
-      setIsClearing(false);
     }
+  };
+
+
+  const handleClear = async () => {
+    if (!firestore) return;
+    if (!confirm('Are you sure you want to delete ALL menu groups, categories, items, and specials? This cannot be undone.')) {
+      return;
+    }
+    setIsClearing(true);
+    await clearAllData();
+    setIsClearing(false);
   };
 
   const handleMigrate = async () => {
@@ -66,42 +84,57 @@ export default function DataMigrationPage() {
     setStatus('Starting migration...');
 
     try {
+      // 1. Clear existing data first
+      await clearAllData();
+
       const batch = writeBatch(firestore);
+      const groupsRef = collection(firestore, 'menuGroups');
       const categoriesRef = collection(firestore, 'menuCategories');
       const itemsRef = collection(firestore, 'menuItems');
-      const existingCategories = new Map<string, string>();
-
-      // 1. Clear existing data
-      setStatus('Clearing existing menu data...');
-      const categoriesSnapshot = await getDocs(collection(firestore, 'menuCategories'));
-      categoriesSnapshot.forEach(doc => batch.delete(doc.ref));
-      const itemsSnapshot = await getDocs(collection(firestore, 'menuItems'));
-      itemsSnapshot.forEach(doc => batch.delete(doc.ref));
       
-      // 2. Create categories from the defined structure
-      setStatus('Processing categories...');
-      let categoryOrder = 0;
-      for (const [groupName, groupDetails] of Object.entries(categoryStructure)) {
-        for (const seriesName of groupDetails.series) {
-            const slug = seriesName.toLowerCase().replace(/ /g, '-');
-            const newCategory: Omit<MenuCategory, 'id' | 'createdAt' | 'updatedAt'> = {
-                name: seriesName,
-                slug: slug,
-                description: `Drinks from the ${seriesName}.`,
-                group: groupName,
-                displayOrder: ++categoryOrder,
-            };
-            const docRef = doc(categoriesRef);
-            batch.set(docRef, { ...newCategory, createdAt: new Date(), updatedAt: new Date() });
-            existingCategories.set(seriesName, docRef.id);
+      const groupMap = new Map<string, string>();
+      const categoryMap = new Map<string, string>();
+      
+      // 2. Create Groups
+      setStatus('Creating menu groups...');
+      for (const group of groupStructure) {
+        const groupSlug = group.name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+        const newGroup: Omit<MenuGroup, 'id' | 'createdAt' | 'updatedAt'> = {
+          name: group.name,
+          slug: groupSlug,
+          displayOrder: group.order,
+        };
+        const groupDocRef = doc(groupsRef);
+        batch.set(groupDocRef, { ...newGroup, createdAt: new Date(), updatedAt: new Date() });
+        groupMap.set(group.name, groupDocRef.id);
+      }
+      
+      // 3. Create Categories
+      setStatus('Creating menu categories...');
+      for (const group of groupStructure) {
+        const groupId = groupMap.get(group.name);
+        if (!groupId) continue;
+
+        for (const series of group.series) {
+          const categorySlug = series.name.toLowerCase().replace(/ /g, '-');
+          const newCategory: Omit<MenuCategory, 'id' | 'createdAt' | 'updatedAt'> = {
+            name: series.name,
+            slug: categorySlug,
+            description: `Drinks from the ${series.name}.`,
+            groupId: groupId,
+            displayOrder: series.order,
+          };
+          const catDocRef = doc(categoriesRef);
+          batch.set(catDocRef, { ...newCategory, createdAt: new Date(), updatedAt: new Date() });
+          categoryMap.set(series.name, catDocRef.id);
         }
       }
       
-      // 3. Migrate drinks to menuItems
+      // 4. Migrate drinks to menuItems
       setStatus('Migrating menu items...');
       allDrinks.forEach((drink, index) => {
         const categoryName = drink.tags.find(t => t.endsWith('Series'));
-        const categoryId = categoryName ? existingCategories.get(categoryName) : null;
+        const categoryId = categoryName ? categoryMap.get(categoryName) : null;
         
         if (!categoryId) {
           console.warn(`Could not find category for drink: ${drink.name}`);
@@ -126,7 +159,7 @@ export default function DataMigrationPage() {
         batch.set(itemDocRef, { ...newItem, createdAt: new Date(), updatedAt: new Date() });
       });
 
-      // 4. Commit batch
+      // 5. Commit batch
       setStatus('Writing to database...');
       await batch.commit();
 
@@ -147,7 +180,7 @@ export default function DataMigrationPage() {
         <CardHeader>
           <CardTitle>One-Time Data Migration</CardTitle>
           <CardDescription className="text-zinc-400">
-            Use this tool to import the initial mock menu data into Firestore. This will set up categories, groups, and items based on the defined structure.
+            Use this tool to import the initial mock menu data into Firestore. This will set up groups, categories, and items based on the defined structure.
             Running this will first CLEAR all existing menu data.
           </CardDescription>
         </CardHeader>

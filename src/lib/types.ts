@@ -21,13 +21,21 @@ export type Drink = {
 
 // New Data Models for Firestore-backed CMS
 
+export type MenuGroup = {
+  id: string;
+  name: string;
+  slug: string;
+  displayOrder: number;
+  createdAt: any; // Firestore Timestamp
+  updatedAt: any; // Firestore Timestamp
+};
+
 export type MenuCategory = {
   id: string;
   name: string;
   slug: string;
   description?: string;
-  parentId?: string | null;
-  group?: string; // e.g., 'Nak Kopi', 'Taknak Kopi', 'Seasonal'
+  groupId: string;
   displayOrder: number;
   createdAt: any; // Firestore Timestamp
   updatedAt: any; // Firestore Timestamp
@@ -41,7 +49,6 @@ export type MenuItem = {
   price: number;
   imageUrl: string;
   categoryId: string;
-  subcategoryId?: string | null;
   promotionIds?: string[];
   outletIds?: string[];
   isGeneral: boolean;
@@ -51,6 +58,13 @@ export type MenuItem = {
   createdAt: any; // Firestore Timestamp
   updatedAt: any; // Firestore Timestamp
 };
+
+export type DailySpecial = {
+  id: string;
+  menuItemId: string;
+  addedAt: any; // Firestore Timestamp
+};
+
 
 export type Promotion = {
   id: string;
