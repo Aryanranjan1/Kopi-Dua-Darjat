@@ -61,7 +61,7 @@ export default function Header() {
       <div className="container mx-auto px-6 h-20 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="p-0 m-0 h-20 flex items-center">
-            <Logo />
+             <Image src="/image/1.svg" alt="Kopi Dua Darjat Logo" width={80} height={80} className="object-contain filter invert-[.25] brightness-[0]" />
         </Link>
 
 
