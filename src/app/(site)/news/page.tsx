@@ -5,7 +5,7 @@ import { useState, useMemo, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, query, where, orderBy, Timestamp } from 'firebase/firestore';
+import { collection, query, orderBy, Timestamp } from 'firebase/firestore';
 import type { Blog } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -131,8 +131,9 @@ const ArticleCard = ({ post }: { post: Blog }) => (
 
 function NewsPageClient() {
     const firestore = useFirestore();
+    // Fetch all blogs sorted by date, and we'll filter by status on the client
     const blogsQuery = useMemoFirebase(
-        () => firestore ? query(collection(firestore, 'blogs'), where('status', '==', 'published'), orderBy('publishedAt', 'desc')) : null,
+        () => firestore ? query(collection(firestore, 'blogs'), orderBy('publishedAt', 'desc')) : null,
         [firestore]
     );
     const { data: allPosts, isLoading } = useCollection<Blog>(blogsQuery);
@@ -140,18 +141,24 @@ function NewsPageClient() {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [currentPage, setCurrentPage] = useState(1);
+    
+    // Perform client-side filtering for 'published' status
+    const publishedPosts = useMemo(() => {
+        if (!allPosts) return [];
+        return allPosts.filter(post => post.status === 'published');
+    }, [allPosts]);
 
     const allCategories = useMemo(() => {
-        if (!allPosts) return ['All'];
+        if (!publishedPosts) return ['All'];
         const categories = new Set<string>(['All']);
-        allPosts.forEach(post => {
+        publishedPosts.forEach(post => {
             if (post.category) categories.add(post.category);
         });
         return Array.from(categories);
-    }, [allPosts]);
+    }, [publishedPosts]);
 
-    const featuredPost = allPosts?.[0];
-    const otherPosts = allPosts ? allPosts.slice(1) : [];
+    const featuredPost = publishedPosts?.[0];
+    const otherPosts = publishedPosts ? publishedPosts.slice(1) : [];
 
     const filteredPosts = useMemo(() => {
         let posts = otherPosts;
@@ -184,7 +191,7 @@ function NewsPageClient() {
         );
     }
     
-    if (!allPosts || allPosts.length === 0) {
+    if (!publishedPosts || publishedPosts.length === 0) {
         return (
             <div className="bg-background text-foreground">
                 <HeroSection />
