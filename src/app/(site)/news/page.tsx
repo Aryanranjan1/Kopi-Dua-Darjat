@@ -10,13 +10,6 @@ import type { Blog } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Search, Calendar, User, ArrowRight, Loader2 } from 'lucide-react';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { format } from 'date-fns';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import { CtaSection } from '@/components/shared/CtaSection';
@@ -161,7 +154,6 @@ function NewsPageClient() {
     const otherPosts = allPosts ? allPosts.slice(1) : [];
 
     const filteredPosts = useMemo(() => {
-        if (!otherPosts) return [];
         let posts = otherPosts;
 
         if (searchQuery) {

@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useFirestore } from '@/firebase';
-import { collection, writeBatch, getDocs, doc } from 'firebase/firestore';
+import { collection, writeBatch, getDocs, doc, serverTimestamp } from 'firebase/firestore';
 import { blogSeedData } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Database, AlertTriangle } from 'lucide-react';
@@ -48,7 +48,12 @@ export default function DataSeedingPage() {
       // 2. Add new blog posts from seed data
       blogSeedData.forEach(blogData => {
         const blogRef = doc(collection(firestore, 'blogs')); // Auto-generate ID
-        batch.set(blogRef, blogData);
+        batch.set(blogRef, {
+            ...blogData,
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp(),
+            publishedAt: blogData.publishedAt || serverTimestamp(), // Ensure publishedAt exists
+        });
       });
 
       // 3. Commit the batch
