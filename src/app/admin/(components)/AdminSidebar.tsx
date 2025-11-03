@@ -16,7 +16,6 @@ import {
   Settings,
   X,
   Sparkles,
-  Database,
   MessageSquareQuote,
 } from 'lucide-react';
 import { Logo } from '@/components/layout/Logo';
@@ -34,7 +33,6 @@ const navItems = [
   { href: '/admin/media', icon: ImageIcon, label: 'Media Library' },
   { href: '/admin/faq-testimonials', icon: MessageSquareQuote, label: 'FAQ & Testimonials' },
   { href: '/admin/settings', icon: Settings, label: 'Settings' },
-  { href: '/admin/data-seeding', icon: Database, label: 'Data Seeding' },
 ];
 
 export default function AdminSidebar({
