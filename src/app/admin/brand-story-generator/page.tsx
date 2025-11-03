@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -9,7 +8,7 @@ import { collection, getDocs, writeBatch, doc } from 'firebase/firestore';
 import { allDrinks } from '@/lib/data';
 import { Loader2, CheckCircle, AlertTriangle, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import type { MenuGroup, MenuCategory, MenuItem, Promotion } from '@/lib/types';
+import type { MenuGroup, MenuCategory, MenuItem, Promotion, Outlet } from '@/lib/types';
 
 // Define the structure for categories with groups and order
 const groupStructure: { name: string, order: number, series: { name: string, order: number }[] }[] = [
@@ -149,13 +148,19 @@ export default function DataMigrationPage() {
 
   const handleMigrate = async () => {
     if (!firestore) return;
+    if (!confirm('This will DELETE all current menu data and replace it. Are you sure?')) return;
     setIsLoading(true);
     setStatus('Starting migration...');
 
     try {
       // 1. Clear existing data first
       await clearAllData();
+      setStatus('Old data cleared. Starting new migration...');
 
+      // Fetch outlets to link menu items to
+      const outletsSnapshot = await getDocs(collection(firestore, 'outlets'));
+      const allOutlets = outletsSnapshot.docs.map(d => d.id);
+      
       const batch = writeBatch(firestore);
       const groupsRef = collection(firestore, 'menuGroups');
       const categoriesRef = collection(firestore, 'menuCategories');
@@ -201,15 +206,32 @@ export default function DataMigrationPage() {
         }
       }
       
-      // 4. Migrate drinks to menuItems
-      setStatus('Migrating menu items...');
-      allDrinks.forEach((drink, index) => {
+      // 4. Migrate drinks to menuItems and create specials/promotions
+      setStatus('Migrating menu items and creating specials/promotions...');
+      const createdItemRefs: DocumentReference[] = [];
+
+      for(let i=0; i<allDrinks.length; i++) {
+        const drink = allDrinks[i];
         const categoryName = drink.tags.find(t => t.endsWith('Series'));
         const categoryId = categoryName ? categoryMap.get(categoryName) : null;
         
         if (!categoryId) {
           console.warn(`Could not find category for drink: ${drink.name}`);
-          return; // Skip if no category
+          continue; 
+        }
+
+        let outletIds: string[] = [];
+        if(allOutlets.length > 0) {
+            const availabilityType = i % 4; // 0: All, 1: Exclusive, 2: Few, 3: Most
+            if (availabilityType === 0) {
+                outletIds = []; // Empty array means available everywhere
+            } else if (availabilityType === 1) {
+                outletIds = [allOutlets[i % allOutlets.length]]; // Exclusive to one
+            } else if (availabilityType === 2) {
+                outletIds = allOutlets.slice(0, 5).sort(() => 0.5 - Math.random()); // A few random
+            } else {
+                 outletIds = allOutlets.slice(0, 20).sort(() => 0.5 - Math.random()); // Most
+            }
         }
         
         const newItem: Omit<MenuItem, 'id' | 'createdAt' | 'updatedAt'> = {
@@ -219,23 +241,68 @@ export default function DataMigrationPage() {
           price: drink.price,
           imageUrl: drink.image,
           categoryId: categoryId,
-          promotionIds: [],
-          outletIds: [],
-          isGeneral: true,
+          promotionIds: [], // Will be populated later
+          outletIds: outletIds,
+          isGeneral: outletIds.length === 0,
           status: 'published',
-          tags: drink.isFeatured ? ['featured'] : [],
-          isPopular: drink.isFeatured,
-          displayOrder: index + 1, // Simple ordering for now
+          tags: drink.tags.filter(t => !t.endsWith('Series')),
+          isPopular: i < 7, // Mark first 7 as popular
+          displayOrder: i + 1,
         };
         const itemDocRef = doc(itemsRef);
         batch.set(itemDocRef, { ...newItem, createdAt: new Date(), updatedAt: new Date() });
-      });
+        createdItemRefs.push(itemDocRef);
+      }
 
-      // 5. Commit batch
+      // 5. Create Daily Specials
+      const specialsToCreate = createdItemRefs.slice(0, 10);
+      for(const itemRef of specialsToCreate) {
+        const specialRef = doc(collection(firestore, 'dailySpecials'));
+        batch.set(specialRef, {
+            menuItemId: itemRef.id,
+            addedAt: new Date()
+        });
+      }
+
+      // 6. Create Promotions
+      const promosToCreate = createdItemRefs.slice(0, 15);
+      for(let i=0; i < promosToCreate.length; i++) {
+        const itemRef = promosToCreate[i];
+        const promoRef = doc(collection(firestore, 'promotions'));
+        const startDate = new Date();
+        const endDate = new Date();
+        endDate.setDate(startDate.getDate() + (i + 1) * 2);
+
+        let discountType: Promotion['discountType'] = 'percentage';
+        let discountValue = 10;
+        if (i % 3 === 1) {
+            discountType = 'flat';
+            discountValue = 2;
+        } else if (i % 3 === 2) {
+            discountType = 'bogo';
+            discountValue = 0;
+        }
+        
+        const newPromo: Omit<Promotion, 'id' | 'createdAt' | 'updatedAt' | 'status'> = {
+          title: `Special Offer on Item ${i+1}`,
+          description: `Limited time deal!`,
+          discountType,
+          discountValue,
+          startDate,
+          endDate,
+          menuItemIds: [itemRef.id],
+          outletIds: [],
+        };
+
+        batch.set(promoRef, { ...newPromo, status: 'active', createdAt: new Date(), updatedAt: new Date() });
+        batch.update(itemRef, { promotionIds: [promoRef.id] });
+      }
+
+      // 7. Commit batch
       setStatus('Writing to database...');
       await batch.commit();
 
-      setStatus('Migration completed successfully! All old data was cleared.');
+      setStatus('Migration completed successfully! All old data was cleared and new data seeded.');
       toast({ title: 'Migration Complete', description: 'Menu data has been cleared and re-imported successfully.' });
     } catch (error: any) {
       console.error('Migration failed:', error);
@@ -248,6 +315,7 @@ export default function DataMigrationPage() {
 
   return (
     <div className="space-y-8">
+      <h1 className="text-3xl font-headline font-bold text-white">Data Management Tools</h1>
       <Card className="bg-zinc-900 border-zinc-800 text-white">
         <CardHeader>
           <CardTitle>One-Time Data Tools</CardTitle>
@@ -259,7 +327,7 @@ export default function DataMigrationPage() {
           <div className="flex flex-col sm:flex-row gap-4">
             <Button onClick={handleMigrate} disabled={isLoading || isClearing || isSeedingPromos} className="w-full sm:w-auto">
               {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckCircle className="mr-2 h-4 w-4" />}
-              Clear and Migrate Mock Menu
+              Clear and Seed Full Menu
             </Button>
             <Button onClick={handleSeedPromotions} disabled={isLoading || isClearing || isSeedingPromos} className="w-full sm:w-auto bg-green-600 hover:bg-green-700">
                 {isSeedingPromos ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
@@ -281,5 +349,3 @@ export default function DataMigrationPage() {
     </div>
   );
 }
-
-    

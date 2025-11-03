@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -28,8 +28,13 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, addDoc, doc, setDoc, serverTimestamp, query, orderBy } from 'firebase/firestore';
-import type { MenuItem, MenuCategory, MenuGroup } from '@/lib/types';
+import type { MenuItem, MenuCategory, MenuGroup, Outlet } from '@/lib/types';
 import { Checkbox } from '@/components/ui/checkbox';
+import * as React from 'react';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { ChevronsUpDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface MenuItemFormProps {
   menuItem?: MenuItem;
@@ -48,6 +53,7 @@ const formSchema = z.object({
     status: z.enum(['draft', 'published']),
     isPopular: z.boolean().default(false),
     tags: z.string().optional(),
+    outletIds: z.array(z.string()).optional(),
 });
 
 
@@ -66,6 +72,8 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
     [firestore]
   );
   const { data: allCategories } = useCollection<MenuCategory>(categoriesQuery);
+
+  const { data: outlets } = useCollection<Outlet>(useMemoFirebase(() => firestore ? query(collection(firestore, 'outlets')) : null, [firestore]));
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -80,6 +88,7 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
         status: menuItem.status,
         isPopular: menuItem.isPopular || false,
         tags: menuItem.tags?.join(', ') || '',
+        outletIds: menuItem.outletIds || [],
     } : {
         name: '',
         slug: '',
@@ -91,6 +100,7 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
         status: 'draft',
         isPopular: false,
         tags: '',
+        outletIds: [],
     }
   });
 
@@ -128,6 +138,8 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
         status: values.status,
         isPopular: values.isPopular,
         tags: values.tags ? values.tags.split(',').map(tag => tag.trim()) : [],
+        outletIds: values.outletIds || [],
+        isGeneral: (values.outletIds || []).length === 0,
         updatedAt: serverTimestamp(),
       };
 
@@ -144,8 +156,6 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
           ...dataToSave,
           displayOrder: nextOrder,
           createdAt: serverTimestamp(),
-          isGeneral: true,
-          outletIds: [],
           promotionIds: [],
         });
         toast({ title: 'Menu Item Created', description: `"${values.name}" has been successfully added.` });
@@ -265,6 +275,24 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
             </FormItem>
           )}
         />
+        
+        <FormField
+          control={form.control}
+          name="outletIds"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Linked Outlets</FormLabel>
+               <MultiSelectPopover
+                title="Outlets"
+                options={outlets?.map(outlet => ({ value: outlet.id, label: outlet.name })) || []}
+                selected={field.value || []}
+                onChange={field.onChange}
+              />
+              <FormDescription>Select which outlets this item is available at. Leave empty for it to be available everywhere.</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <FormField
         control={form.control}
@@ -273,7 +301,7 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
             <FormItem>
             <FormLabel>Tags (Optional)</FormLabel>
             <FormControl><Input placeholder="e.g., featured, new" {...field} className={inputStyles} /></FormControl>
-            <FormDescription>Comma-separated tags for filtering.</FormDescription>
+            <FormDescription>Comma-separated tags for filtering (e.g. for homepage showcase).</FormDescription>
             <FormMessage />
             </FormItem>
         )}
@@ -325,4 +353,84 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
       </form>
     </Form>
   );
+}
+
+
+function MultiSelectPopover({ title, options, selected, onChange }: {
+    title: string;
+    options: { value: string; label: string }[];
+    selected: string[];
+    onChange: (selected: string[]) => void;
+}) {
+    const [open, setOpen] = React.useState(false);
+    const [searchQuery, setSearchQuery] = React.useState('');
+
+    const filteredOptions = options.filter(option => 
+        option.label.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    return (
+        <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+                <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={open}
+                    className="w-full justify-between bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700"
+                >
+                    <span className="truncate">
+                    {selected.length === 0
+                        ? `Select ${title}...`
+                        : selected.length === options.length
+                        ? `All ${title}`
+                        : `${selected.length} of ${options.length} selected`}
+                    </span>
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 z-[60]" align="start">
+                <div className="bg-zinc-900 text-white border border-zinc-800 rounded-md">
+                    <div className="p-2 border-b border-zinc-800">
+                        <Input 
+                            placeholder={`Search ${title.toLowerCase()}...`}
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="bg-zinc-800 border-zinc-700"
+                            autoFocus
+                        />
+                    </div>
+                    <ScrollArea className="h-48">
+                        <div className="p-2 space-y-1">
+                        {filteredOptions.length > 0 ? filteredOptions.map((option) => {
+                            const isSelected = selected.includes(option.value);
+                            return (
+                                <div
+                                    key={option.value}
+                                    className="flex items-center space-x-2 p-2 rounded-md hover:bg-zinc-800 cursor-pointer"
+                                    onClick={() => {
+                                        const newSelected = isSelected
+                                            ? selected.filter((v) => v !== option.value)
+                                            : [...selected, option.value];
+                                        onChange(newSelected);
+                                    }}
+                                >
+                                    <Checkbox
+                                        id={`check-${option.value}`}
+                                        checked={isSelected}
+                                        readOnly
+                                    />
+                                    <label htmlFor={`check-${option.value}`} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer">
+                                        {option.label}
+                                    </label>
+                                </div>
+                            )
+                        }) : (
+                            <p className="p-2 text-sm text-center text-zinc-500">No {title.toLowerCase()} found.</p>
+                        )}
+                        </div>
+                    </ScrollArea>
+                </div>
+            </PopoverContent>
+        </Popover>
+    );
 }
