@@ -320,7 +320,7 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
                         <FormDescription>Feature this on the homepage "Popular" section.</FormDescription>
                         </div>
                         <FormControl>
-                        <Checkbox
+                        <Switch
                             checked={field.value}
                             onCheckedChange={field.onChange}
                         />
