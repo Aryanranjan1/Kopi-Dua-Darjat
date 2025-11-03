@@ -43,6 +43,11 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
 
+    match /media/{docId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
     // --- User-Submitted Content ---
     match /contactMessages/{docId} {
       allow read, delete: if isAdmin();

@@ -11,7 +11,7 @@ import {
   Store,
   Tag,
   BookOpen,
-  Image as ImageIcon,
+  ImageIcon,
   Settings,
   X,
   Sparkles
