@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { useFirestore } from '@/firebase';
 import { collection, getDocs, writeBatch, doc, DocumentReference, addDoc, serverTimestamp, query, limit } from 'firebase/firestore';
 import { allDrinks, testimonials as testimonialSeedData, faqItems as faqSeedData } from '@/lib/data';
-import { Loader2, CheckCircle, AlertTriangle, Sparkles, BookOpen, Image as ImageIcon, Users, HelpCircle } from 'lucide-react';
+import { Loader2, CheckCircle, AlertTriangle, Sparkles, BookOpen, Image as ImageIcon, Users, HelpCircle, Database } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { MenuGroup, MenuCategory, MenuItem, Promotion, Outlet, Blog, Testimonial, FaqItem } from '@/lib/types';
 import { seedMediaData } from '@/lib/media';
@@ -50,7 +50,7 @@ const groupStructure: { name: string; order: number; series: { name: string; ord
 ];
 
 
-export default function DataMigrationPage() {
+export default function DataSeedingPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState<string[]>([]);
   const firestore = useFirestore();
@@ -338,9 +338,9 @@ export default function DataMigrationPage() {
       <h1 className="text-3xl font-headline font-bold text-white">Master Data Seeding Tool</h1>
       <Card className="bg-zinc-900 border-zinc-800 text-white">
         <CardHeader>
-          <CardTitle>One-Click Data Setup</CardTitle>
+          <CardTitle className="flex items-center gap-2"><Database /> One-Click Data Setup</CardTitle>
           <CardDescription className="text-zinc-400">
-            Use these tools to populate or reset your database with a full set of mock data.
+            Use these tools to populate or reset your database with a full set of mock data. This is useful for initial setup or for resetting a development environment.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -396,3 +396,4 @@ export default function DataMigrationPage() {
     </div>
   );
 }
+

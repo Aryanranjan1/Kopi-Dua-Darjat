@@ -1,4 +1,4 @@
 import { config } from 'dotenv';
 config();
 
-import '@/ai/flows/generate-brand-story.ts';
+// No flows are needed for basic development

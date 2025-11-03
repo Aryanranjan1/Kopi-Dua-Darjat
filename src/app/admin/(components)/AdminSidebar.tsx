@@ -14,7 +14,8 @@ import {
   ImageIcon,
   Settings,
   X,
-  Sparkles
+  Sparkles,
+  Database
 } from 'lucide-react';
 import { Logo } from '@/components/layout/Logo';
 import { Button } from '@/components/ui/button';
@@ -30,6 +31,7 @@ const navItems = [
   { href: '/admin/blog', icon: BookOpen, label: 'Blog' },
   { href: '/admin/media', icon: ImageIcon, label: 'Media Library' },
   { href: '/admin/settings', icon: Settings, label: 'Settings' },
+  { href: '/admin/data-seeding', icon: Database, label: 'Data Seeding' },
 ];
 
 export default function AdminSidebar({
