@@ -1,6 +1,6 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
@@ -18,56 +18,73 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, addDoc, doc, setDoc, serverTimestamp, query, where } from 'firebase/firestore';
-import type { MenuCategory } from '@/lib/types';
+import { collection, addDoc, doc, setDoc, serverTimestamp, query } from 'firebase/firestore';
+import type { MenuCategory, MenuGroup } from '@/lib/types';
+import { useEffect } from 'react';
 
 const formSchema = z.object({
   name: z.string().min(2, 'Category name must be at least 2 characters.'),
   slug: z.string().min(2, 'Slug must be at least 2 characters.').regex(/^[a-z0-9-]+$/, 'Slug can only contain lowercase letters, numbers, and hyphens.'),
   description: z.string().optional(),
-  parentId: z.string().optional(),
-  group: z.string().optional(),
-  displayOrder: z.coerce.number().int().min(0, 'Display order must be a positive number.'),
+  groupId: z.string({ required_error: 'Please select a group.' }),
+  displayOrder: z.coerce.number().int().min(1, 'Display order must be 1 or greater.'),
 });
 
 type CategoryFormValues = z.infer<typeof formSchema>;
 
 interface CategoryFormProps {
   category?: MenuCategory;
+  allCategories: MenuCategory[];
   onSuccess: () => void;
 }
 
-export default function CategoryForm({ category, onSuccess }: CategoryFormProps) {
+export default function CategoryForm({ category, allCategories, onSuccess }: CategoryFormProps) {
   const { toast } = useToast();
   const firestore = useFirestore();
 
-  const parentCategoriesQuery = useMemoFirebase(
-    () => firestore ? query(collection(firestore, 'menuCategories'), where('parentId', '==', null)) : null,
+  const groupsQuery = useMemoFirebase(
+    () => firestore ? query(collection(firestore, 'menuGroups')) : null,
     [firestore]
   );
-  const { data: parentCategories } = useCollection<MenuCategory>(parentCategoriesQuery);
+  const { data: groups, isLoading: isLoadingGroups } = useCollection<MenuGroup>(groupsQuery);
 
   
   const form = useForm<CategoryFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: category?.name || '',
-      slug: category?.slug || '',
-      description: category?.description || '',
-      parentId: category?.parentId || 'null',
-      group: category?.group || '',
-      displayOrder: category?.displayOrder || 0,
+    defaultValues: category ? {
+        name: category.name,
+        slug: category.slug,
+        description: category.description || '',
+        groupId: category.groupId,
+        displayOrder: category.displayOrder,
+    } : {
+        name: '',
+        slug: '',
+        description: '',
+        groupId: undefined,
+        displayOrder: 1,
     },
   });
 
-  const { isSubmitting } = form.formState;
+  const { isSubmitting, watch, setValue } = form.formState;
+  const watchedGroupId = watch('groupId');
+
+  useEffect(() => {
+    if (!category) { // Only auto-set for new categories
+      const categoriesInGroup = allCategories.filter(c => c.groupId === watchedGroupId);
+      const nextOrder = categoriesInGroup.length > 0
+        ? Math.max(...categoriesInGroup.map(c => c.displayOrder)) + 1
+        : 1;
+      setValue('displayOrder', nextOrder);
+    }
+  }, [watchedGroupId, allCategories, setValue, category]);
+
 
   const onSubmit = async (values: CategoryFormValues) => {
     if (!firestore) return;
 
     const dataToSave = {
         ...values,
-        parentId: values.parentId === 'null' ? null : values.parentId,
         updatedAt: serverTimestamp(),
     };
 
@@ -132,54 +149,39 @@ export default function CategoryForm({ category, onSuccess }: CategoryFormProps)
         </div>
         <FormField
             control={form.control}
-            name="parentId"
+            name="groupId"
             render={({ field }) => (
                 <FormItem>
-                <FormLabel>Parent Category (Optional)</FormLabel>
-                 <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl><SelectTrigger className={inputStyles}><SelectValue placeholder="Select a parent category..." /></SelectTrigger></FormControl>
+                <FormLabel>Group</FormLabel>
+                 <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoadingGroups}>
+                    <FormControl><SelectTrigger className={inputStyles}><SelectValue placeholder="Select a parent group..." /></SelectTrigger></FormControl>
                     <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                         <SelectItem value="null">None (Top-Level Category)</SelectItem>
-                        {parentCategories?.filter(c => c.id !== category?.id).map(cat => (
-                            <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
+                        {groups?.map(g => (
+                            <SelectItem key={g.id} value={g.id}>{g.name}</SelectItem>
                         ))}
                     </SelectContent>
                 </Select>
-                <FormDescription>Make this a sub-category.</FormDescription>
+                <FormDescription>Assigns this category to a top-level group.</FormDescription>
                 <FormMessage />
                 </FormItem>
             )}
         />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <FormField
-                control={form.control}
-                name="group"
-                render={({ field }) => (
-                    <FormItem>
-                    <FormLabel>Group (Optional)</FormLabel>
-                    <FormControl>
-                        <Input placeholder="e.g., NAK KOPI" {...field} className={inputStyles} />
-                    </FormControl>
-                    <FormDescription>Assigns this category to a top-level group.</FormDescription>
-                    <FormMessage />
-                    </FormItem>
-                )}
-            />
-            <FormField
-                control={form.control}
-                name="displayOrder"
-                render={({ field }) => (
-                    <FormItem>
-                    <FormLabel>Display Order</FormLabel>
-                    <FormControl>
-                        <Input type="number" placeholder="0" {...field} className={inputStyles} />
-                    </FormControl>
-                    <FormDescription>Order within the group (lower numbers first).</FormDescription>
-                    <FormMessage />
-                    </FormItem>
-                )}
-            />
-        </div>
+        
+        <FormField
+            control={form.control}
+            name="displayOrder"
+            render={({ field }) => (
+                <FormItem>
+                <FormLabel>Display Order</FormLabel>
+                <FormControl>
+                    <Input type="number" placeholder="1" {...field} className={inputStyles} />
+                </FormControl>
+                <FormDescription>Order within the group (lower numbers first).</FormDescription>
+                <FormMessage />
+                </FormItem>
+            )}
+        />
+
         <FormField
           control={form.control}
           name="description"

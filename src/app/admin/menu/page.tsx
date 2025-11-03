@@ -1,10 +1,10 @@
 'use client';
-import { useState } from 'react';
 import type { Metadata } from 'next';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import CategoriesTable from './(components)/CategoriesTable';
-import MenuItemsTable from './(components)/MenuItemsTable';
+import MenuItemsManager from './(components)/MenuItemsManager';
+import CategoriesManager from './(components)/CategoriesManager';
+import GroupsManager from './(components)/GroupsManager';
 
 // export const metadata: Metadata = {
 //   title: 'Menu Management',
@@ -18,15 +18,19 @@ export default function MenuPage() {
       <Card className="bg-zinc-900 border-zinc-800 text-white">
         <CardContent className="pt-6">
           <Tabs defaultValue="items" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-zinc-800">
+            <TabsList className="grid w-full grid-cols-3 bg-zinc-800">
               <TabsTrigger value="items" className="data-[state=active]:bg-zinc-950">Menu Items</TabsTrigger>
               <TabsTrigger value="categories" className="data-[state=active]:bg-zinc-950">Categories</TabsTrigger>
+              <TabsTrigger value="groups" className="data-[state=active]:bg-zinc-950">Groups</TabsTrigger>
             </TabsList>
             <TabsContent value="items" className="mt-4">
-              <MenuItemsTable />
+              <MenuItemsManager />
             </TabsContent>
             <TabsContent value="categories" className="mt-4">
-              <CategoriesTable />
+              <CategoriesManager />
+            </TabsContent>
+            <TabsContent value="groups" className="mt-4">
+              <GroupsManager />
             </TabsContent>
           </Tabs>
         </CardContent>

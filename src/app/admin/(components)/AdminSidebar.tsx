@@ -15,6 +15,7 @@ import {
   Image as ImageIcon,
   Settings,
   X,
+  Sparkles
 } from 'lucide-react';
 import { Logo } from '@/components/layout/Logo';
 import { Button } from '@/components/ui/button';
@@ -24,6 +25,7 @@ const navItems = [
   { href: '/admin/messages', icon: Mail, label: 'Messages' },
   { href: '/admin/leads', icon: Users, label: 'Leads' },
   { href: '/admin/menu', icon: Coffee, label: 'Menu' },
+  { href: '/admin/specials', icon: Sparkles, label: 'Daily Specials' },
   { href: '/admin/outlets', icon: Store, label: 'Outlets' },
   { href: '/admin/promotions', icon: Tag, label: 'Promotions' },
   { href: '/admin/blog', icon: BookOpen, label: 'Blog' },

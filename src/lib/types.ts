@@ -5,7 +5,7 @@ export type NavItem = {
   disabled?: boolean;
 };
 
-// The existing Drink type, will be phased out in favor of MenuItem
+// This type is deprecated and will be removed after migration.
 export type Drink = {
   id: string;
   name: string;

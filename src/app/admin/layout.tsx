@@ -19,16 +19,24 @@ export default function AdminLayout({
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
-    if (!isUserLoading && !user && pathname !== '/admin/login') {
+    // Wait until loading is finished before checking for user
+    if (isUserLoading) {
+      return;
+    }
+    
+    // If no user is logged in and the page is not the login page, redirect
+    if (!user && pathname !== '/admin/login') {
       router.replace('/admin/login');
     }
   }, [user, isUserLoading, pathname, router]);
 
+  // If the current route is the login page, just render its content
   if (pathname === '/admin/login') {
     return <>{children}</>;
   }
 
-  if (isUserLoading || (!user && pathname !== '/admin/login')) {
+  // While loading auth state, or if there's no user (and we're not on login), show a loader
+  if (isUserLoading || !user) {
     return (
       <div className="flex h-screen items-center justify-center bg-zinc-950">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
@@ -36,6 +44,7 @@ export default function AdminLayout({
     );
   }
 
+  // If user is authenticated and not on login page, render the admin layout
   return (
     <div className="min-h-screen bg-zinc-900 text-white">
       <AdminSidebar isOpen={isSidebarOpen} setIsOpen={setSidebarOpen} />

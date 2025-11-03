@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -38,17 +39,18 @@ const formSchema = z.object({
   categoryId: z.string({ required_error: 'Please select a category.' }),
   status: z.enum(['draft', 'published']),
   tags: z.string().optional(),
-  displayOrder: z.coerce.number().int().min(0, 'Display order must be a positive number.'),
+  displayOrder: z.coerce.number().int().min(1, 'Display order must be 1 or greater.'),
 });
 
 type MenuItemFormValues = z.infer<typeof formSchema>;
 
 interface MenuItemFormProps {
   menuItem?: MenuItem;
+  allItems: MenuItem[];
   onSuccess: () => void;
 }
 
-export default function MenuItemForm({ menuItem, onSuccess }: MenuItemFormProps) {
+export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItemFormProps) {
   const { toast } = useToast();
   const firestore = useFirestore();
 
@@ -60,20 +62,42 @@ export default function MenuItemForm({ menuItem, onSuccess }: MenuItemFormProps)
 
   const form = useForm<MenuItemFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: menuItem?.name || '',
-      slug: menuItem?.slug || '',
-      description: menuItem?.description || '',
-      price: menuItem?.price || 0,
-      imageUrl: menuItem?.imageUrl || '',
-      categoryId: menuItem?.categoryId || '',
-      status: menuItem?.status || 'draft',
-      tags: menuItem?.tags?.join(', ') || '',
-      displayOrder: menuItem?.displayOrder || 0,
-    },
+    defaultValues: menuItem ? {
+        name: menuItem.name,
+        slug: menuItem.slug,
+        description: menuItem.description,
+        price: menuItem.price,
+        imageUrl: menuItem.imageUrl,
+        categoryId: menuItem.categoryId,
+        status: menuItem.status,
+        tags: menuItem.tags?.join(', ') || '',
+        displayOrder: menuItem.displayOrder,
+    } : {
+        name: '',
+        slug: '',
+        description: '',
+        price: 0,
+        imageUrl: '',
+        categoryId: undefined,
+        status: 'draft',
+        tags: '',
+        displayOrder: 1,
+    }
   });
 
-  const { isSubmitting } = form.formState;
+  const { isSubmitting, watch, setValue } = form.formState;
+  const watchedCategoryId = watch('categoryId');
+
+  useEffect(() => {
+    if (!menuItem) { // Only auto-set for new items
+        const itemsInCategory = allItems.filter(item => item.categoryId === watchedCategoryId);
+        const nextOrder = itemsInCategory.length > 0 
+            ? Math.max(...itemsInCategory.map(item => item.displayOrder)) + 1 
+            : 1;
+        setValue('displayOrder', nextOrder);
+    }
+  }, [watchedCategoryId, allItems, setValue, menuItem]);
+
 
   const onSubmit = async (values: MenuItemFormValues) => {
     if (!firestore) return;
@@ -220,7 +244,7 @@ export default function MenuItemForm({ menuItem, onSuccess }: MenuItemFormProps)
                     <FormItem>
                     <FormLabel>Display Order</FormLabel>
                     <FormControl>
-                        <Input type="number" placeholder="0" {...field} className={inputStyles} />
+                        <Input type="number" placeholder="1" {...field} className={inputStyles} />
                     </FormControl>
                     <FormDescription>Order within the category (lower numbers first).</FormDescription>
                     <FormMessage />
