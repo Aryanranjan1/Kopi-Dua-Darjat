@@ -44,7 +44,7 @@ export default function LatestStories() {
     }
     
     if (!blogPosts || blogPosts.length === 0) {
-      return null; // Or a placeholder saying "No stories yet"
+      return null;
     }
 
     const featuredPost = blogPosts[0];
@@ -95,6 +95,7 @@ export default function LatestStories() {
                                             src={post.coverImage.url} 
                                             alt={post.title}
                                             fill
+                                            sizes="128px"
                                             className="object-cover rounded-2xl transition-transform duration-300 group-hover:scale-105"
                                             data-ai-hint={post.coverImage.alt}
                                          />

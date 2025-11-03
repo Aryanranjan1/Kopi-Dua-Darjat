@@ -15,7 +15,7 @@ import { useGeolocation } from '@/hooks/use-geolocation';
 import { calculateDistance } from '@/lib/geolocation';
 import OutletCard from './OutletCard';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
-import { Pagination } from '@/components/news/Pagination';
+import { Pagination } from '@/components/shared/Pagination';
 
 const OUTLETS_PER_PAGE = 3;
 
