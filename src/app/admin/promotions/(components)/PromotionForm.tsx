@@ -27,7 +27,8 @@ import type { Promotion, MenuItem, Outlet } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Checkbox } from '@/components/ui/checkbox';
+
 
 interface PromotionFormProps {
   promotion?: Promotion;
@@ -349,6 +350,11 @@ function MultiSelectPopover({ title, options, selected, onChange }: {
     onChange: (selected: string[]) => void;
 }) {
     const [open, setOpen] = React.useState(false);
+    const [searchQuery, setSearchQuery] = React.useState('');
+
+    const filteredOptions = options.filter(option => 
+        option.label.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
@@ -369,40 +375,48 @@ function MultiSelectPopover({ title, options, selected, onChange }: {
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
-                <Command className="bg-zinc-900 text-white border-zinc-800">
-                    <CommandInput 
-                        placeholder={`Search ${title.toLowerCase()}...`}
-                    />
-                    <CommandList>
-                        <CommandEmpty>No {title.toLowerCase()} found.</CommandEmpty>
-                        <CommandGroup>
-                            <ScrollArea className="h-48">
-                                {options.map((option) => {
-                                  const isSelected = selected.includes(option.value);
-                                  return (
-                                    <CommandItem
-                                        key={option.value}
-                                        onSelect={() => {
-                                            const newSelected = isSelected
-                                                ? selected.filter((v) => v !== option.value)
-                                                : [...selected, option.value];
-                                            onChange(newSelected);
-                                        }}
-                                    >
-                                        <Check
-                                            className={cn(
-                                                "mr-2 h-4 w-4",
-                                                isSelected ? "opacity-100" : "opacity-0"
-                                            )}
-                                        />
+            <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 z-[60]" align="start">
+                <div className="bg-zinc-900 text-white border border-zinc-800 rounded-md">
+                    <div className="p-2 border-b border-zinc-800">
+                        <Input 
+                            placeholder={`Search ${title.toLowerCase()}...`}
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="bg-zinc-800 border-zinc-700"
+                            autoFocus
+                        />
+                    </div>
+                    <ScrollArea className="h-48">
+                        <div className="p-2 space-y-1">
+                        {filteredOptions.length > 0 ? filteredOptions.map((option) => {
+                            const isSelected = selected.includes(option.value);
+                            return (
+                                <div
+                                    key={option.value}
+                                    className="flex items-center space-x-2 p-2 rounded-md hover:bg-zinc-800 cursor-pointer"
+                                    onClick={() => {
+                                        const newSelected = isSelected
+                                            ? selected.filter((v) => v !== option.value)
+                                            : [...selected, option.value];
+                                        onChange(newSelected);
+                                    }}
+                                >
+                                    <Checkbox
+                                        id={`check-${option.value}`}
+                                        checked={isSelected}
+                                        readOnly
+                                    />
+                                    <label htmlFor={`check-${option.value}`} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer">
                                         {option.label}
-                                    </CommandItem>
-                                )})}
-                            </ScrollArea>
-                        </CommandGroup>
-                    </CommandList>
-                </Command>
+                                    </label>
+                                </div>
+                            )
+                        }) : (
+                            <p className="p-2 text-sm text-center text-zinc-500">No {title.toLowerCase()} found.</p>
+                        )}
+                        </div>
+                    </ScrollArea>
+                </div>
             </PopoverContent>
         </Popover>
     );
