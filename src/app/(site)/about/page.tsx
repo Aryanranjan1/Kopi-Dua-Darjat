@@ -11,6 +11,7 @@ import { Check } from 'lucide-react';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import TiltedCard from '@/components/animations/TiltedCard';
 import { Skeleton } from '@/components/ui/skeleton';
+import StickyGallery from '@/components/about/StickyGallery';
 
 // export const metadata: Metadata = {
 //   title: 'Our Story',
@@ -260,8 +261,8 @@ export default function AboutPage() {
           </div>
         </section>
       </AnimateOnScroll>
-
-
+      
+      <StickyGallery />
     </div>
     <LatestStories />
     <NewsletterSignUp />
