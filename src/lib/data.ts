@@ -490,3 +490,4 @@ export const blogSeedData: Omit<Blog, 'id' | 'createdAt' | 'updatedAt' | 'views'
     }
   ];
 
+

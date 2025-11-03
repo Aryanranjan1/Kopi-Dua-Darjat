@@ -1,3 +1,4 @@
+
 import { Timestamp } from "firebase/firestore";
 
 export type NavItem = {
@@ -167,7 +168,7 @@ export type BlogPost = {
 };
 
 export type Testimonial = {
-  id: '1' | '2' | '3';
+  id: string;
   quote: string;
   name: string;
   designation: string;
