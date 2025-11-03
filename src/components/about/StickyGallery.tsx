@@ -32,7 +32,6 @@ const StickyGallery = () => {
   const galleryImages = media?.filter(m => m.id.startsWith('gallery-')).slice(0, 13) || [];
   
   // Distribute images into three columns
-  const imagesPerColumn = Math.ceil(galleryImages.length / 3);
   const col1Images = isLoading ? Array(5).fill(null) : galleryImages.slice(0, 5);
   const col2Images = isLoading ? Array(3).fill(null) : galleryImages.slice(5, 8);
   const col3Images = isLoading ? Array(5).fill(null) : galleryImages.slice(8, 13);
