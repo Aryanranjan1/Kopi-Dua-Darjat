@@ -55,7 +55,7 @@ const FeaturedPost = ({ post }: { post: Blog }) => (
     <AnimateOnScroll animationType="fadeIn">
         <div className="container mx-auto px-6 pt-16 pb-12">
              <h2 className="text-3xl font-headline font-bold mb-8">Featured Post</h2>
-            <div className="bg-primary/80 rounded-2xl p-8 grid md:grid-cols-2 gap-8 items-center text-primary-foreground">
+            <div className="bg-black rounded-2xl p-8 grid md:grid-cols-2 gap-8 items-center text-white">
                 <Link href={`/news/${post.slug}`} className="relative aspect-video rounded-lg overflow-hidden group">
                     <Image
                         src={post.coverImage.url}
@@ -69,11 +69,11 @@ const FeaturedPost = ({ post }: { post: Blog }) => (
                 </Link>
                 <div className="max-w-lg">
                     <p className="font-semibold text-accent text-sm">{post.category}</p>
-                    <h3 className="text-2xl font-headline font-bold text-primary-foreground mt-2 group-hover:text-black transition-colors">
+                    <h3 className="text-2xl font-headline font-bold text-white mt-2 group-hover:text-primary transition-colors">
                         <Link href={`/news/${post.slug}`}>{post.title}</Link>
                     </h3>
-                    <p className="mt-4 text-base text-primary-foreground/80 line-clamp-3">{post.excerpt}</p>
-                    <div className="flex items-center gap-4 text-xs text-primary-foreground/70 mt-4">
+                    <p className="mt-4 text-base text-zinc-300 line-clamp-3">{post.excerpt}</p>
+                    <div className="flex items-center gap-4 text-xs text-zinc-400 mt-4">
                         <div className="flex items-center gap-1.5">
                             <Calendar className="w-3.5 h-3.5" />
                             <span>{post.publishedAt ? format(post.publishedAt.toDate(), 'PPP') : ''}</span>
@@ -97,7 +97,7 @@ const FeaturedPost = ({ post }: { post: Blog }) => (
 const ArticleCard = ({ post }: { post: Blog }) => (
      <AnimateOnScroll animationType="fadeIn">
         <Link href={`/news/${post.slug}`} className="group block h-full">
-            <div className="flex flex-col h-full bg-primary/80 text-primary-foreground rounded-2xl p-6 transition-shadow hover:shadow-lg">
+            <div className="flex flex-col h-full bg-black text-white rounded-2xl p-6 transition-shadow hover:shadow-lg hover:shadow-primary/20">
                 <div className="relative aspect-video rounded-lg overflow-hidden mb-4">
                     <Image
                         src={post.coverImage.url}
@@ -109,10 +109,10 @@ const ArticleCard = ({ post }: { post: Blog }) => (
                     />
                 </div>
                 <p className="font-semibold text-accent text-sm">{post.category}</p>
-                <h4 className="text-xl font-headline font-bold text-primary-foreground mt-1 group-hover:text-black transition-colors">
+                <h4 className="text-xl font-headline font-bold text-white mt-1 group-hover:text-primary transition-colors">
                     {post.title}
                 </h4>
-                 <div className="flex items-center gap-4 text-xs text-primary-foreground/70 mt-2">
+                 <div className="flex items-center gap-4 text-xs text-zinc-400 mt-2">
                     <div className="flex items-center gap-1.5">
                         <Calendar className="w-3.5 h-3.5" />
                         <span>{post.publishedAt ? format(post.publishedAt.toDate(), 'PPP') : ''}</span>
@@ -131,7 +131,6 @@ const ArticleCard = ({ post }: { post: Blog }) => (
 
 function NewsPageClient() {
     const firestore = useFirestore();
-    // Fetch all blogs sorted by date, and we'll filter by status on the client
     const blogsQuery = useMemoFirebase(
         () => firestore ? query(collection(firestore, 'blogs'), orderBy('publishedAt', 'desc')) : null,
         [firestore]
@@ -142,7 +141,6 @@ function NewsPageClient() {
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [currentPage, setCurrentPage] = useState(1);
     
-    // Perform client-side filtering for 'published' status
     const publishedPosts = useMemo(() => {
         if (!allPosts) return [];
         return allPosts.filter(post => post.status === 'published');
