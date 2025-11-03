@@ -103,7 +103,7 @@ function NewsPageClient() {
 
     const heroPost = allPosts?.[0];
 
-    if (isLoading || !allPosts) {
+    if (isLoading) {
         return (
             <div className="flex h-screen items-center justify-center bg-background">
                 <Loader2 className="h-12 w-12 animate-spin text-primary" />
@@ -111,13 +111,16 @@ function NewsPageClient() {
         );
     }
 
-    if (!heroPost) {
+    if (!allPosts || allPosts.length === 0) {
          return (
-            <div className="container mx-auto px-6 py-24 text-center">
-                <h1 className="text-4xl font-bold">News</h1>
-                <p className="mt-4 text-lg text-muted-foreground">
-                No news articles have been published yet. Check back soon!
-                </p>
+            <div className="bg-background text-foreground">
+                <div className="container mx-auto px-6 py-24 text-center">
+                    <h1 className="text-4xl font-bold">News</h1>
+                    <p className="mt-4 text-lg text-muted-foreground">
+                    No news articles have been published yet. Check back soon!
+                    </p>
+                </div>
+                 <CtaSection />
             </div>
         );
     }
