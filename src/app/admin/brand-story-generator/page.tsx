@@ -4,9 +4,9 @@ import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useFirestore } from '@/firebase';
-import { collection, getDocs, writeBatch, doc, DocumentReference, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, getDocs, writeBatch, doc, DocumentReference, addDoc, serverTimestamp, query, limit } from 'firebase/firestore';
 import { allDrinks, allDesserts, outlets } from '@/lib/data';
-import { Loader2, CheckCircle, AlertTriangle } from 'lucide-react';
+import { Loader2, CheckCircle, AlertTriangle, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { MenuGroup, MenuCategory, MenuItem, Promotion, Outlet } from '@/lib/types';
 import {
