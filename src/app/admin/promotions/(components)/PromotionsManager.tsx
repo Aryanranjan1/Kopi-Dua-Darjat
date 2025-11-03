@@ -55,6 +55,21 @@ const getStatus = (promo: Promotion): 'active' | 'scheduled' | 'expired' => {
   return 'active';
 }
 
+const getDiscountDisplay = (promo: Promotion) => {
+    switch (promo.discountType) {
+        case 'percentage':
+            return `${promo.discountValue}% Off`;
+        case 'flat':
+            return `RM${promo.discountValue.toFixed(2)} Off`;
+        case 'bogo':
+            return 'Buy 1 Get 1';
+        case 'custom':
+            return promo.customDiscountDescription || 'Custom Offer';
+        default:
+            return 'N/A';
+    }
+}
+
 
 export default function PromotionsManager() {
   const firestore = useFirestore();
@@ -150,7 +165,7 @@ export default function PromotionsManager() {
             <TableRow key={promo.id} className="border-zinc-700 hover:bg-zinc-800/80">
               <TableCell className="font-medium">{promo.title}</TableCell>
               <TableCell>
-                {promo.discountType === 'flat' ? `RM${promo.discountValue.toFixed(2)}` : `${promo.discountValue}%`}
+                {getDiscountDisplay(promo)}
               </TableCell>
               <TableCell className="text-xs">
                 {format(promo.startDate.toDate(), 'dd/MM/yy')} - {format(promo.endDate.toDate(), 'dd/MM/yy')}

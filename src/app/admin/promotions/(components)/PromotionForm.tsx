@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
@@ -27,7 +27,7 @@ import type { Promotion, MenuItem, Outlet } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 
 interface PromotionFormProps {
   promotion?: Promotion;
@@ -38,8 +38,9 @@ const formSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters.'),
   description: z.string().optional(),
   bannerImage: z.string().url('Must be a valid URL.').optional().or(z.literal('')),
-  discountType: z.enum(['percentage', 'flat', 'bogo']),
+  discountType: z.enum(['percentage', 'flat', 'bogo', 'custom']),
   discountValue: z.coerce.number().positive('Discount value must be positive.').optional(),
+  customDiscountDescription: z.string().optional(),
   startDate: z.date({ required_error: "A start date is required." }),
   endDate: z.date({ required_error: "An end date is required." }),
   menuItemIds: z.array(z.string()).optional(),
@@ -47,9 +48,22 @@ const formSchema = z.object({
 }).refine(data => data.endDate > data.startDate, {
   message: 'End date must be after the start date.',
   path: ['endDate'],
-}).refine(data => data.discountType === 'bogo' || (data.discountValue !== undefined && data.discountValue > 0), {
+}).refine(data => {
+    if (['percentage', 'flat'].includes(data.discountType)) {
+        return data.discountValue !== undefined && data.discountValue > 0;
+    }
+    return true;
+}, {
     message: 'Discount value is required for this discount type.',
     path: ['discountValue'],
+}).refine(data => {
+    if (data.discountType === 'custom') {
+        return data.customDiscountDescription && data.customDiscountDescription.length > 0;
+    }
+    return true;
+}, {
+    message: 'Custom description is required for this discount type.',
+    path: ['customDiscountDescription'],
 });
 
 
@@ -74,6 +88,7 @@ export default function PromotionForm({ promotion, onSuccess }: PromotionFormPro
       bannerImage: '',
       discountType: 'percentage',
       discountValue: 10,
+      customDiscountDescription: '',
       menuItemIds: [],
       outletIds: [],
     },
@@ -94,9 +109,9 @@ export default function PromotionForm({ promotion, onSuccess }: PromotionFormPro
 
     try {
       const status = getStatus(values.startDate, values.endDate);
-      const dataToSave: any = { 
+      const dataToSave: Partial<Promotion> = {
           ...values,
-          discountValue: values.discountType === 'bogo' ? 0 : values.discountValue,
+          discountValue: (values.discountType === 'bogo' || values.discountType === 'custom') ? 0 : values.discountValue,
           status, 
           updatedAt: serverTimestamp()
       };
@@ -194,13 +209,14 @@ export default function PromotionForm({ promotion, onSuccess }: PromotionFormPro
                     <SelectItem value="percentage">Percentage (%)</SelectItem>
                     <SelectItem value="flat">Flat (RM)</SelectItem>
                     <SelectItem value="bogo">Buy One Get One</SelectItem>
+                    <SelectItem value="custom">Custom</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
               </FormItem>
             )}
           />
-          {discountType !== 'bogo' && (
+          {['percentage', 'flat'].includes(discountType) && (
             <FormField
               control={form.control}
               name="discountValue"
@@ -214,6 +230,23 @@ export default function PromotionForm({ promotion, onSuccess }: PromotionFormPro
             />
           )}
         </div>
+
+        {discountType === 'custom' && (
+            <FormField
+              control={form.control}
+              name="customDiscountDescription"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Custom Discount Description</FormLabel>
+                  <FormControl><Input placeholder="e.g. Buy 3, Get 1 Free" {...field} className={inputStyles} /></FormControl>
+                  <FormDescription>Describe the unique offer.</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+        )}
+
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
             control={form.control}
@@ -316,6 +349,23 @@ function MultiSelectPopover({ title, options, selected, onChange }: {
     onChange: (selected: string[]) => void;
 }) {
     const [open, setOpen] = React.useState(false);
+    const [search, setSearch] = React.useState('');
+
+    const getScore = (label: string) => {
+        const lowerLabel = label.toLowerCase();
+        const lowerSearch = search.toLowerCase();
+        if (lowerLabel.startsWith(lowerSearch)) return 2;
+        if (lowerLabel.includes(lowerSearch)) return 1;
+        return 0;
+    };
+
+    const filteredOptions = React.useMemo(() => {
+        if (!search) return options;
+        return options
+            .map(option => ({ ...option, score: getScore(option.label) }))
+            .filter(option => option.score > 0)
+            .sort((a, b) => b.score - a.score);
+    }, [search, options]);
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
@@ -336,34 +386,40 @@ function MultiSelectPopover({ title, options, selected, onChange }: {
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+            <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
                 <Command className="bg-zinc-900 text-white border-zinc-800">
-                    <CommandInput placeholder={`Search ${title}...`} />
-                    <CommandEmpty>No {title.toLowerCase()} found.</CommandEmpty>
-                    <CommandGroup>
-                        <ScrollArea className="h-48">
-                            {options.map((option) => (
-                                <CommandItem
-                                    key={option.value}
-                                    value={option.label}
-                                    onSelect={() => {
-                                        const newSelected = selected.includes(option.value)
-                                            ? selected.filter((v) => v !== option.value)
-                                            : [...selected, option.value];
-                                        onChange(newSelected);
-                                    }}
-                                >
-                                    <Check
-                                        className={cn(
-                                            "mr-2 h-4 w-4",
-                                            selected.includes(option.value) ? "opacity-100" : "opacity-0"
-                                        )}
-                                    />
-                                    {option.label}
-                                </CommandItem>
-                            ))}
-                        </ScrollArea>
-                    </CommandGroup>
+                    <CommandInput 
+                        placeholder={`Search ${title.toLowerCase()}...`}
+                        value={search}
+                        onValueChange={setSearch}
+                    />
+                    <CommandList>
+                        <CommandEmpty>No {title.toLowerCase()} found.</CommandEmpty>
+                        <CommandGroup>
+                            <ScrollArea className="h-48">
+                                {filteredOptions.map((option) => (
+                                    <CommandItem
+                                        key={option.value}
+                                        value={option.label}
+                                        onSelect={() => {
+                                            const newSelected = selected.includes(option.value)
+                                                ? selected.filter((v) => v !== option.value)
+                                                : [...selected, option.value];
+                                            onChange(newSelected);
+                                        }}
+                                    >
+                                        <Check
+                                            className={cn(
+                                                "mr-2 h-4 w-4",
+                                                selected.includes(option.value) ? "opacity-100" : "opacity-0"
+                                            )}
+                                        />
+                                        {option.label}
+                                    </CommandItem>
+                                ))}
+                            </ScrollArea>
+                        </CommandGroup>
+                    </CommandList>
                 </Command>
             </PopoverContent>
         </Popover>

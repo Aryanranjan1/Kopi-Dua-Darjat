@@ -73,8 +73,9 @@ export type Promotion = {
   id: string;
   title: string;
   description?: string;
-  discountType: 'percentage' | 'flat';
+  discountType: 'percentage' | 'flat' | 'bogo' | 'custom';
   discountValue: number;
+  customDiscountDescription?: string;
   startDate: any; // Firestore Timestamp
   endDate: any; // Firestore Timestamp
   menuItemIds?: string[];
