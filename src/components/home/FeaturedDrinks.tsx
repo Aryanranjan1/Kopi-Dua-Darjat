@@ -12,6 +12,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '../ui/button';
 import { ArrowUpRight, Star } from 'lucide-react';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
