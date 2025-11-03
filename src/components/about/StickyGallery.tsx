@@ -37,18 +37,18 @@ const StickyGallery = () => {
   const col3Images = isLoading ? Array(5).fill(null) : galleryImages.slice(8, 13);
   
   return (
-      <main className='bg-black py-24 sm:py-32'>
+      <main className='bg-background py-24 sm:py-32'>
         <div className='container mx-auto px-6'>
-          <section className='text-white text-center mb-16'>
+          <section className='text-center mb-16'>
             <h2 className='text-4xl md:text-5xl font-headline text-primary tracking-tight leading-[120%]'>
               A Glimpse Into Our World
             </h2>
-            <p className='text-lg text-white/70 mt-4 max-w-2xl mx-auto'>
+            <p className='text-lg text-muted-foreground mt-4 max-w-2xl mx-auto'>
               Every cup, every stall, and every smile is a part of the Kopi Dua Darjat story. Here's a look at the moments that make us who we are.
             </p>
           </section>
 
-          <section className='text-white w-full'>
+          <section className='w-full'>
             <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
               <GalleryColumn images={col1Images} className="space-y-4" />
               
