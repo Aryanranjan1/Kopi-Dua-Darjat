@@ -119,6 +119,7 @@ export default function FeaturedDrinks() {
                             src={drink.imageUrl}
                             alt={drink.name}
                             fill
+                            sizes="(max-width: 768px) 90vw, (max-width: 1200px) 45vw, 30vw"
                             className="object-contain drop-shadow-2xl transition-transform duration-300 group-hover:scale-105 rotate-12"
                           />
                         </div>

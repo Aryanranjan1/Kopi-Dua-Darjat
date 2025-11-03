@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/sheet';
 import Image from 'next/image';
 import { useSettings } from './SettingsProvider';
+import { Logo } from './Logo';
 
 const navItems = [
   { title: 'Home', href: '/' },
@@ -50,7 +51,7 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const logoUrl = settings?.brand?.logoDark || '/image/1.svg';
+  const logoUrl = settings?.brand?.logoDark || '/image/kdd-logo-black.svg';
 
   return (
     <header
@@ -62,7 +63,7 @@ export default function Header() {
       <div className="container mx-auto px-6 h-20 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="p-0 m-0 h-20 flex items-center">
-            <Image src={logoUrl} alt={settings?.brand?.name || 'Kopi Dua Darjat'} width={80} height={80} className="object-contain hue-rotate-180 brightness-0" />
+            <Image priority src={logoUrl} alt={settings?.brand?.name || 'Kopi Dua Darjat'} width={80} height={80} className="object-contain hue-rotate-180 brightness-0" />
         </Link>
 
 

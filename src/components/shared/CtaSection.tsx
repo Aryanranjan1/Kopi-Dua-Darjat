@@ -20,6 +20,7 @@ export function CtaSection() {
             src={bgImage.imageUrl}
             alt={bgImage.description}
             fill
+            sizes="100vw"
             className="object-cover"
             data-ai-hint={bgImage.imageHint}
           />

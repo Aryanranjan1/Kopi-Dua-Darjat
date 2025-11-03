@@ -46,6 +46,7 @@ const RecommendedPosts = ({ currentPostId }: { currentPostId: string }) => {
                                         src={post.coverImage.url}
                                         alt={post.title}
                                         fill
+                                        sizes="(max-width: 768px) 100vw, 33vw"
                                         className="object-cover transition-transform duration-300 group-hover:scale-105"
                                         data-ai-hint={post.coverImage.alt}
                                     />
@@ -143,6 +144,7 @@ export default function NewsArticlePage() {
                     src={post.coverImage.url}
                     alt={post.coverImage.alt || post.title}
                     fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
                     className="object-cover"
                     data-ai-hint={post.coverImage.alt}
                     priority

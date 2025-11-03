@@ -89,6 +89,7 @@ function NewsPageClient() {
                                 src={heroPost.coverImage.url}
                                 alt={heroPost.coverImage.alt || heroPost.title}
                                 fill
+                                sizes="(max-width: 768px) 100vw, 50vw"
                                 className="object-cover"
                                 data-ai-hint={heroPost.coverImage.alt}
                             />

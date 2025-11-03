@@ -32,6 +32,7 @@ const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
                         src={image.imageUrl}
                         alt={testimonial.name}
                         fill
+                        sizes="128px"
                         className="object-cover"
                         data-ai-hint={image.imageHint}
                     />

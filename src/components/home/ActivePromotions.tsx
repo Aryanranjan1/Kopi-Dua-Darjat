@@ -84,6 +84,7 @@ export default function ActivePromotions() {
                               src={communityImage.imageUrl}
                               alt={communityImage.description}
                               fill
+                              sizes="(max-width: 1024px) 50vw, 25vw"
                               className="object-cover object-center z-[-1]"
                               data-ai-hint={communityImage.imageHint}
                           />

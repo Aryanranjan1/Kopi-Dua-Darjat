@@ -38,6 +38,7 @@ export default function Investment() {
                   src={stallImage.imageUrl}
                   alt={stallImage.description}
                   fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-cover"
                   data-ai-hint={stallImage.imageHint}
                 />

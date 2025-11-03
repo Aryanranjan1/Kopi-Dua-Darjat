@@ -39,6 +39,7 @@ export default function FinalCta() {
                 src={ctaImage.imageUrl}
                 alt={ctaImage.description}
                 fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"
                 data-ai-hint={ctaImage.imageHint}
               />

@@ -102,6 +102,7 @@ export default function FaqPage() {
                     src={heroImage.imageUrl}
                     alt={heroImage.description}
                     fill
+                    sizes="(max-width: 1200px) 50vw, 33vw"
                     className="object-cover"
                     data-ai-hint={heroImage.imageHint}
                   />

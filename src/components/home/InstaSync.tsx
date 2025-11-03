@@ -39,6 +39,7 @@ export default function InstaSync() {
                       src={post.imageUrl}
                       alt={post.description}
                       fill
+                      sizes="(max-width: 768px) 50vw, 25vw"
                       className="object-cover transition-transform duration-300 group-hover:scale-110"
                       data-ai-hint={post.imageHint}
                     />

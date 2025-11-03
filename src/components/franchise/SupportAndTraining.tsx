@@ -31,6 +31,7 @@ export default function SupportAndTraining() {
                   src={trainingImage.imageUrl}
                   alt={trainingImage.description}
                   fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-cover"
                   data-ai-hint={trainingImage.imageHint}
                 />
