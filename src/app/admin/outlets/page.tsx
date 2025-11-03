@@ -1,7 +1,7 @@
 
 import type { Metadata } from 'next';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-
+import OutletDataMigration from './(components)/OutletDataMigration';
 
 export const metadata: Metadata = {
   title: 'Outlet Management',
@@ -15,7 +15,7 @@ export default function OutletsPage() {
       <p className="text-zinc-400">
         This section is under construction. Here you will be able to manage all outlet locations, view their details, and link them to promotions.
       </p>
-
+      <OutletDataMigration />
     </div>
   );
 }
