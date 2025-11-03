@@ -112,7 +112,7 @@ export default function DataMigrationPage() {
             discountValue = 0;
         }
 
-        const newPromo: Omit<Promotion, 'id'> = {
+        const newPromo: Omit<Promotion, 'id' | 'createdAt' | 'updatedAt' | 'status'> = {
           title: `${item.name} Special`,
           description: `A limited-time offer for our beloved ${item.name}.`,
           discountType,
@@ -121,12 +121,14 @@ export default function DataMigrationPage() {
           endDate,
           menuItemIds: [item.id],
           outletIds: [], // Global promotion
-          status: 'active',
-          createdAt: new Date(),
-          updatedAt: new Date(),
         };
 
-        batch.set(promoRef, newPromo);
+        batch.set(promoRef, {
+            ...newPromo,
+            status: 'active',
+            createdAt: new Date(),
+            updatedAt: new Date()
+        });
 
         // Link promotion to menu item
         const itemRef = doc(firestore, 'menuItems', item.id);
