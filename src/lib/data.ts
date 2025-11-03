@@ -1,5 +1,6 @@
 
-import type { Outlet, Blog } from './types';
+import type { Outlet, Blog, Testimonial, FaqItem, SiteSettings } from './types';
+import { Timestamp } from 'firebase/firestore';
 
 // This file now contains only data that is not part of the main CMS.
 // Menu items, categories, and promotions are now fetched from Firestore.
@@ -141,23 +142,20 @@ export const allDrinks: DrinkSeed[] = [
   { name: 'Rock Melon Menet', slug: 'rock-melon-menet', price: 9, image: '/image/d.png', description: 'Sparkling rock melon', tags: ['Menet Series'] },
 ];
 
-export const testimonials = [
+export const testimonials: Omit<Testimonial, 'id'>[] = [
     {
-      id: '1',
       quote: 'I started my stall in Shah Alam — sold out every morning within 2 weeks! The training and marketing support made everything easy.',
       name: 'Ahmad Faizal',
       designation: 'Franchisee, Shah Alam',
       image: 'testimonial-1',
     },
     {
-      id: '2',
       quote: 'The brand recognition is incredible. Customers love the coffee, and my outlet has been profitable since month one.',
       name: 'Siti Nurhaliza',
       designation: 'Franchisee, Kajang',
       image: 'testimonial-2',
     },
     {
-      id: '3',
       quote: 'I always wanted to own a café. Kopi Dua Darjat made that dream a reality with a low-cost, high-return model.',
       name: 'Ravi Chandran',
       designation: 'Franchisee, Putrajaya',
@@ -165,62 +163,109 @@ export const testimonials = [
     },
 ];
 
-export const faqItems = [
+export const faqItems: Omit<FaqItem, 'id'>[] = [
     {
-        id: 'faq-gen-1',
         category: 'General',
         question: 'What makes Kopi Dua Darjat different?',
         answer: 'We bridge the gap between "Warisan" (heritage) and "Artisan." We honor traditional Malaysian Kopi Kampung recipes and brewing methods while infusing them with modern quality and creativity. It\'s the nostalgic taste you love, elevated.'
     },
     {
-        id: 'faq-gen-2',
         category: 'General',
         question: 'Are your ingredients Halal?',
         answer: 'Yes, all our ingredients are sourced from Halal-certified suppliers. We are committed to serving all members of our community.'
     },
     {
-        id: 'faq-gen-3',
         category: 'General',
         question: 'Where can I find your outlets?',
         answer: 'We have over 50 outlets across Malaysia! You can find the one nearest to you by visiting our Outlets page, which has an interactive map and a full directory.'
     },
     {
-        id: 'faq-prod-1',
         category: 'Product',
         question: 'What is your signature drink?',
         answer: 'Our signature line is the "Darjat Series," especially the Darjat Caramel. For a true classic, you can\'t go wrong with the "Kopi Warisan" from our Kopitiam series.'
     },
     {
-        id: 'faq-prod-2',
         category: 'Product',
         question: 'Do you offer non-coffee drinks?',
         answer: 'Absolutely! Our "Taknak Kopi" (Don\'t Want Coffee) menu includes a delicious Coklat Series, a premium Matcha Series, and our refreshing fruit-infused "Menet" sparkling drinks.'
     },
     {
-        id: 'faq-prod-3',
         category: 'Product',
         question: 'Can I customize the sweetness level?',
         answer: 'Yes, of course. Just let our baristas know your preference, and they will be happy to adjust the sweetness level to your liking.'
     },
     {
-        id: 'faq-fran-1',
         category: 'Franchise',
         question: 'What’s the minimum investment to start a franchise?',
         answer: 'You can start your own Kopi Dua Darjat stall with an investment as low as RM25,000. This includes your kiosk, essential equipment, branding kit, initial stock, and comprehensive training.'
     },
     {
-        id: 'faq-fran-2',
         category: 'Franchise',
         question: 'Do I need F&B experience to be a franchisee?',
         answer: 'No, you don’t! Our comprehensive training program covers everything from barista skills to daily operations and customer service. A passion for coffee and business is all you need to start.'
     },
     {
-        id: 'faq-fran-3',
         category: 'Franchise',
         question: 'What kind of support do you provide to franchisees?',
         answer: 'We provide end-to-end support, including location scouting assistance, full operational training, supply chain management, and continuous brand-level marketing to drive customers to your outlet.'
     }
 ];
+
+export const defaultSiteSettings: Omit<SiteSettings, 'id' | 'lastUpdated' | 'updatedBy'> = {
+  brand: {
+    name: "Kopi Dua Darjat",
+    favicon: "https://firebasestorage.googleapis.com/v0/b/studio-5747447299-c92b3.appspot.com/o/media%2Fsystem%2Ffavicon.ico?alt=media&token=e9e23b3a-a1fa-7483-c031-d2bf4b2e2a5d",
+    logoLight: "https://firebasestorage.googleapis.com/v0/b/studio-5747447299-c92b3.appspot.com/o/media%2Fsystem%2Flogo-light.png?alt=media&token=e9e23b3a-a1fa-7483-c031-d2bf4b2e2a5d",
+    logoDark: "https://firebasestorage.googleapis.com/v0/b/studio-5747447299-c92b3.appspot.com/o/media%2Fsystem%2Flogo-dark.png?alt=media&token=e9e23b3a-a1fa-7483-c031-d2bf4b2e2a5d",
+    tagline: "Antara Warisan & Artisan.",
+    primaryColor: "48 98.6% 51.8%",
+    accentColor: "17 80% 55%"
+  },
+  founders: [
+    {
+      name: "Ahmad Hadi",
+      role: "Co-Founder & Chief Barista",
+      image: "https://images.unsplash.com/photo-1557862921-37829c790f19?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      quote: "Every cup tells a story, a blend of heritage and dreams.",
+      contact: "hadi@kopidua.com"
+    },
+    {
+      name: "Azad",
+      role: "Co-Founder & Head of Operations",
+      image: "https://images.unsplash.com/photo-1533901567451-7a6e68d6cd8f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxmb3VuZGVyfGVufDB8fHx8MTc2MjA1NzI5Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      quote: "We craft experiences that feel both nostalgic and new.",
+      contact: "azad@kopidua.com"
+    }
+  ],
+  contact: {
+    email: "hello@kopidua.com",
+    phone: "+60 12-345 6789",
+    address: "Kuala Lumpur, Malaysia",
+    googleMapsLink: "https://www.google.com/maps",
+    businessHours: "9am - 10pm Daily"
+  },
+  socials: {
+    instagram: "https://www.instagram.com",
+    facebook: "https://www.facebook.com",
+    tiktok: "https://www.tiktok.com",
+    youtube: "https://www.youtube.com",
+    whatsapp: "https://wa.me/60123456789"
+  },
+  automation: {
+    newsletterIntegration: true,
+    googleBusinessSync: false,
+    autoBackup: true,
+    appCheckEnforced: true
+  },
+  meta: {
+    defaultTitle: "Kopi Dua Darjat - Antara Warisan & Artisan",
+    defaultDescription: "Experience the perfect blend of heritage and artisan coffee. 50+ outlets serving quality Kopi Kampung from RM3.",
+    defaultImage: "https://images.unsplash.com/photo-1497515114629-f71d768fd07c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxjdXAlMjBvZiUyMGNvZmZlZXxlbnwwfHx8fDE3NjIwNTI4NDF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+    keywords: ["kopi", "coffee", "malaysia", "cafe", "franchise", "artisan", "heritage"]
+  }
+};
+
+
 
 export const blogSeedData: Omit<Blog, 'id' | 'createdAt' | 'updatedAt' | 'views' | 'likes'>[] = [
     {
@@ -489,5 +534,4 @@ export const blogSeedData: Omit<Blog, 'id' | 'createdAt' | 'updatedAt' | 'views'
       seo: { title: "Meet the Kopi Dua Darjat Team | Our People" }
     }
   ];
-
 

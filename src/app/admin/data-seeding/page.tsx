@@ -5,9 +5,9 @@ import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useFirestore } from '@/firebase';
-import { collection, getDocs, writeBatch, doc, DocumentReference, addDoc, serverTimestamp, query, limit } from 'firebase/firestore';
-import { allDrinks, testimonials as testimonialSeedData, faqItems as faqSeedData } from '@/lib/data';
-import { Loader2, CheckCircle, AlertTriangle, Sparkles, BookOpen, Image as ImageIcon, Users, HelpCircle, Database } from 'lucide-react';
+import { collection, getDocs, writeBatch, doc, DocumentReference, addDoc, serverTimestamp, query, limit, getDoc, setDoc } from 'firebase/firestore';
+import { allDrinks, testimonials as testimonialSeedData, faqItems as faqSeedData, defaultSiteSettings } from '@/lib/data';
+import { Loader2, CheckCircle, AlertTriangle, Sparkles, BookOpen, Image as ImageIcon, Users, HelpCircle, Database, Settings } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { MenuGroup, MenuCategory, MenuItem, Promotion, Outlet, Blog, Testimonial, FaqItem } from '@/lib/types';
 import { seedMediaData } from '@/lib/media';
@@ -253,10 +253,9 @@ export default function DataSeedingPage() {
       const batch = writeBatch(firestore);
       let count = 0;
       for (const testimonial of testimonialSeedData) {
-        const { id, ...data } = testimonial; // Exclude static ID
         const docRef = doc(collection(firestore, 'testimonials'));
-        batch.set(docRef, { ...data, createdAt: serverTimestamp() });
-        addStatus(`- Preparing testimonial from "${data.name}"`);
+        batch.set(docRef, { ...testimonial, createdAt: serverTimestamp() });
+        addStatus(`- Preparing testimonial from "${testimonial.name}"`);
         count++;
       }
       
@@ -283,10 +282,9 @@ export default function DataSeedingPage() {
       const batch = writeBatch(firestore);
       let count = 0;
       for (const faq of faqSeedData) {
-        const { id, ...data } = faq; // Exclude static ID
         const docRef = doc(collection(firestore, 'faq'));
-        batch.set(docRef, { ...data, createdAt: serverTimestamp() });
-        addStatus(`- Preparing FAQ: "${data.question}"`);
+        batch.set(docRef, { ...faq, createdAt: serverTimestamp() });
+        addStatus(`- Preparing FAQ: "${faq.question}"`);
         count++;
       }
       
@@ -330,7 +328,41 @@ export default function DataSeedingPage() {
     } finally {
         setIsLoading(false);
     }
-};
+  };
+  
+    const handleSeedSettings = async () => {
+    if (!firestore) return;
+    
+    setIsLoading(true);
+    setStatus(['Starting to seed site settings...']);
+    
+    try {
+      const settingsRef = doc(firestore, 'settings', 'main');
+      const docSnap = await getDoc(settingsRef);
+
+      if (docSnap.exists()) {
+        addStatus('Site settings document already exists. Skipping seeding to avoid overwrite.');
+        toast({ title: 'Settings Already Exist', description: 'Did not seed site settings as a document already exists at /settings/main.' });
+        setIsLoading(false);
+        return;
+      }
+
+      await setDoc(settingsRef, {
+        ...defaultSiteSettings,
+        lastUpdated: serverTimestamp(),
+        updatedBy: 'system_seed'
+      });
+      
+      addStatus('----------------------------------');
+      addStatus('Site settings seeded successfully!');
+      toast({ title: 'Site Settings Seeded', description: `Default site settings have been saved.` });
+    } catch (error: any) {
+      addStatus(`FATAL ERROR: ${error.message}`);
+      toast({ variant: 'destructive', title: 'Site Settings Seeding Failed', description: error.message });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
 
   return (
@@ -340,35 +372,22 @@ export default function DataSeedingPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><Database /> One-Click Data Setup</CardTitle>
           <CardDescription className="text-zinc-400">
-            Use these tools to populate or reset your database with a full set of mock data. This is useful for initial setup or for resetting a development environment.
+            Use these tools to populate your database with a full set of mock data. This is useful for initial setup or for resetting a development environment. Run these in order from top to bottom.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Button onClick={handleMigrate} disabled={isLoading} className="w-full sm:w-auto">
-              {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckCircle className="mr-2 h-4 w-4" />}
-              Clear and Seed Full Menu
-            </Button>
-             <AlertDialog>
-                <AlertDialogTrigger asChild>
-                    <Button disabled={isLoading} variant="destructive" className="w-full sm:w-auto">
-                        <AlertTriangle className="mr-2 h-4 w-4" />
-                        Clear All Data Only
-                    </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
-                    <AlertDialogHeader><AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle><AlertDialogDescription className="text-zinc-400">This will permanently delete all outlets, menu items, and promotions. This action cannot be undone.</AlertDialogDescription></AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
-                        <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={clearAllData}>Yes, delete all data</AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
-          </div>
-           <div className="border-t border-zinc-700 pt-6">
-              <h3 className="text-lg font-semibold">Quick Actions</h3>
+           <div className="border border-zinc-700 rounded-lg p-4">
+              <h3 className="text-lg font-semibold text-primary">Quick-Add Data</h3>
               <p className="text-zinc-400 text-sm mb-4">Use these to add specific data without clearing everything.</p>
                <div className="flex flex-col sm:flex-row gap-4">
+                <Button onClick={handleSeedSettings} disabled={isLoading} variant="secondary" className="bg-indigo-600 hover:bg-indigo-700 text-white">
+                  {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Settings className="mr-2 h-4 w-4" />}
+                  Seed Site Settings
+                </Button>
+                <Button onClick={handleSeedMedia} disabled={isLoading} variant="secondary" className="bg-purple-600 hover:bg-purple-700 text-white">
+                  {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ImageIcon className="mr-2 h-4 w-4" />}
+                  Seed Media Assets
+                </Button>
                 <Button onClick={handleSeedTestimonials} disabled={isLoading} variant="secondary" className="bg-green-600 hover:bg-green-700 text-white">
                   {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Users className="mr-2 h-4 w-4" />}
                   Seed Testimonials
@@ -377,12 +396,34 @@ export default function DataSeedingPage() {
                   {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <HelpCircle className="mr-2 h-4 w-4" />}
                   Seed FAQs
                 </Button>
-                <Button onClick={handleSeedMedia} disabled={isLoading} variant="secondary" className="bg-purple-600 hover:bg-purple-700 text-white">
-                  {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ImageIcon className="mr-2 h-4 w-4" />}
-                  Seed Media Assets
-                </Button>
                </div>
             </div>
+            
+           <div className="border-t border-dashed border-zinc-700 pt-6">
+               <h3 className="text-lg font-semibold text-destructive">Full Reset</h3>
+               <p className="text-zinc-400 text-sm mb-4">These actions will delete existing data. Use with caution.</p>
+                <div className="flex flex-col sm:flex-row gap-4">
+                    <Button onClick={handleMigrate} disabled={isLoading} variant="destructive">
+                    {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckCircle className="mr-2 h-4 w-4" />}
+                    Clear & Seed Full Menu
+                    </Button>
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button disabled={isLoading} variant="destructive" className="bg-red-800 hover:bg-red-900">
+                                <AlertTriangle className="mr-2 h-4 w-4" />
+                                Clear All Data Only
+                            </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
+                            <AlertDialogHeader><AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle><AlertDialogDescription className="text-zinc-400">This will permanently delete all outlets, menu items, and promotions. This action cannot be undone.</AlertDialogDescription></AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
+                                <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={clearAllData}>Yes, delete all data</AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                </div>
+          </div>
           {(isLoading || status.length > 0) && (
             <div className="p-4 bg-zinc-950 border border-zinc-800 rounded-md max-h-60 overflow-y-auto">
               <h3 className="font-semibold text-zinc-300">Migration Status:</h3>
@@ -396,3 +437,4 @@ export default function DataSeedingPage() {
     </div>
   );
 }
+
