@@ -9,43 +9,43 @@ service cloud.firestore {
 
     // --- CMS Collections ---
     match /menuGroups/{docId} {
-      allow get: if true;
-      allow list, create, update, delete: if isAdmin();
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
     }
     
     match /menuCategories/{docId} {
-      allow get: if true;
-      allow list, create, update, delete: if isAdmin();
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
     }
 
     match /menuItems/{docId} {
-      allow get: if true;
-      allow list, create, update, delete: if isAdmin();
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
     }
 
     match /promotions/{docId} {
-      allow get: if true;
-      allow list, create, update, delete: if isAdmin();
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
     }
 
     match /dailySpecials/{docId} {
-      allow get: if true;
-      allow list, create, update, delete: if isAdmin();
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
     }
 
     match /outlets/{docId} {
-      allow get: if true;
-      allow list, create, update, delete: if isAdmin();
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
     }
     
     match /blogs/{docId} {
-      allow get: if true;
-      allow list, create, update, delete: if isAdmin();
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
     }
 
     match /media/{docId} {
-      allow get: if true;
-      allow list, create, update, delete: if isAdmin();
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
     }
 
     match /settings/{docId} {
@@ -54,13 +54,13 @@ service cloud.firestore {
     }
 
     match /testimonials/{docId} {
-      allow get: if true;
-      allow list, create, update, delete: if isAdmin();
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
     }
 
     match /faq/{docId} {
-      allow get: if true;
-      allow list, create, update, delete: if isAdmin();
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
     }
 
     // --- User-Submitted Content ---
