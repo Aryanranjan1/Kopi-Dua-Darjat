@@ -21,14 +21,6 @@ import { collection, addDoc, doc, setDoc, serverTimestamp } from 'firebase/fires
 import type { MenuGroup } from '@/lib/types';
 import { useEffect } from 'react';
 
-const formSchema = z.object({
-  name: z.string().min(2, 'Group name must be at least 2 characters.'),
-  slug: z.string().min(2, 'Slug must be at least 2 characters.').regex(/^[a-z0-9-]+$/, 'Slug can only contain lowercase letters, numbers, and hyphens.'),
-  displayOrder: z.coerce.number().int().min(1, 'Display order must be 1 or greater.'),
-});
-
-type GroupFormValues = z.infer<typeof formSchema>;
-
 interface GroupFormProps {
   group?: MenuGroup;
   allGroups: MenuGroup[];
@@ -39,8 +31,37 @@ export default function GroupForm({ group, allGroups, onSuccess }: GroupFormProp
   const { toast } = useToast();
   const firestore = useFirestore();
 
-  const form = useForm<GroupFormValues>({
-    resolver: zodResolver(formSchema),
+  const generateFormSchema = (existingGroup?: MenuGroup) => {
+    return z.object({
+      name: z.string().min(2, 'Group name must be at least 2 characters.'),
+      slug: z.string().min(2, 'Slug must be at least 2 characters.').regex(/^[a-z0-9-]+$/, 'Slug can only contain lowercase letters, numbers, and hyphens.'),
+      displayOrder: z.coerce.number().int().min(1, 'Order number cannot be 0 or negative.'),
+    }).refine(data => {
+        const otherGroups = allGroups.filter(g => g.id !== existingGroup?.id);
+        const isDuplicate = otherGroups.some(g => g.displayOrder === data.displayOrder);
+        if (isDuplicate) {
+            return false;
+        }
+        return true;
+    }, {
+        message: 'This order number is already in use.',
+        path: ['displayOrder'],
+    }).refine(data => {
+        if (!existingGroup) { // Only for new groups
+            const maxOrder = allGroups.reduce((max, g) => Math.max(max, g.displayOrder), 0);
+            if (data.displayOrder > maxOrder + 1) {
+                return false;
+            }
+        }
+        return true;
+    }, {
+        message: 'Order number cannot skip a value. The next available is ' + (allGroups.reduce((max, g) => Math.max(max, g.displayOrder), 0) + 1),
+        path: ['displayOrder'],
+    });
+  }
+
+  const form = useForm<z.infer<ReturnType<typeof generateFormSchema>>>({
+    resolver: zodResolver(generateFormSchema(group)),
     defaultValues: group ? {
         name: group.name,
         slug: group.slug,
@@ -48,22 +69,20 @@ export default function GroupForm({ group, allGroups, onSuccess }: GroupFormProp
     } : {
         name: '',
         slug: '',
-        displayOrder: 1,
+        displayOrder: allGroups.reduce((max, g) => Math.max(max, g.displayOrder), 0) + 1,
     },
   });
 
   useEffect(() => {
-    if (!group) { // Only set for new groups
-      const nextOrder = allGroups.length > 0
-        ? Math.max(...allGroups.map(g => g.displayOrder)) + 1
-        : 1;
+    if (!group) {
+      const nextOrder = allGroups.reduce((max, g) => Math.max(max, g.displayOrder), 0) + 1;
       form.setValue('displayOrder', nextOrder);
     }
   }, [allGroups, form, group]);
 
   const { isSubmitting } = form.formState;
 
-  const onSubmit = async (values: GroupFormValues) => {
+  const onSubmit = async (values: z.infer<ReturnType<typeof generateFormSchema>>) => {
     if (!firestore) return;
 
     const dataToSave = {
@@ -73,12 +92,10 @@ export default function GroupForm({ group, allGroups, onSuccess }: GroupFormProp
 
     try {
       if (group) {
-        // Update existing group
         const groupRef = doc(firestore, 'menuGroups', group.id);
         await setDoc(groupRef, dataToSave, { merge: true });
         toast({ title: 'Group Updated', description: `"${values.name}" has been successfully updated.` });
       } else {
-        // Create new group
         const groupsRef = collection(firestore, 'menuGroups');
         await addDoc(groupsRef, {
           ...dataToSave,

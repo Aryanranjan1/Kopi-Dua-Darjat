@@ -30,20 +30,6 @@ import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, addDoc, doc, setDoc, serverTimestamp, query } from 'firebase/firestore';
 import type { MenuItem, MenuCategory } from '@/lib/types';
 
-const formSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters.'),
-  slug: z.string().min(2, 'Slug must be at least 2 characters.'),
-  description: z.string().min(10, 'Description must be at least 10 characters.'),
-  price: z.coerce.number().min(0, 'Price must be a positive number.'),
-  imageUrl: z.string().url('Please enter a valid image URL.'),
-  categoryId: z.string({ required_error: 'Please select a category.' }),
-  status: z.enum(['draft', 'published']),
-  tags: z.string().optional(),
-  displayOrder: z.coerce.number().int().min(1, 'Display order must be 1 or greater.'),
-});
-
-type MenuItemFormValues = z.infer<typeof formSchema>;
-
 interface MenuItemFormProps {
   menuItem?: MenuItem;
   allItems: MenuItem[];
@@ -59,9 +45,46 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
     [firestore]
   );
   const { data: categories } = useCollection<MenuCategory>(categoriesQuery);
+  
+  const generateFormSchema = (existingItem?: MenuItem) => {
+      return z.object({
+        name: z.string().min(2, 'Name must be at least 2 characters.'),
+        slug: z.string().min(2, 'Slug must be at least 2 characters.'),
+        description: z.string().min(10, 'Description must be at least 10 characters.'),
+        price: z.coerce.number().min(0, 'Price must be a positive number.'),
+        imageUrl: z.string().url('Please enter a valid image URL.'),
+        categoryId: z.string({ required_error: 'Please select a category.' }),
+        status: z.enum(['draft', 'published']),
+        tags: z.string().optional(),
+        displayOrder: z.coerce.number().int().min(1, 'Order number cannot be 0 or negative.'),
+    }).refine(data => {
+        const itemsInSameCategory = allItems.filter(item => item.categoryId === data.categoryId && item.id !== existingItem?.id);
+        const isDuplicate = itemsInSameCategory.some(item => item.displayOrder === data.displayOrder);
+        if (isDuplicate) {
+            return false;
+        }
+        return true;
+    }, {
+        message: 'This order number is already in use for this category.',
+        path: ['displayOrder'],
+    }).refine(data => {
+        if (!existingItem) { // Only for new items
+            const itemsInSameCategory = allItems.filter(item => item.categoryId === data.categoryId);
+            const maxOrder = itemsInSameCategory.reduce((max, item) => Math.max(max, item.displayOrder), 0);
+            if (data.displayOrder > maxOrder + 1) {
+                return false;
+            }
+        }
+        return true;
+    }, {
+        message: 'Order number cannot skip a value.',
+        path: ['displayOrder'],
+    });
+  }
 
-  const form = useForm<MenuItemFormValues>({
-    resolver: zodResolver(formSchema),
+
+  const form = useForm<z.infer<ReturnType<typeof generateFormSchema>>>({
+    resolver: zodResolver(generateFormSchema(menuItem)),
     defaultValues: menuItem ? {
         name: menuItem.name,
         slug: menuItem.slug,
@@ -85,11 +108,11 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
     }
   });
 
-  const { isSubmitting, watch, setValue } = form.formState;
+  const { isSubmitting, watch, setValue } = form;
   const watchedCategoryId = watch('categoryId');
 
   useEffect(() => {
-    if (!menuItem) { // Only auto-set for new items
+    if (!menuItem && watchedCategoryId) {
         const itemsInCategory = allItems.filter(item => item.categoryId === watchedCategoryId);
         const nextOrder = itemsInCategory.length > 0 
             ? Math.max(...itemsInCategory.map(item => item.displayOrder)) + 1 
@@ -99,7 +122,7 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
   }, [watchedCategoryId, allItems, setValue, menuItem]);
 
 
-  const onSubmit = async (values: MenuItemFormValues) => {
+  const onSubmit = async (values: z.infer<ReturnType<typeof generateFormSchema>>) => {
     if (!firestore) return;
 
     try {
@@ -107,19 +130,16 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
         ...values,
         tags: values.tags ? values.tags.split(',').map(tag => tag.trim()) : [],
         updatedAt: serverTimestamp(),
-        // Default values for fields not yet in the form
         isGeneral: menuItem?.isGeneral ?? true,
         outletIds: menuItem?.outletIds ?? [],
         promotionIds: menuItem?.promotionIds ?? [],
       };
 
       if (menuItem) {
-        // Update existing item
         const itemRef = doc(firestore, 'menuItems', menuItem.id);
         await setDoc(itemRef, dataToSave, { merge: true });
         toast({ title: 'Menu Item Updated', description: `"${values.name}" has been successfully updated.` });
       } else {
-        // Create new item
         const itemsRef = collection(firestore, 'menuItems');
         await addDoc(itemsRef, {
           ...dataToSave,
