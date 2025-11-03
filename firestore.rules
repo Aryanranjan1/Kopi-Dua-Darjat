@@ -30,26 +30,34 @@ service cloud.firestore {
     }
 
     // CMS Collections: Public can read, admin can write
+    match /menuGroups/{docId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+    
     match /menuCategories/{docId} {
       allow read: if true;
       allow create, update, delete: if isAdmin();
     }
 
     match /menuItems/{docId} {
-      allow read: if resource.data.status == 'published'; // Public can only read published items
+      allow read: if true;
       allow create, update, delete: if isAdmin();
-      allow read: if isAdmin(); // Admin can read any status
     }
 
     match /promotions/{docId} {
-      allow read: if resource.data.status == 'active'; // Public can only read active promotions
-      allow create, update, delete: if isAdmin();
-      allow read: if isAdmin(); // Admin can read any status
+      allow get: if resource.data.status == 'active';
+      allow list, create, update, delete: if isAdmin();
     }
 
     match /outlets/{docId} {
       allow read: if true;
       allow create, update, delete: if isAdmin();
+    }
+    
+    match /dailySpecials/{docId} {
+        allow read: if true;
+        allow write: if isAdmin();
     }
 
     // Default deny for any other collections
