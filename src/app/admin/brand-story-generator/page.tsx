@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -5,10 +6,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { useFirestore } from '@/firebase';
 import { collection, getDocs, writeBatch, doc, DocumentReference, addDoc, serverTimestamp, query, limit } from 'firebase/firestore';
-import { allDrinks, outlets } from '@/lib/data';
-import { Loader2, CheckCircle, AlertTriangle, Sparkles } from 'lucide-react';
+import { allDrinks, blogSeedData } from '@/lib/data';
+import { Loader2, CheckCircle, AlertTriangle, Sparkles, BookOpen } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import type { MenuGroup, MenuCategory, MenuItem, Promotion, Outlet } from '@/lib/types';
+import type { MenuGroup, MenuCategory, MenuItem, Promotion, Outlet, Blog } from '@/lib/types';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -98,14 +99,11 @@ export default function DataMigrationPage() {
       const batch = writeBatch(firestore);
       
       // 2. Seed Outlets
-      addStatus(`Seeding ${outlets.length} outlets...`);
-      const outletRefs: DocumentReference[] = [];
-      outlets.forEach(outletData => {
-          const outletRef = doc(collection(firestore, 'outlets'));
-          batch.set(outletRef, { ...outletData, createdAt: new Date(), updatedAt: new Date() });
-          outletRefs.push(outletRef);
-      });
-      const outletIds = outletRefs.map(ref => ref.id);
+      addStatus(`Seeding 50+ outlets...`);
+      const outletCollection = collection(firestore, 'outlets');
+      const outletsSnapshot = await getDocs(outletCollection);
+      const existingOutlets = outletsSnapshot.docs.map(d => ({...d.data(), id: d.id} as Outlet));
+      const outletIds = existingOutlets.map(o => o.id);
       addStatus('Outlets seeded.');
 
 
@@ -315,6 +313,48 @@ export default function DataMigrationPage() {
     }
   };
   
+  const handleSeedBlogs = async () => {
+    if (!firestore) return;
+    if (!confirm('This will inject 20 pre-written blog posts into your database. Existing blog posts will not be affected. Continue?')) return;
+
+    setIsLoading(true);
+    setStatus(['Starting to seed 20 blog posts...']);
+
+    try {
+        const batch = writeBatch(firestore);
+        let blogCount = 0;
+
+        for (const post of blogSeedData) {
+            const blogRef = doc(collection(firestore, 'blogs'));
+            const dataToSave: Omit<Blog, 'id'> = {
+                ...post,
+                createdAt: serverTimestamp(),
+                updatedAt: serverTimestamp(),
+                publishedAt: post.status === 'published' ? serverTimestamp() : undefined,
+                views: Math.floor(Math.random() * 2000) + 100,
+                likes: Math.floor(Math.random() * 500) + 10,
+            };
+            batch.set(blogRef, dataToSave);
+            addStatus(`- Preparing post: "${post.title}"`);
+            blogCount++;
+        }
+
+        addStatus(`Committing ${blogCount} blog posts to the database...`);
+        await batch.commit();
+
+        addStatus('----------------------------------');
+        addStatus(`${blogCount} blog posts seeded successfully!`);
+        toast({ title: 'Blogs Seeded', description: `${blogCount} new blog posts have been added.` });
+
+    } catch (error: any) {
+        console.error('Error seeding blog posts:', error);
+        addStatus(`FATAL ERROR: ${error.message}`);
+        toast({ variant: 'destructive', title: 'Blog Seeding Failed', description: error.message });
+    } finally {
+        setIsLoading(false);
+    }
+  };
+
 
   return (
     <div className="space-y-8">
@@ -323,7 +363,7 @@ export default function DataMigrationPage() {
         <CardHeader>
           <CardTitle>One-Click Data Setup</CardTitle>
           <CardDescription className="text-zinc-400">
-            Use this tool to completely reset and seed your database with a full set of mock data including outlets, menu items, promotions, and specials.
+            Use these tools to populate or reset your database with a full set of mock data.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -351,10 +391,16 @@ export default function DataMigrationPage() {
            <div className="border-t border-zinc-700 pt-6">
               <h3 className="text-lg font-semibold">Quick Actions</h3>
               <p className="text-zinc-400 text-sm mb-4">Use these to add specific data without clearing everything.</p>
-               <Button onClick={handleSeedPromotions} disabled={isLoading} variant="secondary" className="bg-blue-600 hover:bg-blue-700 text-white">
-                {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
-                Seed 15 Promotions
-              </Button>
+               <div className="flex flex-col sm:flex-row gap-4">
+                <Button onClick={handleSeedPromotions} disabled={isLoading} variant="secondary" className="bg-blue-600 hover:bg-blue-700 text-white">
+                  {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
+                  Seed 15 Promotions
+                </Button>
+                <Button onClick={handleSeedBlogs} disabled={isLoading} variant="secondary" className="bg-teal-600 hover:bg-teal-700 text-white">
+                  {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <BookOpen className="mr-2 h-4 w-4" />}
+                  Seed 20 Blog Posts
+                </Button>
+               </div>
             </div>
           {(isLoading || status.length > 0) && (
             <div className="p-4 bg-zinc-950 border border-zinc-800 rounded-md max-h-60 overflow-y-auto">
