@@ -8,7 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import InteractiveMap from './InteractiveMap';
 import { Loader2, MapPin, Search } from 'lucide-react';
-import { outlets } from '@/lib/data';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection, query } from 'firebase/firestore';
 import type { Outlet } from '@/lib/types';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { calculateDistance } from '@/lib/geolocation';
@@ -26,16 +27,27 @@ export default function OutletFinder() {
     getPosition,
   } = useGeolocation();
   
+  const firestore = useFirestore();
+  const { data: outlets, isLoading: isLoadingOutlets } = useCollection<Outlet>(
+    useMemoFirebase(() => (firestore ? query(collection(firestore, 'outlets')) : null), [firestore])
+  );
+
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortedOutlets, setSortedOutlets] = useState<Outlet[]>(outlets);
+  const [sortedOutlets, setSortedOutlets] = useState<Outlet[]>([]);
+
+  useEffect(() => {
+    if (outlets) {
+      setSortedOutlets(outlets);
+    }
+  }, [outlets]);
 
   const handleLocateMe = () => {
     getPosition();
   };
 
   useEffect(() => {
-    if (position) {
+    if (position && outlets) {
       const outletsWithDistance = outlets.map((outlet) => ({
         ...outlet,
         distance: calculateDistance(
@@ -49,7 +61,7 @@ export default function OutletFinder() {
       setSortedOutlets(outletsWithDistance);
       setCurrentPage(1); // Reset to first page after sorting
     }
-  }, [position]);
+  }, [position, outlets]);
 
   const filteredOutlets = useMemo(() => {
     let outletsToFilter = sortedOutlets;
@@ -80,6 +92,8 @@ export default function OutletFinder() {
     (currentPage - 1) * OUTLETS_PER_PAGE,
     currentPage * OUTLETS_PER_PAGE
   );
+
+  const isLoading = isLoadingOutlets;
 
   return (
     <section className="py-24 sm:py-32 bg-white">
@@ -124,12 +138,16 @@ export default function OutletFinder() {
             {geolocationError && <p className="mt-2 text-sm text-destructive">{geolocationError}</p>}
 
             <div className="mt-4 space-y-4 min-h-[300px] flex-grow">
-              {paginatedOutlets.map((outlet, index) => (
+              {isLoading ? (
+                  <div className="flex items-center justify-center h-full pt-10">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                  </div>
+              ) : paginatedOutlets.map((outlet, index) => (
                 <AnimateOnScroll key={outlet.id} animationType='slideInFromLeft' delay={index * 0.1}>
                   <OutletCard outlet={outlet} userLocation={position} />
                 </AnimateOnScroll>
               ))}
-              {paginatedOutlets.length === 0 && (
+              {!isLoading && paginatedOutlets.length === 0 && (
                 <div className="flex items-center justify-center h-full text-muted-foreground pt-10">
                   <p>No outlets found. Try a different search.</p>
                 </div>

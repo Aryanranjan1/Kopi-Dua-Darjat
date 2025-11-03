@@ -2,8 +2,8 @@
 'use client';
 
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, query, where, limit } from 'firebase/firestore';
-import type { MenuItem } from '@/lib/types';
+import { collection, query, where, limit, getDocs } from 'firebase/firestore';
+import type { MenuItem, Promotion } from '@/lib/types';
 import {
   Accordion,
   AccordionContent,
@@ -13,6 +13,8 @@ import {
 import { Badge } from '../ui/badge';
 import Image from 'next/image';
 import { Skeleton } from '../ui/skeleton';
+import { getDiscountDisplay } from '@/lib/utils';
+import { useMemo } from 'react';
 
 const DailySpecialsContent = () => {
   const firestore = useFirestore();
@@ -22,7 +24,7 @@ const DailySpecialsContent = () => {
   );
   const { data: dailySpecials, isLoading: isLoadingSpecials } = useCollection<any>(specialsQuery);
 
-  const specialItemIds = useMemoFirebase(() => dailySpecials?.map(s => s.menuItemId) || [], [dailySpecials]);
+  const specialItemIds = useMemo(() => dailySpecials?.map(s => s.menuItemId) || [], [dailySpecials]);
   
   const itemsQuery = useMemoFirebase(
     () => (firestore && specialItemIds.length > 0) ? query(collection(firestore, 'menuItems'), where('__name__', 'in', specialItemIds)) : null,
@@ -30,8 +32,22 @@ const DailySpecialsContent = () => {
   );
   const { data: specialItems, isLoading: isLoadingItems } = useCollection<MenuItem>(itemsQuery);
 
+  const promosQuery = useMemoFirebase(
+    () => firestore ? query(collection(firestore, 'promotions'), where('status', '==', 'active')) : null,
+    [firestore]
+  );
+  const { data: promotions, isLoading: isLoadingPromos } = useCollection<Promotion>(promosQuery);
+  
+  const getOfferBadge = (drink: MenuItem): string | null => {
+    if (!promotions) return 'Special Offer';
+    const promotion = promotions.find(p => p.menuItemIds?.includes(drink.id));
+    if (promotion) {
+      return getDiscountDisplay(promotion);
+    }
+    return 'Special Offer';
+  };
 
-  const isLoading = isLoadingSpecials || isLoadingItems;
+  const isLoading = isLoadingSpecials || isLoadingItems || isLoadingPromos;
 
   if (isLoading) {
     return (
@@ -84,7 +100,7 @@ const DailySpecialsContent = () => {
               <p className="font-bold text-lg text-accent">
                 RM{drink.price.toFixed(2)}
               </p>
-              <Badge variant="secondary" className="bg-accent/20 text-accent font-semibold mt-1">Special Offer</Badge>
+              <Badge variant="secondary" className="bg-accent/20 text-accent font-semibold mt-1">{getOfferBadge(drink)}</Badge>
             </div>
           </div>
         ))}
@@ -118,7 +134,7 @@ const DailySpecialsContent = () => {
                           <p className="font-bold text-lg text-accent">
                           RM{drink.price.toFixed(2)}
                           </p>
-                          <Badge variant="secondary" className="bg-accent/20 text-accent font-semibold mt-1">Special Offer</Badge>
+                          <Badge variant="secondary" className="bg-accent/20 text-accent font-semibold mt-1">{getOfferBadge(drink)}</Badge>
                       </div>
                     </div>
                   ))}
