@@ -72,14 +72,15 @@ export type DailySpecial = {
 export type Promotion = {
   id: string;
   title: string;
-  description: string;
+  description?: string;
   discountType: 'percentage' | 'flat';
   discountValue: number;
   startDate: any; // Firestore Timestamp
   endDate: any; // Firestore Timestamp
   menuItemIds?: string[];
   outletIds?: string[];
-  status: 'active' | 'expired';
+  bannerImage?: string;
+  status: 'active' | 'scheduled' | 'expired';
   createdAt: any; // Firestore Timestamp
   updatedAt: any; // Firestore Timestamp
 };

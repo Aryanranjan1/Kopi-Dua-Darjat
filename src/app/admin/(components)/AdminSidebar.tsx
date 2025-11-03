@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -26,8 +25,8 @@ const navItems = [
   { href: '/admin/leads', icon: Users, label: 'Leads' },
   { href: '/admin/menu', icon: Coffee, label: 'Menu' },
   { href: '/admin/specials', icon: Sparkles, label: 'Daily Specials' },
-  { href: '/admin/outlets', icon: Store, label: 'Outlets' },
   { href: '/admin/promotions', icon: Tag, label: 'Promotions' },
+  { href: '/admin/outlets', icon: Store, label: 'Outlets' },
   { href: '/admin/blog', icon: BookOpen, label: 'Blog' },
   { href: '/admin/media', icon: ImageIcon, label: 'Media Library' },
   { href: '/admin/settings', icon: Settings, label: 'Settings' },
@@ -47,7 +46,8 @@ export default function AdminSidebar({
       href={href}
       className={cn(
         'flex items-center gap-3 rounded-lg px-3 py-2 text-zinc-300 transition-all hover:text-white hover:bg-zinc-700',
-        pathname === href && 'bg-zinc-800 text-white'
+        pathname.startsWith(href) && href !== '/admin/dashboard' && 'bg-zinc-800 text-white',
+        pathname === href && href === '/admin/dashboard' && 'bg-zinc-800 text-white'
       )}
       onClick={() => setIsOpen(false)}
     >

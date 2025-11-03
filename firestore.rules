@@ -4,58 +4,33 @@ service cloud.firestore {
   match /databases/{database}/documents {
     
     function isAdmin() {
-      // For MVP, we allow any signed-in user to be an "admin".
-      // In a real app, this would check for a custom claim:
-      // return request.auth != null && request.auth.token.role in ['admin', 'editor'];
-      return request.auth != null;
+      return request.auth != null && request.auth.token.admin == true;
     }
 
-    // Contact and Franchise submissions should be write-only for the public
-    match /contactMessages/{docId} {
-      allow read, delete: if isAdmin();
-      allow create: if true; // Anyone can send a message
-      allow update: if false;
-    }
-
-    match /franchiseApplications/{docId} {
-      allow read, delete: if isAdmin();
-      allow create: if true; // Anyone can apply
-      allow update: if false;
-    }
-
-    match /newsletterSubscribers/{docId} {
-      allow read, delete: if isAdmin(); // Admin can manage subscribers
-      allow create: if true; // Anyone can subscribe
-      allow update: if false;
-    }
-
-    // CMS Collections: Public can read, admin can write
+    // Publicly readable data
     match /menuGroups/{docId} {
       allow read: if true;
-      allow create, update, delete: if isAdmin();
+      allow write: if isAdmin();
     }
     
     match /menuCategories/{docId} {
       allow read: if true;
-      allow create, update, delete: if isAdmin();
+      allow write: if isAdmin();
     }
 
     match /menuItems/{docId} {
       allow read: if true;
-      allow create, update, delete: if isAdmin();
+      allow write: if isAdmin();
     }
 
     match /promotions/{docId} {
-      // Public users can get single promotions or list active ones.
-      // Admins can read everything.
-      allow read: if (resource.data.status == 'active') || isAdmin();
-      // Only admins can write.
-      allow create, update, delete: if isAdmin();
+      allow read: if true;
+      allow write: if isAdmin();
     }
 
     match /outlets/{docId} {
       allow read: if true;
-      allow create, update, delete: if isAdmin();
+      allow write: if isAdmin();
     }
     
     match /dailySpecials/{docId} {
@@ -63,9 +38,24 @@ service cloud.firestore {
         allow write: if isAdmin();
     }
 
-    // Default deny for any other collections
-    match /{path=**}/_/{docId} {
-      allow read, write: if false;
+    // Write-only collections for public submissions
+    match /contactMessages/{docId} {
+      allow read, delete: if isAdmin();
+      allow create: if true;
+      allow update: if false; // Users cannot update submissions
+    }
+
+    match /franchiseApplications/{docId} {
+      allow read, delete: if isAdmin();
+      allow create: if true;
+      allow update: if false;
+    }
+
+    match /newsletterSubscribers/{docId} {
+      // Admins can read/delete, anyone can create
+      allow read, delete: if isAdmin();
+      allow create: if true;
+      allow update: if false;
     }
   }
 }

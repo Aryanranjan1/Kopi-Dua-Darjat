@@ -10,6 +10,9 @@ import { Menu, MapPin } from 'lucide-react';
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
 import Image from 'next/image';
@@ -95,6 +98,10 @@ export default function Header() {
                     </Button>
                 </SheetTrigger>
                 <SheetContent side="left" className="w-[300px]">
+                    <SheetHeader className="sr-only">
+                      <SheetTitle>Mobile Menu</SheetTitle>
+                      <SheetDescription>Navigation links for Kopi Dua Darjat</SheetDescription>
+                    </SheetHeader>
                     <div className="flex flex-col h-full p-4">
                         <Link href="/" className="h-20 flex items-center p-0 m-0">
                            <Image src="/image/1.svg" alt="Kopi Dua Darjat Logo" width={80} height={80} className="hue-rotate-180 brightness-0" />
