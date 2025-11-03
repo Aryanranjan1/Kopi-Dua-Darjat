@@ -330,10 +330,13 @@ export default function DataMigrationPage() {
                 ...post,
                 createdAt: serverTimestamp(),
                 updatedAt: serverTimestamp(),
-                publishedAt: post.status === 'published' ? serverTimestamp() : undefined,
                 views: Math.floor(Math.random() * 2000) + 100,
                 likes: Math.floor(Math.random() * 500) + 10,
             };
+            if (post.status === 'published') {
+                (dataToSave as Blog).publishedAt = serverTimestamp();
+            }
+
             batch.set(blogRef, dataToSave);
             addStatus(`- Preparing post: "${post.title}"`);
             blogCount++;
