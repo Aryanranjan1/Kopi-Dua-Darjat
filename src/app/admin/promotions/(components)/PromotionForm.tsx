@@ -22,7 +22,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { CalendarIcon, Loader2, Check, ChevronsUpDown } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, addDoc, doc, setDoc, serverTimestamp, writeBatch, getDoc } from 'firebase/firestore';
+import { collection, addDoc, doc, setDoc, serverTimestamp, writeBatch, getDoc, query } from 'firebase/firestore';
 import type { Promotion, MenuItem, Outlet } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
@@ -73,8 +73,8 @@ export default function PromotionForm({ promotion, onSuccess }: PromotionFormPro
   const { toast } = useToast();
   const firestore = useFirestore();
 
-  const { data: menuItems } = useCollection<MenuItem>(useMemoFirebase(() => firestore ? collection(firestore, 'menuItems') : null, [firestore]));
-  const { data: outlets } = useCollection<Outlet>(useMemoFirebase(() => firestore ? collection(firestore, 'outlets') : null, [firestore]));
+  const { data: menuItems } = useCollection<MenuItem>(useMemoFirebase(() => firestore ? query(collection(firestore, 'menuItems')) : null, [firestore]));
+  const { data: outlets } = useCollection<Outlet>(useMemoFirebase(() => firestore ? query(collection(firestore, 'outlets')) : null, [firestore]));
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -349,23 +349,6 @@ function MultiSelectPopover({ title, options, selected, onChange }: {
     onChange: (selected: string[]) => void;
 }) {
     const [open, setOpen] = React.useState(false);
-    const [search, setSearch] = React.useState('');
-
-    const getScore = (label: string) => {
-        const lowerLabel = label.toLowerCase();
-        const lowerSearch = search.toLowerCase();
-        if (lowerLabel.startsWith(lowerSearch)) return 2;
-        if (lowerLabel.includes(lowerSearch)) return 1;
-        return 0;
-    };
-
-    const filteredOptions = React.useMemo(() => {
-        if (!search) return options;
-        return options
-            .map(option => ({ ...option, score: getScore(option.label) }))
-            .filter(option => option.score > 0)
-            .sort((a, b) => b.score - a.score);
-    }, [search, options]);
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
@@ -390,19 +373,18 @@ function MultiSelectPopover({ title, options, selected, onChange }: {
                 <Command className="bg-zinc-900 text-white border-zinc-800">
                     <CommandInput 
                         placeholder={`Search ${title.toLowerCase()}...`}
-                        value={search}
-                        onValueChange={setSearch}
                     />
                     <CommandList>
                         <CommandEmpty>No {title.toLowerCase()} found.</CommandEmpty>
                         <CommandGroup>
                             <ScrollArea className="h-48">
-                                {filteredOptions.map((option) => (
+                                {options.map((option) => {
+                                  const isSelected = selected.includes(option.value);
+                                  return (
                                     <CommandItem
                                         key={option.value}
-                                        value={option.label}
                                         onSelect={() => {
-                                            const newSelected = selected.includes(option.value)
+                                            const newSelected = isSelected
                                                 ? selected.filter((v) => v !== option.value)
                                                 : [...selected, option.value];
                                             onChange(newSelected);
@@ -411,12 +393,12 @@ function MultiSelectPopover({ title, options, selected, onChange }: {
                                         <Check
                                             className={cn(
                                                 "mr-2 h-4 w-4",
-                                                selected.includes(option.value) ? "opacity-100" : "opacity-0"
+                                                isSelected ? "opacity-100" : "opacity-0"
                                             )}
                                         />
                                         {option.label}
                                     </CommandItem>
-                                ))}
+                                )})}
                             </ScrollArea>
                         </CommandGroup>
                     </CommandList>
