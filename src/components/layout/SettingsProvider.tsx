@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, ReactNode } from 'react';
+import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react';
 import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import type { SiteSettings } from '@/lib/types';
@@ -20,9 +20,16 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     [firestore]
   );
   const { data: settings, isLoading } = useDoc<SiteSettings>(settingsRef);
+  const [isMounted, setIsMounted] = useState(false);
 
-  // You might want to show a global loader while settings are loading for the first time
-  if (isLoading && !settings) {
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+
+  // While loading and if the component has mounted on the client, show the loader.
+  // This prevents a server/client mismatch.
+  if (isLoading && isMounted && !settings) {
     return (
       <div className="flex h-screen items-center justify-center bg-background">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
