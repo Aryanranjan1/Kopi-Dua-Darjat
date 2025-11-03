@@ -3,8 +3,8 @@
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { allDrinks, outlets } from '@/lib/data';
-import type { Outlet } from '@/lib/types';
+import { outlets } from '@/lib/data';
+import type { Outlet, MenuItem } from '@/lib/types';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { calculateDistance } from '@/lib/geolocation';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
@@ -20,15 +20,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+
 
 const OUTLETS_PER_PAGE = 8;
 type SortOption = 'Nearest' | 'Alphabetical';
 
 function OutletShowcaseContent() {
   const searchParams = useSearchParams();
-  const itemParam = searchParams.get('item');
-  const promotionParam = searchParams.get('promotion');
-  const categoryParam = searchParams.get('category');
+  const firestore = useFirestore();
+
+  const [itemParam, setItemParam] = useState(searchParams.get('item'));
   
   const {
     isLoading: isGeolocationLoading,
@@ -40,6 +43,8 @@ function OutletShowcaseContent() {
   const [currentPage, setCurrentPage] = useState(1);
   const [activeSort, setActiveSort] = useState<SortOption>('Nearest');
   const [selectedState, setSelectedState] = useState('All');
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [isLoadingMenuItems, setIsLoadingMenuItems] = useState(false);
 
   const allStates = useMemo(() => {
     const states = new Set<string>(['All']);
@@ -48,11 +53,24 @@ function OutletShowcaseContent() {
   }, []);
 
   useEffect(() => {
-    // Automatically get position on component mount if not already available
     if (!position) {
       getPosition();
     }
   }, [getPosition, position]);
+
+  useEffect(() => {
+    if(firestore && !menuItems.length) {
+      const fetchItems = async () => {
+        setIsLoadingMenuItems(true);
+        const itemsQuery = query(collection(firestore, 'menuItems'));
+        const itemsSnap = await getDocs(itemsQuery);
+        setMenuItems(itemsSnap.docs.map(d => ({ id: d.id, ...d.data() } as MenuItem)));
+        setIsLoadingMenuItems(false);
+      }
+      fetchItems();
+    }
+  }, [firestore, menuItems.length]);
+
 
   const { filteredAndSortedOutlets, dynamicTitle } = useMemo(() => {
     let processedOutlets: Outlet[] = outlets.map(outlet => ({
@@ -64,22 +82,19 @@ function OutletShowcaseContent() {
     
     let dynamicTitle = "Outlet Showcase";
 
-    // Handle redirection filtering
-    if (itemParam) {
-      const drink = allDrinks.find(d => d.slug === itemParam);
-      if (drink) {
-        dynamicTitle = `Outlets for ${drink.name}`;
-        // For this example, we assume all outlets have all items.
-        // In a real app, you'd filter outlets based on which ones stock `itemParam`.
-      }
-    } else if (promotionParam) {
-        const drink = allDrinks.find(d => d.slug === promotionParam);
-        if(drink) {
-            dynamicTitle = `Outlets with the ${drink.name} promotion`;
+    // Handle redirection filtering by item slug
+    if (itemParam && menuItems.length > 0) {
+      const selectedItem = menuItems.find(item => item.slug === itemParam);
+      if (selectedItem) {
+        dynamicTitle = `Outlets for ${selectedItem.name}`;
+        if (selectedItem.isGeneral || !selectedItem.outletIds || selectedItem.outletIds.length === 0) {
+          // Available everywhere, no change to processedOutlets
+        } else {
+          // Filter outlets to only those that carry the item
+          const itemOutletIds = new Set(selectedItem.outletIds);
+          processedOutlets = processedOutlets.filter(outlet => itemOutletIds.has(outlet.id));
         }
-    } else if (categoryParam) {
-        const categoryName = categoryParam.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-        dynamicTitle = `Outlets with the ${categoryName}`;
+      }
     }
 
     // Filter by state
@@ -109,7 +124,7 @@ function OutletShowcaseContent() {
     });
 
     return { filteredAndSortedOutlets: processedOutlets, dynamicTitle };
-  }, [position, selectedState, searchQuery, activeSort, itemParam, promotionParam, categoryParam]);
+  }, [position, selectedState, searchQuery, activeSort, itemParam, menuItems]);
 
   const totalPages = Math.ceil(filteredAndSortedOutlets.length / OUTLETS_PER_PAGE);
   const paginatedOutlets = filteredAndSortedOutlets.slice(
@@ -125,11 +140,13 @@ function OutletShowcaseContent() {
   const handleStateChange = (value: string) => {
     setSelectedState(value);
     setCurrentPage(1);
+    setItemParam(null); // Clear item filter when changing state
   }
   
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
     setCurrentPage(1);
+    setItemParam(null); // Clear item filter when searching
   }
 
   return (
@@ -180,7 +197,11 @@ function OutletShowcaseContent() {
         </div>
         
         <AnimateOnScroll animationType="fadeIn" delay={0.2}>
-          {paginatedOutlets.length > 0 ? (
+          {isLoadingMenuItems ? (
+             <div className="flex justify-center py-16 text-muted-foreground">
+                <Loader2 className="h-8 w-8 animate-spin" />
+             </div>
+          ) : paginatedOutlets.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {paginatedOutlets.map((outlet) => (
                 <OutletShowcaseCard key={outlet.id} outlet={outlet} userLocation={position} />
@@ -207,7 +228,7 @@ function OutletShowcaseContent() {
 
 export default function OutletShowcase() {
   return (
-    <Suspense fallback={<div>Loading outlets...</div>}>
+    <Suspense fallback={<div className="h-screen flex items-center justify-center"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>}>
       <OutletShowcaseContent />
     </Suspense>
   )
