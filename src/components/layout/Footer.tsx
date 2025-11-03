@@ -3,8 +3,10 @@ import Image from 'next/image';
 import { Facebook, Instagram, Twitter, Music2 } from 'lucide-react';
 import InteractiveMap from '../home/InteractiveMap';
 import { Card } from '../ui/card';
+import { useSettings } from './SettingsProvider';
 
 export default function SiteFooter() {
+  const { settings } = useSettings();
   const currentYear = new Date().getFullYear();
 
   return (
@@ -16,21 +18,15 @@ export default function SiteFooter() {
               href="/"
               className="text-primary text-2xl font-headline font-bold"
             >
-              Kopi Dua Darjat
+              {settings?.brand?.name || 'Kopi Dua Darjat'}
             </Link>
             <p className="mt-4 text-sm text-gray-400">
-              Antara Warisan & Artisan. Experience the perfect blend of heritage and artisan coffee, crafted with passion and served with warmth.
+              {settings?.brand?.tagline || 'Antara Warisan & Artisan. Experience the perfect blend of heritage and artisan coffee, crafted with passion and served with warmth.'}
             </p>
             <div className="flex space-x-4 mt-6">
-              <Link href="#" className="text-gray-400 hover:text-primary">
-                <Facebook className="h-6 w-6" />
-              </Link>
-              <Link href="#" className="text-gray-400 hover:text-primary">
-                <Instagram className="h-6 w-6" />
-              </Link>
-              <Link href="#" className="text-gray-400 hover:text-primary">
-                <Music2 className="h-6 w-6" />
-              </Link>
+              {settings?.socials?.facebook && <Link href={settings.socials.facebook} className="text-gray-400 hover:text-primary"><Facebook className="h-6 w-6" /></Link>}
+              {settings?.socials?.instagram && <Link href={settings.socials.instagram} className="text-gray-400 hover:text-primary"><Instagram className="h-6 w-6" /></Link>}
+              {settings?.socials?.tiktok && <Link href={settings.socials.tiktok} className="text-gray-400 hover:text-primary"><Music2 className="h-6 w-6" /></Link>}
             </div>
           </div>
           <div>
@@ -57,11 +53,11 @@ export default function SiteFooter() {
             </ul>
           </div>
           <div className="md:col-span-1 flex items-center justify-center">
-            <Image src="/image/1.svg" alt="Kopi Dua Darjat Logo" width={300} height={300} />
+             {settings?.brand?.logoLight && <Image src={settings.brand.logoLight} alt={settings.brand.name} width={300} height={300} />}
           </div>
         </div>
         <div className="mt-12 border-t border-gray-800 pt-8 text-center text-sm text-gray-500">
-          <p>&copy; {currentYear} Kopi Dua Darjat. All rights reserved.</p>
+          <p>&copy; {currentYear} {settings?.brand?.name || 'Kopi Dua Darjat'}. All rights reserved.</p>
         </div>
       </div>
     </footer>

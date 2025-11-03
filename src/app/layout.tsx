@@ -6,6 +6,11 @@ import { Toaster } from '@/components/ui/toaster';
 import { Playfair_Display, PT_Sans } from 'next/font/google';
 import { FirebaseClientProvider } from '@/firebase';
 import AppLayout from './AppLayout';
+import { SettingsProvider } from '@/components/layout/SettingsProvider';
+import { doc, getDoc, getFirestore } from 'firebase/firestore';
+import { initializeFirebase } from '@/firebase';
+import type { SiteSettings } from '@/lib/types';
+
 
 const playfairDisplay = Playfair_Display({
   subsets: ['latin'],
@@ -20,15 +25,46 @@ const ptSans = PT_Sans({
   display: 'swap',
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: 'Kopi Dua Darjat - Antara Warisan & Artisan',
-    template: '%s | Kopi Dua Darjat',
-  },
-  description:
-    'Experience the perfect blend of heritage and artisan coffee. 50+ outlets serving quality Kopi Kampung from RM3.',
-  keywords: ['Kopi Dua Darjat', 'kopi kampung', 'artisan coffee', 'malaysian cafe', 'franchise kopi'],
-};
+// This function can be called at the layout level to fetch settings
+// It's a server-side function, so it runs once per request on the server.
+async function getSiteSettings(): Promise<SiteSettings | null> {
+    try {
+        // We need a Firestore instance on the server.
+        // We can create a temporary one or use a dedicated server-side helper.
+        const { firestore } = initializeFirebase();
+        const settingsDoc = await getDoc(doc(firestore, "settings", "main"));
+        if (settingsDoc.exists()) {
+            return settingsDoc.data() as SiteSettings;
+        }
+        return null;
+    } catch (error) {
+        console.error("Failed to fetch site settings:", error);
+        return null; // Return null on error
+    }
+}
+
+
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+
+  return {
+    title: {
+      default: settings?.meta?.defaultTitle || 'Kopi Dua Darjat - Antara Warisan & Artisan',
+      template: `%s | ${settings?.brand?.name || 'Kopi Dua Darjat'}`,
+    },
+    description: settings?.meta?.defaultDescription || 'Experience the perfect blend of heritage and artisan coffee. 50+ outlets serving quality Kopi Kampung from RM3.',
+    keywords: settings?.meta?.keywords || ['Kopi Dua Darjat', 'kopi kampung', 'artisan coffee', 'malaysian cafe', 'franchise kopi'],
+    icons: {
+      icon: settings?.brand?.favicon || '/favicon.ico',
+    },
+    openGraph: {
+      title: settings?.meta?.defaultTitle,
+      description: settings?.meta?.defaultDescription,
+      images: settings?.meta?.defaultImage ? [settings.meta.defaultImage] : [],
+    },
+  };
+}
+
 
 export default function RootLayout({
   children,
@@ -46,7 +82,9 @@ export default function RootLayout({
         )}
       >
         <FirebaseClientProvider>
-          <AppLayout>{children}</AppLayout>
+          <SettingsProvider>
+            <AppLayout>{children}</AppLayout>
+          </SettingsProvider>
           <Toaster />
         </FirebaseClientProvider>
       </body>

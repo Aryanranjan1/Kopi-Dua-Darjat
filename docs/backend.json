@@ -1,368 +1,90 @@
+
 {
   "entities": {
+    "SiteSettings": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "SiteSettings",
+      "type": "object",
+      "description": "Centralized settings for the entire website.",
+      "properties": {
+        "brand": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string" },
+            "favicon": { "type": "string", "format": "uri" },
+            "logoLight": { "type": "string", "format": "uri" },
+            "logoDark": { "type": "string", "format": "uri" },
+            "tagline": { "type": "string" },
+            "primaryColor": { "type": "string" },
+            "accentColor": { "type": "string" }
+          }
+        },
+        "founders": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "role": { "type": "string" },
+              "image": { "type": "string", "format": "uri" },
+              "quote": { "type": "string" },
+              "contact": { "type": "string", "format": "email" }
+            }
+          }
+        },
+        "contact": {
+          "type": "object",
+          "properties": {
+            "email": { "type": "string", "format": "email" },
+            "phone": { "type": "string" },
+            "address": { "type": "string" },
+            "googleMapsLink": { "type": "string", "format": "uri" },
+            "businessHours": { "type": "string" }
+          }
+        },
+        "socials": {
+          "type": "object",
+          "properties": {
+            "instagram": { "type": "string", "format": "uri" },
+            "facebook": { "type": "string", "format": "uri" },
+            "tiktok": { "type": "string", "format": "uri" },
+            "youtube": { "type": "string", "format": "uri" },
+            "whatsapp": { "type": "string", "format": "uri" }
+          }
+        },
+        "automation": {
+          "type": "object",
+          "properties": {
+            "newsletterIntegration": { "type": "boolean" },
+            "googleBusinessSync": { "type": "boolean" },
+            "autoBackup": { "type": "boolean" },
+            "appCheckEnforced": { "type": "boolean" }
+          }
+        },
+        "meta": {
+          "type": "object",
+          "properties": {
+            "defaultTitle": { "type": "string" },
+            "defaultDescription": { "type": "string" },
+            "defaultImage": { "type": "string", "format": "uri" },
+            "keywords": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "lastUpdated": { "type": "string", "format": "date-time" },
+        "updatedBy": { "type": "string" }
+      }
+    },
     "Outlet": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Outlet",
       "type": "object",
       "description": "Represents a Kopi Dua Darjat outlet location.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the outlet entity."
-        },
-        "name": {
-          "type": "string",
-          "description": "Name of the outlet."
-        },
-        "slug": {
-          "type": "string",
-          "description": "URL-friendly slug for the outlet."
-        },
-        "address": {
-          "type": "string",
-          "description": "Physical address of the outlet."
-        },
-        "phone": {
-          "type": "string",
-          "description": "Phone number of the outlet."
-        },
-        "geo": {
-          "type": "string",
-          "description": "Latitude and longitude coordinates of the outlet."
-        },
-        "openingHours": {
-          "type": "string",
-          "description": "Opening hours of the outlet."
-        },
-        "isOpenToday": {
-          "type": "boolean",
-          "description": "Indicates if the outlet is open today."
-        },
-        "images": {
-          "type": "array",
-          "description": "Array of image URLs for the outlet.",
-          "items": {
-            "type": "string"
-          }
-        },
-        "features": {
-          "type": "array",
-          "description": "Array of features offered at the outlet.",
-          "items": {
-            "type": "string"
-          }
-        },
-        "googlePlaceId": {
-          "type": "string",
-          "description": "Google Place ID for the outlet."
-        },
-        "promoIds": {
-          "type": "array",
-          "description": "References to Promotions. (Relationship: Outlet 1:N Promotion)",
-          "items": {
-            "type": "string"
-          }
-        },
-        "metaTitle": {
-          "type": "string",
-          "description": "Meta title for SEO."
-        },
-        "metaDescription": {
-          "type": "string",
-          "description": "Meta description for SEO."
-        }
-      },
-      "required": [
-        "id",
-        "name",
-        "address"
-      ]
-    },
-    "Drink": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Drink",
-      "type": "object",
-      "description": "Represents a drink item on the Kopi Dua Darjat menu.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the drink entity."
-        },
-        "name": {
-          "type": "string",
-          "description": "Name of the drink."
-        },
-        "slug": {
-          "type": "string",
-          "description": "URL-friendly slug for the drink."
-        },
-        "priceSmall": {
-          "type": "number",
-          "description": "Price of the small size drink."
-        },
-        "priceLarge": {
-          "type": "number",
-          "description": "Price of the large size drink."
-        },
-        "image": {
-          "type": "string",
-          "description": "URL of the drink image."
-        },
-        "description": {
-          "type": "string",
-          "description": "Description of the drink."
-        },
-        "tags": {
-          "type": "array",
-          "description": "Tags associated with the drink.",
-          "items": {
-            "type": "string"
-          }
-        },
-        "allergens": {
-          "type": "array",
-          "description": "List of allergens present in the drink.",
-          "items": {
-            "type": "string"
-          }
-        },
-        "isFeatured": {
-          "type": "boolean",
-          "description": "Indicates if the drink is featured."
-        }
-      },
-      "required": [
-        "id",
-        "name",
-        "priceSmall"
-      ]
-    },
-    "Promotion": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Promotion",
-      "type": "object",
-      "description": "Represents a promotional offer.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the promotion entity."
-        },
-        "title": {
-          "type": "string",
-          "description": "Title of the promotion."
-        },
-        "slug": {
-          "type": "string",
-          "description": "URL-friendly slug for the promotion."
-        },
-        "description": {
-          "type": "string",
-          "description": "Description of the promotion."
-        },
-        "startDate": {
-          "type": "string",
-          "description": "Start date of the promotion.",
-          "format": "date-time"
-        },
-        "endDate": {
-          "type": "string",
-          "description": "End date of the promotion.",
-          "format": "date-time"
-        },
-        "bannerImage": {
-          "type": "string",
-          "description": "URL of the banner image for the promotion."
-        },
-        "terms": {
-          "type": "string",
-          "description": "Terms and conditions of the promotion."
-        },
-        "outletScope": {
-          "type": "array",
-          "description": "References to Outlets. (Relationship: Outlet N:N Promotion) Array of outlet IDs to which the promotion applies.",
-          "items": {
-            "type": "string"
-          }
-        },
-        "callToAction": {
-          "type": "string",
-          "description": "Call to action text for the promotion."
-        }
-      },
-      "required": [
-        "id",
-        "title",
-        "startDate",
-        "endDate"
-      ]
-    },
-    "FranchiseLead": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "FranchiseLead",
-      "type": "object",
-      "description": "Represents a franchise inquiry submission.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the franchise lead entity."
-        },
-        "name": {
-          "type": "string",
-          "description": "Name of the franchise lead."
-        },
-        "phone": {
-          "type": "string",
-          "description": "Phone number of the franchise lead."
-        },
-        "email": {
-          "type": "string",
-          "description": "Email address of the franchise lead.",
-          "format": "email"
-        },
-        "city": {
-          "type": "string",
-          "description": "City of the franchise lead."
-        },
-        "budget": {
-          "type": "string",
-          "description": "Budget of the franchise lead."
-        },
-        "preferredLocation": {
-          "type": "string",
-          "description": "Preferred location of the franchise lead."
-        },
-        "experience": {
-          "type": "string",
-          "description": "Experience of the franchise lead."
-        },
-        "notes": {
-          "type": "string",
-          "description": "Additional notes from the franchise lead."
-        },
-        "consent": {
-          "type": "boolean",
-          "description": "Consent status of the franchise lead."
-        },
-        "status": {
-          "type": "string",
-          "description": "Status of the franchise lead (new, contacted, partner).",
-          "items": {
-            "type": "string"
-          }
-        }
-      },
-      "required": [
-        "id",
-        "name",
-        "email"
-      ]
-    },
-    "BlogArticle": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "BlogArticle",
-      "type": "object",
-      "description": "Represents a blog article.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the blog article entity."
-        },
-        "title": {
-          "type": "string",
-          "description": "Title of the blog article."
-        },
-        "slug": {
-          "type": "string",
-          "description": "URL-friendly slug for the blog article."
-        },
-        "excerpt": {
-          "type": "string",
-          "description": "Excerpt of the blog article."
-        },
-        "content": {
-          "type": "string",
-          "description": "Rich text content of the blog article."
-        },
-        "author": {
-          "type": "string",
-          "description": "Author of the blog article."
-        },
-        "publishDate": {
-          "type": "string",
-          "description": "Date of publication for the blog article.",
-          "format": "date-time"
-        },
-        "heroImage": {
-          "type": "string",
-          "description": "URL of the hero image for the blog article."
-        },
-        "tags": {
-          "type": "array",
-          "description": "Tags associated with the blog article.",
-          "items": {
-            "type": "string"
-          }
-        },
-        "canonicalUrl": {
-          "type": "string",
-          "description": "Canonical URL of the blog article.",
-          "format": "uri"
-        },
-        "metaTitle": {
-          "type": "string",
-          "description": "Meta title for SEO."
-        },
-        "metaDescription": {
-          "type": "string",
-          "description": "Meta description for SEO."
-        }
-      },
-      "required": [
-        "id",
-        "title",
-        "content"
-      ]
-    },
-    "SiteSetting": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "SiteSetting",
-      "type": "object",
-      "description": "Represents site-wide settings.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the site setting entity."
-        },
-        "heroImage": {
-          "type": "string",
-          "description": "URL of the hero image for the site."
-        },
-        "heroText": {
-          "type": "string",
-          "description": "Text for the hero section of the site."
-        },
-        "featuredDrinks": {
-          "type": "array",
-          "description": "References to Drinks. (Relationship: SiteSetting 1:N Drink) Array of featured drink IDs.",
-          "items": {
-            "type": "string"
-          }
-        },
-        "promotions": {
-          "type": "array",
-          "description": "References to Promotions. (Relationship: SiteSetting 1:N Promotion) Array of promotion IDs.",
-          "items": {
-            "type": "string"
-          }
-        },
-        "stats": {
-          "type": "string",
-          "description": "Site statistics."
-        }
-      },
-      "required": [
-        "id"
-      ]
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "slug": { "type": "string" },
+        "address": { "type": "string" }
+      }
     }
   },
   "auth": {
@@ -377,115 +99,29 @@
         "path": "/outlets/{outletId}",
         "definition": {
           "entityName": "Outlet",
-          "schema": {
-            "$ref": "#/backend/entities/Outlet"
-          },
-          "description": "Stores Kopi Dua Darjat outlet information. Includes denormalized 'promoIds' for efficient retrieval of promotions associated with each outlet.",
-          "params": [
-            {
-              "name": "outletId",
-              "description": "Unique identifier for the outlet."
-            }
-          ]
+          "schema": { "$ref": "#/entities/Outlet" },
+          "description": "Stores Kopi Dua Darjat outlet information.",
+          "params": [{ "name": "outletId", "description": "Unique identifier for the outlet." }]
         }
       },
       {
-        "path": "/drinks/{drinkId}",
+        "path": "/settings/{docId}",
         "definition": {
-          "entityName": "Drink",
-          "schema": {
-            "$ref": "#/backend/entities/Drink"
-          },
-          "description": "Stores Kopi Dua Darjat drink menu items.",
-          "params": [
-            {
-              "name": "drinkId",
-              "description": "Unique identifier for the drink."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/promotions/{promotionId}",
-        "definition": {
-          "entityName": "Promotion",
-          "schema": {
-            "$ref": "#/backend/entities/Promotion"
-          },
-          "description": "Stores promotional offers. Includes 'outletScope' which lists the outlets the promotion applies to.",
-          "params": [
-            {
-              "name": "promotionId",
-              "description": "Unique identifier for the promotion."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/franchiseLeads/{franchiseLeadId}",
-        "definition": {
-          "entityName": "FranchiseLead",
-          "schema": {
-            "$ref": "#/backend/entities/FranchiseLead"
-          },
-          "description": "Stores franchise inquiry submissions.",
-          "params": [
-            {
-              "name": "franchiseLeadId",
-              "description": "Unique identifier for the franchise lead."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/blogArticles/{blogArticleId}",
-        "definition": {
-          "entityName": "BlogArticle",
-          "schema": {
-            "$ref": "#/backend/entities/BlogArticle"
-          },
-          "description": "Stores blog articles.",
-          "params": [
-            {
-              "name": "blogArticleId",
-              "description": "Unique identifier for the blog article."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/siteSettings/{siteSettingId}",
-        "definition": {
-          "entityName": "SiteSetting",
-          "schema": {
-            "$ref": "#/backend/entities/SiteSetting"
-          },
-          "description": "Stores site-wide settings.",
-          "params": [
-            {
-              "name": "siteSettingId",
-              "description": "Unique identifier for the site settings document (e.g., 'global')."
-            }
-          ]
+          "entityName": "SiteSettings",
+          "schema": { "$ref": "#/entities/SiteSettings" },
+          "description": "Stores global website settings in a single document, typically with ID 'main'.",
+          "params": [{ "name": "docId", "description": "The ID of the settings document (e.g., 'main')." }]
         }
       },
       {
         "path": "/roles_admin/{userId}",
         "definition": {
           "entityName": "adminRole",
-          "schema": {
-            "$ref": "#/backend/entities/SiteSetting"
-          },
+          "schema": { "$ref": "#/entities/SiteSetting" },
           "description": "Documents in this collection indicate admin role. Existence of document implies admin rights.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "The ID of the user with admin permissions."
-            }
-          ]
+          "params": [{ "name": "userId", "description": "The ID of the user with admin permissions." }]
         }
       }
-    ],
-    "reasoning": "The Firestore structure is designed to efficiently manage Kopi Dua Darjat's data while adhering to the core principles of Authorization Independence, Clarity of Intent, DBAC, and QAPs.  It leverages structural segregation and denormalization to enhance security and simplify rules. The structure explicitly avoids hierarchical authorization dependencies, enabling atomic operations and easier debugging.  All document IDs should be generated client-side to avoid collisions and improve write performance.\n\n*Authorization Independence:*\nAuthorization Independence is achieved primarily through structural segregation and path-based authorization where applicable.  For collaborative data, Membership Maps, if needed, would have been denormalized to avoid `get()` calls in security rules.\n\n*QAPs Support:*\nThe structure supports secure `list` operations by ensuring that each collection has a homogeneous security posture (Structural Segregation). Data with different access requirements are stored in separate collections, allowing straightforward rules. Global roles use existence checks, enabling efficient authorization checks.\n\n*Admin Access:*\nAdmin access relies on checking the existence of a document in a dedicated collection (`/roles_admin/{uid}`), simplifying the security rules and avoiding complex role hierarchies."
+    ]
   }
 }

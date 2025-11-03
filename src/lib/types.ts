@@ -1,4 +1,4 @@
-
+import { Timestamp } from "firebase/firestore";
 
 export type NavItem = {
   title: string;
@@ -206,4 +206,54 @@ export type NewsletterSubscriber = {
   id: string;
   email: string;
   createdAt: any; // Firestore Timestamp
+};
+
+export type Founder = {
+  name: string;
+  role: string;
+  image: string;
+  quote: string;
+  contact: string;
+};
+
+export type SiteSettings = {
+  id: 'main';
+  brand: {
+    name: string;
+    favicon: string;
+    logoLight: string;
+    logoDark: string;
+    tagline: string;
+    primaryColor: string;
+    accentColor: string;
+  };
+  founders: Founder[];
+  contact: {
+    email: string;
+    phone: string;
+    address: string;
+    googleMapsLink: string;
+    businessHours: string;
+  };
+  socials: {
+    instagram: string;
+    facebook: string;
+    tiktok: string;
+    youtube: string;
+    whatsapp: string;
+  };
+  automation: {
+    newsletterIntegration: boolean;
+    googleBusinessSync: boolean;
+    autoBackup: boolean;
+    appCheckEnforced: boolean;
+  };
+  meta: {
+    defaultTitle: string;
+    defaultDescription: string;
+    defaultImage: string;
+    keywords?: string[];
+  };
+  lastUpdated: Timestamp;
+  updatedBy: string;
 };
