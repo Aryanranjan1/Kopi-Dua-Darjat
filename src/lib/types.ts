@@ -1,4 +1,5 @@
 
+
 export type NavItem = {
   title: string;
   href: string;
@@ -105,7 +106,45 @@ export type Outlet = {
   updatedAt?: any;
 };
 
+// --- BLOG ---
 
+export type Blog = {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  coverImage: {
+    url: string;
+    alt: string;
+    caption?: string;
+  };
+  author: {
+    name: string;
+    photo?: string;
+    bio?: string;
+  };
+  tags?: string[];
+  category: string;
+  status: 'published' | 'draft';
+  seo?: {
+    title?: string;
+    description?: string;
+    keywords?: string[];
+    metaImage?: string;
+    ogTitle?: string;
+    ogDescription?: string;
+    ogImage?: string;
+  };
+  content: string; // Storing as Markdown/HTML string for simplicity
+  createdAt: any; // Firestore Timestamp
+  updatedAt: any; // Firestore Timestamp
+  publishedAt?: any; // Firestore Timestamp
+  views?: number;
+  likes?: number;
+};
+
+
+// Old blog type, to be replaced by the one above
 export type BlogPost = {
   id: string;
   title: string;
