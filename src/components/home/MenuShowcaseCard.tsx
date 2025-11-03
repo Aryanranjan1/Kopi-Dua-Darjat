@@ -7,16 +7,22 @@ import type { MenuItem } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { Badge } from '../ui/badge';
 
 interface MenuShowcaseCardProps {
   drink: MenuItem;
 }
 
 export default function MenuShowcaseCard({ drink }: MenuShowcaseCardProps) {
+  const hasPromotion = drink.promotionIds && drink.promotionIds.length > 0;
+
   return (
     <Card className="bg-black text-white border-zinc-800 rounded-3xl w-full h-full flex flex-col">
       <CardContent className="p-4 flex flex-col flex-grow">
         <div className="relative aspect-[3/4] w-full rounded-lg overflow-hidden mb-4 bg-zinc-800/50">
+          {hasPromotion && (
+             <Badge className="absolute top-2 right-2 bg-accent text-accent-foreground z-10 shadow-lg">On Offer</Badge>
+          )}
           <Image
             src={drink.imageUrl}
             alt={drink.name}

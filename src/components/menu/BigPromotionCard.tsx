@@ -14,10 +14,14 @@ interface BigPromotionCardProps {
 }
 
 export default function BigPromotionCard({ drink }: BigPromotionCardProps) {
+  const hasPromotion = drink.promotionIds && drink.promotionIds.length > 0;
   return (
     <div className="p-1 h-full">
         <Card className="rounded-3xl bg-primary/65 overflow-hidden h-full flex flex-col">
             <CardContent className="relative p-4 flex flex-col items-center text-center flex-grow">
+              {hasPromotion && (
+                <Badge className="absolute top-2 right-2 bg-accent text-accent-foreground z-10 shadow-lg">On Offer</Badge>
+              )}
             <div className="relative w-full aspect-[1] mb-4 group">
                 <Image
                 src={drink.imageUrl}

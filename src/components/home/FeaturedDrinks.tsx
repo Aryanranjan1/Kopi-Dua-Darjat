@@ -17,6 +17,7 @@ import { Button } from '../ui/button';
 import { ArrowUpRight, Star } from 'lucide-react';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import Link from 'next/link';
+import { Badge } from '../ui/badge';
 
 export default function FeaturedDrinks() {
   const firestore = useFirestore();
@@ -72,11 +73,16 @@ export default function FeaturedDrinks() {
             className="w-full"
           >
             <CarouselContent className="-ml-4 py-16">
-              {drinksToShow?.map((drink) => (
+              {drinksToShow?.map((drink) => {
+                const hasPromotion = drink.promotionIds && drink.promotionIds.length > 0;
+                return (
                 <CarouselItem key={drink.id} className="basis-full md:basis-1/2 lg:basis-1/3 pl-4 overflow-visible">
                   <div className="p-1">
                     <Card className="rounded-3xl bg-primary/65 overflow-visible">
                       <CardContent className="relative p-4 pt-32 flex flex-col items-center text-center">
+                        {hasPromotion && (
+                            <Badge className="absolute top-2 right-2 bg-accent text-accent-foreground z-10 shadow-lg">On Offer</Badge>
+                        )}
                         <div className="relative w-full h-80 -mt-48 mb-4 group">
                           <Image
                             src={drink.imageUrl}
@@ -107,7 +113,7 @@ export default function FeaturedDrinks() {
                     </Card>
                   </div>
                 </CarouselItem>
-              ))}
+              )})}
             </CarouselContent>
             <CarouselPrevious className="left-2 sm:left-4" />
             <CarouselNext className="right-2 sm:right-4" />

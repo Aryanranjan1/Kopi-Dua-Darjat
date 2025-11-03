@@ -14,10 +14,14 @@ interface PromotionCarouselCardProps {
 }
 
 export default function PromotionCarouselCard({ drink }: PromotionCarouselCardProps) {
+  const hasPromotion = drink.promotionIds && drink.promotionIds.length > 0;
   return (
     <div className="p-1">
       <Card className="rounded-3xl bg-primary/65 overflow-visible">
         <CardContent className="relative p-4 pt-32 flex flex-col items-center text-center">
+          {hasPromotion && (
+            <Badge className="absolute top-2 right-2 bg-accent text-accent-foreground z-10 shadow-lg">On Offer</Badge>
+          )}
           <div className="relative w-full h-80 -mt-48 mb-4 group">
             <Image
               src={drink.imageUrl}
