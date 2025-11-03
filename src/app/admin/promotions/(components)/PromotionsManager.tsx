@@ -44,6 +44,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
 
 const getStatus = (promo: Promotion): 'active' | 'scheduled' | 'expired' => {
   const now = new Date();
