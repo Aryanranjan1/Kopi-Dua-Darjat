@@ -59,7 +59,7 @@ export default function MenuPage() {
             }
         });
 
-        return { groupedCategories: grouped, standaloneCategories };
+        return { groupedCategories: grouped, standaloneCategories: standalone };
     }, [categories]);
 
     const getItemsByCategoryId = (categoryId: string) => {
