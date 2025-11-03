@@ -38,6 +38,7 @@ const formSchema = z.object({
   categoryId: z.string({ required_error: 'Please select a category.' }),
   status: z.enum(['draft', 'published']),
   tags: z.string().optional(),
+  displayOrder: z.coerce.number().int().min(0, 'Display order must be a positive number.'),
 });
 
 type MenuItemFormValues = z.infer<typeof formSchema>;
@@ -68,6 +69,7 @@ export default function MenuItemForm({ menuItem, onSuccess }: MenuItemFormProps)
       categoryId: menuItem?.categoryId || '',
       status: menuItem?.status || 'draft',
       tags: menuItem?.tags?.join(', ') || '',
+      displayOrder: menuItem?.displayOrder || 0,
     },
   });
 
@@ -198,18 +200,35 @@ export default function MenuItemForm({ menuItem, onSuccess }: MenuItemFormProps)
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="tags"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Tags (Optional)</FormLabel>
-              <FormControl><Input placeholder="e.g., featured, new, best-seller" {...field} className={inputStyles} /></FormControl>
-              <FormDescription>Comma-separated tags for filtering (like on the homepage).</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormField
+            control={form.control}
+            name="tags"
+            render={({ field }) => (
+                <FormItem>
+                <FormLabel>Tags (Optional)</FormLabel>
+                <FormControl><Input placeholder="e.g., featured, new" {...field} className={inputStyles} /></FormControl>
+                <FormDescription>Comma-separated tags for filtering.</FormDescription>
+                <FormMessage />
+                </FormItem>
+            )}
+            />
+             <FormField
+                control={form.control}
+                name="displayOrder"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Display Order</FormLabel>
+                    <FormControl>
+                        <Input type="number" placeholder="0" {...field} className={inputStyles} />
+                    </FormControl>
+                    <FormDescription>Order within the category (lower numbers first).</FormDescription>
+                    <FormMessage />
+                    </FormItem>
+                )}
+            />
+        </div>
+
         
         <FormField
             control={form.control}

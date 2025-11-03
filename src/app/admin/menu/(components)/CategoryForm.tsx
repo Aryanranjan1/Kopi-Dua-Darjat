@@ -27,6 +27,7 @@ const formSchema = z.object({
   description: z.string().optional(),
   parentId: z.string().optional(),
   group: z.string().optional(),
+  displayOrder: z.coerce.number().int().min(0, 'Display order must be a positive number.'),
 });
 
 type CategoryFormValues = z.infer<typeof formSchema>;
@@ -55,6 +56,7 @@ export default function CategoryForm({ category, onSuccess }: CategoryFormProps)
       description: category?.description || '',
       parentId: category?.parentId || 'null',
       group: category?.group || '',
+      displayOrder: category?.displayOrder || 0,
     },
   });
 
@@ -148,20 +150,36 @@ export default function CategoryForm({ category, onSuccess }: CategoryFormProps)
                 </FormItem>
             )}
         />
-        <FormField
-            control={form.control}
-            name="group"
-            render={({ field }) => (
-                <FormItem>
-                <FormLabel>Group (Optional)</FormLabel>
-                <FormControl>
-                    <Input placeholder="e.g., NAK KOPI" {...field} className={inputStyles} />
-                </FormControl>
-                 <FormDescription>Assigns this category to a top-level group on the menu page.</FormDescription>
-                <FormMessage />
-                </FormItem>
-            )}
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormField
+                control={form.control}
+                name="group"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Group (Optional)</FormLabel>
+                    <FormControl>
+                        <Input placeholder="e.g., NAK KOPI" {...field} className={inputStyles} />
+                    </FormControl>
+                    <FormDescription>Assigns this category to a top-level group.</FormDescription>
+                    <FormMessage />
+                    </FormItem>
+                )}
+            />
+            <FormField
+                control={form.control}
+                name="displayOrder"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Display Order</FormLabel>
+                    <FormControl>
+                        <Input type="number" placeholder="0" {...field} className={inputStyles} />
+                    </FormControl>
+                    <FormDescription>Order within the group (lower numbers first).</FormDescription>
+                    <FormMessage />
+                    </FormItem>
+                )}
+            />
+        </div>
         <FormField
           control={form.control}
           name="description"
