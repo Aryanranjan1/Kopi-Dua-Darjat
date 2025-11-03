@@ -28,7 +28,7 @@ export type MenuCategory = {
   description?: string;
   parentId?: string | null;
   group?: string; // e.g., 'Nak Kopi', 'Taknak Kopi', 'Seasonal'
-  displayOrder: number; // Add displayOrder field
+  displayOrder: number;
   createdAt: any; // Firestore Timestamp
   updatedAt: any; // Firestore Timestamp
 };
@@ -47,7 +47,7 @@ export type MenuItem = {
   isGeneral: boolean;
   status: 'draft' | 'published';
   tags?: string[]; // For 'featured', 'new', etc.
-  displayOrder: number; // Add displayOrder field
+  displayOrder: number;
   createdAt: any; // Firestore Timestamp
   updatedAt: any; // Firestore Timestamp
 };
@@ -102,7 +102,7 @@ export type BlogPost = {
 };
 
 export type Testimonial = {
-  id: string;
+  id: '1' | '2' | '3';
   quote: string;
   name: string;
   designation: string;
