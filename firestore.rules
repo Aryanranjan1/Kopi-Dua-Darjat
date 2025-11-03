@@ -4,45 +4,45 @@ service cloud.firestore {
   match /databases/{database}/documents {
     
     function isAdmin() {
-      return request.auth != null && request.auth.token.admin == true;
+      return exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid));
     }
 
-    // Publicly readable data
+    // --- CMS Collections ---
     match /menuGroups/{docId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow create, update, delete: if isAdmin();
     }
     
     match /menuCategories/{docId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow create, update, delete: if isAdmin();
     }
 
     match /menuItems/{docId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow create, update, delete: if isAdmin();
     }
 
     match /promotions/{docId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /dailySpecials/{docId} {
+        allow read: if true;
+        allow create, update, delete: if isAdmin();
     }
 
     match /outlets/{docId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow create, update, delete: if isAdmin();
     }
     
-    match /dailySpecials/{docId} {
-        allow read: if true;
-        allow write: if isAdmin();
-    }
-
-    // Write-only collections for public submissions
+    // --- User-Submitted Content ---
     match /contactMessages/{docId} {
       allow read, delete: if isAdmin();
       allow create: if true;
-      allow update: if false; // Users cannot update submissions
+      allow update: if false; 
     }
 
     match /franchiseApplications/{docId} {
@@ -52,10 +52,14 @@ service cloud.firestore {
     }
 
     match /newsletterSubscribers/{docId} {
-      // Admins can read/delete, anyone can create
       allow read, delete: if isAdmin();
       allow create: if true;
       allow update: if false;
+    }
+
+    // --- Admin Roles ---
+    match /roles_admin/{userId} {
+      allow read, write: if isAdmin();
     }
   }
 }
