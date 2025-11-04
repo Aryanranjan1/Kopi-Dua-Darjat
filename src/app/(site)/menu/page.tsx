@@ -91,12 +91,12 @@ export default function MenuPage() {
     return (
         <>
             <div className="bg-background text-foreground">
-                <section className="h-[40vh] bg-primary/20 flex items-center justify-center text-center">
+                <section className="py-24 sm:py-32 text-center bg-primary">
                     <div className="container mx-auto px-4">
-                        <h1 className="text-5xl md:text-6xl font-headline font-bold text-primary tracking-wider">
+                        <h1 className="text-4xl md:text-6xl font-headline font-bold text-primary-foreground tracking-wider">
                             Our Menu
                         </h1>
-                        <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+                        <p className="mt-4 text-lg md:text-xl max-w-2xl mx-auto text-primary-foreground/80">
                             Handcrafted with passion, from classic heritage recipes to modern artisan creations.
                         </p>
                     </div>
