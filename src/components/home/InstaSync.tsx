@@ -189,7 +189,7 @@ const InstaSyncClient: React.FC<InstaSyncProps> = ({ items }) => {
   const { renderer, gl, camera, scene, medias, elements, scroll, getActiveIndex } = useWebGL(containerRef, items);
 
   const activeIndex = getActiveIndex ? getActiveIndex() : 0;
-  const isCenterVideo = elements[activeIndex]?.tagName === 'VIDEO';
+  const isCenterVideo = elements.current[activeIndex]?.tagName === 'VIDEO';
 
   const togglePause = useCallback(() => {
     setIsPaused(p => !p);
@@ -197,8 +197,8 @@ const InstaSyncClient: React.FC<InstaSyncProps> = ({ items }) => {
 
   const toggleMute = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
-    if (isCenterVideo && elements[activeIndex] instanceof HTMLVideoElement) {
-      const video = elements[activeIndex] as HTMLVideoElement;
+    if (isCenterVideo && elements.current[activeIndex] instanceof HTMLVideoElement) {
+      const video = elements.current[activeIndex] as HTMLVideoElement;
       video.muted = !video.muted;
       setIsMuted(video.muted);
       setActiveVideo(video);
@@ -207,17 +207,17 @@ const InstaSyncClient: React.FC<InstaSyncProps> = ({ items }) => {
   
   // Autoplay logic
   useEffect(() => {
-    if (!scroll || !elements.length || isPaused) return;
+    if (!scroll.current || !elements.current.length || isPaused) return;
 
     let timeoutId: NodeJS.Timeout;
 
     const advance = () => {
-      const nextIndex = (activeIndex + 1) % elements.length;
+      const nextIndex = (activeIndex + 1) % elements.current.length;
       const mediaWidth = (medias.current[0]?.width || 0) + (medias.current[0]?.viewport.width * 0.1);
       scroll.current.target = nextIndex * mediaWidth;
     };
 
-    const currentElement = elements[activeIndex];
+    const currentElement = elements.current[activeIndex];
     
     if (currentElement.tagName === 'VIDEO') {
       const video = currentElement as HTMLVideoElement;
@@ -240,7 +240,7 @@ const InstaSyncClient: React.FC<InstaSyncProps> = ({ items }) => {
 
   // Pause videos when not active
   useEffect(() => {
-    elements.forEach((el, idx) => {
+    elements.current.forEach((el, idx) => {
       if (el.tagName === 'VIDEO') {
         const video = el as HTMLVideoElement;
         if (idx === activeIndex && !isPaused) {
@@ -257,8 +257,8 @@ const InstaSyncClient: React.FC<InstaSyncProps> = ({ items }) => {
   
    // Update active video for mute button
   useEffect(() => {
-    if (isCenterVideo && elements[activeIndex] instanceof HTMLVideoElement) {
-      const video = elements[activeIndex] as HTMLVideoElement;
+    if (isCenterVideo && elements.current[activeIndex] instanceof HTMLVideoElement) {
+      const video = elements.current[activeIndex] as HTMLVideoElement;
       setActiveVideo(video);
       setIsMuted(video.muted);
     } else {
@@ -487,7 +487,7 @@ const useWebGL = (
       window.cancelAnimationFrame(rafId);
       containerRef.current?.removeChild(gl.current!.canvas as Node);
     };
-  }, [items, onMediaClick]);
+  }, [items]);
 
   return { renderer, gl, camera, scene, medias, elements, scroll, getActiveIndex };
 };
