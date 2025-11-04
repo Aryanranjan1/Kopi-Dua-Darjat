@@ -2,6 +2,7 @@
 import dynamic from 'next/dynamic';
 import Hero from '@/components/home/Hero';
 import { Skeleton } from '@/components/ui/skeleton';
+import InstaSync from '@/components/home/InstaSync';
 
 const FeaturedDrinks = dynamic(() => import('@/components/home/FeaturedDrinks'), {
   loading: () => <Skeleton className="h-[80vh] w-full" />,
@@ -17,9 +18,6 @@ const BrandStory = dynamic(() => import('@/components/home/BrandStory'), {
 });
 const OutletFinder = dynamic(() => import('@/components/home/OutletFinder'), {
   loading: () => <Skeleton className="h-[60vh] w-full" />,
-});
-const InstaSync = dynamic(() => import('@/components/home/InstaSync'), {
-  loading: () => <Skeleton className="h-[80vh] w-full" />,
 });
 const Community = dynamic(() => import('@/components/home/Community'), {
   loading: () => <Skeleton className="h-[80vh] w-full" />,
