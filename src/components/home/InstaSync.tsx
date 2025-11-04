@@ -186,11 +186,7 @@ const InstaSyncClient: React.FC<InstaSyncProps> = ({ items }) => {
   const [isMuted, setIsMuted] = useState(true);
   const [activeVideo, setActiveVideo] = useState<HTMLVideoElement | null>(null);
 
-  const onMediaClick = useCallback(() => {
-    window.open('https://www.instagram.com', '_blank');
-  }, []);
-
-  const { renderer, gl, camera, scene, medias, elements, scroll, getActiveIndex } = useWebGL(containerRef, items, onMediaClick);
+  const { renderer, gl, camera, scene, medias, elements, scroll, getActiveIndex } = useWebGL(containerRef, items);
 
   const activeIndex = getActiveIndex ? getActiveIndex() : 0;
   const isCenterVideo = elements[activeIndex]?.tagName === 'VIDEO';
@@ -279,30 +275,40 @@ const InstaSyncClient: React.FC<InstaSyncProps> = ({ items }) => {
           Follow our journey and share your moments with us on Instagram. We love seeing our coffee in the wild!
         </p>
       </div>
-      <div
-        ref={containerRef}
-        className="relative w-full h-[60vh] cursor-grab active:cursor-grabbing group"
-        onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
-      >
-        <div className="absolute inset-0 z-10 pointer-events-none">
-          {isCenterVideo && (
-            <button 
-                onClick={toggleMute}
-                className="absolute top-4 right-4 z-20 p-2 bg-black/50 rounded-full text-white pointer-events-auto hover:bg-black/80"
-            >
-                {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
-            </button>
-          )}
+      <Link href="https://www.instagram.com" target="_blank" rel="noopener noreferrer">
+        <div
+          ref={containerRef}
+          className="relative w-full h-[60vh] cursor-pointer group"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
+          <div className="absolute inset-0 z-10 pointer-events-none">
+            {isCenterVideo && (
+              <button 
+                  onClick={(e) => {
+                    e.preventDefault(); 
+                    e.stopPropagation();
+                    toggleMute(e);
+                  }}
+                  className="absolute top-4 right-4 z-20 p-2 bg-black/50 rounded-full text-white pointer-events-auto hover:bg-black/80"
+              >
+                  {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+              </button>
+            )}
 
-          <button 
-            onClick={togglePause}
-            className="absolute top-4 right-4 md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 z-20 p-4 bg-black/50 rounded-full text-white pointer-events-auto opacity-0 group-hover:opacity-100 transition-opacity"
-          >
-              {isPaused ? <Play size={32} /> : <Pause size={32} />}
-          </button>
+            <button 
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                togglePause();
+              }}
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 p-4 bg-black/50 rounded-full text-white pointer-events-auto opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+                {isPaused ? <Play size={32} /> : <Pause size={32} />}
+            </button>
+          </div>
         </div>
-      </div>
+      </Link>
       <AnimateOnScroll animationType="fadeIn" delay={0.4} className="mt-12 text-center">
         <Button asChild size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground">
           <Link href="https://www.instagram.com" target="_blank" rel="noopener noreferrer">
@@ -319,8 +325,7 @@ const InstaSyncClient: React.FC<InstaSyncProps> = ({ items }) => {
 // --- WEBGL HOOK ---
 const useWebGL = (
   containerRef: React.RefObject<HTMLDivElement>,
-  items: InstaSyncProps['items'],
-  onClick: () => void
+  items: InstaSyncProps['items']
 ) => {
   const renderer = useRef<Renderer>();
   const gl = useRef<Renderer['gl']>();
@@ -349,6 +354,10 @@ const useWebGL = (
     const mediaWidth = (medias.current[0].width || 0) + (medias.current[0].viewport.width * 0.1);
     return Math.round(Math.abs(scroll.current.target) / mediaWidth) % items.length;
   }, [items.length]);
+
+  const onMediaClick = useCallback(() => {
+    window.open('https://www.instagram.com', '_blank');
+  }, []);
 
   useEffect(() => {
     if (!containerRef.current || !items.length) return;
@@ -508,5 +517,3 @@ export default function InstaSync() {
     </section>
   );
 }
-
-    
