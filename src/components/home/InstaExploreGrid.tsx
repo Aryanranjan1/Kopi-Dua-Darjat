@@ -11,7 +11,7 @@ import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
 
 const PostItem = ({ post }: { post: PublicInstaPost }) => {
-  const isVideo = post.media_type === 'VIDEO';
+  const isVideo = post.mediaType === 'VIDEO';
 
   return (
     <a
@@ -19,8 +19,8 @@ const PostItem = ({ post }: { post: PublicInstaPost }) => {
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
-        'relative group overflow-hidden rounded-lg shadow-md',
-        isVideo ? 'md:row-span-2' : 'row-span-1'
+        'relative mb-4 block group overflow-hidden rounded-lg shadow-md',
+        'break-inside-avoid' // This class prevents items from breaking across columns
       )}
     >
       {isVideo ? (
@@ -61,7 +61,7 @@ export default function InstaExploreGrid() {
             collection(firestore, 'public_insta_feed'),
             where('visible', '==', true),
             orderBy('rank', 'asc'),
-            limit(14) // Fetches enough items to create a varied grid
+            limit(14)
           )
         : null,
     [firestore]
@@ -79,7 +79,7 @@ export default function InstaExploreGrid() {
             <Loader2 className="w-12 h-12 text-primary animate-spin" />
           </div>
         ) : posts && posts.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 auto-rows-[250px] gap-4">
+          <div className="columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-4">
             {posts.map((post) => (
               <PostItem key={post.id} post={post} />
             ))}
