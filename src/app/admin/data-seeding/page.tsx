@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useFirestore } from '@/firebase';
 import { collection, writeBatch, getDocs, doc, serverTimestamp } from 'firebase/firestore';
-import { blogSeedData, outlets as outletSeedData } from '@/lib/data';
+import { outlets as outletSeedData } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Database, AlertTriangle } from 'lucide-react';
 import {
@@ -37,27 +37,6 @@ export default function DataSeedingPage() {
     try {
       const batch = writeBatch(firestore);
       
-      // --- Seed Blogs (Temporarily Disabled) ---
-      // const blogsCollection = collection(firestore, 'blogs');
-      // toast({ title: 'Starting seeding...', description: 'Clearing existing blog posts.' });
-      // const existingBlogsSnapshot = await getDocs(blogsCollection);
-      // existingBlogsSnapshot.forEach(document => batch.delete(document.ref));
-      
-      // blogSeedData.forEach(blogData => {
-      //   const { id, ...data } = blogData;
-      //   const blogRef = doc(firestore, 'blogs', id); // Use slug as the document ID
-      //   batch.set(blogRef, {
-      //       ...data,
-      //       slug: id,
-      //       id: id,
-      //       createdAt: serverTimestamp(),
-      //       updatedAt: serverTimestamp(),
-      //       publishedAt: blogData.publishedAt || serverTimestamp(),
-      //       views: 0,
-      //       likes: 0,
-      //   });
-      // });
-
       // --- Seed Outlets ---
        const outletsCollection = collection(firestore, 'outlets');
        toast({ title: 'Clearing old data', description: 'Removing existing outlets before seeding...' });
@@ -95,7 +74,7 @@ export default function DataSeedingPage() {
        <h1 className="text-3xl font-headline font-bold text-white">Master Data Seeding Tool</h1>
         <Card className="bg-zinc-900 border-zinc-800 text-white">
             <CardHeader>
-                <CardTitle className="flex items-center gap-2"><Database /> Master Data Seeder</CardTitle>
+                <CardTitle className="flex items-center gap-2"><Database /> Outlet Data Seeder</CardTitle>
                 <CardDescription className="text-zinc-400">
                 Use this tool to reset your outlet content. It will delete all existing outlets, then populate your CMS with a fresh set of sample data.
                 </CardDescription>

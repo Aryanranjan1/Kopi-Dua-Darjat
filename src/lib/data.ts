@@ -6,7 +6,6 @@ import { Timestamp } from 'firebase/firestore';
 // Menu items, categories, and promotions are now fetched from Firestore.
 
 export const outlets: Omit<Outlet, 'id' | 'createdAt' | 'updatedAt'>[] = [
-    // This data is now only for migration and will be removed later.
     // Selangor
     { name: 'Kajang Prima', slug: 'kajang-prima', address: '123 Jalan Prima, Kajang', city: 'Selangor', lat: 2.9935, lng: 101.7874, hours: '8 AM - 10 PM', isOpenNow: true },
     { name: 'Bandar Baru Bangi', slug: 'bangi', address: '456 Seksyen 9, Bangi', city: 'Selangor', lat: 2.9555, lng: 101.7616, hours: '8 AM - 10 PM', isOpenNow: true },
@@ -183,4 +182,256 @@ export const blogSeedData: Omit<Blog, 'createdAt' | 'updatedAt' | 'views' | 'lik
       seo: { description: "Read the inspiring journey of Ahmad Faizal, who turned his love for Kopi Dua Darjat into a thriving franchise business." },
       publishedAt: Timestamp.fromDate(new Date('2023-12-01T10:00:00Z'))
     },
+    {
+      id: "the-art-of-the-perfect-kopi-tarik",
+      title: "The Art of the Perfect 'Kopi Tarik'",
+      slug: "the-art-of-the-perfect-kopi-tarik",
+      excerpt: "It's more than just pulling coffee. Discover the technique and passion behind creating the perfect frothy texture in our traditional Kopi Tarik.",
+      coverImage: {
+        url: "https://images.unsplash.com/photo-1559496417-50b5d5b74248?w=500&auto=format&fit=crop",
+        alt: "A barista skillfully pulling coffee between two mugs, creating a frothy stream.",
+        caption: "The iconic 'pull' that makes the magic happen."
+      },
+      author: { name: "Master Barista" },
+      tags: ["Technique", "Heritage", "Kopi Tarik"],
+      category: "Behind The Cup",
+      status: "published",
+      content: "<p>The 'tarik' or 'pulling' process is essential to a great cup of Malaysian-style coffee. It cools the coffee to the perfect drinking temperature, mixes the condensed milk thoroughly, and most importantly, creates a thick, creamy foam on top. It's a skill that takes practice and precision, and it's a performance our customers love to watch.</p>",
+      seo: { title: "How to Make Kopi Tarik | The Malaysian Pulled Coffee" },
+      publishedAt: Timestamp.fromDate(new Date('2023-12-10T10:00:00Z'))
+    },
+    {
+      id: "community-spotlight-local-artists",
+      title: "Community Spotlight: Featuring Local Artists at Our Outlets",
+      slug: "community-spotlight-local-artists",
+      excerpt: "We're more than just a coffee shop; we're a platform for local talent. Learn how we're turning our outlets into community art spaces.",
+      coverImage: {
+        url: "https://images.unsplash.com/photo-1536924940846-227afb31e2a5?w=500&auto=format&fit=crop",
+        alt: "Artwork displayed on the wall of a cozy cafe.",
+        caption: "Art and coffee: a perfect blend."
+      },
+      author: { name: "Community Team" },
+      tags: ["Community", "Art", "Local Talent"],
+      category: "Community",
+      status: "published",
+      content: "<p>At Kopi Dua Darjat, we believe in nurturing the communities we serve. That's why we've partnered with local artists to showcase their work on our walls. It's our way of supporting the vibrant arts scene and giving our customers something beautiful to look at while they enjoy their coffee.</p>",
+      seo: { description: "Discover how Kopi Dua Darjat supports local artists by transforming its cafes into art galleries." },
+      publishedAt: Timestamp.fromDate(new Date('2023-12-18T10:00:00Z'))
+    },
+    {
+      id: "sustainability-from-bean-to-cup",
+      title: "Our Commitment to Sustainability: From Bean to Cup",
+      slug: "sustainability-from-bean-to-cup",
+      excerpt: "Find out how we're making a difference, from ethically sourcing our beans to reducing waste at our stalls.",
+      coverImage: {
+        url: "https://images.unsplash.com/photo-1629177659529-17d479a0998f?w=500&auto=format&fit=crop",
+        alt: "Hands holding freshly picked coffee cherries.",
+        caption: "Good coffee starts with responsible farming."
+      },
+      author: { name: "Hadi & Azad" },
+      tags: ["Sustainability", "Ethical Sourcing", "Environment"],
+      category: "Our Story",
+      status: "published",
+      content: "<p>We have a responsibility to our planet and our partners. We work directly with coffee farmers to ensure fair prices and sustainable farming practices. At our outlets, we're continuously working to reduce our environmental footprint by minimizing single-use plastics and promoting reusable cups. It's a journey, and we're committed to making every step count.</p>",
+      seo: { title: "Sustainable Coffee in Malaysia | Kopi Dua Darjat's Commitment" },
+      publishedAt: Timestamp.fromDate(new Date('2024-01-05T10:00:00Z'))
+    },
+    {
+      id: "new-menu-item-pandan-latte",
+      title: "Introducing the Darjat Pandan: A Fragrant Twist on a Classic",
+      slug: "new-menu-item-pandan-latte",
+      excerpt: "Our latest creation is here! The Darjat Pandan combines the comforting aroma of pandan with our signature robust coffee for a uniquely Malaysian treat.",
+      coverImage: {
+        url: "https://images.unsplash.com/photo-1600096194534-95cf5841488a?w=500&auto=format&fit=crop",
+        alt: "A green pandan-infused latte in a clear glass.",
+        caption: "A truly local flavour innovation."
+      },
+      author: { name: "Menu Development Team" },
+      tags: ["Menu", "New Arrival", "Pandan"],
+      category: "Our Drinks",
+      status: "published",
+      content: "<p>We're thrilled to launch our new Darjat Pandan! We spent months perfecting the recipe, creating our own pandan syrup from fresh leaves to capture that authentic, fragrant flavor. It’s the perfect balance of sweet, aromatic, and bold coffee notes. Come and try what we believe is the next big thing in Malaysian coffee!</p>",
+      seo: { description: "Try the new Darjat Pandan latte, a unique coffee experience blending pandan and our signature espresso." },
+      publishedAt: Timestamp.fromDate(new Date('2024-01-15T10:00:00Z'))
+    },
+    {
+      id: "behind-the-scenes-a-day-at-kdd",
+      title: "A Day in the Life of a Kopi Dua Darjat Barista",
+      slug: "behind-the-scenes-a-day-at-kdd",
+      excerpt: "Ever wondered what goes on behind the counter? Follow one of our baristas through a busy day of brewing, pulling, and serving smiles.",
+      coverImage: {
+        url: "https://images.unsplash.com/photo-1511920170033-f8396924c348?w=500&auto=format&fit=crop",
+        alt: "A barista focused on preparing a coffee order.",
+        caption: "Passion and precision in every cup."
+      },
+      author: { name: "Sarah L." },
+      tags: ["Day in the Life", "Barista", "Behind The Scenes"],
+      category: "Our Story",
+      status: "published",
+      content: "<p>The morning rush is intense but fun! It's a blur of greetings, orders, and the rhythmic sound of the coffee machine. But even during the busiest moments, there's nothing better than seeing a regular customer's face light up after their first sip. Being a KDD barista is about more than coffee; it's about being a part of someone's daily routine and making it a little bit better.</p>",
+      seo: { keywords: ["barista life", "cafe work", "coffee shop daily routine"] },
+      publishedAt: Timestamp.fromDate(new Date('2024-01-28T10:00:00Z'))
+    },
+    {
+      id: "your-guide-to-at-home-brewing",
+      title: "Your Guide to Brewing Kopi Dua Darjat at Home",
+      slug: "your-guide-to-at-home-brewing",
+      excerpt: "Love our coffee? Here’s how you can enjoy the authentic Kopi Dua Darjat experience from the comfort of your own home with our bottled series.",
+      coverImage: {
+        url: "https://images.unsplash.com/photo-1563868045-8493d5023908?w=500&auto=format&fit=crop",
+        alt: "A person pouring bottled coffee into a glass of ice.",
+        caption: "Your favorite coffee, ready anytime."
+      },
+      author: { name: "Home Brewing Club" },
+      tags: ["How-To", "Home Coffee", "Bottled Coffee"],
+      category: "Guides",
+      status: "published",
+      content: "<p>Recreating the cafe experience at home is easy with our KDD Bottled Series. For the perfect iced kopi, fill a glass with ice, pour our concentrated coffee over it, and top with fresh milk or your favorite dairy-free alternative. For a warm treat, gently heat the coffee concentrate with milk in a pot until warm. It's that simple!</p>",
+      seo: { description: "Learn how to make the perfect iced or hot coffee at home using Kopi Dua Darjat's bottled coffee concentrates." },
+      publishedAt: Timestamp.fromDate(new Date('2024-02-10T10:00:00Z'))
+    },
+    {
+      id: "the-evolution-of-our-stall-design",
+      title: "The Evolution of Our Stall Design",
+      slug: "the-evolution-of-our-stall-design",
+      excerpt: "From a simple pushcart to our modern, rustic kiosks. We walk you through the design philosophy of the Kopi Dua Darjat stall.",
+      coverImage: {
+        url: "https://images.unsplash.com/photo-1616421235123-24251b5d1e7e?w=500&auto=format&fit=crop",
+        alt: "A modern and sleek coffee kiosk.",
+        caption: "Designed for efficiency and brand presence."
+      },
+      author: { name: "Design Team" },
+      tags: ["Design", "Branding", "Franchise"],
+      category: "Our Story",
+      status: "published",
+      content: "<p>Our stall design is a physical representation of 'Antara Warisan & Artisan'. We use natural wood textures to evoke a sense of heritage and warmth, combined with clean lines and modern materials for a contemporary, professional feel. Every element is designed for workflow efficiency, customer engagement, and strong brand visibility.</p>",
+      seo: { keywords: ["kiosk design", "cafe architecture", "brand design"] },
+      publishedAt: Timestamp.fromDate(new Date('2024-02-22T10:00:00Z'))
+    },
+    {
+      id: "what-makes-our-beans-special",
+      title: "What Makes Our Coffee Beans Special?",
+      slug: "what-makes-our-beans-special",
+      excerpt: "A deep dive into our unique blend of beans, the roasting process, and what gives our coffee its signature 'kaw' flavor.",
+      coverImage: {
+        url: "https://images.unsplash.com/photo-1599335834232-09748b648937?w=500&auto=format&fit=crop",
+        alt: "A close-up of dark roasted coffee beans.",
+        caption: "Our unique blend, roasted to perfection."
+      },
+      author: { name: "Master Roaster" },
+      tags: ["Coffee Beans", "Roasting", "Quality"],
+      category: "Behind The Cup",
+      status: "published",
+      content: "<p>The secret to our signature taste lies in the blend. We use a proprietary mix of Robusta and Arabica beans, sourced from specific regions in Southeast Asia. The beans are roasted locally in small batches to a specific dark profile, which brings out the bold, chocolatey notes that Malaysians love. This 'kaw' (strong) flavor is the foundation of every drink we serve.</p>",
+      seo: { description: "Learn about the unique coffee bean blend and roasting process that creates the signature Kopi Dua Darjat taste." },
+      publishedAt: Timestamp.fromDate(new Date('2024-03-05T10:00:00Z'))
+    },
+    {
+      id: "top-5-food-pairings-with-kopi",
+      title: "Top 5 Food Pairings for Your Favorite Kopi",
+      slug: "top-5-food-pairings-with-kopi",
+      excerpt: "Elevate your coffee break with these perfect food pairings, from classic kuih to modern pastries.",
+      coverImage: {
+        url: "https://images.unsplash.com/photo-1583337757-5503b41460a5?w=500&auto=format&fit=crop",
+        alt: "A spread of pastries and cakes next to cups of coffee.",
+        caption: "The perfect companions for your coffee."
+      },
+      author: { name: "Aina Rahman" },
+      tags: ["Food Pairing", "Menu", "Lifestyle"],
+      category: "Guides",
+      status: "published",
+      content: "<p>What's better than a great cup of coffee? A great cup of coffee with the perfect snack! Here are our top 5 recommendations: 1. Kopi 'O' with Kaya Toast. 2. Darjat Caramel with a flaky croissant. 3. Darjat Borneo with Kuih Lapis. 4. Coklat Artisan with a simple butter cookie. 5. Matchaa with a red bean bun. What's your favorite combo?</p>",
+      seo: { keywords: ["coffee and food", "cafe snacks", "kuih and kopi"] },
+      publishedAt: Timestamp.fromDate(new Date('2024-03-18T10:00:00Z'))
+    },
+    {
+      id: "meet-the-team-operations-wizards",
+      title: "Meet the Team: Our Operations Wizards",
+      slug: "meet-the-team-operations-wizards",
+      excerpt: "The unsung heroes who ensure every outlet runs smoothly, from supply chains to quality control. Meet the KDD operations team!",
+      coverImage: {
+        url: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&auto=format&fit=crop",
+        alt: "A diverse team of people collaborating around a table.",
+        caption: "The team that keeps the coffee flowing."
+      },
+      author: { name: "Community Team" },
+      tags: ["Team", "Behind The Scenes", "Operations"],
+      category: "Our Story",
+      status: "published",
+      content: "<p>From sourcing the best beans to delivering them fresh to over 50 outlets, our operations team is the backbone of Kopi Dua Darjat. They are the logisticians, the quality checkers, and the problem solvers who work tirelessly behind the scenes to ensure every cup of KDD coffee meets our high standards, no matter which outlet you visit.</p>",
+      seo: { title: "The Team Behind Kopi Dua Darjat's Operations" },
+      publishedAt: Timestamp.fromDate(new Date('2024-04-01T10:00:00Z'))
+    },
+    {
+      id: "new-merch-alert-kdd-tumblers",
+      title: "New Merch Alert: KDD Tumblers & Tees",
+      slug: "new-merch-alert-kdd-tumblers",
+      excerpt: "Take a piece of Kopi Dua Darjat home with you! Our new line of tumblers, t-shirts, and tote bags are now available at selected outlets.",
+      coverImage: {
+        url: "https://images.unsplash.com/photo-1621609764095-b32bbe35cf3a?w=500&auto=format&fit=crop",
+        alt: "A collection of branded merchandise including t-shirts, mugs, and tote bags.",
+        caption: "Wear your love for Kopi Dua Darjat."
+      },
+      author: { name: "Marketing Team" },
+      tags: ["Merchandise", "New Arrival", "Lifestyle"],
+      category: "News",
+      status: "published",
+      content: "<p>Show your KDD pride! We've just launched our first-ever merchandise line, featuring minimalist designs inspired by our 'Warisan & Artisan' philosophy. Grab our eco-friendly bamboo tumbler, a comfy cotton tee, or a stylish tote bag on your next coffee run. Available for a limited time at major outlets.</p>",
+      seo: { description: "Shop the new Kopi Dua Darjat official merchandise, including tumblers, t-shirts, and tote bags." },
+      publishedAt: Timestamp.fromDate(new Date('2024-04-12T10:00:00Z'))
+    },
+    {
+      id: "how-we-pick-our-outlet-locations",
+      title: "Location, Location, Location: How We Pick Our Outlet Spots",
+      slug: "how-we-pick-our-outlet-locations",
+      excerpt: "What makes a great spot for a Kopi Dua Darjat stall? We share our strategy for finding the perfect locations to serve our communities.",
+      coverImage: {
+        url: "https://images.unsplash.com/photo-1549887534-1541e9326642?w=500&auto=format&fit=crop",
+        alt: "A bustling street corner in a Malaysian city.",
+        caption: "Finding the heart of the community."
+      },
+      author: { name: "Franchise Team" },
+      tags: ["Franchise", "Business Strategy", "Location"],
+      category: "Franchise",
+      status: "published",
+      content: "<p>Choosing the right location is key to a successful franchise. We look for high foot-traffic areas with strong community ties, like transport hubs, office building lobbies, and neighbourhood centres. Our goal is to be a convenient and welcoming part of people's daily lives. We use data analysis and on-the-ground research to identify spots with the highest potential for our franchise partners.</p>",
+      seo: { keywords: ["retail location strategy", "food business location", "franchise site selection"] },
+      publishedAt: Timestamp.fromDate(new Date('2024-04-25T10:00:00Z'))
+    },
+    {
+      id: "introducing-mobile-ordering-app",
+      title: "Skip the Queue: Introducing Our New Mobile Ordering App",
+      slug: "introducing-mobile-ordering-app",
+      excerpt: "Your favourite coffee is now just a tap away. Order ahead and pick up your drink without the wait with the new KDD mobile app.",
+      coverImage: {
+        url: "https://images.unsplash.com/photo-1581057448889-c47e8ad6f5a3?w=500&auto=format&fit=crop",
+        alt: "A person using a smartphone to order coffee on a mobile app.",
+        caption: "Convenience at your fingertips."
+      },
+      author: { name: "Digital Team" },
+      tags: ["Technology", "App", "New Arrival"],
+      category: "News",
+      status: "published",
+      content: "<p>We're excited to launch the official Kopi Dua Darjat mobile app! Now you can browse our full menu, customize your drink, pay securely, and collect your order from your chosen outlet. The app also features exclusive app-only promotions and a loyalty rewards program. Download it today on the App Store and Google Play!</p>",
+      seo: { title: "Kopi Dua Darjat Mobile App | Order Coffee Online" },
+      publishedAt: Timestamp.fromDate(new Date('2024-05-08T10:00:00Z'))
+    },
+    {
+      id: "customer-photo-of-the-month",
+      title: "Customer Photo of the Month: May 2024",
+      slug: "customer-photo-of-the-month",
+      excerpt: "Check out our favorite customer photo from May! See who won and how you can participate for a chance to be featured and win prizes.",
+      coverImage: {
+        url: "https://images.unsplash.com/photo-1545483486-5d65a918f564?w=500&auto=format&fit=crop",
+        alt: "A creative and aesthetically pleasing photo of a Kopi Dua Darjat cup.",
+        caption: "This month's winning shot by @coffeelover92."
+      },
+      author: { name: "Community Team" },
+      tags: ["Community", "Contest", "Social Media"],
+      category: "Community",
+      status: "published",
+      content: "<p>We love seeing your creative shots of our coffee! This month's winner is this beautiful photo by @coffeelover92 on Instagram, perfectly capturing the mood of a relaxing coffee break. Congratulations! You've won a month's supply of KDD coffee. Want to enter for next month? Just post your photo with the hashtag #KopiDuaDarjat for a chance to win.</p>",
+      seo: { description: "See the winning customer photo for May and learn how to enter the Kopi Dua Darjat photo contest." },
+      publishedAt: Timestamp.fromDate(new Date('2024-05-20T10:00:00Z'))
+    }
 ];
