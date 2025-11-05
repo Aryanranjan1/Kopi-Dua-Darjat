@@ -29,6 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
 import slugify from 'slugify';
 import { useEffect } from 'react';
 
@@ -55,6 +56,7 @@ const formSchema = z.object({
   mapsLink: z.string().url('Must be a valid URL').optional().or(z.literal('')),
   whatsappLink: z.string().url('Must be a valid URL').optional().or(z.literal('')),
   chatbotEmbed: z.string().optional(),
+  isChatbotEnabled: z.boolean().default(false),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -83,6 +85,7 @@ export default function OutletForm({ outlet, onSuccess }: OutletFormProps) {
       mapsLink: '',
       whatsappLink: '',
       chatbotEmbed: '',
+      isChatbotEnabled: false,
     },
   });
 
@@ -133,7 +136,7 @@ export default function OutletForm({ outlet, onSuccess }: OutletFormProps) {
                     <FormItem><FormLabel>Outlet Name</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
                 )}/>
                 <FormField control={form.control} name="slug" render={({ field }) => (
-                    <FormItem><FormLabel>Slug (URL Identifier)</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                    <FormItem><FormLabel>Slug (URL Identifier)</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormDescription>Auto-generated from name. Must be unique.</FormDescription><FormMessage/></FormItem>
                 )}/>
             </div>
             <FormField control={form.control} name="address" render={({ field }) => (
@@ -186,14 +189,27 @@ export default function OutletForm({ outlet, onSuccess }: OutletFormProps) {
                     <FormItem><FormLabel>Interior Image URL</FormLabel><FormControl><Input type="url" {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
                 )}/>
             </div>
-            <FormField control={form.control} name="chatbotEmbed" render={({ field }) => (
+             <FormField control={form.control} name="chatbotEmbed" render={({ field }) => (
                 <FormItem>
-                    <FormLabel>Chatbot Embed Code</FormLabel>
+                    <div className="flex items-center justify-between">
+                        <FormLabel>Chatbot Embed Code</FormLabel>
+                        <FormField
+                            control={form.control}
+                            name="isChatbotEnabled"
+                            render={({ field }) => (
+                                <FormItem className="flex items-center gap-2 space-y-0">
+                                    <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                                    <FormLabel className="text-sm !mt-0">{field.value ? "Enabled" : "Disabled"}</FormLabel>
+                                </FormItem>
+                            )}
+                        />
+                    </div>
                     <FormControl><Textarea placeholder="<script>...</script>" {...field} className={`${inputStyles} font-mono`} /></FormControl>
                     <FormDescription>Paste the full embed code for a chatbot if applicable.</FormDescription>
                     <FormMessage/>
                 </FormItem>
             )}/>
+
 
              <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">System</h3>
               <FormField control={form.control} name="status" render={({ field }) => (

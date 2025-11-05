@@ -39,6 +39,9 @@ import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import OutletForm from './OutletForm';
+import { Pagination } from '@/components/shared/Pagination';
+
+const OUTLETS_PER_PAGE = 8;
 
 export default function OutletsManager() {
   const firestore = useFirestore();
@@ -53,6 +56,7 @@ export default function OutletsManager() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedOutlet, setSelectedOutlet] = useState<Outlet | undefined>(undefined);
   const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
 
   const filteredOutlets = useMemo(() => {
     if (!outlets) return [];
@@ -63,6 +67,12 @@ export default function OutletsManager() {
       outlet.state.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [outlets, searchQuery]);
+
+  const totalPages = Math.ceil(filteredOutlets.length / OUTLETS_PER_PAGE);
+  const paginatedOutlets = filteredOutlets.slice(
+    (currentPage - 1) * OUTLETS_PER_PAGE,
+    currentPage * OUTLETS_PER_PAGE
+  );
 
   const handleAddNew = () => {
     setSelectedOutlet(undefined);
@@ -114,8 +124,8 @@ export default function OutletsManager() {
           </TableHeader>
           <TableBody>
             {isLoading && <TableRow><TableCell colSpan={5} className="text-center"><Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" /></TableCell></TableRow>}
-            {!isLoading && filteredOutlets.length === 0 && <TableRow><TableCell colSpan={5} className="text-center text-zinc-400 py-8">No outlets found.</TableCell></TableRow>}
-            {filteredOutlets?.map(outlet => (
+            {!isLoading && paginatedOutlets.length === 0 && <TableRow><TableCell colSpan={5} className="text-center text-zinc-400 py-8">No outlets found.</TableCell></TableRow>}
+            {paginatedOutlets?.map(outlet => (
               <TableRow key={outlet.id} className="border-zinc-700 hover:bg-zinc-800/80">
                 <TableCell className="font-medium">{outlet.name}</TableCell>
                 <TableCell>{outlet.city}</TableCell>
@@ -155,6 +165,14 @@ export default function OutletsManager() {
           </TableBody>
         </Table>
       </div>
+
+       <div className="mt-4">
+         <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-4xl h-[90vh]">

@@ -4,6 +4,7 @@
 import { Suspense } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import OutletsManager from './(components)/OutletsManager';
+import OutletDataMigration from './(components)/OutletDataMigration';
 
 function OutletsPageContent() {
     return (
@@ -21,6 +22,8 @@ function OutletsPageContent() {
                     <OutletsManager />
                 </CardContent>
             </Card>
+            
+            <OutletDataMigration />
         </div>
     );
 }

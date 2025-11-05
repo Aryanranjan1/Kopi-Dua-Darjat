@@ -114,6 +114,7 @@ export type Outlet = {
   mapsLink?: string;
   whatsappLink?: string;
   chatbotEmbed?: string;
+  isChatbotEnabled?: boolean;
   createdAt?: any;
   updatedAt?: any;
 };
