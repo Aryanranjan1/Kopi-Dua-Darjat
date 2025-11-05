@@ -119,13 +119,13 @@
         "username": { "type": "string", "description": "The username of the account that posted." },
         "caption": { "type": "string", "description": "The caption text of the post." },
         "mediaUrl": { "type": "string", "format": "uri", "description": "Direct URL to the image or video." },
-        "mediaType": { "type": "string", "enum": ["image", "video"], "description": "The type of media." },
+        "mediaType": { "type": "string", "enum": ["IMAGE", "VIDEO", "CAROUSEL_ALBUM"], "description": "The type of media." },
         "permalink": { "type": "string", "format": "uri", "description": "The permanent link to the post on Instagram." },
         "timestamp": { "type": "string", "format": "date-time", "description": "The timestamp when the post was created." },
         "visible": { "type": "boolean", "description": "Whether the post is visible on the public site." },
         "pinned": { "type": "boolean", "description": "Whether the post is pinned to the top of the feed." },
         "rank": { "type": "number", "description": "The display order of the post." },
-        "source": { "type": "string", "enum": ["scrape", "manual"], "description": "The origin of the post." }
+        "source": { "type": "string", "enum": ["scraper", "manual", "graph"], "description": "The origin of the post." }
       },
       "required": ["id", "username", "mediaUrl", "mediaType", "permalink", "timestamp", "visible", "pinned", "rank", "source"]
     },
@@ -134,9 +134,14 @@
       "type": "object",
       "description": "Settings for the Instagram feed synchronization.",
       "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["scraper", "graph"],
+          "description": "The sync mode: scraper (public hashtag) or graph (Graph API)."
+        },
         "active_tag": {
           "type": "string",
-          "description": "The hashtag to sync, without the '#' symbol."
+          "description": "The hashtag to sync in scraper mode, without the '#' symbol."
         },
         "last_synced": {
           "type": "string",
@@ -146,9 +151,17 @@
         "auto_sync_enabled": {
           "type": "boolean",
           "description": "Whether the daily automatic sync is enabled."
+        },
+        "graph_access_token": {
+          "type": "string",
+          "description": "The long-lived access token for the Instagram Graph API."
+        },
+        "graph_account_id": {
+          "type": "string",
+          "description": "The ID of the connected Instagram Business account."
         }
       },
-      "required": ["active_tag", "auto_sync_enabled"]
+      "required": ["mode", "active_tag", "auto_sync_enabled"]
     },
     "SyncLog": {
         "title": "Sync Log",

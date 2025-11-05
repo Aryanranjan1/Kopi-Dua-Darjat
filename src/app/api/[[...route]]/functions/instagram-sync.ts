@@ -18,7 +18,7 @@ export const syncInstagramPosts = async () => {
     const posts = Array.from({ length: 20 }).map((_, i) => ({
       id: `mock_${i + 1}`,
       mediaUrl: `https://source.unsplash.com/random/400x400?coffee&sig=${i}`,
-      mediaType: i % 5 === 0 ? "video" : "image",
+      mediaType: i % 5 === 0 ? "VIDEO" : "IMAGE",
       username: "kopiduadarjat",
       caption: `Sample post #${i + 1} for #${active_tag}`,
       permalink: `https://www.instagram.com/p/mock${i}/`,
@@ -55,22 +55,3 @@ export const syncInstagramPosts = async () => {
     return { status: "error", message: err.message || "Sync failed" };
   }
 };
-
-
-export const manualInstagramSync = functions.https.onCall(async (data, context) => {
-    // Optional: Add admin check here if needed
-    // const isAdmin = await checkIsAdmin(context.auth.uid);
-    // if (!isAdmin) {
-    //   throw new functions.https.HttpsError("permission-denied", "Admin only");
-    // }
-    return await syncInstagramPosts();
-});
-
-
-export const dailyInstagramSync = functions.pubsub.schedule("every 24 hours").onRun(async () => {
-    const doc = await db.collection("settings").doc("instagram_sync").get();
-    const data = doc.data();
-    if (data && data.auto_sync_enabled) {
-      await syncInstagramPosts();
-    }
-});

@@ -16,7 +16,7 @@ service cloud.firestore {
     
     // Settings collection is special, only admin can write, but public can read
     match /settings/{docId} {
-      allow get, list: if true;
+      allow read: if true;
       allow create, update, delete: if isAdmin();
     }
 
@@ -39,10 +39,10 @@ service cloud.firestore {
       allow update: if false;
     }
 
-    // Instagram Feed (Public Read + Restricted Write by Cloud Function)
+    // Instagram Feed (Public Read + Admin/Function Write)
     match /public_insta_feed/{docId} {
-      allow get, list: if true;
-      allow create, update, delete: if isAdmin() || request.auth == null;
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
     }
 
     // Function Logs (Function Create, Admin Read/Delete)

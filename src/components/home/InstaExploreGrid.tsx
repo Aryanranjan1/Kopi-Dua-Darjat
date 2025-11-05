@@ -9,38 +9,44 @@ import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import type { PublicInstaPost } from '@/lib/types';
 import { Button } from '../ui/button';
 
-const PostItem = ({ post }: { post: PublicInstaPost }) => (
-  <a
-    href={post.permalink}
-    target="_blank"
-    rel="noopener noreferrer"
-    className="relative group aspect-square overflow-hidden"
-  >
-    {post.mediaType === 'video' ? (
-      <video
-        src={post.mediaUrl}
-        autoPlay
-        muted
-        loop
-        playsInline
-        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-      />
-    ) : (
-      <img
-        src={post.mediaUrl}
-        alt={post.caption || `Instagram post by ${post.username}`}
-        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-      />
-    )}
-    <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center p-2 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-      <span className="text-white text-sm font-bold flex items-center gap-1">
-        <InstagramIcon className="w-4 h-4" />
-        {post.username}
-      </span>
-      <span className="text-white text-xs mt-1 font-mono">ID: {post.id}</span>
-    </div>
-  </a>
-);
+const PostItem = ({ post }: { post: PublicInstaPost }) => {
+  const isVideo = post.mediaType === 'VIDEO';
+  return (
+    <a
+      href={post.permalink}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`relative group overflow-hidden ${isVideo ? 'aspect-[9/16]' : 'aspect-square'}`}
+    >
+      {isVideo ? (
+        <video
+          src={post.mediaUrl}
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+        />
+      ) : (
+        <img
+          src={post.mediaUrl}
+          alt={post.caption || `Instagram post by ${post.username}`}
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+        />
+      )}
+      <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center p-2 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <span className="text-white text-sm font-bold flex items-center gap-1">
+          <InstagramIcon className="w-4 h-4" />
+          {post.username}
+        </span>
+        <Button size="sm" variant="outline" className="mt-2 bg-white/20 border-white/50 text-white hover:bg-white hover:text-black">
+            View Post
+        </Button>
+      </div>
+    </a>
+  );
+};
+
 
 export default function InstaExploreGrid() {
   const firestore = useFirestore();

@@ -269,13 +269,22 @@ export interface PublicInstaPost {
   username: string;
   caption: string;
   mediaUrl: string;
-  mediaType: 'image' | 'video' | 'carousel';
+  mediaType: 'IMAGE' | 'VIDEO' | 'CAROUSEL_ALBUM';
   permalink: string;
   timestamp: string; // ISO 8601
   likes?: number | null;
   comments?: number | null;
   visible: boolean;
   pinned: boolean;
-  source: 'scrape' | 'manual';
+  source: 'scraper' | 'manual' | 'graph';
   rank: number;
+}
+
+export interface InstagramSyncSettings {
+    mode: 'scraper' | 'graph';
+    active_tag: string;
+    last_synced?: string | Timestamp;
+    auto_sync_enabled: boolean;
+    graph_access_token?: string | null;
+    graph_account_id?: string | null;
 }
