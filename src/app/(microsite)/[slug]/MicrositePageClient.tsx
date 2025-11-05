@@ -7,16 +7,16 @@ import { motion } from 'framer-motion';
 
 import MenuCategoriesGrid from './(components)/MenuCategoriesGrid';
 import SignatureDrinksCarousel from './(components)/SignatureDrinksCarousel';
-import BentoGridSection from './(components)/PromotionsSection';
 import BrandStorySection from './(components)/BrandStorySection';
 import OutletLocatorSection from './(components)/OutletLocatorSection';
 import MicrositeHero from './(components)/MicrositeHero';
-import MenuShowcaseSection from './(components)/MenuShowcaseSection';
 import InstaExploreGrid from '@/components/home/InstaExploreGrid';
 import Community from '@/components/home/Community';
 import LatestStories from '@/components/home/LatestStories';
 import MicrositeNewsletterSignUp from './(components)/MicrositeNewsletterSignUp';
 import FranchiseTestimonials from './(components)/FranchiseTestimonials';
+import PromotionsSection from './(components)/PromotionsSection';
+import MenuShowcaseSection from './(components)/MenuShowcaseSection';
 
 
 // --- TYPES ---
@@ -43,9 +43,7 @@ export default function MicrositePageClient(data: PageData) {
     <div className="bg-white text-black">
       <MicrositeHero outlet={outlet} />
       <main>
-        <SignatureDrinksCarousel items={featuredItems} promotions={promotions || []} />
-        {promotions && promotions.length > 0 && <BentoGridSection promotions={promotions} items={featuredItems} />}
-        <MenuCategoriesGrid categories={menuCategories} />
+        {promotions && promotions.length > 0 && <PromotionsSection promotions={promotions} items={featuredItems} />}
         {allMenuItems && <MenuShowcaseSection items={allMenuItems} />}
         {siteSettings && <BrandStorySection settings={siteSettings} />}
         <OutletLocatorSection currentOutlet={outlet} />

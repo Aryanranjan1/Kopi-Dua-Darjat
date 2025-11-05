@@ -164,7 +164,6 @@ export default async function OutletMicrositePage({ params }: Props) {
     notFound();
   }
 
-  return (
-    <MicrositePageClient {...data} />
-  );
+  // @ts-ignore
+  return <MicrositePageClient {...data} />;
 }

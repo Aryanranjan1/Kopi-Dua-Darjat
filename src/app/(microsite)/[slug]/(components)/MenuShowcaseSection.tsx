@@ -6,25 +6,32 @@ import type { MenuItem } from '@/lib/types';
 import { Pagination } from '@/components/shared/Pagination';
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import Link from 'next/link';
+import { ArrowUpRight, Star } from 'lucide-react';
 
 const ITEMS_PER_PAGE = 12;
 
 const DrinkCard = ({ item }: { item: MenuItem }) => (
-  <Card className="rounded-lg overflow-hidden group bg-white border-black/10 transition-all duration-300 transform hover:shadow-xl hover:-translate-y-1 h-full flex flex-col">
+  <Card className="rounded-3xl overflow-hidden group bg-[#fde047] border-black/10 transition-all duration-300 transform hover:shadow-xl hover:-translate-y-1 h-full flex flex-col">
     <div className="relative aspect-square w-full">
-      <Image src={item.imageUrl} alt={item.name} fill className="object-cover transition-transform duration-300 group-hover:scale-105" />
+      <Image src={item.imageUrl} alt={item.name} fill className="object-contain p-4 drop-shadow-lg transition-transform duration-300 group-hover:scale-105" />
+      {item.isPopular && <Badge className="absolute top-2 right-2 bg-black text-white">Popular</Badge>}
     </div>
-    <CardContent className="p-4 flex flex-col flex-grow">
-      <h4 className="font-headline font-bold text-lg text-black truncate">{item.name}</h4>
-      <p className="text-sm text-neutral-600 line-clamp-2 mt-1 h-10 flex-grow">{item.description}</p>
+    <CardContent className="p-4 flex flex-col flex-grow text-black">
+      <h4 className="font-headline font-bold text-lg truncate">{item.name}</h4>
+      <p className="text-sm text-black/70 line-clamp-2 mt-1 h-10 flex-grow">{item.description}</p>
+      <div className="flex items-center gap-2 mt-2">
+        {[...Array(5)].map((_, i) => (
+          <Star key={i} className="w-4 h-4 text-black/80 fill-black/80" />
+        ))}
+      </div>
       <div className="flex justify-between items-center mt-2">
         <p className="font-semibold text-black text-lg">RM{item.price.toFixed(2)}</p>
-        <Button asChild className="bg-black text-white hover:bg-neutral-800 rounded-md">
-          <Link href="#">Order Now</Link>
-        </Button>
+        <Link href="#" className="bg-black text-white rounded-full p-2 hover:bg-neutral-800">
+            <ArrowUpRight className="h-5 w-5" />
+        </Link>
       </div>
     </CardContent>
   </Card>
@@ -40,7 +47,7 @@ export default function MenuShowcaseSection({ items }: { items: MenuItem[] }) {
   );
 
   return (
-    <section className="bg-white py-20 md:py-32">
+    <section id="menu" className="bg-white py-20 md:py-32">
       <div className="container mx-auto px-6 max-w-7xl">
         <AnimateOnScroll className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-headline font-bold text-black">

@@ -6,7 +6,6 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
-import { format } from 'date-fns';
 import Link from 'next/link';
 
 interface BentoGridSectionProps {
@@ -53,7 +52,7 @@ const BentoCard = ({
   </AnimateOnScroll>
 );
 
-export default function BentoGridSection({ promotions, items }: BentoGridSectionProps) {
+export default function PromotionsSection({ promotions, items }: BentoGridSectionProps) {
     if ((!promotions || promotions.length === 0) && (!items || items.length === 0)) return null;
 
     // Prioritize promotions, then fill with items
