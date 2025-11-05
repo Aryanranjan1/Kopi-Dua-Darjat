@@ -12,7 +12,15 @@ function SocialFeedPageContent() {
               <Instagram /> Social Feed Management
             </h1>
             
-            <SocialFeedManager />
+            <Card className="bg-zinc-900 border-zinc-800 text-white">
+                <CardHeader>
+                     <CardTitle>Feed Management</CardTitle>
+                    <CardDescription>Review and manage the posts displayed on your site.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <SocialFeedManager />
+                </CardContent>
+            </Card>
         </div>
     );
 }
