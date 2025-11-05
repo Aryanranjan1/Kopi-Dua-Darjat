@@ -5,7 +5,6 @@ import { notFound, useParams } from 'next/navigation';
 import type { Outlet, MenuItem, Promotion, MenuCategory, SiteSettings, Testimonial, Blog, PublicInstaPost } from '@/lib/types';
 import { motion } from 'framer-motion';
 
-import SignatureDrinksCarousel from './(components)/SignatureDrinksCarousel';
 import BrandStorySection from './(components)/BrandStorySection';
 import OutletLocatorSection from './(components)/OutletLocatorSection';
 import MicrositeHero from './(components)/MicrositeHero';
@@ -15,6 +14,7 @@ import LatestStories from '@/components/home/LatestStories';
 import MicrositeNewsletterSignUp from './(components)/MicrositeNewsletterSignUp';
 import FranchiseTestimonials from './(components)/FranchiseTestimonials';
 import MenuShowcaseSection from './(components)/MenuShowcaseSection';
+import PopularProductsCarousel from './(components)/PopularProductsCarousel';
 
 
 // --- TYPES ---
@@ -39,13 +39,11 @@ export default function MicrositePageClient(data: PageData) {
     notFound();
   }
   
-  const itemsForSignatureCarousel = (featuredItems && featuredItems.length > 0) ? featuredItems : allMenuItems.slice(0, 4);
-
   return (
     <div className="bg-white text-black">
       <MicrositeHero outlet={outlet} />
       <main>
-        <SignatureDrinksCarousel items={itemsForSignatureCarousel} />
+        <PopularProductsCarousel items={featuredItems} />
         <MenuShowcaseSection items={allMenuItems} categories={menuCategories} />
         {siteSettings && <BrandStorySection settings={siteSettings} />}
         <OutletLocatorSection currentOutlet={outlet} />

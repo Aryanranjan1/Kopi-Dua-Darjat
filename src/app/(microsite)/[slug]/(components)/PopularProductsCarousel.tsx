@@ -1,4 +1,3 @@
-
 'use client';
 
 import type { MenuItem } from '@/lib/types';
@@ -42,20 +41,20 @@ const DrinkCard = ({ item }: { item: MenuItem }) => (
   </Card>
 );
 
-export default function SignatureDrinksCarousel({ items }: { items: MenuItem[] }) {
+export default function PopularProductsCarousel({ items }: { items: MenuItem[] }) {
   if (!items || items.length === 0) return null;
 
   const plugin = React.useRef(
     Autoplay({ delay: 3000, stopOnInteraction: true })
   )
 
-  const showCarousel = items.length > 4;
-
   return (
     <section className="bg-white py-20 md:py-24">
       <div className="container mx-auto px-6 max-w-7xl">
         <AnimateOnScroll animationType="fadeIn">
-          {showCarousel ? (
+            <h2 className="text-4xl md:text-5xl font-headline font-bold text-center mb-12 text-black">
+                Popular at this Outlet
+            </h2>
             <Carousel
               plugins={[plugin.current]}
               opts={{
@@ -76,13 +75,6 @@ export default function SignatureDrinksCarousel({ items }: { items: MenuItem[] }
               <CarouselPrevious className="absolute left-0 top-1/2 -translate-y-1/2" />
               <CarouselNext className="absolute right-0 top-1/2 -translate-y-1/2" />
             </Carousel>
-          ) : (
-             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {items.map((item) => (
-                    <DrinkCard key={item.id} item={item} />
-                ))}
-             </div>
-          )}
         </AnimateOnScroll>
       </div>
     </section>
