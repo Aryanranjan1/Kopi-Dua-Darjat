@@ -86,7 +86,7 @@ export default function LatestStories() {
                 <AnimateOnScroll animationType="slideInFromBottom">
                     <div className="flex justify-between items-center mb-12">
                         <h2 className="text-4xl md:text-5xl font-headline text-white inline-block underline decoration-primary decoration-4 underline-offset-8">Latest Stories</h2>
-                        <Button asChild variant="outline" className="rounded-full border-white/50 text-white hover:bg-white hover:text-black">
+                        <Button asChild className="rounded-full bg-primary text-primary-foreground hover:bg-accent hover:text-black">
                             <Link href="/news">Read all articles</Link>
                         </Button>
                     </div>
