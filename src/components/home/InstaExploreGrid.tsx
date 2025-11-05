@@ -83,7 +83,7 @@ export default function InstaExploreGrid() {
               }
               className="rounded-full bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition"
             >
-              View on Instagram &rarr;
+              View on Instagram →
             </Button>
           </div>
         )}

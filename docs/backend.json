@@ -124,6 +124,27 @@
         "timestamp": { "type": "string", "format": "date-time", "description": "The timestamp when the post was created." }
       },
       "required": ["id", "username", "mediaUrl", "mediaType", "permalink", "timestamp"]
+    },
+     "InstagramSyncSettings": {
+      "title": "Instagram Sync Settings",
+      "type": "object",
+      "description": "Settings for the Instagram feed synchronization.",
+      "properties": {
+        "active_tag": {
+          "type": "string",
+          "description": "The hashtag to sync, without the '#' symbol."
+        },
+        "last_synced": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of the last successful sync."
+        },
+        "auto_sync_enabled": {
+          "type": "boolean",
+          "description": "Whether the daily automatic sync is enabled."
+        }
+      },
+      "required": ["active_tag", "auto_sync_enabled"]
     }
   },
   "auth": {
@@ -148,8 +169,8 @@
         "definition": {
           "entityName": "SiteSettings",
           "schema": { "$ref": "#/entities/SiteSettings" },
-          "description": "Stores global website settings in a single document, typically with ID 'main'.",
-          "params": [{ "name": "docId", "description": "The ID of the settings document (e.g., 'main')." }]
+          "description": "Stores global website settings. 'main' stores SiteSettings, 'instagram_sync' stores InstagramSyncSettings.",
+          "params": [{ "name": "docId", "description": "The ID of the settings document (e.g., 'main', 'instagram_sync')." }]
         }
       },
        {
@@ -184,7 +205,7 @@
         "definition": {
           "entityName": "PublicInstaPost",
           "schema": { "$ref": "#/entities/PublicInstaPost" },
-          "description": "Stores scraped public Instagram posts tagged with #kopiduadarjat. Updated daily by a Cloud Function.",
+          "description": "Stores scraped public Instagram posts tagged with the active hashtag. Updated by a Cloud Function.",
           "params": [{ "name": "postId", "description": "The unique ID of the Instagram post." }]
         }
       }

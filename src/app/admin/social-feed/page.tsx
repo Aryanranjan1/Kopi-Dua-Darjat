@@ -1,3 +1,4 @@
+
 'use client';
 import { Suspense } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,17 +12,7 @@ function SocialFeedPageContent() {
               <Instagram /> Social Feed Management
             </h1>
             
-            <Card className="bg-zinc-900 border-zinc-800 text-white">
-                <CardHeader>
-                    <CardTitle>Instagram Feed (#kopiduadarjat)</CardTitle>
-                    <CardDescription className="text-zinc-400">
-                        Manage the posts that appear in the public social feed. The feed is synced automatically every 24 hours.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                   <SocialFeedManager />
-                </CardContent>
-            </Card>
+            <SocialFeedManager />
         </div>
     );
 }
