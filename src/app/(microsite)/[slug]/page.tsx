@@ -3,11 +3,11 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import type { Outlet, MenuItem, Promotion, MenuCategory, SiteSettings, Testimonial, Founder } from '@/lib/types';
 
-import { outlets as allOutlets, blogSeedData } from '@/lib/data';
+import { outlets as allOutlets } from '@/lib/data';
 
 import MenuCategoriesGrid from './(components)/MenuCategoriesGrid';
 import SignatureDrinksCarousel from './(components)/SignatureDrinksCarousel';
-import PromotionsSection from './(components/PromotionsSection)';
+import PromotionsSection from './(components)/PromotionsSection';
 import BrandStorySection from './(components)/BrandStorySection';
 import OutletLocatorSection from './(components)/OutletLocatorSection';
 import TestimonialsSection from './(components)/TestimonialsSection';
@@ -72,15 +72,40 @@ async function getMicrositeData(slug: string) {
   }
   
   // Filter promotions relevant to this outlet (or global promotions)
-  const outletPromotions = promotions.filter(p => p.outletIds?.includes(outlet.slug) || !p.outletIds || p.outletIds.length === 0);
+  const outletPromotions = promotions.filter(p => !p.outletIds || p.outletIds.length === 0 || p.outletIds.includes(outlet.slug));
+
+  // Manually convert date objects to strings to avoid serialization issues
+  const serializablePromotions = outletPromotions.map(promo => ({
+    ...promo,
+    startDate: promo.startDate.toISOString(),
+    endDate: promo.endDate.toISOString(),
+    createdAt: promo.createdAt.toISOString(),
+    updatedAt: promo.updatedAt.toISOString(),
+  }));
+  
+  const serializableCategories = menuCategories.map(cat => ({
+      ...cat,
+      createdAt: cat.createdAt.toISOString(),
+      updatedAt: cat.updatedAt.toISOString(),
+  }));
+
+  const serializableItems = featuredItems.map(item => ({
+      ...item,
+      createdAt: item.createdAt.toISOString(),
+      updatedAt: item.updatedAt.toISOString(),
+  }));
+
 
   return { 
     outlet: { ...outlet, id: slug }, // Ensure outlet has an id
-    menuCategories,
-    featuredItems,
-    promotions: outletPromotions,
+    menuCategories: serializableCategories,
+    featuredItems: serializableItems,
+    promotions: serializablePromotions,
     testimonials,
-    siteSettings,
+    siteSettings: {
+        ...siteSettings,
+        lastUpdated: siteSettings.lastUpdated.toISOString(),
+    },
   };
 }
 
@@ -132,4 +157,3 @@ export default async function OutletMicrositePage({ params }: Props) {
     </div>
   );
 }
-
