@@ -70,7 +70,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, className }:
         size="icon"
         onClick={handlePrevious}
         disabled={currentPage === 1}
-        className="rounded-full"
+        className="rounded-full text-black"
       >
         <ChevronLeft className="h-4 w-4" />
       </Button>
@@ -80,12 +80,12 @@ export function Pagination({ currentPage, totalPages, onPageChange, className }:
             key={page}
             variant={currentPage === page ? 'default' : 'outline'}
             onClick={() => onPageChange(page)}
-            className="rounded-full"
+            className={cn("rounded-full", currentPage === page ? '' : 'text-black')}
           >
             {page}
           </Button>
         ) : (
-          <span key={`ellipsis-${index}`} className="px-4 py-2">
+          <span key={`ellipsis-${index}`} className="px-4 py-2 text-black">
             ...
           </span>
         )
@@ -95,7 +95,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, className }:
         size="icon"
         onClick={handleNext}
         disabled={currentPage === totalPages}
-        className="rounded-full"
+        className="rounded-full text-black"
       >
         <ChevronRight className="h-4 w-4" />
       </Button>
