@@ -60,8 +60,8 @@ export default function SocialFeedManager() {
     const settingsRef = useMemoFirebase(() => firestore ? doc(firestore, 'settings', 'instagram_sync') : null, [firestore]);
     const { data: syncSettings, isLoading: isLoadingSettings } = useDoc<InstagramSyncSettings>(settingsRef);
     
-    const [tagInput, setTagInput] = useState('');
-    const [mode, setMode] = useState<'scraper' | 'graph'>('scraper');
+    const [tagInput, setTagInput] = useState(syncSettings?.active_tag || '');
+    const [mode, setMode] = useState<'scraper' | 'graph'>(syncSettings?.mode || 'scraper');
 
     useEffect(() => {
         if (syncSettings) {
@@ -106,26 +106,23 @@ export default function SocialFeedManager() {
         setIsRefreshing(true);
         toast({ title: "Syncing Feed", description: "This may take a moment..." });
         
-        fetch("/api/sync-insta-feed", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-        })
-          .then(async (res) => {
-            if (!res.ok) {
-              const errorData = await res.json();
-              throw new Error(errorData.error || `HTTP error! Status: ${res.status}`);
-            }
-            return res.json();
-          })
-          .then((data) => {
-             toast({ title: "Sync Successful", description: data.message || `Synced ${data.count} posts.` });
-          })
-          .catch((err) => {
-             toast({ variant: 'destructive', title: "Sync Failed", description: err.message });
-          })
-          .finally(() => {
-            setIsRefreshing(false);
+        try {
+          const res = await fetch("https://us-central1-studio-5747447299-c92b3.cloudfunctions.net/syncInstagramHybrid", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
           });
+          const data = await res.json();
+          if (res.ok) {
+            toast({ title: "Sync Success", description: data.message });
+          } else {
+            throw new Error(data.error || 'Unknown error');
+          }
+        } catch (error: any) {
+          console.error("🔥 Sync Failed:", error);
+          toast({ variant: 'destructive', title: 'Sync Failed', description: error.message });
+        } finally {
+          setIsRefreshing(false);
+        }
     };
 
     const handleUpdateSettings = async (newSettings: Partial<InstagramSyncSettings>) => {
