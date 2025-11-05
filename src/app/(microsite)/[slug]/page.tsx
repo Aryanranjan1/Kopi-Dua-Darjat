@@ -5,7 +5,7 @@ import { outlets as allOutlets } from '@/lib/data';
 import MicrositePageClient from './MicrositePageClient';
 import type { Outlet, MenuItem, Promotion, MenuCategory, SiteSettings, Founder, Testimonial } from '@/lib/types';
 import { initializeServerSideFirebase } from '@/firebase/server-init';
-import { collection, getDocs, query } from 'firebase/firestore';
+import { collection, getDocs, query, Timestamp } from 'firebase/firestore';
 
 
 // This remains a Server Component.
@@ -108,9 +108,15 @@ async function getMicrositeData(slug: string) {
       updatedAt: item.updatedAt.toISOString(),
   }));
 
-  const serializableTestimonials = testimonials.map(t => ({
-      ...t
-  }));
+  const serializableTestimonials = testimonials.map(t => {
+      const data: { [key: string]: any } = { ...t };
+      for (const key in data) {
+        if (data[key] instanceof Timestamp) {
+          data[key] = data[key].toDate().toISOString();
+        }
+      }
+      return data as Testimonial;
+    });
 
 
   return { 
