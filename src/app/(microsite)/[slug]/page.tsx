@@ -12,7 +12,7 @@ import BrandStorySection from './(components)/BrandStorySection';
 import OutletLocatorSection from './(components)/OutletLocatorSection';
 import TestimonialsSection from './(components)/TestimonialsSection';
 import SocialFeedSection from './(components)/SocialFeedSection';
-import NewsletterSection from './(components/NewsletterSection';
+import NewsletterSection from './(components)/NewsletterSection';
 import MicrositeHero from './(components)/MicrositeHero';
 import MenuShowcaseSection from './(components)/MenuShowcaseSection';
 import LatestStories from '@/components/home/LatestStories';
