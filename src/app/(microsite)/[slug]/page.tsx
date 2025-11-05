@@ -7,7 +7,7 @@ import type { Outlet, MenuItem, Promotion, MenuCategory, SiteSettings } from '@/
 
 import MenuCategoriesGrid from './(components)/MenuCategoriesGrid';
 import SignatureDrinksCarousel from './(components)/SignatureDrinksCarousel';
-import PromotionsSection from './(components/PromotionsSection';
+import PromotionsSection from './(components)/PromotionsSection';
 import BrandStorySection from './(components)/BrandStorySection';
 import OutletLocatorSection from './(components)/OutletLocatorSection';
 import TestimonialsSection from './(components)/TestimonialsSection';
