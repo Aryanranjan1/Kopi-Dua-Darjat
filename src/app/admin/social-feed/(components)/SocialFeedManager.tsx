@@ -106,15 +106,12 @@ export default function SocialFeedManager() {
         setIsRefreshing(true);
         toast({ title: "Syncing Feed", description: "This may take a moment..." });
         
-        const FUNCTION_URL = "https://us-central1-studio-5747447299-c92b3.cloudfunctions.net/syncInstagramHybrid";
-        
         try {
-          const res = await fetch(FUNCTION_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
+          const res = await fetch("/api/sync-insta-feed", {
+            method: "POST"
           });
           const data = await res.json();
-          if (!res.ok) throw new Error(data?.error || JSON.stringify(data));
+          if (!res.ok) throw new Error(data?.message || 'Sync failed');
           toast({ title: "Sync Success", description: data.message });
         } catch (err: any) {
           console.error("🔥 Sync request failed:", err);
