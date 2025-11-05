@@ -7,13 +7,16 @@ import { outlets as allOutlets } from '@/lib/data';
 
 import MenuCategoriesGrid from './(components)/MenuCategoriesGrid';
 import SignatureDrinksCarousel from './(components)/SignatureDrinksCarousel';
-import PromotionsSection from './(components)/PromotionsSection';
+import BentoGridSection from './(components)/PromotionsSection';
 import BrandStorySection from './(components)/BrandStorySection';
 import OutletLocatorSection from './(components)/OutletLocatorSection';
 import TestimonialsSection from './(components)/TestimonialsSection';
 import SocialFeedSection from './(components)/SocialFeedSection';
-import NewsletterSection from './(components)/NewsletterSection';
+import NewsletterSection from './(components/NewsletterSection';
 import MicrositeHero from './(components)/MicrositeHero';
+import MenuShowcaseSection from './(components)/MenuShowcaseSection';
+import LatestStories from '@/components/home/LatestStories';
+
 
 // --- MOCK DATA ---
 const menuCategories: MenuCategory[] = [
@@ -22,12 +25,23 @@ const menuCategories: MenuCategory[] = [
   { id: '3', name: 'Coklat Series', slug: 'coklat-series', description: 'Rich and decadent chocolate drinks.', imageUrl: 'https://picsum.photos/seed/coklat/600/800', displayOrder: 3, status: 'published', groupId: 'non-kopi', createdAt: new Date(), updatedAt: new Date() },
 ];
 
-const featuredItems: MenuItem[] = [
+const allMenuItems: MenuItem[] = [
   { id: '1', name: 'Darjat Caramel', slug: 'darjat-caramel', description: 'Our signature rich espresso with creamy milk and a sweet caramel swirl.', price: 5.50, imageUrl: '/image/kdd-cup.png', categoryId: '1', isPopular: true, status: 'published', displayOrder: 1, isGeneral: true, createdAt: new Date(), updatedAt: new Date() },
   { id: '2', name: 'Darjat Borneo', slug: 'darjat-borneo', description: 'An exotic blend featuring smoky Gula Apong from Sarawak for a unique taste.', price: 6.00, imageUrl: '/image/kdd-cup.png', categoryId: '1', isPopular: true, status: 'published', displayOrder: 2, isGeneral: true, createdAt: new Date(), updatedAt: new Date() },
   { id: '3', name: 'Matcha Latte', slug: 'matcha-latte', description: 'Ceremonial grade matcha with steamed milk, a perfect balance of earthy and creamy.', price: 7.00, imageUrl: '/image/kdd-cup.png', categoryId: '2', isPopular: true, status: 'published', displayOrder: 3, isGeneral: true, createdAt: new Date(), updatedAt: new Date() },
   { id: '4', name: 'Coklat Ais', slug: 'coklat-ais', description: 'Rich, dark chocolate poured over ice with fresh milk. A classic indulgence.', price: 6.50, imageUrl: '/image/kdd-cup.png', categoryId: '3', isPopular: true, status: 'published', displayOrder: 4, isGeneral: true, createdAt: new Date(), updatedAt: new Date() },
+  { id: '5', name: 'Vanilla Latte', slug: 'vanilla-latte', description: 'Smooth espresso with steamed milk and a hint of vanilla.', price: 6.00, imageUrl: '/image/kdd-cup.png', categoryId: '1', isPopular: false, status: 'published', displayOrder: 5, isGeneral: true, createdAt: new Date(), updatedAt: new Date() },
+  { id: '6', name: 'Hazelnut Americano', slug: 'hazelnut-americano', description: 'A shot of espresso with hot water and a nutty hazelnut flavor.', price: 5.00, imageUrl: '/image/kdd-cup.png', categoryId: '1', isPopular: false, status: 'published', displayOrder: 6, isGeneral: true, createdAt: new Date(), updatedAt: new Date() },
+  { id: '7', name: 'Hojicha Latte', slug: 'hojicha-latte', description: 'Roasted green tea with steamed milk for a toasty, comforting drink.', price: 7.50, imageUrl: '/image/kdd-cup.png', categoryId: '2', isPopular: false, status: 'published', displayOrder: 7, isGeneral: true, createdAt: new Date(), updatedAt: new Date() },
+  { id: '8', name: 'Dark Chocolate Mocha', slug: 'dark-chocolate-mocha', description: 'A perfect blend of dark chocolate and rich espresso.', price: 8.00, imageUrl: '/image/kdd-cup.png', categoryId: '3', isPopular: false, status: 'published', displayOrder: 8, isGeneral: true, createdAt: new Date(), updatedAt: new Date() },
+  { id: '9', name: 'Classic Kopi O', slug: 'kopi-o', description: 'The original Malaysian black coffee, strong and aromatic.', price: 3.00, imageUrl: '/image/kdd-cup.png', categoryId: '1', isPopular: false, status: 'published', displayOrder: 9, isGeneral: true, createdAt: new Date(), updatedAt: new Date() },
+  { id: '10', name: 'Strawberry Matcha', slug: 'strawberry-matcha', description: 'A beautiful and tasty layer of strawberry puree, milk, and matcha.', price: 8.50, imageUrl: '/image/kdd-cup.png', categoryId: '2', isPopular: false, status: 'published', displayOrder: 10, isGeneral: true, createdAt: new Date(), updatedAt: new Date() },
+  { id: '11', name: 'White Chocolate Dream', slug: 'white-chocolate-dream', description: 'Creamy white chocolate melted into steamed milk.', price: 7.00, imageUrl: '/image/kdd-cup.png', categoryId: '3', isPopular: false, status: 'published', displayOrder: 11, isGeneral: true, createdAt: new Date(), updatedAt: new Date() },
+  { id: '12', name: 'Gula Melaka Latte', slug: 'gula-melaka-latte', description: 'A local favorite, espresso with milk and rich palm sugar.', price: 6.50, imageUrl: '/image/kdd-cup.png', categoryId: '1', isPopular: false, status: 'published', displayOrder: 12, isGeneral: true, createdAt: new Date(), updatedAt: new Date() },
+  { id: '13', name: 'Sparkling Lemonade', slug: 'sparkling-lemonade', description: 'A refreshing and bubbly lemonade for a hot day.', price: 5.00, imageUrl: '/image/kdd-cup.png', categoryId: '3', isPopular: false, status: 'published', displayOrder: 13, isGeneral: true, createdAt: new Date(), updatedAt: new Date() }
 ];
+
+const featuredItems = allMenuItems.filter(item => item.isPopular);
 
 const promotions: Promotion[] = [
   { id: '1', title: 'Weekend BOGO', description: 'Buy one Darjat series drink, get another free!', discountType: 'bogo', discountValue: 0, startDate: new Date(), endDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000), status: 'active', bannerImage: 'https://picsum.photos/seed/promo1/800/600', menuItemIds: ['1', '2'], createdAt: new Date(), updatedAt: new Date() },
@@ -91,7 +105,13 @@ async function getMicrositeData(slug: string) {
       updatedAt: cat.updatedAt.toISOString(),
   }));
 
-  const serializableItems = featuredItems.map(item => ({
+  const serializableItems = allMenuItems.map(item => ({
+      ...item,
+      createdAt: item.createdAt.toISOString(),
+      updatedAt: item.updatedAt.toISOString(),
+  }));
+
+  const serializableFeaturedItems = featuredItems.map(item => ({
       ...item,
       createdAt: item.createdAt.toISOString(),
       updatedAt: item.updatedAt.toISOString(),
@@ -101,7 +121,8 @@ async function getMicrositeData(slug: string) {
   return { 
     outlet: { ...outlet, id: slug }, // Ensure outlet has an id
     menuCategories: serializableCategories,
-    featuredItems: serializableItems,
+    allMenuItems: serializableItems,
+    featuredItems: serializableFeaturedItems,
     promotions: serializablePromotions,
     testimonials,
     siteSettings: {
@@ -142,19 +163,21 @@ export default async function OutletMicrositePage({ params }: Props) {
     notFound();
   }
 
-  const { outlet, menuCategories, featuredItems, promotions, testimonials, siteSettings } = data;
+  const { outlet, menuCategories, featuredItems, promotions, testimonials, siteSettings, allMenuItems } = data;
 
   return (
     <div className="bg-white text-black">
       <MicrositeHero outlet={outlet} />
       <main className="space-y-20 md:space-y-32">
         <SignatureDrinksCarousel items={featuredItems} promotions={promotions || []} />
-        {promotions && promotions.length > 0 && <PromotionsSection promotions={promotions} />}
+        {promotions && promotions.length > 0 && <BentoGridSection promotions={promotions} items={featuredItems} />}
         <MenuCategoriesGrid categories={menuCategories} />
+        {allMenuItems && <MenuShowcaseSection items={allMenuItems} />}
         {siteSettings && <BrandStorySection settings={siteSettings} />}
         <OutletLocatorSection currentOutlet={outlet} />
         {testimonials && testimonials.length > 0 && <TestimonialsSection testimonials={testimonials} />}
         <SocialFeedSection />
+        <LatestStories />
         <NewsletterSection />
       </main>
     </div>
