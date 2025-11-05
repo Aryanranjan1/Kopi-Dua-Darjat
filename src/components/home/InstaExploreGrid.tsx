@@ -5,7 +5,6 @@ import React, { useMemo } from 'react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, where, orderBy, limit } from 'firebase/firestore';
 import { Loader2, Instagram as InstagramIcon, ArrowDown } from 'lucide-react';
-import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import type { PublicInstaPost } from '@/lib/types';
 import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
@@ -78,8 +77,8 @@ export default function InstaExploreGrid() {
   }, [posts]);
 
   return (
-    <section className="bg-white px-4 sm:px-6 py-24 sm:py-32">
-      <AnimateOnScroll animationType="fadeIn" className="container mx-auto">
+    <section className="bg-primary px-4 sm:px-6 py-24 sm:py-32">
+      <div className="container mx-auto">
         {isLoading ? (
           <div className="flex justify-center items-center h-64">
             <Loader2 className="w-12 h-12 text-primary animate-spin" />
@@ -105,7 +104,7 @@ export default function InstaExploreGrid() {
         )}
         {visiblePosts && visiblePosts.length > 0 && (
             <div className="mt-12 text-center">
-                <Button asChild variant="outline" className="rounded-full border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground">
+                <Button asChild variant="outline" className="rounded-full border-foreground/50 text-foreground hover:bg-foreground hover:text-background">
                     <a href="https://www.instagram.com/explore/tags/kopiduadarjat/" target="_blank" rel="noopener noreferrer">
                         Show More on Instagram
                          <ArrowDown className="ml-2 h-4 w-4" />
@@ -113,7 +112,7 @@ export default function InstaExploreGrid() {
                 </Button>
             </div>
         )}
-      </AnimateOnScroll>
+      </div>
     </section>
   );
 }
