@@ -13,6 +13,8 @@ import {
 import { Card, CardContent } from '@/components/ui/card';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import Link from 'next/link';
+import Autoplay from "embla-carousel-autoplay"
+import React from 'react';
 
 const DrinkCard = ({ item }: { item: MenuItem }) => (
   <Link href={`/menu#${item.slug}`} className="block group">
@@ -36,16 +38,23 @@ const DrinkCard = ({ item }: { item: MenuItem }) => (
 export default function SignatureDrinksCarousel({ items }: { items: MenuItem[] }) {
   if (!items || items.length === 0) return null;
 
+  const plugin = React.useRef(
+    Autoplay({ delay: 3000, stopOnInteraction: true })
+  )
+
   return (
     <section className="bg-white py-20 md:py-24">
       <div className="container mx-auto px-6 max-w-7xl">
         <AnimateOnScroll animationType="fadeIn">
           <Carousel
+            plugins={[plugin.current]}
             opts={{
               align: 'start',
               loop: true,
             }}
             className="w-full relative"
+            onMouseEnter={plugin.current.stop}
+            onMouseLeave={plugin.current.reset}
           >
             <CarouselContent className="-ml-4">
               {items.map((item) => (
