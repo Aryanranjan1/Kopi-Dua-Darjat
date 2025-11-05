@@ -47,16 +47,16 @@ export default function MenuShowcaseSection({ items }: { items: MenuItem[] }) {
   );
   
   return (
-    <section id="menu" className="bg-white py-20 md:py-32">
+    <section id="menu" className="bg-black py-20 md:py-32">
       <div className="container mx-auto px-6 max-w-7xl">
         <AnimateOnScroll className="text-left mb-12">
           <div className="flex justify-between items-center">
-            <h2 className="text-4xl md:text-5xl font-headline font-bold text-black uppercase">
+            <h2 className="text-4xl md:text-5xl font-headline font-bold text-white uppercase underline decoration-primary decoration-4 underline-offset-8">
               Menu
             </h2>
-            {/* Placeholder for Search, Filter, Sort controls */}
-            <div className="hidden md:flex items-center gap-4">
-               {/* Search/Filter/Sort components will go here */}
+            <div className="hidden md:flex items-center gap-4 text-white">
+               {/* Search, Filter, Sort components will go here */}
+               <p className="text-sm text-zinc-400">Search & Filter Coming Soon</p>
             </div>
           </div>
         </AnimateOnScroll>
