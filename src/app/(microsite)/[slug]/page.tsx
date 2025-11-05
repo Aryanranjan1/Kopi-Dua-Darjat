@@ -1,23 +1,12 @@
 
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
+import { outlets as allOutlets } from '@/lib/data';
+import MicrositePageClient from './MicrositePageClient';
 import type { Outlet, MenuItem, Promotion, MenuCategory, SiteSettings, Testimonial, Founder } from '@/lib/types';
 
-import { outlets as allOutlets } from '@/lib/data';
 
-import MenuCategoriesGrid from './(components)/MenuCategoriesGrid';
-import SignatureDrinksCarousel from './(components)/SignatureDrinksCarousel';
-import BentoGridSection from './(components)/PromotionsSection';
-import BrandStorySection from './(components)/BrandStorySection';
-import OutletLocatorSection from './(components)/OutletLocatorSection';
-import TestimonialsSection from './(components)/TestimonialsSection';
-import MicrositeHero from './(components)/MicrositeHero';
-import MenuShowcaseSection from './(components)/MenuShowcaseSection';
-import InstaExploreGrid from '@/components/home/InstaExploreGrid';
-import Community from '@/components/home/Community';
-import LatestStories from '@/components/home/LatestStories';
-import NewsletterSignUp from '@/components/home/NewsletterSignUp';
-
+// This remains a Server Component.
 
 // --- MOCK DATA ---
 const menuCategories: MenuCategory[] = [
@@ -164,24 +153,7 @@ export default async function OutletMicrositePage({ params }: Props) {
     notFound();
   }
 
-  const { outlet, menuCategories, featuredItems, promotions, testimonials, siteSettings, allMenuItems } = data;
-
   return (
-    <div className="bg-white text-black">
-      <MicrositeHero outlet={outlet} />
-      <main className="space-y-20 md:space-y-32">
-        <SignatureDrinksCarousel items={featuredItems} promotions={promotions || []} />
-        {promotions && promotions.length > 0 && <BentoGridSection promotions={promotions} items={featuredItems} />}
-        <MenuCategoriesGrid categories={menuCategories} />
-        {allMenuItems && <MenuShowcaseSection items={allMenuItems} />}
-        {siteSettings && <BrandStorySection settings={siteSettings} />}
-        <OutletLocatorSection currentOutlet={outlet} />
-        {testimonials && testimonials.length > 0 && <TestimonialsSection testimonials={testimonials} />}
-        <InstaExploreGrid />
-        <Community />
-        <LatestStories />
-        <NewsletterSignUp />
-      </main>
-    </div>
+    <MicrositePageClient {...data} />
   );
 }
