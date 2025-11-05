@@ -11,11 +11,12 @@ import BentoGridSection from './(components)/PromotionsSection';
 import BrandStorySection from './(components)/BrandStorySection';
 import OutletLocatorSection from './(components)/OutletLocatorSection';
 import TestimonialsSection from './(components)/TestimonialsSection';
-import SocialFeedSection from './(components)/SocialFeedSection';
-import NewsletterSection from './(components)/NewsletterSection';
 import MicrositeHero from './(components)/MicrositeHero';
 import MenuShowcaseSection from './(components)/MenuShowcaseSection';
+import InstaExploreGrid from '@/components/home/InstaExploreGrid';
+import Community from '@/components/home/Community';
 import LatestStories from '@/components/home/LatestStories';
+import NewsletterSignUp from '@/components/home/NewsletterSignUp';
 
 
 // --- MOCK DATA ---
@@ -176,9 +177,10 @@ export default async function OutletMicrositePage({ params }: Props) {
         {siteSettings && <BrandStorySection settings={siteSettings} />}
         <OutletLocatorSection currentOutlet={outlet} />
         {testimonials && testimonials.length > 0 && <TestimonialsSection testimonials={testimonials} />}
-        <SocialFeedSection />
+        <InstaExploreGrid />
+        <Community />
         <LatestStories />
-        <NewsletterSection />
+        <NewsletterSignUp />
       </main>
     </div>
   );
