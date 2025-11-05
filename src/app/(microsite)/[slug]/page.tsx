@@ -2,12 +2,12 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { initializeServerSideFirebase } from '@/firebase/server-init';
-import { doc, getDoc, collection, query, where, getDocs, limit } from 'firebase/firestore';
+import { doc, getDoc, collection, query, where, getDocs, limit, Timestamp } from 'firebase/firestore';
 import type { Outlet, MenuItem, Promotion, MenuCategory, SiteSettings } from '@/lib/types';
 
 import MenuCategoriesGrid from './(components)/MenuCategoriesGrid';
 import SignatureDrinksCarousel from './(components)/SignatureDrinksCarousel';
-import PromotionsSection from './(components)/PromotionsSection';
+import PromotionsSection from './(components/PromotionsSection';
 import BrandStorySection from './(components)/BrandStorySection';
 import OutletLocatorSection from './(components)/OutletLocatorSection';
 import TestimonialsSection from './(components)/TestimonialsSection';
@@ -18,6 +18,23 @@ import NewsletterSection from './(components)/NewsletterSection';
 type Props = {
   params: { slug: string };
 };
+
+// Helper to convert Firestore Timestamps in an object to serializable format
+const convertTimestamps = (data: any) => {
+  const newObj: any = {};
+  for (const key in data) {
+    if (data[key] instanceof Timestamp) {
+      // Keep it as a Date object for the component, Next.js can handle this.
+      newObj[key] = data[key].toDate();
+    } else if (data[key] && typeof data[key] === 'object' && !Array.isArray(data[key])) {
+      newObj[key] = convertTimestamps(data[key]);
+    } else {
+      newObj[key] = data[key];
+    }
+  }
+  return newObj;
+};
+
 
 // SERVER-SIDE DATA FETCHING
 async function getMicrositeData(slug: string) {
@@ -48,7 +65,16 @@ async function getMicrositeData(slug: string) {
 
   const menuCategories = menuCategoriesSnap.docs.map(d => ({ id: d.id, ...d.data() } as MenuCategory));
   const featuredItems = featuredItemsSnap.docs.map(d => ({ id: d.id, ...d.data() } as MenuItem));
-  const promotions = promotionsSnap.docs.map(d => ({ id: d.id, ...d.data() } as Promotion));
+  
+  // Convert timestamps to serializable format for promotions
+  const promotions = promotionsSnap.docs.map(d => {
+    const data = d.data();
+    return { 
+      id: d.id, 
+      ...convertTimestamps(data)
+    } as Promotion;
+  });
+
   const testimonials = testimonialsSnap.docs.map(d => ({ id: d.id, ...d.data() } as any));
   const siteSettings = settingsSnap.exists() ? settingsSnap.data() as SiteSettings : null;
 
@@ -76,7 +102,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
   const outlet = outletSnap.data() as Outlet;
 
-  const description = `Visit ${outlet.name} in ${outlet.city} — serving Kopi Dua Darjat from ${outlet.hours}. ${outlet.tagline || ''}`;
+  const description = `Visit ${outlet.name} in ${outlet.city || ''} — serving Kopi Dua Darjat from ${outlet.hours || ''}. ${outlet.tagline || ''}`;
 
   return {
     title: `${outlet.name} | Kopi Dua Darjat`,
