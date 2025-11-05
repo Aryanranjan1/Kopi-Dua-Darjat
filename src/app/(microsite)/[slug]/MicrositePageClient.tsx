@@ -42,7 +42,7 @@ export default function MicrositePageClient(data: PageData) {
       <MicrositeHero outlet={outlet} />
       <main>
         <SignatureDrinksCarousel items={featuredItems} />
-        {allMenuItems && <MenuShowcaseSection items={allMenuItems} />}
+        {allMenuItems && <MenuShowcaseSection items={allMenuItems} categories={menuCategories} />}
         {siteSettings && <BrandStorySection settings={siteSettings} />}
         <OutletLocatorSection currentOutlet={outlet} />
         {testimonials && testimonials.length > 0 && <FranchiseTestimonials />}

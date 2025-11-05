@@ -1,17 +1,21 @@
 
 'use client';
 
-import { useState } from 'react';
-import type { MenuItem } from '@/lib/types';
+import { useState, useMemo } from 'react';
+import type { MenuItem, MenuCategory } from '@/lib/types';
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import Link from 'next/link';
-import { ArrowUpRight, Star } from 'lucide-react';
+import { ArrowUpRight, Star, Search } from 'lucide-react';
 import { Pagination } from '@/components/shared/Pagination';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const ITEMS_PER_PAGE = 10;
+
+type SortOption = 'default' | 'price-asc' | 'price-desc' | 'name-asc';
 
 const DrinkCard = ({ item }: { item: MenuItem }) => (
   <Card className="rounded-3xl overflow-hidden group bg-[#fde047] border-black/10 transition-all duration-300 transform hover:shadow-xl hover:-translate-y-1 h-full flex flex-col">
@@ -37,11 +41,47 @@ const DrinkCard = ({ item }: { item: MenuItem }) => (
   </Card>
 );
 
-export default function MenuShowcaseSection({ items }: { items: MenuItem[] }) {
+export default function MenuShowcaseSection({ items, categories }: { items: MenuItem[]; categories: MenuCategory[] }) {
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortOrder, setSortOrder] = useState<SortOption>('default');
+  const [selectedCategory, setSelectedCategory] = useState('all');
 
-  const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
-  const paginatedItems = items.slice(
+  const filteredAndSortedItems = useMemo(() => {
+    let filtered = [...items];
+
+    // Filter by category
+    if (selectedCategory !== 'all') {
+      filtered = filtered.filter(item => item.categoryId === selectedCategory);
+    }
+    
+    // Filter by search query
+    if (searchQuery) {
+      filtered = filtered.filter(item => item.name.toLowerCase().includes(searchQuery.toLowerCase()));
+    }
+
+    // Sort items
+    switch (sortOrder) {
+      case 'price-asc':
+        filtered.sort((a, b) => a.price - b.price);
+        break;
+      case 'price-desc':
+        filtered.sort((a, b) => b.price - a.price);
+        break;
+      case 'name-asc':
+        filtered.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case 'default':
+      default:
+        // Default sort is by displayOrder which is pre-sorted
+        break;
+    }
+    
+    return filtered;
+  }, [items, searchQuery, sortOrder, selectedCategory]);
+
+  const totalPages = Math.ceil(filteredAndSortedItems.length / ITEMS_PER_PAGE);
+  const paginatedItems = filteredAndSortedItems.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
@@ -55,8 +95,37 @@ export default function MenuShowcaseSection({ items }: { items: MenuItem[] }) {
               Menu
             </h2>
             <div className="hidden md:flex items-center gap-4 text-white">
-               {/* Search, Filter, Sort components will go here */}
-               <p className="text-sm text-zinc-400">Search & Filter Coming Soon</p>
+               <div className="relative">
+                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+                 <Input 
+                    placeholder="Search menu..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-9 bg-zinc-800 border-zinc-700 w-64 rounded-full"
+                 />
+               </div>
+               <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                  <SelectTrigger className="w-[180px] bg-zinc-800 border-zinc-700 rounded-full">
+                    <SelectValue placeholder="Filter by category" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                    <SelectItem value="all">All Categories</SelectItem>
+                    {categories.map(cat => (
+                      <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select value={sortOrder} onValueChange={(value) => setSortOrder(value as SortOption)}>
+                    <SelectTrigger className="w-[180px] bg-zinc-800 border-zinc-700 rounded-full">
+                        <SelectValue placeholder="Sort by" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                        <SelectItem value="default">Default</SelectItem>
+                        <SelectItem value="price-asc">Price: Low to High</SelectItem>
+                        <SelectItem value="price-desc">Price: High to Low</SelectItem>
+                        <SelectItem value="name-asc">Name (A-Z)</SelectItem>
+                    </SelectContent>
+                </Select>
             </div>
           </div>
         </AnimateOnScroll>
