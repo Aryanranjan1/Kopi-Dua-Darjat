@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -29,12 +30,6 @@ export default function NewsletterSignUp({ disableAnimations = false }: { disabl
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  // debug logging to help you see what's returned by useMediaAsset
-  useEffect(() => {
-    console.log("[Newsletter] bgImage:", bgImage);
-    console.log("[Newsletter] isLoadingImage:", isLoadingImage);
-  }, [bgImage, isLoadingImage]);
 
   // If bgImage is undefined after load, fallback to local immediately
   useEffect(() => {
@@ -89,51 +84,36 @@ export default function NewsletterSignUp({ disableAnimations = false }: { disabl
   const wrapperProps = disableAnimations ? {} : { animationType: "slideInFromBottom" as const };
   const formWrapperProps = disableAnimations ? {} : { animationType: "fadeIn" as const, delay: 0.2 };
 
-  // Which image URL to render: bgImage.imageUrl if present otherwise local fallback
   const remoteUrl = bgImage?.imageUrl;
-  const fallbackUrl = "/images/fallback-bg.jpg"; // ensure this file exists in public/
+  // Use a known good image from the media library as the fallback.
+  const fallbackUrl = "https://images.unsplash.com/photo-1588253137728-1e4dd0fe9a93?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjYWZlJTIwaW50ZXJpb3J8ZW58MHx8fHwxNzYxOTgyODIwfDA&ixlib=rb-4.1.0&q=80&w=1080";
 
-  // on image error -> fallback
-  const handleImgError = (e?: any) => {
-    console.warn("[Newsletter] Background image failed to load, switching to fallback.", e);
-    setUseFallback(true);
+  const handleImgError = () => {
+    if (!useFallback) {
+        console.warn("[Newsletter] Background image failed to load, switching to fallback.");
+        setUseFallback(true);
+    } else {
+        console.error("[Newsletter] Fallback image also failed to load.");
+    }
   };
 
   return (
     <section className="relative py-24 sm:py-32 text-white">
       {/* Background layer */}
       <div className="absolute inset-0 z-[-20]">
-        {isLoadingImage ? (
+        {isLoadingImage && !imageLoaded ? (
           <Skeleton className="w-full h-full" />
         ) : (
-          <>
-            {/* Remote image attempt */}
-            {!useFallback && remoteUrl ? (
-              <Image
-                src={remoteUrl}
-                alt={bgImage?.description || "newsletter background"}
-                fill
-                className="object-cover"
-                data-ai-hint={bgImage?.imageHint}
-                onError={(e) => handleImgError(e)}
-                onLoadingComplete={() => {
-                  setImageLoaded(true);
-                }}
-                unoptimized
-              />
-            ) : (
-              // local fallback
-              <Image
-                src={fallbackUrl}
-                alt="newsletter fallback background"
-                fill
-                className="object-cover"
-                onError={(e) => {
-                  console.error("[Newsletter] fallback image failed to load", e);
-                }}
-              />
-            )}
-          </>
+          <Image
+            src={useFallback ? fallbackUrl : remoteUrl || fallbackUrl}
+            alt={bgImage?.description || "newsletter background"}
+            fill
+            className="object-cover"
+            data-ai-hint={bgImage?.imageHint}
+            onError={handleImgError}
+            onLoadingComplete={() => setImageLoaded(true)}
+            unoptimized
+          />
         )}
       </div>
 
