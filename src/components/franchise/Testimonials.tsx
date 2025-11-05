@@ -38,14 +38,14 @@ const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
                     />
                 )}
             </div>
-            <Card className="bg-zinc-900/50 border-zinc-800 rounded-3xl h-full pt-20 shadow-lg text-center">
+            <Card className="bg-background/80 border-black/10 rounded-3xl h-full pt-20 shadow-lg text-center backdrop-blur-sm">
                 <CardContent className="p-8 min-h-[320px] flex flex-col justify-center">
-                <blockquote className="text-lg font-medium text-white/90">
+                <blockquote className="text-lg font-medium text-foreground/90">
                 “{testimonial.quote}”
                 </blockquote>
                 <footer className="mt-6">
                 <p className="font-bold text-accent text-xl">{testimonial.name}</p>
-                <p className="text-white/60">{testimonial.designation}</p>
+                <p className="text-foreground/60">{testimonial.designation}</p>
                 </footer>
                 </CardContent>
             </Card>
@@ -56,7 +56,7 @@ const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
 
 export default function Testimonials() {
   const plugin = React.useRef(
-    Autoplay({ delay: 5000, stopOnInteraction: true })
+    Autoplay({ delay: 7000, stopOnInteraction: true })
   )
 
   const firestore = useFirestore();
@@ -64,11 +64,11 @@ export default function Testimonials() {
   const { data: testimonials, isLoading } = useCollection<Testimonial>(testimonialsQuery);
   
   return (
-    <section className="py-24 sm:py-32 bg-black text-white">
+    <section className="py-24 sm:py-32 bg-primary text-primary-foreground">
       <div className="container mx-auto px-4">
         <AnimateOnScroll animationType="slideInFromBottom" className="text-center max-w-3xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-headline text-primary">Success Stories</h2>
-          <p className="mt-4 text-lg text-white/70">
+          <h2 className="text-4xl md:text-5xl font-headline text-foreground">Success Stories</h2>
+          <p className="mt-4 text-lg text-muted-foreground">
             Hear from our partners who are brewing success with Kopi Dua Darjat.
           </p>
         </AnimateOnScroll>
@@ -76,7 +76,7 @@ export default function Testimonials() {
         <AnimateOnScroll animationType="fadeIn" delay={0.2}>
           {isLoading ? (
             <div className="flex justify-center items-center h-64">
-              <Loader2 className="h-12 w-12 animate-spin text-primary" />
+              <Loader2 className="h-12 w-12 animate-spin text-foreground" />
             </div>
           ) : (
             <Carousel
@@ -96,8 +96,8 @@ export default function Testimonials() {
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className="-left-4 md:-left-12 bg-zinc-800 border-zinc-700 text-white hover:bg-primary hover:text-black" />
-              <CarouselNext className="-right-4 md:-right-12 bg-zinc-800 border-zinc-700 text-white hover:bg-primary hover:text-black" />
+              <CarouselPrevious className="-left-4 md:-left-12 bg-background/80 border-black/20 text-foreground hover:bg-background hover:text-foreground" />
+              <CarouselNext className="-right-4 md:-right-12 bg-background/80 border-black/20 text-foreground hover:bg-background hover:text-foreground" />
             </Carousel>
           )}
         </AnimateOnScroll>
