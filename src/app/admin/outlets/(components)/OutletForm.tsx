@@ -106,6 +106,14 @@ export default function OutletForm({ outlet, onSuccess }: OutletFormProps) {
       
       const dataToSave = {
         ...values,
+        phone: values.phone || null,
+        email: values.email || null,
+        heroImage: values.heroImage || null,
+        interiorImage: values.interiorImage || null,
+        tagline: values.tagline || null,
+        mapsLink: values.mapsLink || null,
+        whatsappLink: values.whatsappLink || null,
+        chatbotEmbed: values.chatbotEmbed || null,
         updatedAt: serverTimestamp(),
         ...(outlet ? {} : { createdAt: serverTimestamp() }),
       };
