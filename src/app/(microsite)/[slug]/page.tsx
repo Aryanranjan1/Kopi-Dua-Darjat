@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { outlets as allOutlets } from '@/lib/data';
 import MicrositePageClient from './MicrositePageClient';
-import type { Outlet, MenuItem, Promotion, MenuCategory, SiteSettings, Testimonial, Founder } from '@/lib/types';
+import type { Outlet, MenuItem, Promotion, MenuCategory, SiteSettings, Founder } from '@/lib/types';
 
 
 // This remains a Server Component.
@@ -38,12 +38,6 @@ const promotions: Promotion[] = [
   { id: '2', title: 'Lunch Hour Special', description: 'Get 20% off any drink between 12 PM and 2 PM.', discountType: 'percentage', discountValue: 20, startDate: new Date(), endDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000), status: 'active', bannerImage: 'https://picsum.photos/seed/promo2/600/400', createdAt: new Date(), updatedAt: new Date() },
   { id: '3', title: 'Matcha Madness', description: 'Enjoy RM2 off all Matcha series drinks.', discountType: 'flat', discountValue: 2, startDate: new Date(), endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), status: 'active', bannerImage: 'https://picsum.photos/seed/promo3/600/400', menuItemIds: ['3'], createdAt: new Date(), updatedAt: new Date() },
    { id: '4', title: 'New Drink!', description: 'Try our new Pandan Latte.', discountType: 'custom', discountValue: 0, customDiscountDescription: 'Intro Price RM5', startDate: new Date(), endDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), status: 'active', bannerImage: 'https://picsum.photos/seed/promo4/600/400', menuItemIds: [], createdAt: new Date(), updatedAt: new Date() },
-];
-
-const testimonials: Testimonial[] = [
-    { id: '1', quote: "The best local coffee I've ever had! The Darjat Borneo is a must-try.", name: 'Aiman Hakim', designation: 'Coffee Enthusiast', image: 'https://picsum.photos/seed/aiman/100/100' },
-    { id: '2', quote: "Opening a KDD franchise was the best decision I made. The support is amazing.", name: 'Siti Nurhaliza', designation: 'Franchisee, Penang', image: 'https://picsum.photos/seed/siti/100/100' },
-    { id: '3', quote: "Finally, a place that makes great matcha and great coffee. My go-to spot!", name: 'Raj Patel', designation: 'Regular Customer', image: 'https://picsum.photos/seed/raj/100/100' },
 ];
 
 const founders: Founder[] = [
@@ -114,7 +108,6 @@ async function getMicrositeData(slug: string) {
     allMenuItems: serializableItems,
     featuredItems: serializableFeaturedItems,
     promotions: serializablePromotions,
-    testimonials,
     siteSettings: {
         ...siteSettings,
         lastUpdated: siteSettings.lastUpdated.toISOString(),
@@ -153,7 +146,10 @@ export default async function OutletMicrositePage({ params }: Props) {
     notFound();
   }
 
+  // Cast the data to remove testimonials before passing
+  const { testimonials, ...restOfData } = data as any;
+
   return (
-    <MicrositePageClient {...data} />
+    <MicrositePageClient {...restOfData} />
   );
 }
