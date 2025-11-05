@@ -1,14 +1,15 @@
 
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy, limit, where } from 'firebase/firestore';
+import { collection, query, orderBy, limit } from 'firebase/firestore';
 import { Loader2, Instagram as InstagramIcon } from 'lucide-react';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import type { PublicInstaPost } from '@/lib/types';
 import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
 
 const PostItem = ({ post }: { post: PublicInstaPost }) => {
   const isVideo = post.mediaType === 'VIDEO';
@@ -59,14 +60,17 @@ export default function InstaExploreGrid() {
       firestore
         ? query(
             collection(firestore, 'public_insta_feed'),
-            where('visible', '==', true),
             orderBy('rank', 'asc'),
-            limit(14)
+            limit(20) // Fetch more to account for client-side filtering
           )
         : null,
     [firestore]
   );
   const { data: posts, isLoading } = useCollection<PublicInstaPost>(instaQuery);
+
+  const visiblePosts = useMemo(() => {
+    return posts ? posts.filter(post => post.visible).slice(0, 14) : [];
+  }, [posts]);
 
   return (
     <section className="px-6 py-20 bg-white">
@@ -78,26 +82,23 @@ export default function InstaExploreGrid() {
           <div className="flex justify-center items-center h-64">
             <Loader2 className="w-12 h-12 text-primary animate-spin" />
           </div>
-        ) : posts && posts.length > 0 ? (
+        ) : visiblePosts && visiblePosts.length > 0 ? (
           <div className="columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-4">
-            {posts.map((post) => (
+            {visiblePosts.map((post) => (
               <PostItem key={post.id} post={post} />
             ))}
           </div>
         ) : (
           <div className="flex flex-col items-center py-10 text-center">
             <p className="text-gray-500 mb-4">No posts available right now.</p>
-            <Button
-              onClick={() =>
-                window.open('https://www.instagram.com/explore/tags/kopiduadarjat/', '_blank')
-              }
-              className="rounded-full bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition"
-            >
-              View on Instagram →
+            <Button asChild>
+                <Link href="/admin/data-seeding">
+                    Seed Sample Posts
+                </Link>
             </Button>
           </div>
         )}
-        {posts && posts.length > 0 && (
+        {visiblePosts && visiblePosts.length > 0 && (
             <div className="mt-12 text-center">
                 <Button asChild variant="outline" className="rounded-full border-primary/50 text-foreground hover:bg-primary hover:text-primary-foreground">
                     <a href="https://www.instagram.com/explore/tags/kopiduadarjat/" target="_blank" rel="noopener noreferrer">
