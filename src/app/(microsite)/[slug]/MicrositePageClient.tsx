@@ -43,7 +43,8 @@ export default function MicrositePageClient(data: PageData) {
     <div className="bg-white text-black">
       <MicrositeHero outlet={outlet} />
       <main>
-        {promotions && promotions.length > 0 && <PromotionsSection promotions={promotions} items={featuredItems} />}
+        <SignatureDrinksCarousel items={featuredItems} />
+        <MenuCategoriesGrid categories={menuCategories} />
         {allMenuItems && <MenuShowcaseSection items={allMenuItems} />}
         {siteSettings && <BrandStorySection settings={siteSettings} />}
         <OutletLocatorSection currentOutlet={outlet} />
