@@ -8,7 +8,10 @@ import * as cors from "cors";
 if (!admin.apps.length) admin.initializeApp();
 const db = admin.firestore();
 
-// ✅ Function to fetch posts
+// ✅ Configure CORS for direct invocation if needed in the future, but primarily for proxy.
+const corsHandler = cors({ origin: true });
+
+// ✅ Function to fetch posts (Separated for clarity)
 async function fetchPosts(settings: any) {
   const mode = settings.mode || "scraper";
   const tag = settings.active_tag || "kopiduadarjat";
@@ -68,12 +71,9 @@ async function fetchPosts(settings: any) {
   return posts;
 }
 
-export const syncInstagramHybrid = functions.https.onCall(async (data, context) => {
-    // Check if the user is authenticated.
-    // if (!context.auth) {
-    //     throw new functions.https.HttpsError('unauthenticated', 'The function must be called while authenticated.');
-    // }
-
+// ✅ Main HTTPS Request Function
+export const syncInstagramHybrid = functions.https.onRequest(async (req, res) => {
+  corsHandler(req, res, async () => {
     try {
       console.log("🚀 Hybrid Sync triggered at", new Date().toISOString());
 
@@ -82,7 +82,7 @@ export const syncInstagramHybrid = functions.https.onCall(async (data, context) 
 
       if (!settingsSnap.exists) {
         console.error("⚠️ Missing settings/instagram_sync document");
-        throw new functions.https.HttpsError('not-found', 'Missing settings document');
+        return res.status(500).json({ success: false, message: "Missing settings document" });
       }
 
       const settings = settingsSnap.data();
@@ -107,13 +107,17 @@ export const syncInstagramHybrid = functions.https.onCall(async (data, context) 
       });
 
       console.log(`✅ Synced ${posts.length} posts successfully.`);
-      return {
+      res.status(200).json({
         success: true,
         count: posts.length,
         message: `Synced ${posts.length} posts and replaced old data.`,
-      };
+      });
     } catch (error: any) {
       console.error("🔥 Sync Failed Error Stack:", error);
-      throw new functions.https.HttpsError("internal", error.message || "Internal Server Error");
+      res.status(500).json({
+        success: false,
+        message: error.message || "Internal Server Error",
+      });
     }
+  });
 });

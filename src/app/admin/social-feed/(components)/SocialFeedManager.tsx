@@ -107,11 +107,17 @@ export default function SocialFeedManager() {
         toast({ title: "Syncing Feed", description: "This may take a moment..." });
         
         try {
+          // Call the internal Next.js API route proxy
           const res = await fetch("/api/sync-insta-feed", {
             method: "POST"
           });
+          
           const data = await res.json();
-          if (!res.ok) throw new Error(data?.message || 'Sync failed');
+          
+          if (!res.ok || !data.success) {
+            throw new Error(data?.message || 'Sync failed');
+          }
+          
           toast({ title: "Sync Success", description: data.message });
         } catch (err: any) {
           console.error("🔥 Sync request failed:", err);

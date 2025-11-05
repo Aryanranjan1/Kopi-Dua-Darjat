@@ -1,29 +1,37 @@
 
 import { NextResponse } from "next/server";
-import { httpsCallable } from "firebase/functions";
-import { getFunctions } from "firebase/functions";
-import { initializeServerSideFirebase } from "@/firebase/server-init";
+
+// This is the URL of your deployed Cloud Function.
+// It's recommended to store this in an environment variable.
+const FUNCTION_URL = "https://us-central1-studio-5747447299-c92b3.cloudfunctions.net/syncInstagramHybrid";
 
 export async function POST() {
   try {
-    // Initialize Firebase Admin SDK on the server-side
-    initializeServerSideFirebase();
-    const functions = getFunctions();
+    // This is a server-to-server call, so it's not blocked by CORS.
+    const response = await fetch(FUNCTION_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-    // Get a reference to the callable function
-    const syncFunction = httpsCallable(functions, 'syncInstagramHybrid');
+    const data = await response.json();
 
-    // Call the function
-    const result = await syncFunction();
+    if (!response.ok) {
+      // If the function returned an error, forward it to the client.
+      return NextResponse.json(
+        { success: false, message: data.message || "Sync function failed." },
+        { status: response.status }
+      );
+    }
     
-    // Return the result from the function to the client
-    return NextResponse.json(result.data);
+    // Forward the successful response from the function to the client.
+    return NextResponse.json(data);
 
   } catch (error: any) {
-    console.error("API Route Error calling syncInstagramHybrid:", error);
-    // Return a structured error response
+    console.error("API Route Error calling sync function:", error);
     return NextResponse.json(
-      { success: false, message: error.message || "An internal server error occurred." },
+      { success: false, message: "An internal server error occurred in the proxy." },
       { status: 500 }
     );
   }
