@@ -9,6 +9,9 @@ import { Badge } from '@/components/ui/badge';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import Link from 'next/link';
 import { ArrowUpRight, Star } from 'lucide-react';
+import { Pagination } from '@/components/shared/Pagination';
+
+const ITEMS_PER_PAGE = 10;
 
 const DrinkCard = ({ item }: { item: MenuItem }) => (
   <Card className="rounded-3xl overflow-hidden group bg-[#fde047] border-black/10 transition-all duration-300 transform hover:shadow-xl hover:-translate-y-1 h-full flex flex-col">
@@ -35,23 +38,44 @@ const DrinkCard = ({ item }: { item: MenuItem }) => (
 );
 
 export default function MenuShowcaseSection({ items }: { items: MenuItem[] }) {
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
+  const paginatedItems = items.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
   
   return (
     <section id="menu" className="bg-white py-20 md:py-32">
       <div className="container mx-auto px-6 max-w-7xl">
-        <AnimateOnScroll className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-headline font-bold text-black inline-block underline decoration-[#fde047] decoration-4 underline-offset-8">
-            Our Full Menu
-          </h2>
+        <AnimateOnScroll className="text-left mb-12">
+          <div className="flex justify-between items-center">
+            <h2 className="text-4xl md:text-5xl font-headline font-bold text-black uppercase">
+              Menu
+            </h2>
+            {/* Placeholder for Search, Filter, Sort controls */}
+            <div className="hidden md:flex items-center gap-4">
+               {/* Search/Filter/Sort components will go here */}
+            </div>
+          </div>
         </AnimateOnScroll>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {items.map((item, index) => (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+          {paginatedItems.map((item, index) => (
             <AnimateOnScroll key={item.id} animationType="fadeIn" delay={index * 0.05}>
               <DrinkCard item={item} />
             </AnimateOnScroll>
           ))}
         </div>
+        
+        {totalPages > 1 && (
+            <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+            />
+        )}
 
       </div>
     </section>

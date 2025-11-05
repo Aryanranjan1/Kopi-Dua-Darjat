@@ -5,7 +5,6 @@ import { notFound, useParams } from 'next/navigation';
 import type { Outlet, MenuItem, Promotion, MenuCategory, SiteSettings, Testimonial } from '@/lib/types';
 import { motion } from 'framer-motion';
 
-import MenuCategoriesGrid from './(components)/MenuCategoriesGrid';
 import SignatureDrinksCarousel from './(components)/SignatureDrinksCarousel';
 import BrandStorySection from './(components)/BrandStorySection';
 import OutletLocatorSection from './(components)/OutletLocatorSection';
@@ -15,7 +14,6 @@ import Community from '@/components/home/Community';
 import LatestStories from '@/components/home/LatestStories';
 import MicrositeNewsletterSignUp from './(components)/MicrositeNewsletterSignUp';
 import FranchiseTestimonials from './(components)/FranchiseTestimonials';
-import PromotionsSection from './(components)/PromotionsSection';
 import MenuShowcaseSection from './(components)/MenuShowcaseSection';
 
 
@@ -44,7 +42,6 @@ export default function MicrositePageClient(data: PageData) {
       <MicrositeHero outlet={outlet} />
       <main>
         <SignatureDrinksCarousel items={featuredItems} />
-        <MenuCategoriesGrid categories={menuCategories} />
         {allMenuItems && <MenuShowcaseSection items={allMenuItems} />}
         {siteSettings && <BrandStorySection settings={siteSettings} />}
         <OutletLocatorSection currentOutlet={outlet} />
