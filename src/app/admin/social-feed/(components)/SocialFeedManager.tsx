@@ -60,8 +60,8 @@ export default function SocialFeedManager() {
     const settingsRef = useMemoFirebase(() => firestore ? doc(firestore, 'settings', 'instagram_sync') : null, [firestore]);
     const { data: syncSettings, isLoading: isLoadingSettings } = useDoc<InstagramSyncSettings>(settingsRef);
     
-    const [tagInput, setTagInput] = useState(syncSettings?.active_tag || '');
-    const [mode, setMode] = useState<'scraper' | 'graph'>(syncSettings?.mode || 'scraper');
+    const [tagInput, setTagInput] = useState('');
+    const [mode, setMode] = useState<'scraper' | 'graph'>('scraper');
 
     useEffect(() => {
         if (syncSettings) {
@@ -106,20 +106,20 @@ export default function SocialFeedManager() {
         setIsRefreshing(true);
         toast({ title: "Syncing Feed", description: "This may take a moment..." });
         
+        const FUNCTION_URL = "https://us-central1-studio-5747447299-c92b3.cloudfunctions.net/syncInstagramHybrid";
+
         try {
-          const res = await fetch("https://us-central1-studio-5747447299-c92b3.cloudfunctions.net/syncInstagramHybrid", {
+          const res = await fetch(FUNCTION_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
           });
           const data = await res.json();
-          if (res.ok) {
-            toast({ title: "Sync Success", description: data.message });
-          } else {
-            throw new Error(data.error || 'Unknown error');
-          }
-        } catch (error: any) {
-          console.error("🔥 Sync Failed:", error);
-          toast({ variant: 'destructive', title: 'Sync Failed', description: error.message });
+          console.log("📥 Sync response:", data);
+          if (!res.ok) throw new Error(data?.message || JSON.stringify(data));
+          toast({ title: "Sync Success", description: data.message });
+        } catch (err: any) {
+          console.error("🔥 Sync request failed:", err);
+          toast({ variant: 'destructive', title: 'Sync Failed', description: err.message });
         } finally {
           setIsRefreshing(false);
         }
