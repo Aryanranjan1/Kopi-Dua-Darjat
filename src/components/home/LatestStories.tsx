@@ -65,11 +65,6 @@ export default function LatestStories() {
                       <AlertTitle>No Posts to Display</AlertTitle>
                       <AlertDescription className="text-zinc-400">
                           This section is ready! To see your blog posts here, make sure they are in the 'blogs' collection in Firestore and have a status of "published".
-                          <div className="mt-4">
-                            <Button asChild>
-                                <Link href="/admin/data-seeding">Seed Sample Blog Posts</Link>
-                            </Button>
-                          </div>
                       </AlertDescription>
                   </Alert>
               </div>

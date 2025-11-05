@@ -3,7 +3,7 @@
 
 import React, { useMemo } from 'react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy, limit } from 'firebase/firestore';
+import { collection, query, where, orderBy, limit } from 'firebase/firestore';
 import { Loader2, Instagram as InstagramIcon, ArrowDown } from 'lucide-react';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import type { PublicInstaPost } from '@/lib/types';
@@ -17,15 +17,16 @@ const PostItem = ({ post }: { post: PublicInstaPost }) => {
   return (
     <div
       className={cn(
-        'group relative break-inside-avoid-column',
-        isVideo ? 'aspect-[9/16]' : 'aspect-square'
+        'group relative overflow-hidden rounded-lg',
+        'break-inside-avoid-column',
+        isVideo ? 'row-span-2' : ''
       )}
     >
       <a
         href={post.permalink}
         target="_blank"
         rel="noopener noreferrer"
-        className="block h-full w-full overflow-hidden rounded-lg"
+        className="block h-full w-full"
       >
         {isVideo ? (
           <video
@@ -56,7 +57,6 @@ const PostItem = ({ post }: { post: PublicInstaPost }) => {
   );
 };
 
-
 export default function InstaExploreGrid() {
   const firestore = useFirestore();
   const instaQuery = useMemoFirebase(
@@ -79,20 +79,23 @@ export default function InstaExploreGrid() {
 
   return (
     <section className="bg-white px-4 sm:px-6 py-24 sm:py-32">
-      <AnimateOnScroll animationType="fadeIn">
+      <AnimateOnScroll animationType="fadeIn" className="container mx-auto">
         {isLoading ? (
           <div className="flex justify-center items-center h-64">
             <Loader2 className="w-12 h-12 text-primary animate-spin" />
           </div>
         ) : visiblePosts && visiblePosts.length > 0 ? (
-           <div className="columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-4 space-y-4">
+           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 auto-rows-[250px]">
             {visiblePosts.map((post) => (
               <PostItem key={post.id} post={post} />
             ))}
           </div>
         ) : (
           <div className="flex flex-col items-center py-10 text-center">
-            <p className="text-gray-500 mb-4">No posts available right now.</p>
+            <h2 className="text-center font-headline text-3xl font-bold text-foreground md:text-4xl">
+              #KopiDua<span className="text-primary">Darjat</span> on Instagram
+            </h2>
+            <p className="text-gray-500 mt-4 mb-4">No posts available right now.</p>
              <Button asChild>
                 <Link href="/admin/data-seeding">
                     Seed Sample Posts
