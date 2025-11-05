@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useForm, Controller } from 'react-hook-form';
@@ -22,6 +23,7 @@ import { collection, addDoc, doc, setDoc, serverTimestamp, query } from 'firebas
 import type { MenuCategory, MenuGroup } from '@/lib/types';
 import { useEffect } from 'react';
 import { Switch } from '@/components/ui/switch';
+import { Textarea } from '@/components/ui/textarea';
 
 interface CategoryFormProps {
   category?: MenuCategory;
@@ -33,6 +35,7 @@ const formSchema = z.object({
     name: z.string().min(2, 'Category name must be at least 2 characters.'),
     slug: z.string().min(2, 'Slug must be at least 2 characters.').regex(/^[a-z0-9-]+$/, 'Slug can only contain lowercase letters, numbers, and hyphens.'),
     description: z.string().optional(),
+    imageUrl: z.string().url('Must be a valid URL').optional().or(z.literal('')),
     groupId: z.string({ required_error: 'Please select a group.' }),
     status: z.enum(['draft', 'published']),
 });
@@ -51,15 +54,14 @@ export default function CategoryForm({ category, allCategories, onSuccess }: Cat
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: category ? {
-        name: category.name,
-        slug: category.slug,
+        ...category,
         description: category.description || '',
-        groupId: category.groupId,
-        status: category.status,
+        imageUrl: category.imageUrl || '',
     } : {
         name: '',
         slug: '',
         description: '',
+        imageUrl: '',
         groupId: undefined,
         status: 'draft',
     },
@@ -160,8 +162,23 @@ export default function CategoryForm({ category, allCategories, onSuccess }: Cat
             <FormItem>
               <FormLabel>Description (Optional)</FormLabel>
               <FormControl>
-                <Input placeholder="A short description of the category" {...field} className={inputStyles} />
+                <Textarea placeholder="A short description of the category" {...field} className={inputStyles} />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="imageUrl"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Image URL (Optional)</FormLabel>
+              <FormControl>
+                <Input type="url" placeholder="https://..." {...field} className={inputStyles} />
+              </FormControl>
+               <FormDescription>Image used for the category grid on microsites.</FormDescription>
               <FormMessage />
             </FormItem>
           )}

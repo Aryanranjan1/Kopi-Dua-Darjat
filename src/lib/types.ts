@@ -45,6 +45,7 @@ export type MenuCategory = {
   name: string;
   slug: string;
   description?: string;
+  imageUrl?: string;
   groupId: string;
   displayOrder: number;
   status: 'draft' | 'published';
