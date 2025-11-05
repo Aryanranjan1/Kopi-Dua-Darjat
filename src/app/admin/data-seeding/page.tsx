@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useFirestore } from '@/firebase';
 import { collection, writeBatch, getDocs, doc, serverTimestamp } from 'firebase/firestore';
-import { blogSeedData } from '@/lib/data';
+import { blogSeedData, outlets as outletSeedData } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Database, AlertTriangle } from 'lucide-react';
 import {
@@ -26,7 +26,7 @@ export default function DataSeedingPage() {
   const firestore = useFirestore();
   const { toast } = useToast();
 
-  const handleSeedBlogs = async () => {
+  const handleSeedData = async () => {
     if (!firestore) {
       toast({ variant: 'destructive', title: 'Error', description: 'Firestore is not initialized.' });
       return;
@@ -36,24 +36,20 @@ export default function DataSeedingPage() {
 
     try {
       const batch = writeBatch(firestore);
-      const blogsCollection = collection(firestore, 'blogs');
-
-      // 1. Delete all existing blog posts
-      toast({ title: 'Starting blog seeding...', description: 'Clearing existing posts.' });
-      const existingBlogsSnapshot = await getDocs(blogsCollection);
-      existingBlogsSnapshot.forEach(document => {
-        batch.delete(document.ref);
-      });
       
-      // 2. Add new blog posts from seed data, using slug as ID
+      // --- Seed Blogs ---
+      const blogsCollection = collection(firestore, 'blogs');
+      toast({ title: 'Starting seeding...', description: 'Clearing existing blog posts.' });
+      const existingBlogsSnapshot = await getDocs(blogsCollection);
+      existingBlogsSnapshot.forEach(document => batch.delete(document.ref));
+      
       blogSeedData.forEach(blogData => {
         const { id, ...data } = blogData;
         const blogRef = doc(firestore, 'blogs', id); // Use slug as the document ID
         batch.set(blogRef, {
             ...data,
-            // Ensure all necessary fields from the type are present
-            slug: id, // Explicitly set slug from the id
-            id: id, // Ensure id field is part of the document data as well
+            slug: id,
+            id: id,
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp(),
             publishedAt: blogData.publishedAt || serverTimestamp(),
@@ -62,21 +58,32 @@ export default function DataSeedingPage() {
         });
       });
 
-      // 3. Commit the batch
+      // --- Seed Outlets ---
+       const outletsCollection = collection(firestore, 'outlets');
+       toast({ title: 'Clearing old data', description: 'Removing existing outlets before seeding...' });
+       const existingOutletsSnapshot = await getDocs(outletsCollection);
+       existingOutletsSnapshot.forEach(document => batch.delete(document.ref));
+
+      outletSeedData.forEach(outletData => {
+        const outletRef = doc(firestore, 'outlets', outletData.slug); // Use slug as the document ID
+        batch.set(outletRef, { ...outletData, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
+      });
+
+      // --- Commit Batch ---
       await batch.commit();
       
       toast({
         title: 'Seeding Complete!',
-        description: `${blogSeedData.length} blog posts have been successfully seeded into Firestore.`,
+        description: `${blogSeedData.length} blog posts and ${outletSeedData.length} outlets have been successfully seeded.`,
         duration: 5000,
       });
 
     } catch (error: any) {
-      console.error("Error seeding blog data: ", error);
+      console.error("Error seeding data: ", error);
       toast({
         variant: 'destructive',
         title: 'Seeding Failed',
-        description: `Could not seed blog posts: ${error.message}`,
+        description: `Could not seed data: ${error.message}`,
       });
     } finally {
       setIsLoading(false);
@@ -88,9 +95,9 @@ export default function DataSeedingPage() {
        <h1 className="text-3xl font-headline font-bold text-white">Master Data Seeding Tool</h1>
         <Card className="bg-zinc-900 border-zinc-800 text-white">
             <CardHeader>
-                <CardTitle className="flex items-center gap-2"><Database /> Blog Post Seeder</CardTitle>
+                <CardTitle className="flex items-center gap-2"><Database /> Master Data Seeder</CardTitle>
                 <CardDescription className="text-zinc-400">
-                Use this tool to reset your blog content. It will first delete all existing blog posts and then populate your CMS with a fresh set of sample articles.
+                Use this tool to reset your content. It will delete all existing blog posts and outlets, then populate your CMS with a fresh set of sample data.
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -99,7 +106,7 @@ export default function DataSeedingPage() {
                     <div>
                         <h3 className="font-semibold text-yellow-300">Warning: Destructive Action</h3>
                         <p className="text-sm text-yellow-400/80">
-                        This action will permanently delete all current blog posts in your Firestore database before adding the new ones. This cannot be undone.
+                        This action will permanently delete all current blog posts and outlets in your Firestore database before adding the new ones. This cannot be undone.
                         </p>
                     </div>
                 </div>
@@ -112,19 +119,19 @@ export default function DataSeedingPage() {
                             ) : (
                                 <Database className="mr-2 h-4 w-4" />
                             )}
-                            Seed Blog Posts
+                            Seed All Data
                         </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
                         <AlertDialogHeader>
                             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                             <AlertDialogDescription className="text-zinc-400">
-                                This will permanently delete all existing blog posts and replace them with the sample data.
+                                This will permanently delete all existing blogs & outlets and replace them with sample data.
                             </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                         <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
-                        <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={handleSeedBlogs}>Yes, proceed</AlertDialogAction>
+                        <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={handleSeedData}>Yes, proceed</AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>

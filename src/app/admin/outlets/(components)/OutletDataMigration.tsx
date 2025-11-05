@@ -47,7 +47,7 @@ export default function OutletDataMigration() {
 
       // Add new outlets
       outletSeedData.forEach(outletData => {
-        const outletRef = doc(collection(firestore, 'outlets'));
+        const outletRef = doc(firestore, 'outlets', outletData.slug); // Use slug as document ID
         batch.set(outletRef, { ...outletData, createdAt: new Date(), updatedAt: new Date() });
       });
 
