@@ -108,6 +108,22 @@
         "question": { "type": "string" },
         "answer": { "type": "string" }
       }
+    },
+    "PublicInstaPost": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Public Instagram Post",
+      "type": "object",
+      "description": "Represents a public Instagram post scraped from a hashtag feed.",
+      "properties": {
+        "id": { "type": "string", "description": "The unique ID of the Instagram post." },
+        "username": { "type": "string", "description": "The username of the account that posted." },
+        "caption": { "type": "string", "description": "The caption text of the post." },
+        "mediaUrl": { "type": "string", "format": "uri", "description": "Direct URL to the image or video." },
+        "mediaType": { "type": "string", "enum": ["image", "video"], "description": "The type of media." },
+        "permalink": { "type": "string", "format": "uri", "description": "The permanent link to the post on Instagram." },
+        "timestamp": { "type": "string", "format": "date-time", "description": "The timestamp when the post was created." }
+      },
+      "required": ["id", "username", "mediaUrl", "mediaType", "permalink", "timestamp"]
     }
   },
   "auth": {
@@ -161,6 +177,15 @@
           "schema": { "$ref": "#/entities/SiteSetting" },
           "description": "Documents in this collection indicate admin role. Existence of document implies admin rights.",
           "params": [{ "name": "userId", "description": "The ID of the user with admin permissions." }]
+        }
+      },
+      {
+        "path": "/public-insta-feed/{postId}",
+        "definition": {
+          "entityName": "PublicInstaPost",
+          "schema": { "$ref": "#/entities/PublicInstaPost" },
+          "description": "Stores scraped public Instagram posts tagged with #kopiduadarjat. Updated daily by a Cloud Function.",
+          "params": [{ "name": "postId", "description": "The unique ID of the Instagram post." }]
         }
       }
     ]

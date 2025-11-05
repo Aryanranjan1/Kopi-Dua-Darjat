@@ -2,7 +2,7 @@
 import dynamic from 'next/dynamic';
 import Hero from '@/components/home/Hero';
 import { Skeleton } from '@/components/ui/skeleton';
-import InstaSync from '@/components/home/InstaSync';
+import InstaExploreGrid from '@/components/home/InstaExploreGrid';
 
 const FeaturedDrinks = dynamic(() => import('@/components/home/FeaturedDrinks'), {
   loading: () => <Skeleton className="h-[80vh] w-full" />,
@@ -39,7 +39,7 @@ export default function Home() {
       <OutletFinder />
       <MenuShowcase />
       <BrandStory />
-      <InstaSync />
+      <InstaExploreGrid />
       <Community />
       <LatestStories />
       <NewsletterSignUp />
