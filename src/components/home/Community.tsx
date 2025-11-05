@@ -51,7 +51,7 @@ const communityData = [
     quote: "Passionfroot has become a valuable channel for connecting with sponsors. The platform simplifies the process, and payments are always secure, making it a reliable tool for managing our sponsorships.",
     name: 'Paula Echeverria',
     role: 'Manager at Youtube Channel Slidebean',
-    bgColor: 'bg-purple-400',
+    bgColor: 'bg-black',
     textColor: 'text-white',
   },
   {
@@ -73,10 +73,10 @@ export default function Community() {
       <div className="container mx-auto px-4">
         <AnimateOnScroll className="text-center max-w-2xl mx-auto mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-black">
-            Powered by passion, built for people like you
+            Brewing Community, One Cup at a Time
           </h2>
           <p className="mt-4 text-lg text-gray-600">
-            Join the community of leading creators and get more out of your business.
+            From our baristas to our customers, we're a family united by a love for authentic Malaysian coffee.
           </p>
         </AnimateOnScroll>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">

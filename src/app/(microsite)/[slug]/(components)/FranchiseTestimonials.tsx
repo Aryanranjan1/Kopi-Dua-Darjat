@@ -3,7 +3,7 @@
 
 import Image from 'next/image';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy, limit } from 'firebase/firestore';
+import { collection, query, limit } from 'firebase/firestore';
 import type { Testimonial } from '@/lib/types';
 import { useMediaAsset } from '@/lib/media';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
@@ -70,7 +70,7 @@ export default function FranchiseTestimonials() {
   )
 
   const firestore = useFirestore();
-  const testimonialsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'testimonials'), limit(6)) : null, [firestore]);
+  const testimonialsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'testimonials'), limit(5)) : null, [firestore]);
   const { data: testimonials, isLoading } = useCollection<Testimonial>(testimonialsQuery);
   
   if (isLoading) {
