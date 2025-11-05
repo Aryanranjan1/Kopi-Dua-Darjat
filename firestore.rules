@@ -45,6 +45,13 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin() || request.auth == null;
     }
 
+    // Function Logs (Function Create, Admin Read/Delete)
+    match /sync_logs/{logId} {
+        allow create: if request.auth == null;
+        allow read, delete: if isAdmin();
+        allow update: if false;
+    }
+
     // Admin Roles
     match /roles_admin/{userId} {
       allow read, write: if isAdmin();

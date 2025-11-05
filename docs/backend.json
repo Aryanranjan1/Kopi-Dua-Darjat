@@ -149,6 +149,20 @@
         }
       },
       "required": ["active_tag", "auto_sync_enabled"]
+    },
+    "SyncLog": {
+        "title": "Sync Log",
+        "type": "object",
+        "description": "A log entry for an Instagram sync operation.",
+        "properties": {
+            "tag": { "type": "string" },
+            "timestamp": { "type": "string", "format": "date-time" },
+            "post_count": { "type": "number" },
+            "origin": { "type": "string" },
+            "status": { "type": "string", "enum": ["success", "failed"] },
+            "error": { "type": "string" },
+            "stack": { "type": "string" }
+        }
     }
   },
   "auth": {
@@ -211,6 +225,15 @@
           "schema": { "$ref": "#/entities/PublicInstaPost" },
           "description": "Stores scraped public Instagram posts tagged with the active hashtag. Updated by a Cloud Function.",
           "params": [{ "name": "postId", "description": "The unique ID of the Instagram post." }]
+        }
+      },
+      {
+        "path": "/sync_logs/{logId}",
+        "definition": {
+          "entityName": "SyncLog",
+          "schema": { "$ref": "#/entities/SyncLog" },
+          "description": "Logs the result of each Instagram sync operation.",
+          "params": [{ "name": "logId", "description": "The unique ID of the log entry." }]
         }
       }
     ]
