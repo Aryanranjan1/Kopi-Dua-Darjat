@@ -8,7 +8,7 @@ import { Card } from '@/components/ui/card';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 
 const CategoryCard = ({ category }: { category: MenuCategory }) => (
-  <Link href={`/menu#${category.slug}`} className="block group">
+  <div className="block group">
     <AnimateOnScroll>
       <Card className="rounded-3xl overflow-hidden aspect-w-1 aspect-h-1 relative">
         <Image
@@ -24,7 +24,7 @@ const CategoryCard = ({ category }: { category: MenuCategory }) => (
         </div>
       </Card>
     </AnimateOnScroll>
-  </Link>
+  </div>
 );
 
 export default function MenuCategoriesGrid({ categories }: { categories: MenuCategory[] }) {

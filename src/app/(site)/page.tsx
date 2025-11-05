@@ -1,12 +1,11 @@
 
+
 import dynamic from 'next/dynamic';
 import Hero from '@/components/home/Hero';
 import { Skeleton } from '@/components/ui/skeleton';
 import InstaExploreGrid from '@/components/home/InstaExploreGrid';
+import FeaturedDrinks from '@/components/home/FeaturedDrinks';
 
-const FeaturedDrinks = dynamic(() => import('@/components/home/FeaturedDrinks'), {
-  loading: () => <Skeleton className="h-[80vh] w-full" />,
-});
 const ActivePromotions = dynamic(() => import('@/components/home/ActivePromotions'), {
   loading: () => <Skeleton className="h-[80vh] w-full" />,
 });
