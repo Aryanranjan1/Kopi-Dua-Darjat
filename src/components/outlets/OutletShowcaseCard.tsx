@@ -22,7 +22,7 @@ export default function OutletShowcaseCard({ outlet, userLocation }: OutletShowc
     <div className="p-1 h-full group">
       <Card className="rounded-3xl bg-primary/30 overflow-hidden h-full flex flex-col border border-primary/40 hover:border-primary transition-all duration-300">
         <CardContent className="relative p-4 flex flex-col text-left flex-grow">
-          <Link href={`/outlets/${outlet.slug}`} className="block">
+          <Link href={`/${outlet.slug}`} className="block">
             <div className="relative w-full aspect-video mb-4 group overflow-hidden rounded-2xl">
               <Image
                 src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=500&auto=format&fit=crop"
