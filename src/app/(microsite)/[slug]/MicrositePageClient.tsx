@@ -39,12 +39,14 @@ export default function MicrositePageClient(data: PageData) {
     // This case should ideally be handled by the server component, but as a fallback:
     notFound();
   }
+  
+  const itemsForSignatureCarousel = (featuredItems && featuredItems.length > 0) ? featuredItems : allMenuItems.slice(0, 4);
 
   return (
     <div className="bg-white text-black">
       <MicrositeHero outlet={outlet} />
       <main>
-        <SignatureDrinksCarousel items={featuredItems} />
+        <SignatureDrinksCarousel items={itemsForSignatureCarousel} />
         <PromotionsSection 
             promotions={promotions}
             items={allMenuItems}

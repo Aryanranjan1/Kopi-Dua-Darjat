@@ -90,42 +90,44 @@ export default function MenuShowcaseSection({ items, categories }: { items: Menu
     <section id="menu" className="bg-black py-20 md:py-32">
       <div className="container mx-auto px-6 max-w-7xl">
         <AnimateOnScroll className="text-left mb-12">
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <h2 className="text-4xl md:text-5xl font-headline font-bold text-white uppercase underline decoration-primary decoration-4 underline-offset-8">
               Menu
             </h2>
-            <div className="hidden md:flex items-center gap-4 text-white">
-               <div className="relative">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 text-white w-full md:w-auto">
+               <div className="relative w-full sm:w-64">
                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
                  <Input 
                     placeholder="Search menu..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-9 bg-zinc-800 border-zinc-700 w-64 rounded-full"
+                    className="pl-9 bg-zinc-800 border-zinc-700 w-full rounded-full"
                  />
                </div>
-               <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                  <SelectTrigger className="w-[180px] bg-zinc-800 border-zinc-700 rounded-full">
-                    <SelectValue placeholder="Filter by category" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                    <SelectItem value="all">All Categories</SelectItem>
-                    {categories.map(cat => (
-                      <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Select value={sortOrder} onValueChange={(value) => setSortOrder(value as SortOption)}>
-                    <SelectTrigger className="w-[180px] bg-zinc-800 border-zinc-700 rounded-full">
-                        <SelectValue placeholder="Sort by" />
+               <div className="flex gap-4 w-full sm:w-auto">
+                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                    <SelectTrigger className="w-full sm:w-[180px] bg-zinc-800 border-zinc-700 rounded-full">
+                        <SelectValue placeholder="Filter by category" />
                     </SelectTrigger>
                     <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                        <SelectItem value="default">Default</SelectItem>
-                        <SelectItem value="price-asc">Price: Low to High</SelectItem>
-                        <SelectItem value="price-desc">Price: High to Low</SelectItem>
-                        <SelectItem value="name-asc">Name (A-Z)</SelectItem>
+                        <SelectItem value="all">All Categories</SelectItem>
+                        {categories.map(cat => (
+                        <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
+                        ))}
                     </SelectContent>
-                </Select>
+                    </Select>
+                    <Select value={sortOrder} onValueChange={(value) => setSortOrder(value as SortOption)}>
+                        <SelectTrigger className="w-full sm:w-[180px] bg-zinc-800 border-zinc-700 rounded-full">
+                            <SelectValue placeholder="Sort by" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                            <SelectItem value="default">Default</SelectItem>
+                            <SelectItem value="price-asc">Price: Low to High</SelectItem>
+                            <SelectItem value="price-desc">Price: High to Low</SelectItem>
+                            <SelectItem value="name-asc">Name (A-Z)</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
             </div>
           </div>
         </AnimateOnScroll>
