@@ -10,6 +10,8 @@ import { Button } from '@/components/ui/button';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { Skeleton } from '../ui/skeleton';
 import { format } from 'date-fns';
+import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
+import { BookOpen } from 'lucide-react';
 
 export default function LatestStories() {
     const firestore = useFirestore();
@@ -44,7 +46,25 @@ export default function LatestStories() {
     }
     
     if (!blogPosts || blogPosts.length === 0) {
-      return null;
+      return (
+          <section className="py-24 sm:py-40 bg-[#FAF3E0]">
+              <div className="container mx-auto px-12">
+                  <h2 className="text-4xl md:text-5xl font-headline text-foreground inline-block underline decoration-primary decoration-4 underline-offset-8 mb-12">Latest Stories</h2>
+                  <Alert className="bg-card/80 border-border">
+                      <BookOpen className="h-4 w-4" />
+                      <AlertTitle>No Posts to Display</AlertTitle>
+                      <AlertDescription>
+                          This section is ready! To see your blog posts here, make sure they are in the 'blogs' collection in Firestore and have a status of "published".
+                          <div className="mt-4">
+                            <Button asChild>
+                                <Link href="/admin/data-seeding">Seed Sample Blog Posts</Link>
+                            </Button>
+                          </div>
+                      </AlertDescription>
+                  </Alert>
+              </div>
+          </section>
+      )
     }
 
     const featuredPost = blogPosts[0];
