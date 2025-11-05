@@ -5,10 +5,10 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useFirestore } from '@/firebase';
-import { collection, writeBatch, getDocs, doc } from 'firebase/firestore';
+import { collection, writeBatch, getDocs, doc, setDoc, Timestamp } from 'firebase/firestore';
 import { blogSeedData } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, BookOpen, AlertTriangle } from 'lucide-react';
+import { Loader2, BookOpen, AlertTriangle, Instagram } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,7 +22,8 @@ import {
 } from '@/components/ui/alert-dialog';
 
 export default function DataSeedingPage() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isBlogLoading, setIsBlogLoading] = useState(false);
+  const [isInstaLoading, setIsInstaLoading] = useState(false);
   const firestore = useFirestore();
   const { toast } = useToast();
 
@@ -32,21 +33,18 @@ export default function DataSeedingPage() {
       return;
     }
 
-    setIsLoading(true);
+    setIsBlogLoading(true);
 
     try {
       const batch = writeBatch(firestore);
       
-      // --- Seed Blogs ---
       toast({ title: 'Seeding new blogs...', description: 'Adding 15 new blog posts to the collection.' });
 
       blogSeedData.forEach(blogData => {
-        // Use the explicit ID from seed data as the document ID
         const blogRef = doc(firestore, 'blogs', blogData.id);
         batch.set(blogRef, blogData);
       });
 
-      // --- Commit Batch ---
       await batch.commit();
       
       toast({
@@ -63,9 +61,40 @@ export default function DataSeedingPage() {
         description: `Could not seed blogs: ${error.message}`,
       });
     } finally {
-      setIsLoading(false);
+      setIsBlogLoading(false);
     }
   };
+
+  const handleSeedTestInstaPost = async () => {
+      if (!firestore) {
+        toast({ variant: 'destructive', title: 'Error', description: 'Firestore is not initialized.' });
+        return;
+      }
+      setIsInstaLoading(true);
+      try {
+        const testPost = {
+            id: "test-post-1",
+            username: "kopiduadarjat",
+            caption: "Testing Insta Sync!",
+            mediaUrl: "https://picsum.photos/400/400",
+            mediaType: "image",
+            permalink: "https://instagram.com/kopiduadarjat",
+            timestamp: new Date().toISOString()
+        };
+        const postRef = doc(firestore, 'public-insta-feed', testPost.id);
+        await setDoc(postRef, testPost);
+        toast({ title: 'Success', description: 'Test Instagram post has been seeded.' });
+      } catch (error: any) {
+        console.error("Error seeding test Instagram post: ", error);
+        toast({
+          variant: 'destructive',
+          title: 'Seeding Failed',
+          description: `Could not seed test post: ${error.message}`,
+        });
+      } finally {
+        setIsInstaLoading(false);
+      }
+  }
 
   return (
     <div className="space-y-8">
@@ -90,8 +119,8 @@ export default function DataSeedingPage() {
 
                 <AlertDialog>
                     <AlertDialogTrigger asChild>
-                        <Button variant="outline" className="mt-6 w-full sm:w-auto text-yellow-400 border-yellow-500 hover:bg-yellow-400 hover:text-black" disabled={isLoading}>
-                            {isLoading ? (
+                        <Button variant="outline" className="mt-6 w-full sm:w-auto text-yellow-400 border-yellow-500 hover:bg-yellow-400 hover:text-black" disabled={isBlogLoading}>
+                            {isBlogLoading ? (
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                             ) : (
                                 <BookOpen className="mr-2 h-4 w-4" />
@@ -112,6 +141,24 @@ export default function DataSeedingPage() {
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>
+            </CardContent>
+        </Card>
+        <Card className="bg-zinc-900 border-zinc-800 text-white">
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2"><Instagram /> Insta-Feed Seeder</CardTitle>
+                <CardDescription className="text-zinc-400">
+                Use this to add a single test post to your Instagram feed collection. This is useful for frontend testing if the automated sync has not run yet.
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                 <Button onClick={handleSeedTestInstaPost} className="w-full sm:w-auto" disabled={isInstaLoading}>
+                    {isInstaLoading ? (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                        <Instagram className="mr-2 h-4 w-4" />
+                    )}
+                    Seed Test Insta-Feed Post
+                </Button>
             </CardContent>
         </Card>
     </div>
