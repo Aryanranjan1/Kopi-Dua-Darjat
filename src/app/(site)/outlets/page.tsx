@@ -1,7 +1,7 @@
 
 import type { Metadata } from 'next';
 import FranchiseCta from '@/components/outlets/FranchiseCta';
-import InstaSync from '@/components/home/InstaSync';
+import InstaExploreGrid from '@/components/home/InstaExploreGrid';
 import FooterCta from '@/components/outlets/FooterCta';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import OutletShowcase from '@/components/outlets/OutletShowcase';
@@ -62,7 +62,7 @@ export default function OutletsPage() {
         <FranchiseCta />
 
         {/* Social Proof */}
-        <InstaSync />
+        <InstaExploreGrid />
       </div>
 
       <FooterCta />
