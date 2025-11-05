@@ -1,88 +1,81 @@
 
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { initializeServerSideFirebase } from '@/firebase/server-init';
-import { doc, getDoc, collection, query, where, getDocs, limit, Timestamp } from 'firebase/firestore';
-import type { Outlet, MenuItem, Promotion, MenuCategory, SiteSettings } from '@/lib/types';
+import type { Outlet, MenuItem, Promotion, MenuCategory, SiteSettings, Testimonial, Founder } from '@/lib/types';
+
+import { outlets as allOutlets, blogSeedData } from '@/lib/data';
 
 import MenuCategoriesGrid from './(components)/MenuCategoriesGrid';
 import SignatureDrinksCarousel from './(components)/SignatureDrinksCarousel';
-import PromotionsSection from './(components)/PromotionsSection';
+import PromotionsSection from './(components/PromotionsSection)';
 import BrandStorySection from './(components)/BrandStorySection';
 import OutletLocatorSection from './(components)/OutletLocatorSection';
 import TestimonialsSection from './(components)/TestimonialsSection';
 import SocialFeedSection from './(components)/SocialFeedSection';
 import NewsletterSection from './(components)/NewsletterSection';
 
+// --- MOCK DATA ---
+const menuCategories: MenuCategory[] = [
+  { id: '1', name: 'Darjat Series', slug: 'darjat-series', description: 'Our signature coffee blends.', imageUrl: 'https://picsum.photos/seed/darjat/600/800', displayOrder: 1, status: 'published', groupId: 'kopi', createdAt: new Date(), updatedAt: new Date() },
+  { id: '2', name: 'Matcha Series', slug: 'matcha-series', description: 'Premium green tea creations.', imageUrl: 'https://picsum.photos/seed/matcha/600/800', displayOrder: 2, status: 'published', groupId: 'non-kopi', createdAt: new Date(), updatedAt: new Date() },
+  { id: '3', name: 'Coklat Series', slug: 'coklat-series', description: 'Rich and decadent chocolate drinks.', imageUrl: 'https://picsum.photos/seed/coklat/600/800', displayOrder: 3, status: 'published', groupId: 'non-kopi', createdAt: new Date(), updatedAt: new Date() },
+];
+
+const featuredItems: MenuItem[] = [
+  { id: '1', name: 'Darjat Caramel', slug: 'darjat-caramel', description: 'Our signature rich espresso with creamy milk and a sweet caramel swirl.', price: 5.50, imageUrl: '/image/kdd-cup.png', categoryId: '1', isPopular: true, status: 'published', displayOrder: 1, isGeneral: true, createdAt: new Date(), updatedAt: new Date() },
+  { id: '2', name: 'Darjat Borneo', slug: 'darjat-borneo', description: 'An exotic blend featuring smoky Gula Apong from Sarawak for a unique taste.', price: 6.00, imageUrl: '/image/kdd-cup.png', categoryId: '1', isPopular: true, status: 'published', displayOrder: 2, isGeneral: true, createdAt: new Date(), updatedAt: new Date() },
+  { id: '3', name: 'Matcha Latte', slug: 'matcha-latte', description: 'Ceremonial grade matcha with steamed milk, a perfect balance of earthy and creamy.', price: 7.00, imageUrl: '/image/kdd-cup.png', categoryId: '2', isPopular: true, status: 'published', displayOrder: 3, isGeneral: true, createdAt: new Date(), updatedAt: new Date() },
+  { id: '4', name: 'Coklat Ais', slug: 'coklat-ais', description: 'Rich, dark chocolate poured over ice with fresh milk. A classic indulgence.', price: 6.50, imageUrl: '/image/kdd-cup.png', categoryId: '3', isPopular: true, status: 'published', displayOrder: 4, isGeneral: true, createdAt: new Date(), updatedAt: new Date() },
+];
+
+const promotions: Promotion[] = [
+  { id: '1', title: 'Weekend BOGO', description: 'Buy one Darjat series drink, get another free!', discountType: 'bogo', discountValue: 0, startDate: new Date(), endDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000), status: 'active', bannerImage: 'https://picsum.photos/seed/promo1/600/400', menuItemIds: ['1', '2'], createdAt: new Date(), updatedAt: new Date() },
+  { id: '2', title: 'Lunch Hour Special', description: 'Get 20% off any drink between 12 PM and 2 PM.', discountType: 'percentage', discountValue: 20, startDate: new Date(), endDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000), status: 'active', bannerImage: 'https://picsum.photos/seed/promo2/600/400', createdAt: new Date(), updatedAt: new Date() },
+  { id: '3', title: 'Matcha Madness', description: 'Enjoy RM2 off all Matcha series drinks.', discountType: 'flat', discountValue: 2, startDate: new Date(), endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), status: 'active', bannerImage: 'https://picsum.photos/seed/promo3/600/400', menuItemIds: ['3'], createdAt: new Date(), updatedAt: new Date() },
+];
+
+const testimonials: Testimonial[] = [
+    { id: '1', quote: "The best local coffee I've ever had! The Darjat Borneo is a must-try.", name: 'Aiman Hakim', designation: 'Coffee Enthusiast', image: 'https://picsum.photos/seed/aiman/100/100' },
+    { id: '2', quote: "Opening a KDD franchise was the best decision I made. The support is amazing.", name: 'Siti Nurhaliza', designation: 'Franchisee, Penang', image: 'https://picsum.photos/seed/siti/100/100' },
+    { id: '3', quote: "Finally, a place that makes great matcha and great coffee. My go-to spot!", name: 'Raj Patel', designation: 'Regular Customer', image: 'https://picsum.photos/seed/raj/100/100' },
+];
+
+const founders: Founder[] = [
+    { name: 'Ahmad Hadi', role: 'Co-Founder & Head of Product', image: 'https://images.unsplash.com/photo-1557862921-37829c790f19?w=500&auto=format&fit=crop', quote: "We wanted to create something that felt both nostalgic and new.", contact: 'hadi@kdd.com' },
+    { name: 'Azad', role: 'Co-Founder & Head of Operations', image: 'https://images.unsplash.com/photo-1533901567451-7a6e68d6cd8f?w=500&auto=format&fit=crop', quote: "It's about empowering local entrepreneurs.", contact: 'azad@kdd.com' },
+]
+
+const siteSettings: SiteSettings = {
+    id: 'main',
+    brand: { name: 'Kopi Dua Darjat', primaryColor: '#F9C349', accentColor: '#000000', favicon: '', logoDark: '', logoLight: '', tagline: ''},
+    founders: founders,
+    contact: { email: '', phone: '', address: '', googleMapsLink: '', businessHours: '' },
+    socials: { instagram: '#', facebook: '#', tiktok: '#', youtube: '#', whatsapp: '#' },
+    automation: { newsletterIntegration: true, googleBusinessSync: true, autoBackup: true, appCheckEnforced: true },
+    meta: { defaultTitle: '', defaultDescription: '', defaultImage: '' },
+    lastUpdated: new Date(),
+    updatedBy: 'system'
+};
+// --- END MOCK DATA ---
+
 
 type Props = {
   params: { slug: string };
 };
 
-// Helper to convert Firestore Timestamps in an object to serializable format
-const convertTimestamps = (data: any) => {
-  const newObj: any = {};
-  for (const key in data) {
-    if (data[key] instanceof Timestamp) {
-      // Keep it as a Date object for the component, Next.js can handle this.
-      newObj[key] = data[key].toDate();
-    } else if (data[key] && typeof data[key] === 'object' && !Array.isArray(data[key])) {
-      newObj[key] = convertTimestamps(data[key]);
-    } else {
-      newObj[key] = data[key];
-    }
-  }
-  return newObj;
-};
-
-
-// SERVER-SIDE DATA FETCHING
+// SERVER-SIDE DATA FETCHING (from mock data)
 async function getMicrositeData(slug: string) {
-  const { firestore } = initializeServerSideFirebase();
-  
-  // Parallel fetching for performance
-  const outletRef = doc(firestore, 'outlets', slug);
-  const outletSnap = await getDoc(outletRef);
+  const outlet = allOutlets.find(o => o.slug === slug);
 
-  if (!outletSnap.exists()) {
+  if (!outlet) {
     return { outlet: null };
   }
-  const outlet = { id: outletSnap.id, ...outletSnap.data() } as Outlet;
-
-  const [
-    menuCategoriesSnap,
-    featuredItemsSnap,
-    promotionsSnap,
-    testimonialsSnap,
-    settingsSnap,
-  ] = await Promise.all([
-    getDocs(query(collection(firestore, 'menuCategories'), where('status', '==', 'published'))),
-    getDocs(query(collection(firestore, 'menuItems'), where('isPopular', '==', true), where('status', '==', 'published'), limit(8))),
-    getDocs(query(collection(firestore, 'promotions'), where('status', '==', 'active'))),
-    getDocs(query(collection(firestore, 'testimonials'))),
-    getDoc(doc(firestore, 'settings', 'main')),
-  ]);
-
-  const menuCategories = menuCategoriesSnap.docs.map(d => ({ id: d.id, ...d.data() } as MenuCategory));
-  const featuredItems = featuredItemsSnap.docs.map(d => ({ id: d.id, ...d.data() } as MenuItem));
   
-  // Convert timestamps to serializable format for promotions
-  const promotions = promotionsSnap.docs.map(d => {
-    const data = d.data();
-    return { 
-      id: d.id, 
-      ...convertTimestamps(data)
-    } as Promotion;
-  });
-
-  const testimonials = testimonialsSnap.docs.map(d => ({ id: d.id, ...d.data() } as any));
-  const siteSettings = settingsSnap.exists() ? settingsSnap.data() as SiteSettings : null;
-
-  // Filter promotions relevant to this outlet
-  const outletPromotions = promotions.filter(p => p.outletIds?.includes(outlet.id) || !p.outletIds || p.outletIds.length === 0);
+  // Filter promotions relevant to this outlet (or global promotions)
+  const outletPromotions = promotions.filter(p => p.outletIds?.includes(outlet.slug) || !p.outletIds || p.outletIds.length === 0);
 
   return { 
-    outlet, 
+    outlet: { ...outlet, id: slug }, // Ensure outlet has an id
     menuCategories,
     featuredItems,
     promotions: outletPromotions,
@@ -93,16 +86,13 @@ async function getMicrositeData(slug: string) {
 
 // DYNAMIC METADATA GENERATION
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { firestore } = initializeServerSideFirebase();
-  const outletRef = doc(firestore, 'outlets', params.slug);
-  const outletSnap = await getDoc(outletRef);
+  const outlet = allOutlets.find(o => o.slug === params.slug);
 
-  if (!outletSnap.exists()) {
+  if (!outlet) {
     return { title: 'Outlet Not Found' };
   }
-  const outlet = outletSnap.data() as Outlet;
 
-  const description = `Visit ${outlet.name} in ${outlet.city || ''} — serving Kopi Dua Darjat from ${outlet.hours || ''}. ${outlet.tagline || ''}`;
+  const description = `Visit ${outlet.name} in ${outlet.city || ''} — serving Kopi Dua Darjat from ${outlet.hours || ''}.`;
 
   return {
     title: `${outlet.name} | Kopi Dua Darjat`,
@@ -110,7 +100,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: `${outlet.name} | Kopi Dua Darjat`,
       description,
-      images: outlet.heroImage ? [outlet.heroImage] : [],
+      images: [],
       url: `https://kopiduadarjat.com/${outlet.slug}`,
     },
   };
@@ -131,7 +121,7 @@ export default async function OutletMicrositePage({ params }: Props) {
     <div className="bg-white text-black">
       <main className="space-y-20 md:space-y-32">
         <MenuCategoriesGrid categories={menuCategories} />
-        <SignatureDrinksCarousel items={featuredItems} promotions={promotions} />
+        <SignatureDrinksCarousel items={featuredItems} promotions={promotions || []} />
         {promotions && promotions.length > 0 && <PromotionsSection promotions={promotions} />}
         {siteSettings && <BrandStorySection settings={siteSettings} />}
         <OutletLocatorSection currentOutlet={outlet} />
@@ -142,3 +132,4 @@ export default async function OutletMicrositePage({ params }: Props) {
     </div>
   );
 }
+

@@ -55,8 +55,8 @@ export default function BrandStorySection({ settings }: BrandStorySectionProps) 
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-24 items-center">
           
           <div className="grid grid-cols-2 gap-4 h-[60vh]">
-            {founder1 && <FounderImage src={founder1.image} name={founder1.name} className="h-full" />}
-            {founder2 && <FounderImage src={founder2.image} name={founder2.name} className="h-full self-end" />}
+            {founder1?.image && <FounderImage src={founder1.image} name={founder1.name} className="h-full" />}
+            {founder2?.image && <FounderImage src={founder2.image} name={founder2.name} className="h-full self-end" />}
           </div>
 
           <AnimateOnScroll animationType="fadeIn" delay={0.2}>

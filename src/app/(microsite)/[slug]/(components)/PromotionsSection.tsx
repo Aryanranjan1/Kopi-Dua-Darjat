@@ -42,7 +42,7 @@ export default function PromotionsSection({ promotions }: PromotionsSectionProps
                   <h3 className="text-xl font-headline font-bold text-black">{promo.title}</h3>
                   <p className="text-sm text-neutral-600 mt-2 line-clamp-2 h-10">{promo.description}</p>
                   <p className="text-xs text-neutral-500 mt-3">
-                    Expires: {format(promo.endDate.toDate(), 'PPP')}
+                    Expires: {format(new Date(promo.endDate), 'PPP')}
                   </p>
                   <Button className="mt-4 w-full bg-black text-white hover:bg-neutral-800 rounded-md">
                     Redeem at Outlet

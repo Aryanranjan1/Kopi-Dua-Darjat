@@ -10,7 +10,10 @@ interface OutletLocatorSectionProps {
 }
 
 export default function OutletLocatorSection({ currentOutlet }: OutletLocatorSectionProps) {
-  const mapEmbedUrl = `https://maps.google.com/maps?q=${currentOutlet.lat},${currentOutlet.lng}&z=15&ie=UTF8&iwloc=&output=embed`;
+  // Use a fallback for lat/lng if not provided
+  const lat = currentOutlet.lat || 3.1390; // Default to KL
+  const lng = currentOutlet.lng || 101.6869;
+  const mapEmbedUrl = `https://maps.google.com/maps?q=${lat},${lng}&z=15&ie=UTF8&iwloc=&output=embed`;
 
   return (
     <section className="bg-black text-white py-20 md:py-32">
