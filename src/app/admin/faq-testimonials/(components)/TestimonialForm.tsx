@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -30,6 +31,7 @@ interface TestimonialFormProps {
 const formSchema = z.object({
   name: z.string().min(2, 'Name is required.'),
   designation: z.string().min(3, 'Designation is required.'),
+  company: z.string().optional(),
   quote: z.string().min(10, 'Quote is too short.'),
   image: z.string({ required_error: 'Please select an image.' }),
 });
@@ -44,6 +46,7 @@ export default function TestimonialForm({ testimonial, onSuccess }: TestimonialF
     defaultValues: testimonial || {
       name: '',
       designation: '',
+      company: '',
       quote: '',
       image: '',
     },
@@ -91,6 +94,17 @@ export default function TestimonialForm({ testimonial, onSuccess }: TestimonialF
             <FormItem>
               <FormLabel>Designation</FormLabel>
               <FormControl><Input placeholder="e.g. Franchisee, Shah Alam" {...field} className={inputStyles} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+         <FormField
+          control={form.control}
+          name="company"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Company (Optional)</FormLabel>
+              <FormControl><Input placeholder="e.g., Kopi Power Sdn Bhd" {...field} className={inputStyles} /></FormControl>
               <FormMessage />
             </FormItem>
           )}

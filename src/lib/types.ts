@@ -1,3 +1,4 @@
+
 import { Timestamp } from "firebase/firestore";
 
 export type NavItem = {
@@ -112,6 +113,7 @@ export type Outlet = {
   interiorImage?: string;
   tagline?: string;
   mapsLink?: string;
+  googleMapsEmbedUrl?: string;
   whatsappLink?: string;
   chatbotEmbed?: string;
   isChatbotEnabled?: boolean;
@@ -179,6 +181,8 @@ export type Testimonial = {
   name: string;
   designation: string;
   image: string;
+  company?: string;
+  createdAt?: any; // Firestore Timestamp
 };
 
 export type FaqItem = {
