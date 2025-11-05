@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -63,12 +64,13 @@ export default function MicrositeNewsletterSignUp() {
   return (
     <section className="relative py-24 sm:py-32 text-white">
       <div className="absolute inset-0 z-[-2]">
-        <Image
-          src="https://images.unsplash.com/photo-1497515114629-f71d768fd07c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxOXx8Y29mZmVlfGVufDB8fHx8MTc2MjM0OTY5N3ww&ixlib=rb-4.1.0&q=80&w=1080"
-          alt="A cup of coffee on a wooden table"
-          fill
-          className="object-cover"
-          data-ai-hint="coffee"
+        <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover z-0"
+            src="/video/bg1.mp4"
         />
       </div>
       <div className="absolute inset-0 bg-black/70 z-[-1]" />
