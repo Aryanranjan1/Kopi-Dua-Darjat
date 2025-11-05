@@ -11,35 +11,9 @@ interface BrandStorySectionProps {
   settings: SiteSettings;
 }
 
-const FounderImage = ({ src, name, className }: { src: string; name: string; className?: string }) => {
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ['start end', 'end start'],
-  });
-  const y = useTransform(scrollYProgress, [0, 1], ['-10%', '10%']);
-
-  return (
-    <div ref={ref} className={`relative w-full overflow-hidden rounded-lg ${className}`}>
-      <motion.div style={{ y }} className="relative w-full h-full">
-        <Image
-          src={src}
-          alt={`Founder ${name}`}
-          fill
-          className="object-cover"
-        />
-      </motion.div>
-      <p className="absolute bottom-4 left-4 text-white font-bold text-lg bg-black/50 px-3 py-1 rounded-md">{name}</p>
-    </div>
-  );
-};
-
 export default function BrandStorySection({ settings }: BrandStorySectionProps) {
-  const { founders } = settings;
-  const founder1 = founders?.[0];
-  const founder2 = founders?.[1];
-  
-  // A simple placeholder story if not defined in settings
+  const founder1 = settings.founders?.[0];
+
   const story = {
       title: "From Kampung to City",
       content: [
@@ -54,10 +28,18 @@ export default function BrandStorySection({ settings }: BrandStorySectionProps) 
       <div className="container mx-auto px-6 max-w-7xl">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-24 items-center">
           
-          <div className="grid grid-cols-2 gap-4 h-[60vh]">
-            {founder1?.image && <FounderImage src={founder1.image} name={founder1.name} className="h-full" />}
-            {founder2?.image && <FounderImage src={founder2.image} name={founder2.name} className="h-full self-end" />}
-          </div>
+          <AnimateOnScroll animationType="slideInFromLeft">
+            <div className="relative aspect-square rounded-lg overflow-hidden">
+                {founder1?.image && 
+                    <Image
+                      src={founder1.image}
+                      alt={founder1.name}
+                      fill
+                      className="object-cover"
+                    />
+                }
+            </div>
+          </AnimateOnScroll>
 
           <AnimateOnScroll animationType="fadeIn" delay={0.2}>
             <div className="text-center lg:text-left">
