@@ -6,6 +6,15 @@ import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import { Card, CardContent } from '@/components/ui/card';
 import { Star, MessageSquare } from 'lucide-react';
 import React from 'react';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel';
+import Autoplay from "embla-carousel-autoplay"
+
 
 const testimonials = [
   {
@@ -62,7 +71,7 @@ const testimonials = [
 
 const TestimonialCard = ({ testimonial }: { testimonial: typeof testimonials[0] }) => {
   return (
-    <Card className="bg-white border-zinc-200 rounded-3xl h-full shadow-sm flex flex-col">
+    <Card className="bg-white border-zinc-200 rounded-3xl h-full shadow-sm flex flex-col mx-2">
         <CardContent className="p-8 flex flex-col flex-grow">
           <div className="flex justify-between items-start mb-4">
             <div className="flex items-center gap-4">
@@ -100,23 +109,47 @@ const TestimonialCard = ({ testimonial }: { testimonial: typeof testimonials[0] 
 }
 
 export default function FranchiseTestimonials() {
+  const plugin = React.useRef(
+    Autoplay({ delay: 5000, stopOnInteraction: true })
+  )
 
   return (
     <section className="py-24 sm:py-32 bg-white">
       <div className="container mx-auto px-4">
-        <AnimateOnScroll animationType="slideInFromBottom" className="text-left max-w-4xl mb-12">
-          <p className="font-semibold text-zinc-500 uppercase">Our Reviews</p>
-          <h2 className="text-4xl md:text-5xl font-bold text-zinc-900 mt-2">
-            What Our <span style={{color: '#fde047'}}>Customers Say</span>
-          </h2>
+        <AnimateOnScroll animationType="slideInFromBottom" className="relative text-left max-w-4xl mb-12">
+            <div className="flex justify-between items-end">
+                <div>
+                    <p className="font-semibold text-zinc-500 uppercase">Our Reviews</p>
+                    <h2 className="text-4xl md:text-5xl font-bold text-zinc-900 mt-2">
+                        What Our <span style={{color: '#fde047'}}>Customers Say</span>
+                    </h2>
+                </div>
+            </div>
         </AnimateOnScroll>
 
         <AnimateOnScroll animationType="fadeIn" delay={0.2}>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {testimonials.slice(0, 7).map((testimonial, index) => (
-                    <TestimonialCard key={index} testimonial={testimonial} />
+           <Carousel
+              plugins={[plugin.current]}
+              opts={{
+                align: 'start',
+                loop: true,
+              }}
+              className="w-full relative"
+              onMouseEnter={plugin.current.stop}
+              onMouseLeave={plugin.current.reset}
+            >
+             <div className="absolute -top-16 right-0 flex items-center gap-2">
+                <CarouselPrevious className="static translate-y-0 bg-zinc-100 hover:bg-zinc-200 border-zinc-300 text-zinc-800" />
+                <CarouselNext className="static translate-y-0 bg-zinc-100 hover:bg-zinc-200 border-zinc-300 text-zinc-800" />
+              </div>
+              <CarouselContent className="-ml-4">
+                {testimonials.map((testimonial, index) => (
+                  <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3 pl-4">
+                    <TestimonialCard testimonial={testimonial} />
+                  </CarouselItem>
                 ))}
-            </div>
+              </CarouselContent>
+            </Carousel>
         </AnimateOnScroll>
       </div>
     </section>
