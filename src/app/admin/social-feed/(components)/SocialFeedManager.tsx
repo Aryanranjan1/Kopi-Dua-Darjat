@@ -107,23 +107,25 @@ export default function SocialFeedManager() {
         setIsRefreshing(true);
         toast({ title: "Syncing Feed", description: "This may take a moment..." });
         
-        try {
-            // In a real project, this URL should come from config or env variables.
-            const syncUrl = 'https://us-central1-studio-5747447299-c92b3.cloudfunctions.net/manualInstagramSync';
-            const response = await fetch(syncUrl, { method: 'POST' });
-            const result = await response.json();
-
-            if (response.ok) {
-                toast({ title: "Sync Complete", description: result.message });
-            } else {
-                throw new Error(result.message || 'Sync failed with no message.');
-            }
-
-        } catch(error: any) {
-            toast({ variant: 'destructive', title: "Sync Failed", description: error.message });
-        } finally {
+        fetch("https://us-central1-studio-5747447299-c92b3.cloudfunctions.net/manualInstagramSync", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        })
+          .then((res) => {
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            return res.json();
+          })
+          .then((data) => {
+            toast({ title: "Sync Successful", description: data.message });
+            console.log("✅ Sync response:", data);
+          })
+          .catch((err) => {
+            toast({ variant: 'destructive', title: "Sync Failed", description: err.message });
+            console.error("❌ Sync request failed:", err);
+          })
+          .finally(() => {
             setIsRefreshing(false);
-        }
+          });
     };
 
     const handleUpdateTag = async () => {

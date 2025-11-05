@@ -8,62 +8,66 @@ if (!admin.apps.length) {
   admin.initializeApp();
 }
 const db = admin.firestore();
-const corsHandler = cors({ origin: true }); // Allow all origins for now
+const corsHandler = cors({ origin: true });
 
 /**
- * Manual Instagram Sync (Admin Triggered)
- * Fixes CORS issues and internal sync failures
+ * Manual Instagram Sync with full diagnostics.
  */
-export const manualInstagramSync = functions.https.onRequest((req, res) => {
+export const manualInstagramSync = functions.region("us-central1").https.onRequest((req, res) => {
+  console.log("🔥 manualInstagramSync request received");
+  console.log("🧾 Method:", req.method);
+  console.log("🌐 Origin:", req.headers.origin);
+  console.log("🔐 Auth Header:", req.headers.authorization ? "Provided" : "Missing");
+
   corsHandler(req, res, async () => {
     try {
-      console.log("🔄 Manual Instagram sync triggered...");
+      if (req.method !== "POST") {
+        console.warn("⚠️ Invalid request method:", req.method);
+        return res.status(405).json({ error: "Only POST allowed" });
+      }
 
-      // Verify Firestore settings doc
       const settingsRef = db.collection("settings").doc("instagram_sync");
       const settingsDoc = await settingsRef.get();
+      console.log("📄 Settings document exists:", settingsDoc.exists);
 
       const { active_tag = "kopiduadarjat" } = settingsDoc.exists
         ? settingsDoc.data()!
         : {};
+      console.log(`📸 Active tag found: #${active_tag}`);
 
-      console.log(`📷 Syncing posts for tag: #${active_tag}`);
-
-      // Simulate fetching 20 mock posts
-      const posts = Array.from({ length: 20 }).map((_, i) => ({
-        id: `mock_${i + 1}`,
+      const posts = Array.from({ length: 10 }).map((_, i) => ({
+        id: `debug_${i + 1}`,
         mediaUrl: `https://source.unsplash.com/random/400x400?coffee&sig=${i}`,
-        mediaType: i % 5 === 0 ? "video" : "image",
+        mediaType: i % 3 === 0 ? "video" : "image",
         username: "kopiduadarjat",
-        caption: `Mock post #${i + 1} for #${active_tag}`,
-        permalink: `https://www.instagram.com/p/mock${i}/`,
+        caption: `Debug sync post ${i + 1} for #${active_tag}`,
+        permalink: `https://www.instagram.com/p/debug${i}/`,
         timestamp: new Date().toISOString(),
         visible: true,
         pinned: false,
         rank: i + 1,
-        source: "manual",
+        source: "debug",
         tag: active_tag,
       }));
 
-      if (posts.length === 0) throw new Error("No posts fetched.");
+      console.log("🧮 Posts generated:", posts.length);
 
-      // Write to Firestore
       const batch = db.batch();
-      posts.forEach((post) => {
-        const ref = db.collection("public_insta_feed").doc(post.id);
-        batch.set(ref, post, { merge: true });
+      posts.forEach((p) => {
+        const ref = db.collection("public_insta_feed").doc(p.id);
+        batch.set(ref, p, { merge: true });
       });
       await batch.commit();
 
-      console.log(`✅ Synced ${posts.length} posts successfully.`);
+      console.log("✅ Firestore write complete. Updating last_synced...");
 
-      // Update last synced timestamp
       await settingsRef.set(
         { last_synced: new Date().toISOString() },
         { merge: true }
       );
 
-      return res.json({
+      console.log("✅ Sync complete");
+      return res.status(200).json({
         status: "success",
         message: `Synced ${posts.length} posts for #${active_tag}`,
       });
@@ -71,11 +75,13 @@ export const manualInstagramSync = functions.https.onRequest((req, res) => {
       console.error("❌ Sync failed:", err);
       return res.status(500).json({
         status: "error",
-        message: err.message || "Internal Error",
+        message: err.message,
+        stack: err.stack,
       });
     }
   });
 });
+
 
 /**
  * Daily automatic sync (scheduled)
