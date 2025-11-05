@@ -138,9 +138,9 @@ export default function FranchiseTestimonials() {
               onMouseEnter={plugin.current.stop}
               onMouseLeave={plugin.current.reset}
             >
-             <div className="absolute -top-16 right-0 flex items-center gap-2">
-                <CarouselPrevious className="static translate-y-0 bg-zinc-100 hover:bg-zinc-200 border-zinc-300 text-zinc-800" />
-                <CarouselNext className="static translate-y-0 bg-zinc-100 hover:bg-zinc-200 border-zinc-300 text-zinc-800" />
+             <div className="absolute -top-20 right-0 flex items-center gap-2">
+                <CarouselPrevious className="static translate-y-0 bg-black text-white hover:bg-zinc-800 rounded-full border-none" />
+                <CarouselNext className="static translate-y-0 bg-black text-white hover:bg-zinc-800 rounded-full border-none" />
               </div>
               <CarouselContent className="-ml-4">
                 {testimonials.map((testimonial, index) => (
