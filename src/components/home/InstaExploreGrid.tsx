@@ -20,8 +20,8 @@ const PostItem = ({ post }: { post: PublicInstaPost }) => {
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
-        'relative mb-4 block group overflow-hidden rounded-lg shadow-md',
-        'break-inside-avoid' // This class prevents items from breaking across columns
+        'relative group overflow-hidden rounded-lg shadow-md',
+        isVideo ? 'aspect-[9/16] row-span-2' : 'aspect-square'
       )}
     >
       {isVideo ? (
@@ -61,7 +61,7 @@ export default function InstaExploreGrid() {
         ? query(
             collection(firestore, 'public_insta_feed'),
             orderBy('rank', 'asc'),
-            limit(20) // Fetch more to account for client-side filtering
+            limit(20)
           )
         : null,
     [firestore]
@@ -69,11 +69,12 @@ export default function InstaExploreGrid() {
   const { data: posts, isLoading } = useCollection<PublicInstaPost>(instaQuery);
 
   const visiblePosts = useMemo(() => {
-    return posts ? posts.filter(post => post.visible).slice(0, 14) : [];
+    if (!posts) return [];
+    return posts.filter(post => post.visible);
   }, [posts]);
 
   return (
-    <section className="px-6 py-20 bg-white">
+    <section className="px-4 sm:px-6 py-20 bg-white">
       <AnimateOnScroll animationType="fadeIn">
         <h2 className="text-3xl font-headline mb-8 text-center text-foreground">
           #KopiDuaDarjat on Instagram
@@ -83,7 +84,7 @@ export default function InstaExploreGrid() {
             <Loader2 className="w-12 h-12 text-primary animate-spin" />
           </div>
         ) : visiblePosts && visiblePosts.length > 0 ? (
-          <div className="columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 grid-flow-dense auto-rows-[15vw] gap-4">
             {visiblePosts.map((post) => (
               <PostItem key={post.id} post={post} />
             ))}
@@ -91,7 +92,7 @@ export default function InstaExploreGrid() {
         ) : (
           <div className="flex flex-col items-center py-10 text-center">
             <p className="text-gray-500 mb-4">No posts available right now.</p>
-            <Button asChild>
+             <Button asChild>
                 <Link href="/admin/data-seeding">
                     Seed Sample Posts
                 </Link>
