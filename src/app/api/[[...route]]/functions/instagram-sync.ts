@@ -1,95 +1,71 @@
 
 'use server';
-
-import { onSchedule } from 'firebase-functions/v2/scheduler';
-import * as admin from 'firebase-admin';
-import fetch from 'node-fetch';
-import { onCall } from 'firebase-functions/v2/https';
+import * as functions from "firebase-functions";
+import * as admin from "firebase-admin";
 
 // Initialize Firebase Admin SDK if not already initialized
 if (!admin.apps.length) {
   admin.initializeApp();
 }
-
 const db = admin.firestore();
 
-async function syncInstagramPosts() {
-  console.log('Running scheduled Instagram feed update...');
-  
-  const settingsRef = db.collection('settings').doc('instagram_sync');
-  const settingsSnap = await settingsRef.get();
-  const settings = settingsSnap.data() || {};
-  const activeTag = settings.active_tag || 'kopiduadarjat';
-
+export const syncInstagramPosts = async () => {
   try {
-    const response = await fetch(
-      `https://www.instagram.com/explore/tags/${activeTag}/?__a=1&__d=dis`
-    );
-    if (!response.ok) {
-      throw new Error(`Failed to fetch from Instagram: ${response.statusText}`);
-    }
-    const data: any = await response.json();
+    // Get the active tag from Firestore
+    const tagDoc = await db.collection("settings").doc("instagram_sync").get();
+    const { active_tag = "kopiduadarjat" } = tagDoc.exists ? tagDoc.data()! : {};
 
-    const posts = data?.graphql?.hashtag?.edge_hashtag_to_media?.edges || [];
+    console.log(`🔄 Fetching posts for tag: #${active_tag}`);
 
-    if (posts.length === 0) {
-      console.log(`No posts found for hashtag #${activeTag}.`);
-      await settingsRef.set({ last_synced: admin.firestore.FieldValue.serverTimestamp() }, { merge: true });
-      return;
-    }
+    // Mock fetcher (replace with API call later)
+    const posts = Array.from({ length: 20 }).map((_, i) => ({
+      id: `mock_${i + 1}`,
+      mediaUrl: `https://source.unsplash.com/random/400x400?coffee&sig=${i}`,
+      mediaType: i % 5 === 0 ? "video" : "image",
+      username: "kopiduadarjat",
+      caption: `Sample post #${i + 1} for #${active_tag}`,
+      permalink: `https://www.instagram.com/p/mock${i}/`,
+      timestamp: new Date().toISOString(),
+      visible: true,
+      pinned: false,
+      rank: i + 1,
+      source: "manual",
+      tag: active_tag
+    }));
+
+    if (!posts || posts.length === 0) throw new Error("No posts fetched.");
 
     const batch = db.batch();
-    let count = 0;
-
-    posts.slice(0, 20).forEach((edge: any) => {
-      const node = edge.node;
-      if (!node || !node.id) return;
-
-      const ref = db.collection('public_insta_feed').doc(node.id.toString());
-      
-      batch.set(ref, {
-        id: node.id,
-        username: node.owner?.username || 'unknown',
-        caption: node.edge_media_to_caption?.edges[0]?.node?.text || '',
-        mediaUrl: node.display_url,
-        mediaType: node.is_video ? 'video' : 'image',
-        permalink: `https://instagram.com/p/${node.shortcode}`,
-        timestamp: new Date(node.taken_at_timestamp * 1000).toISOString(),
-        visible: true,
-        pinned: false,
-        source: 'scrape',
-        rank: count,
-        tag: activeTag,
-      }, { merge: true }); // Merge to preserve pinned/visible status
-      count++;
+    posts.forEach(p => {
+      const ref = db.collection("public_insta_feed").doc(p.id);
+      batch.set(ref, p, { merge: true });
     });
-
     await batch.commit();
-    await settingsRef.set({ last_synced: admin.firestore.FieldValue.serverTimestamp() }, { merge: true });
-    console.log(`✅ Insta feed updated successfully with ${count} posts.`);
-    return { status: 'success', message: `Sync completed. Found ${count} posts.` };
-  } catch (error) {
-    console.error('❌ Error updating Instagram feed:', error);
-    throw new Error('Failed to sync Instagram feed.');
-  }
-}
 
-export const dailyInstagramSync = onSchedule('every 24 hours', async (event) => {
-  const settingsSnap = await db.collection('settings').doc('instagram_sync').get();
-  if (settingsSnap.exists && settingsSnap.data()?.auto_sync_enabled) {
-    await syncInstagramPosts();
-  } else {
-    console.log('Auto-sync is disabled. Skipping scheduled run.');
+    console.log(`✅ Synced ${posts.length} posts for tag: #${active_tag}`);
+    await db.collection("settings").doc("instagram_sync").set({
+      last_synced: new Date().toISOString()
+    }, { merge: true });
+
+    return { status: "success", count: posts.length };
+  } catch (err: any) {
+    console.error("❌ Sync failed:", err);
+    throw new functions.https.HttpsError("internal", err.message || "Sync failed");
   }
+};
+
+// Callable function for manual sync
+export const manualInstagramSync = functions.https.onCall(async (data, context) => {
+  // In a real app, you'd verify admin status here
+  // if (!context.auth) throw new functions.https.HttpsError("unauthenticated", "Admin only");
+  return await syncInstagramPosts();
 });
 
-export const manualInstagramSync = onCall(async (request) => {
-    // NOTE: Add admin check here in a real application
-    // const uid = request.auth?.uid;
-    // const adminRef = db.collection('roles_admin').doc(uid);
-    // const adminSnap = await adminRef.get();
-    // if (!adminSnap.exists) {
-    //   throw new functions.https.HttpsError("permission-denied", "Must be an admin to trigger sync.");
-    // }
-    return await syncInstagramPosts();
+// Scheduled daily sync (if enabled)
+export const dailyInstagramSync = functions.pubsub.schedule("every 24 hours").onRun(async () => {
+  const doc = await db.collection("settings").doc("instagram_sync").get();
+  const data = doc.data();
+  if (data && data.auto_sync_enabled) {
+    await syncInstagramPosts();
+  }
 });

@@ -64,16 +64,13 @@ export default function SocialFeedManager() {
     const settingsRef = useMemoFirebase(() => firestore ? doc(firestore, 'settings', 'instagram_sync') : null, [firestore]);
     const { data: syncSettings, isLoading: isLoadingSettings } = useDoc<SyncSettings>(settingsRef);
     
-    const [tagInput, setTagInput] = useState('');
+    const [tagInput, setTagInput] = useState('kopiduadarjat');
 
     useEffect(() => {
-        if(syncSettings?.active_tag) {
+        if (syncSettings?.active_tag) {
             setTagInput(syncSettings.active_tag);
-        } else if (!isLoadingSettings) {
-            // Set a default if settings are loaded but no tag is present
-            setTagInput('kopiduadarjat');
         }
-    }, [syncSettings, isLoadingSettings]);
+    }, [syncSettings]);
 
     const feedQuery = useMemoFirebase(
         () => firestore ? query(collection(firestore, 'public_insta_feed'), orderBy('rank', 'asc')) : null,
@@ -115,7 +112,7 @@ export default function SocialFeedManager() {
             const functions = getFunctions();
             const manualSync = httpsCallable(functions, 'manualInstagramSync');
             const result: any = await manualSync();
-            toast({ title: "Sync Complete", description: result.data.message });
+            toast({ title: "Sync Complete", description: `Synced ${result.data.count} posts.` });
         } catch(error: any) {
             toast({ variant: 'destructive', title: "Sync Failed", description: error.message });
         } finally {

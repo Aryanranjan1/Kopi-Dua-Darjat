@@ -9,9 +9,15 @@ service cloud.firestore {
 
     // CMS Collections (Public Read + Admin Write)
     match /{collectionName}/{docId} where
-      collectionName in ['menuGroups', 'menuCategories', 'menuItems', 'promotions', 'dailySpecials', 'outlets', 'blogs', 'media', 'settings', 'testimonials', 'faq'] {
+      collectionName in ['menuGroups', 'menuCategories', 'menuItems', 'promotions', 'dailySpecials', 'outlets', 'blogs', 'media', 'testimonials', 'faq'] {
       allow read: if true;
       allow write: if isAdmin();
+    }
+    
+    // Settings collection is special, only admin can write, but public can read
+    match /settings/{docId} {
+      allow get: if true;
+      allow list, write: if isAdmin();
     }
 
     // User-Submitted Collections
@@ -33,10 +39,10 @@ service cloud.firestore {
       allow update: if false;
     }
 
-    // Instagram Feed (Public Read + Restricted Write)
+    // Instagram Feed (Public Read + Restricted Write by Cloud Function)
     match /public_insta_feed/{docId} {
       allow get, list: if true;
-      allow create, update, delete: if isAdmin() || request.auth.token.firebase != null;
+      allow write: if isAdmin() || request.auth == null; // Allow server-side writes
     }
 
     // Admin Roles
