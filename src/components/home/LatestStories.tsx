@@ -12,14 +12,24 @@ import { Skeleton } from '../ui/skeleton';
 import { format } from 'date-fns';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { BookOpen } from 'lucide-react';
+import { useMemo } from 'react';
 
 export default function LatestStories() {
     const firestore = useFirestore();
+    // Fetch the latest published posts without server-side ordering to avoid needing a composite index.
     const blogsQuery = useMemoFirebase(
-      () => firestore ? query(collection(firestore, 'blogs'), where('status', '==', 'published'), orderBy('publishedAt', 'desc'), limit(4)) : null,
+      () => firestore ? query(collection(firestore, 'blogs'), where('status', '==', 'published'), limit(10)) : null,
       [firestore]
     );
     const { data: blogPosts, isLoading: isLoadingBlogs } = useCollection<Blog>(blogsQuery);
+
+    const sortedBlogPosts = useMemo(() => {
+        if (!blogPosts) return [];
+        // Sort the posts by date on the client side
+        return blogPosts
+            .sort((a, b) => b.publishedAt.toDate().getTime() - a.publishedAt.toDate().getTime())
+            .slice(0, 4);
+    }, [blogPosts]);
 
     if (isLoadingBlogs) {
       return (
@@ -45,7 +55,7 @@ export default function LatestStories() {
       );
     }
     
-    if (!blogPosts || blogPosts.length === 0) {
+    if (!sortedBlogPosts || sortedBlogPosts.length === 0) {
       return (
           <section className="py-24 sm:py-40 bg-[#FAF3E0]">
               <div className="container mx-auto px-12">
@@ -67,8 +77,8 @@ export default function LatestStories() {
       )
     }
 
-    const featuredPost = blogPosts[0];
-    const otherPosts = blogPosts.slice(1, 4);
+    const featuredPost = sortedBlogPosts[0];
+    const otherPosts = sortedBlogPosts.slice(1, 4);
 
     return (
         <section className="py-24 sm:py-40 bg-[#FAF3E0]">
