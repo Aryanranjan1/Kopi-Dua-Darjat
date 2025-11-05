@@ -14,7 +14,6 @@ import { format } from 'date-fns';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { getFunctions, httpsCallable } from 'firebase/functions';
 
 const PostTile = ({ post, onAction }: { post: PublicInstaPost; onAction: (action: 'delete' | 'pin' | 'visible', postId: string, currentStatus?: boolean) => void; }) => {
     const isVideo = post.mediaType === 'VIDEO';
@@ -107,17 +106,26 @@ export default function SocialFeedManager() {
         setIsRefreshing(true);
         toast({ title: "Syncing Feed", description: "This may take a moment..." });
         
-        const functions = getFunctions();
-        const syncInstagramHybrid = httpsCallable(functions, 'syncInstagramHybrid');
-
-        try {
-            const result = await syncInstagramHybrid();
-            toast({ title: "Sync Successful", description: `Synced ${(result.data as any).count} posts in ${(result.data as any).mode} mode.` });
-        } catch (error: any) {
-             toast({ variant: 'destructive', title: "Sync Failed", description: error.message });
-        } finally {
+        fetch("/api/sync-insta-feed", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        })
+          .then(async (res) => {
+            if (!res.ok) {
+              const errorData = await res.json();
+              throw new Error(errorData.error || `HTTP error! Status: ${res.status}`);
+            }
+            return res.json();
+          })
+          .then((data) => {
+             toast({ title: "Sync Successful", description: data.message || `Synced ${data.count} posts.` });
+          })
+          .catch((err) => {
+             toast({ variant: 'destructive', title: "Sync Failed", description: err.message });
+          })
+          .finally(() => {
             setIsRefreshing(false);
-        }
+          });
     };
 
     const handleUpdateSettings = async (newSettings: Partial<InstagramSyncSettings>) => {

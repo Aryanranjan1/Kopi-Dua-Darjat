@@ -1,15 +1,25 @@
 
-import { NextResponse } from 'next/server';
-import { syncInstagramPosts } from '@/app/api/[[...route]]/functions/instagram-sync';
+import { NextResponse } from "next/server";
 
-export async function POST(request: Request) {
+export async function POST() {
+  const functionUrl = "https://us-central1-studio-5747447299-c92b3.cloudfunctions.net/syncInstagramHybrid";
+  
   try {
-    const result = await syncInstagramPosts();
-    if (result.status === 'error') {
-      return NextResponse.json({ message: result.message }, { status: 500 });
+    const res = await fetch(functionUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.error || `HTTP error! status: ${res.status}`);
     }
-    return NextResponse.json({ message: `Synced ${result.count} posts.` });
+
+    const data = await res.json();
+    return NextResponse.json(data);
+
   } catch (error: any) {
-    return NextResponse.json({ message: error.message || 'Internal Server Error' }, { status: 500 });
+    console.error("API Route -> Sync Error:", error);
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
