@@ -104,7 +104,11 @@ export type Outlet = {
   lat: number;
   lng: number;
   hours: string;
-  isOpenNow: boolean; // Retaining for now, can be computed if needed
+  isOpenNow?: boolean; // Retaining for now, can be computed if needed
+  heroImage?: string;
+  interiorImage?: string;
+  tagline?: string;
+  mapsLink?: string;
   // New fields from brief
   state?: string;
   phone?: string;

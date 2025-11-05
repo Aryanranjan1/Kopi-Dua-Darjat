@@ -7,7 +7,7 @@ import type { Outlet, MenuItem, Promotion } from '@/lib/types';
 
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { ArrowLeft, Clock, MapPin, Phone } from 'lucide-react';
+import { Clock, MapPin, Phone } from 'lucide-react';
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { getDiscountDisplay } from '@/lib/utils';
@@ -77,7 +77,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${outlet.name} | Kopi Dua Darjat`,
       description,
       images: outlet.heroImage ? [outlet.heroImage] : [],
-      url: `https://www.kopiduadarjat.com/outlets/${outlet.slug}`,
+      url: `https://www.kopiduadarjat.com/${outlet.slug}`,
     },
   };
 }
@@ -268,5 +268,3 @@ export default async function OutletMicrositePage({ params }: Props) {
     </div>
   );
 }
-
-    
