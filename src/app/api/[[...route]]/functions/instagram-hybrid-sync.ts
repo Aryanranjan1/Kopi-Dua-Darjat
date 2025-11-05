@@ -5,7 +5,6 @@ import fetch from "node-fetch";
 import { InstaFetcher } from "insta-fetcher";
 import * as cors from "cors";
 
-
 if (!admin.apps.length) admin.initializeApp();
 const db = admin.firestore();
 
@@ -19,7 +18,6 @@ const corsHandler = cors({
   methods: ["GET", "POST", "OPTIONS"],
   credentials: true,
 });
-
 
 // ✅ Main Function
 export const syncInstagramHybrid = functions.https.onRequest(async (req, res) => {
@@ -44,7 +42,7 @@ export const syncInstagramHybrid = functions.https.onRequest(async (req, res) =>
         console.log(`🔗 Fetching Graph API posts for account: ${settings.graph_account_id}`);
         const url = `https://graph.instagram.com/${settings.graph_account_id}/media?fields=id,caption,media_url,media_type,permalink,timestamp,username&access_token=${settings.graph_access_token}`;
         const response = await fetch(url);
-        const data = await response.json();
+        const data = (await response.json()) as any;
         if (data.error) throw new Error(data.error.message);
 
         posts = data.data.slice(0, 20).map((p: any, i: number) => ({
