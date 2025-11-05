@@ -107,12 +107,15 @@ export default function SocialFeedManager() {
         setIsRefreshing(true);
         toast({ title: "Syncing Feed", description: "This may take a moment..." });
         
-        fetch("https://us-central1-studio-5747447299-c92b3.cloudfunctions.net/manualInstagramSync", {
+        fetch("/api/sync-insta-feed", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
         })
-          .then((res) => {
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          .then(async (res) => {
+            if (!res.ok) {
+              const errorData = await res.json();
+              throw new Error(errorData.message || `HTTP ${res.status}`);
+            }
             return res.json();
           })
           .then((data) => {
