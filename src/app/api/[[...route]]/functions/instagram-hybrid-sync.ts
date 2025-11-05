@@ -49,8 +49,8 @@ export const syncInstagramHybrid = functions.https.onRequest(async (req, res) =>
 
         posts = data.data.slice(0, 20).map((p: any, i: number) => ({
           id: p.id,
-          media_url: p.media_url,
-          media_type: p.media_type,
+          mediaUrl: p.media_url,
+          mediaType: p.media_type,
           username: p.username || "kopiduadarjat",
           caption: p.caption || "",
           permalink: p.permalink,
@@ -69,8 +69,8 @@ export const syncInstagramHybrid = functions.https.onRequest(async (req, res) =>
 
         posts = fetched.map((p: any, i: number) => ({
           id: p.id.toString(),
-          media_url: p.image_url || p.video_url,
-          media_type: p.is_video ? "VIDEO" : "IMAGE",
+          mediaUrl: p.image_url || p.video_url,
+          mediaType: p.is_video ? "VIDEO" : "IMAGE",
           username: p.username,
           caption: p.caption,
           permalink: p.url,
