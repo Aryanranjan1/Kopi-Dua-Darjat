@@ -3,7 +3,9 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { outlets as allOutlets } from '@/lib/data';
 import MicrositePageClient from './MicrositePageClient';
-import type { Outlet, MenuItem, Promotion, MenuCategory, SiteSettings, Founder } from '@/lib/types';
+import type { Outlet, MenuItem, Promotion, MenuCategory, SiteSettings, Founder, Testimonial } from '@/lib/types';
+import { initializeServerSideFirebase } from '@/firebase/server-init';
+import { collection, getDocs, query } from 'firebase/firestore';
 
 
 // This remains a Server Component.
@@ -63,8 +65,9 @@ type Props = {
   params: { slug: string };
 };
 
-// SERVER-SIDE DATA FETCHING (from mock data)
+// SERVER-SIDE DATA FETCHING
 async function getMicrositeData(slug: string) {
+  const { firestore } = initializeServerSideFirebase();
   const outlet = allOutlets.find(o => o.slug === slug);
 
   if (!outlet) {
@@ -73,6 +76,10 @@ async function getMicrositeData(slug: string) {
   
   // Filter promotions relevant to this outlet (or global promotions)
   const outletPromotions = promotions.filter(p => !p.outletIds || p.outletIds.length === 0 || p.outletIds.includes(outlet.slug));
+
+  const testimonialsQuery = query(collection(firestore, 'testimonials'));
+  const testimonialsSnapshot = await getDocs(testimonialsQuery);
+  const testimonials = testimonialsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Testimonial));
 
   // Manually convert date objects to strings to avoid serialization issues
   const serializablePromotions = outletPromotions.map(promo => ({
@@ -101,6 +108,10 @@ async function getMicrositeData(slug: string) {
       updatedAt: item.updatedAt.toISOString(),
   }));
 
+  const serializableTestimonials = testimonials.map(t => ({
+      ...t
+  }));
+
 
   return { 
     outlet: { ...outlet, id: slug }, // Ensure outlet has an id
@@ -108,6 +119,7 @@ async function getMicrositeData(slug: string) {
     allMenuItems: serializableItems,
     featuredItems: serializableFeaturedItems,
     promotions: serializablePromotions,
+    testimonials: serializableTestimonials,
     siteSettings: {
         ...siteSettings,
         lastUpdated: siteSettings.lastUpdated.toISOString(),
@@ -146,10 +158,7 @@ export default async function OutletMicrositePage({ params }: Props) {
     notFound();
   }
 
-  // Cast the data to remove testimonials before passing
-  const { testimonials, ...restOfData } = data as any;
-
   return (
-    <MicrositePageClient {...restOfData} />
+    <MicrositePageClient {...data} />
   );
 }
