@@ -23,7 +23,7 @@ export default function LatestStories() {
 
     if (isLoadingBlogs) {
       return (
-        <section className="py-24 sm:py-40 bg-[#F7F4EF]">
+        <section className="py-24 sm:py-40 bg-[#FAF3E0]">
           <div className="container mx-auto px-12">
             <Skeleton className="h-12 w-1/3 mb-12" />
             <div className="grid lg:grid-cols-2 gap-8">
