@@ -37,26 +37,26 @@ export default function DataSeedingPage() {
     try {
       const batch = writeBatch(firestore);
       
-      // --- Seed Blogs ---
-      const blogsCollection = collection(firestore, 'blogs');
-      toast({ title: 'Starting seeding...', description: 'Clearing existing blog posts.' });
-      const existingBlogsSnapshot = await getDocs(blogsCollection);
-      existingBlogsSnapshot.forEach(document => batch.delete(document.ref));
+      // --- Seed Blogs (Temporarily Disabled) ---
+      // const blogsCollection = collection(firestore, 'blogs');
+      // toast({ title: 'Starting seeding...', description: 'Clearing existing blog posts.' });
+      // const existingBlogsSnapshot = await getDocs(blogsCollection);
+      // existingBlogsSnapshot.forEach(document => batch.delete(document.ref));
       
-      blogSeedData.forEach(blogData => {
-        const { id, ...data } = blogData;
-        const blogRef = doc(firestore, 'blogs', id); // Use slug as the document ID
-        batch.set(blogRef, {
-            ...data,
-            slug: id,
-            id: id,
-            createdAt: serverTimestamp(),
-            updatedAt: serverTimestamp(),
-            publishedAt: blogData.publishedAt || serverTimestamp(),
-            views: 0,
-            likes: 0,
-        });
-      });
+      // blogSeedData.forEach(blogData => {
+      //   const { id, ...data } = blogData;
+      //   const blogRef = doc(firestore, 'blogs', id); // Use slug as the document ID
+      //   batch.set(blogRef, {
+      //       ...data,
+      //       slug: id,
+      //       id: id,
+      //       createdAt: serverTimestamp(),
+      //       updatedAt: serverTimestamp(),
+      //       publishedAt: blogData.publishedAt || serverTimestamp(),
+      //       views: 0,
+      //       likes: 0,
+      //   });
+      // });
 
       // --- Seed Outlets ---
        const outletsCollection = collection(firestore, 'outlets');
@@ -74,7 +74,7 @@ export default function DataSeedingPage() {
       
       toast({
         title: 'Seeding Complete!',
-        description: `${blogSeedData.length} blog posts and ${outletSeedData.length} outlets have been successfully seeded.`,
+        description: `${outletSeedData.length} outlets have been successfully seeded.`,
         duration: 5000,
       });
 
@@ -97,7 +97,7 @@ export default function DataSeedingPage() {
             <CardHeader>
                 <CardTitle className="flex items-center gap-2"><Database /> Master Data Seeder</CardTitle>
                 <CardDescription className="text-zinc-400">
-                Use this tool to reset your content. It will delete all existing blog posts and outlets, then populate your CMS with a fresh set of sample data.
+                Use this tool to reset your outlet content. It will delete all existing outlets, then populate your CMS with a fresh set of sample data.
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -106,7 +106,7 @@ export default function DataSeedingPage() {
                     <div>
                         <h3 className="font-semibold text-yellow-300">Warning: Destructive Action</h3>
                         <p className="text-sm text-yellow-400/80">
-                        This action will permanently delete all current blog posts and outlets in your Firestore database before adding the new ones. This cannot be undone.
+                        This action will permanently delete all current outlets in your Firestore database before adding the new ones. This cannot be undone.
                         </p>
                     </div>
                 </div>
@@ -119,14 +119,14 @@ export default function DataSeedingPage() {
                             ) : (
                                 <Database className="mr-2 h-4 w-4" />
                             )}
-                            Seed All Data
+                            Seed Outlet Data
                         </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
                         <AlertDialogHeader>
                             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                             <AlertDialogDescription className="text-zinc-400">
-                                This will permanently delete all existing blogs & outlets and replace them with sample data.
+                                This will permanently delete all existing outlets and replace them with sample data.
                             </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
