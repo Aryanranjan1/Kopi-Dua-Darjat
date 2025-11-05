@@ -1,4 +1,3 @@
-
 'use client';
 
 import { notFound, useParams } from 'next/navigation';
@@ -15,7 +14,7 @@ import MenuShowcaseSection from './(components)/MenuShowcaseSection';
 import InstaExploreGrid from '@/components/home/InstaExploreGrid';
 import Community from '@/components/home/Community';
 import LatestStories from '@/components/home/LatestStories';
-import NewsletterSignUp from '@/components/home/NewsletterSignUp';
+import MicrositeNewsletterSignUp from './(components)/MicrositeNewsletterSignUp';
 import { TestimonialsColumn } from "@/components/ui/testimonials-columns-1";
 
 // --- TYPES ---
@@ -96,7 +95,7 @@ export default function MicrositePageClient(data: PageData) {
         <InstaExploreGrid />
         <Community />
         <LatestStories />
-        <NewsletterSignUp />
+        <MicrositeNewsletterSignUp />
       </main>
     </div>
   );
