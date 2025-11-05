@@ -8,97 +8,89 @@ import type { Testimonial } from '@/lib/types';
 import { useMediaAsset } from '@/lib/media';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { Card, CardContent } from '@/components/ui/card';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '@/components/ui/carousel';
-import Autoplay from "embla-carousel-autoplay"
-import React from 'react';
+import { Button } from '@/components/ui/button';
 import { Skeleton } from '../ui/skeleton';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Star } from 'lucide-react';
+import React, { useState } from 'react';
 
 const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
   const { asset: image, isLoading } = useMediaAsset(testimonial.image);
   
   return (
-    <div className="p-4 h-full">
-        <div className="relative h-full mt-10">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full overflow-hidden border-4 border-accent shadow-lg z-10">
-                {isLoading ? <Skeleton className="w-full h-full" /> : image && (
-                    <Image
-                        src={image.imageUrl}
-                        alt={testimonial.name}
-                        fill
-                        sizes="128px"
-                        className="object-cover"
-                        data-ai-hint={image.imageHint}
-                    />
-                )}
-            </div>
-            <Card className="bg-background/80 border-black/10 rounded-3xl h-full pt-20 shadow-lg text-center backdrop-blur-sm">
-                <CardContent className="p-8 min-h-[320px] flex flex-col justify-center">
-                <blockquote className="text-lg font-medium text-foreground/90">
-                “{testimonial.quote}”
-                </blockquote>
-                <footer className="mt-6">
-                <p className="font-bold text-accent text-xl">{testimonial.name}</p>
-                <p className="text-foreground/60">{testimonial.designation}</p>
-                </footer>
-                </CardContent>
-            </Card>
+    <Card className="bg-background/80 border-black/10 rounded-3xl shadow-lg p-6">
+      <CardContent className="p-0">
+        <div className="flex items-center gap-4 mb-4">
+          <div className="relative w-12 h-12 rounded-full overflow-hidden">
+            {isLoading ? <Skeleton className="w-full h-full" /> : image && (
+              <Image
+                src={image.imageUrl}
+                alt={testimonial.name}
+                fill
+                sizes="48px"
+                className="object-cover"
+                data-ai-hint={image.imageHint}
+              />
+            )}
+          </div>
+          <div>
+            <p className="font-bold text-foreground text-lg">{testimonial.name}</p>
+            <p className="text-sm text-muted-foreground">{testimonial.designation}</p>
+          </div>
         </div>
-    </div>
+        <div className="flex items-center gap-1 mb-4">
+            {[...Array(5)].map((_, i) => (
+                <Star key={i} className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+            ))}
+        </div>
+        <blockquote className="text-base text-foreground/80 leading-relaxed">
+          “{testimonial.quote}”
+        </blockquote>
+      </CardContent>
+    </Card>
   );
 }
 
 export default function Testimonials() {
-  const plugin = React.useRef(
-    Autoplay({ delay: 7000, stopOnInteraction: true })
-  )
-
   const firestore = useFirestore();
   const testimonialsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'testimonials')) : null, [firestore]);
   const { data: testimonials, isLoading } = useCollection<Testimonial>(testimonialsQuery);
+
+  const [visibleCount, setVisibleCount] = useState(4);
+
+  const handleLoadMore = () => {
+    setVisibleCount(prevCount => prevCount + 4);
+  };
   
   return (
     <section className="py-24 sm:py-32 bg-primary text-primary-foreground">
       <div className="container mx-auto px-4">
         <AnimateOnScroll animationType="slideInFromBottom" className="text-center max-w-3xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-headline text-foreground">Success Stories</h2>
+          <h2 className="text-4xl md:text-5xl font-headline text-foreground">What Our Partners Say</h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Hear from our partners who are brewing success with Kopi Dua Darjat.
+            Real stories from entrepreneurs who are brewing success with Kopi Dua Darjat.
           </p>
         </AnimateOnScroll>
 
-        <AnimateOnScroll animationType="fadeIn" delay={0.2}>
+        <AnimateOnScroll animationType="fadeIn" delay={0.2} className="mt-16">
           {isLoading ? (
             <div className="flex justify-center items-center h-64">
               <Loader2 className="h-12 w-12 animate-spin text-foreground" />
             </div>
           ) : (
-            <Carousel
-              plugins={[plugin.current]}
-              opts={{
-                align: 'start',
-                loop: true,
-              }}
-              className="w-full max-w-5xl mx-auto mt-24"
-              onMouseEnter={plugin.current.stop}
-              onMouseLeave={plugin.current.reset}
-            >
-              <CarouselContent className="-ml-8">
-                {testimonials?.map((testimonial) => (
-                  <CarouselItem key={testimonial.id} className="md:basis-1/2 pl-8">
-                    <TestimonialCard testimonial={testimonial} />
-                  </CarouselItem>
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {testimonials?.slice(0, visibleCount).map((testimonial) => (
+                  <TestimonialCard key={testimonial.id} testimonial={testimonial} />
                 ))}
-              </CarouselContent>
-              <CarouselPrevious className="-left-4 md:-left-12 bg-background/80 border-black/20 text-foreground hover:bg-background hover:text-foreground" />
-              <CarouselNext className="-right-4 md:-right-12 bg-background/80 border-black/20 text-foreground hover:bg-background hover:text-foreground" />
-            </Carousel>
+              </div>
+              {testimonials && visibleCount < testimonials.length && (
+                 <div className="text-center mt-12">
+                    <Button onClick={handleLoadMore} size="lg" className="rounded-full bg-accent hover:bg-accent/90 text-accent-foreground">
+                        Load More Reviews
+                    </Button>
+                </div>
+              )}
+            </>
           )}
         </AnimateOnScroll>
       </div>
