@@ -16,6 +16,23 @@ async function fetchCollection<T>(firestore: any, collectionName: string, q?: an
     return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as T));
 }
 
+const serializeTimestamps = (obj: any): any => {
+    if (obj instanceof Timestamp) {
+        return obj.toDate().toISOString();
+    }
+    if (Array.isArray(obj)) {
+        return obj.map(serializeTimestamps);
+    }
+    if (typeof obj === 'object' && obj !== null) {
+        const newObj: { [key: string]: any } = {};
+        for (const key in obj) {
+            newObj[key] = serializeTimestamps(obj[key]);
+        }
+        return newObj;
+    }
+    return obj;
+};
+
 // --- SERVER-SIDE DATA FETCHING ---
 async function getMicrositeData(slug: string) {
   const { firestore } = initializeServerSideFirebase();
@@ -45,7 +62,7 @@ async function getMicrositeData(slug: string) {
   
   // Filter items relevant to this outlet (or general items)
   const outletMenuItems = allMenuItems.filter(item => 
-    item.isGeneral || (item.outletIds && item.outletIds.includes(outlet.slug))
+    item.isGeneral || !item.outletIds || item.outletIds.length === 0 || item.outletIds.includes(outlet.slug)
   );
 
   // Filter categories that have items for this outlet
@@ -58,31 +75,17 @@ async function getMicrositeData(slug: string) {
   // Filter promotions relevant to this outlet (or global promotions)
   const outletPromotions = allPromotions.filter(p => !p.outletIds || p.outletIds.length === 0 || p.outletIds.includes(outlet.slug));
 
-  const serializeDates = (obj: any) => {
-    if (!obj) return obj;
-    for (const key in obj) {
-        if (obj[key] instanceof Timestamp) {
-            obj[key] = obj[key].toDate().toISOString();
-        } else if (typeof obj[key] === 'object' && obj[key] !== null) {
-            serializeDates(obj[key]);
-        } else if (Array.isArray(obj[key])) {
-            obj[key].forEach((item: any) => serializeDates(item));
-        }
-    }
-    return obj;
-  }
-  
-  return { 
+  return serializeTimestamps({ 
     outlet: { ...outlet, id: slug }, // Ensure outlet has an id
-    menuCategories: serializeDates(outletMenuCategories),
-    allMenuItems: serializeDates(outletMenuItems),
-    featuredItems: serializeDates(outletFeaturedItems),
-    promotions: serializeDates(outletPromotions),
-    testimonials: serializeDates(allTestimonials),
-    siteSettings: serializeDates(mainSettings),
-    latestBlog: latestBlogs.length > 0 ? serializeDates(latestBlogs[0]) : null,
-    instaPosts: serializeDates(instaFeed),
-  };
+    menuCategories: outletMenuCategories,
+    allMenuItems: outletMenuItems,
+    featuredItems: outletFeaturedItems,
+    promotions: outletPromotions,
+    testimonials: allTestimonials,
+    siteSettings: mainSettings,
+    latestBlog: latestBlogs.length > 0 ? latestBlogs[0] : null,
+    instaPosts: instaFeed,
+  });
 }
 
 // DYNAMIC METADATA GENERATION

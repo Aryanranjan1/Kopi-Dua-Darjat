@@ -13,7 +13,7 @@ interface MicrositeHeroProps {
 
 export default function MicrositeHero({ outlet }: MicrositeHeroProps) {
   return (
-    <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-28 text-white overflow-hidden">
+    <section className="relative h-screen flex items-center justify-center text-white overflow-hidden">
         <video
             autoPlay
             loop

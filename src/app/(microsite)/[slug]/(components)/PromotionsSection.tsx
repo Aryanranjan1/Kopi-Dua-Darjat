@@ -33,54 +33,55 @@ const BentoCard = ({
   ctaLink?: string;
   tag?: string;
 }) => (
-  <AnimateOnScroll
-    animationType="fadeIn"
-    className={`relative rounded-2xl overflow-hidden group border border-black/10 flex flex-col justify-end p-6 ${className}`}
-  >
-    <Image
-      src={imageUrl}
-      alt={title}
-      fill
-      className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105 -z-10"
-    />
-    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent -z-10"></div>
-    {tag && <p className="text-sm font-semibold text-primary">{tag}</p>}
-    <h3 className="text-2xl font-headline font-bold text-white mt-1">{title}</h3>
-    <p className="text-white/80 mt-1 line-clamp-2">{description}</p>
-    <div className="mt-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-      <Button asChild variant="default" className="bg-primary text-primary-foreground hover:bg-primary/90">
-        <Link href={ctaLink}>{cta}</Link>
-      </Button>
-    </div>
-  </AnimateOnScroll>
+    <AnimateOnScroll animationType="fadeIn" className={`relative rounded-2xl overflow-hidden group border border-black/10 flex flex-col justify-end ${className}`}>
+        <Link href={ctaLink} className="block w-full h-full p-6">
+            <Image
+            src={imageUrl}
+            alt={title}
+            fill
+            className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105 -z-10"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent -z-10"></div>
+            {tag && <p className="text-sm font-semibold text-primary">{tag}</p>}
+            <h3 className="text-2xl font-headline font-bold text-white mt-1">{title}</h3>
+            <p className="text-white/80 mt-1 line-clamp-2">{description}</p>
+            <div className="mt-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                <div className="inline-block bg-primary text-primary-foreground rounded-full px-4 py-2 text-sm font-bold">
+                    {cta}
+                </div>
+            </div>
+        </Link>
+    </AnimateOnScroll>
 );
 
 
 const InstaCard = ({ post, className }: { post: PublicInstaPost, className?: string }) => (
     <AnimateOnScroll
         animationType="fadeIn"
-        className={`relative rounded-2xl overflow-hidden group border border-black/10 flex flex-col justify-end p-6 ${className}`}
+        className={`relative rounded-2xl overflow-hidden group border border-black/10 flex flex-col justify-end ${className}`}
     >
-        {post.mediaType === 'VIDEO' ? (
-            <video src={post.mediaUrl} autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover -z-10" />
-        ) : (
-            <Image
-                src={post.mediaUrl}
-                alt={post.caption || 'Instagram Post'}
-                fill
-                className="object-cover -z-10"
-            />
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent -z-10"></div>
-        <div className="relative z-10">
-            <Instagram className="w-6 h-6 text-white mb-2" />
-            <p className="text-white/80 mt-1 line-clamp-2 text-sm">{post.caption}</p>
-             <div className="mt-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                <Button asChild variant="default" className="bg-primary text-primary-foreground hover:bg-primary/90">
-                    <a href={post.permalink} target="_blank" rel="noopener noreferrer">View Post</a>
-                </Button>
+        <Link href={post.permalink} target="_blank" rel="noopener noreferrer" className="block w-full h-full p-6">
+            {post.mediaType === 'VIDEO' ? (
+                <video src={post.mediaUrl} autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover -z-10" />
+            ) : (
+                <Image
+                    src={post.mediaUrl}
+                    alt={post.caption || 'Instagram Post'}
+                    fill
+                    className="object-cover -z-10"
+                />
+            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent -z-10"></div>
+            <div className="relative z-10">
+                <Instagram className="w-6 h-6 text-white mb-2" />
+                <p className="text-white/80 mt-1 line-clamp-2 text-sm">{post.caption}</p>
+                <div className="mt-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                    <div className="inline-block bg-primary text-primary-foreground rounded-full px-4 py-2 text-sm font-bold">
+                        View Post
+                    </div>
+                </div>
             </div>
-        </div>
+        </Link>
     </AnimateOnScroll>
 )
 
