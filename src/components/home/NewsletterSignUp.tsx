@@ -1,7 +1,7 @@
 
 "use client"
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from "next/image"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -23,6 +23,28 @@ export default function NewsletterSignUp({ disableAnimations = false }: { disabl
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
+  const [imageError, setImageError] = useState(false);
+
+  useEffect(() => {
+    if (!isLoadingImage) {
+      if (bgImage?.imageUrl) {
+        console.log("Newsletter Background: Found asset in DB, using URL:", bgImage.imageUrl);
+        setImageSrc(bgImage.imageUrl);
+        setImageError(false);
+      } else {
+        console.warn("Newsletter Background: Asset 'newsletter-background' not found in DB. Using fallback.");
+        setImageSrc('/images/fallback-bg.jpg');
+        setImageError(false);
+      }
+    }
+  }, [bgImage, isLoadingImage]);
+
+  const handleImageError = () => {
+    console.error("Newsletter Background: Failed to load image from src:", imageSrc, "- Switching to fallback.");
+    setImageError(true);
+    setImageSrc('/images/fallback-bg.jpg');
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -40,7 +62,6 @@ export default function NewsletterSignUp({ disableAnimations = false }: { disabl
     try {
       const subscribersRef = collection(firestore, "newsletterSubscribers");
       
-      // Add new subscriber without checking for duplicates to avoid permission errors
       await addDoc(subscribersRef, {
         email: email,
         createdAt: serverTimestamp(),
@@ -48,7 +69,7 @@ export default function NewsletterSignUp({ disableAnimations = false }: { disabl
       
       toast({
         title: "Subscribed!",
-        description: "Thanks for joining our newsletter. If you were already subscribed, you'll continue to receive our updates.",
+        description: "Thanks for joining our newsletter. You'll receive updates from us soon.",
       });
       setEmail('');
 
@@ -66,20 +87,24 @@ export default function NewsletterSignUp({ disableAnimations = false }: { disabl
 
 
   const Wrapper = disableAnimations ? 'div' : AnimateOnScroll;
-  const wrapperProps = disableAnimations ? {} : { animationType: 'slideInFromBottom' };
-  const formWrapperProps = disableAnimations ? {} : { animationType: 'fadeIn', delay: 0.2 };
+  const wrapperProps = disableAnimations ? {} : { animationType: 'slideInFromBottom' as const };
+  const formWrapperProps = disableAnimations ? {} : { animationType: 'fadeIn' as const, delay: 0.2 };
 
 
   return (
     <section className="relative py-24 sm:py-32 text-white">
       <div className="absolute inset-0 z-[-2]">
-        {isLoadingImage ? <Skeleton className="w-full h-full" /> : bgImage && (
+        {isLoadingImage || !imageSrc ? (
+            <Skeleton className="w-full h-full" />
+         ) : (
             <Image
-                src={bgImage.imageUrl}
-                alt={bgImage.description}
+                key={imageSrc} // Use key to force re-render on src change
+                src={imageSrc}
+                alt={bgImage?.description || 'Coffee beans and a cup of coffee'}
                 fill
                 className="object-cover"
-                data-ai-hint={bgImage.imageHint}
+                onError={handleImageError}
+                data-ai-hint={bgImage?.imageHint}
             />
         )}
       </div>
