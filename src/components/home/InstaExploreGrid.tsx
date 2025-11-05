@@ -77,7 +77,7 @@ export default function InstaExploreGrid() {
   }, [posts]);
 
   return (
-    <section className="bg-primary px-4 sm:px-6 py-24 sm:py-32">
+    <section style={{ backgroundColor: '#fde047' }} className="px-4 sm:px-6 py-24 sm:py-32">
       <div className="container mx-auto">
         {isLoading ? (
           <div className="flex justify-center items-center h-64">
