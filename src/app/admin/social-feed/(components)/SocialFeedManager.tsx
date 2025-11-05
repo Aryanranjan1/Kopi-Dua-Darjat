@@ -64,13 +64,16 @@ export default function SocialFeedManager() {
     const settingsRef = useMemoFirebase(() => firestore ? doc(firestore, 'settings', 'instagram_sync') : null, [firestore]);
     const { data: syncSettings, isLoading: isLoadingSettings } = useDoc<SyncSettings>(settingsRef);
     
-    const [tagInput, setTagInput] = useState(syncSettings?.active_tag || 'kopiduadarjat');
+    const [tagInput, setTagInput] = useState('');
 
     useEffect(() => {
-        if(syncSettings) {
+        if(syncSettings?.active_tag) {
             setTagInput(syncSettings.active_tag);
+        } else if (!isLoadingSettings) {
+            // Set a default if settings are loaded but no tag is present
+            setTagInput('kopiduadarjat');
         }
-    }, [syncSettings]);
+    }, [syncSettings, isLoadingSettings]);
 
     const feedQuery = useMemoFirebase(
         () => firestore ? query(collection(firestore, 'public_insta_feed'), orderBy('rank', 'asc')) : null,
