@@ -111,7 +111,7 @@ export default function OutletsManager() {
           New Outlet
         </Button>
       </div>
-      <div className="max-h-[65vh] overflow-y-auto">
+      <div className="overflow-y-auto">
         <Table>
           <TableHeader className="sticky top-0 bg-zinc-900 z-10">
             <TableRow className="border-zinc-700 hover:bg-zinc-800/80">
@@ -175,7 +175,7 @@ export default function OutletsManager() {
        </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-4xl h-[90vh]">
+        <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-4xl h-[90vh] flex flex-col">
           <DialogHeader>
             <DialogTitle>{selectedOutlet ? 'Edit Outlet' : 'Create New Outlet'}</DialogTitle>
             <DialogDescription className="text-zinc-400">
