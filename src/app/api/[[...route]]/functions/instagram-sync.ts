@@ -43,9 +43,9 @@ export const syncInstagramPosts = async () => {
     await batch.commit();
 
     console.log(`✅ Synced ${posts.length} posts for tag: #${active_tag}`);
-    await db.collection("settings").doc("instagram_sync").set({
+    await db.collection("settings").doc("instagram_sync").update({
       last_synced: new Date().toISOString()
-    }, { merge: true });
+    });
 
     return { status: "success", count: posts.length };
   } catch (err: any) {

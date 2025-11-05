@@ -64,7 +64,7 @@ export default function SocialFeedManager() {
     const settingsRef = useMemoFirebase(() => firestore ? doc(firestore, 'settings', 'instagram_sync') : null, [firestore]);
     const { data: syncSettings, isLoading: isLoadingSettings } = useDoc<SyncSettings>(settingsRef);
     
-    const [tagInput, setTagInput] = useState('kopiduadarjat');
+    const [tagInput, setTagInput] = useState('');
 
     useEffect(() => {
         if (syncSettings?.active_tag) {
