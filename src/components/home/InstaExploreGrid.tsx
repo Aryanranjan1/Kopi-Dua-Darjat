@@ -21,7 +21,7 @@ const PostItem = ({ post }: { post: PublicInstaPost }) => {
       rel="noopener noreferrer"
       className={cn(
         'relative group overflow-hidden rounded-lg shadow-md',
-        isVideo ? 'aspect-[9/16] row-span-2' : 'aspect-square'
+        isVideo ? 'col-span-1 row-span-2' : 'col-span-1 row-span-1'
       )}
     >
       {isVideo ? (
@@ -84,7 +84,7 @@ export default function InstaExploreGrid() {
             <Loader2 className="w-12 h-12 text-primary animate-spin" />
           </div>
         ) : visiblePosts && visiblePosts.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 grid-flow-dense auto-rows-[15vw] gap-4">
+           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 grid-auto-rows-[250px] gap-4 [grid-auto-flow:dense]">
             {visiblePosts.map((post) => (
               <PostItem key={post.id} post={post} />
             ))}
