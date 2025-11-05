@@ -5,7 +5,7 @@ import { outlets as allOutlets } from '@/lib/data';
 import MicrositePageClient from './MicrositePageClient';
 import type { Outlet, MenuItem, Promotion, MenuCategory, SiteSettings, Founder, Testimonial } from '@/lib/types';
 import { initializeServerSideFirebase } from '@/firebase/server-init';
-import { collection, getDocs, query, Timestamp } from 'firebase/firestore';
+import { collection, getDocs, query, Timestamp, doc, getDoc } from 'firebase/firestore';
 
 
 // This remains a Server Component.
