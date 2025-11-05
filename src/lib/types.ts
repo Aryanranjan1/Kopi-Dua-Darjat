@@ -1,4 +1,3 @@
-
 import { Timestamp } from "firebase/firestore";
 
 export type NavItem = {
@@ -264,3 +263,19 @@ export type SiteSettings = {
   lastUpdated: Timestamp;
   updatedBy: string;
 };
+
+export interface PublicInstaPost {
+  id: string;
+  username: string;
+  caption: string;
+  mediaUrl: string;
+  mediaType: 'image' | 'video' | 'carousel';
+  permalink: string;
+  timestamp: string; // ISO 8601
+  likes?: number | null;
+  comments?: number | null;
+  visible: boolean;
+  pinned: boolean;
+  source: 'scrape' | 'manual';
+  rank: number;
+}

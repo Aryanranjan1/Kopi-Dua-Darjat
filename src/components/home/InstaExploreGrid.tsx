@@ -2,21 +2,13 @@
 
 import React from 'react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy, limit } from 'firebase/firestore';
+import { collection, query, orderBy, limit, where } from 'firebase/firestore';
 import { Loader2, Instagram as InstagramIcon } from 'lucide-react';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
+import type { PublicInstaPost } from '@/lib/types';
+import { Button } from '../ui/button';
 
-interface InstagramPost {
-  id: string;
-  username: string;
-  caption: string;
-  mediaUrl: string;
-  mediaType: 'image' | 'video';
-  permalink: string;
-  timestamp: string;
-}
-
-const PostItem = ({ post }: { post: InstagramPost }) => (
+const PostItem = ({ post }: { post: PublicInstaPost }) => (
   <a
     href={post.permalink}
     target="_blank"
@@ -39,11 +31,12 @@ const PostItem = ({ post }: { post: InstagramPost }) => (
         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
       />
     )}
-    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-      <span className="text-white text-sm font-semibold flex items-center gap-1">
+    <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center p-2 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+      <span className="text-white text-sm font-bold flex items-center gap-1">
         <InstagramIcon className="w-4 h-4" />
         {post.username}
       </span>
+      <span className="text-white text-xs mt-1 font-mono">ID: {post.id}</span>
     </div>
   </a>
 );
@@ -54,14 +47,15 @@ export default function InstaExploreGrid() {
     () =>
       firestore
         ? query(
-            collection(firestore, 'public-insta-feed'),
-            orderBy('timestamp', 'desc'),
+            collection(firestore, 'public_insta_feed'),
+            where('visible', '==', true),
+            orderBy('rank', 'asc'),
             limit(20)
           )
         : null,
     [firestore]
   );
-  const { data: posts, isLoading } = useCollection<InstagramPost>(instaQuery);
+  const { data: posts, isLoading } = useCollection<PublicInstaPost>(instaQuery);
 
   return (
     <section className="px-6 py-20 bg-white">
@@ -85,14 +79,11 @@ export default function InstaExploreGrid() {
           </p>
         )}
         <div className="mt-8 text-center">
-          <a
-            href="https://www.instagram.com/explore/tags/kopiduadarjat/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block border border-black text-black hover:bg-black hover:text-white transition px-6 py-2 text-sm uppercase"
-          >
-            Show More on Instagram
-          </a>
+            <Button asChild variant="outline" className="rounded-full border-yellow-400 text-black hover:bg-yellow-400">
+                <a href="https://www.instagram.com/explore/tags/kopiduadarjat/" target="_blank" rel="noopener noreferrer">
+                    Show More on Instagram
+                </a>
+            </Button>
         </div>
       </AnimateOnScroll>
     </section>

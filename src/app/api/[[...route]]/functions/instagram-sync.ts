@@ -41,7 +41,7 @@ export const updateInstaFeed = onSchedule('every 24 hours', async (event) => {
       const node = edge.node;
       if (!node || !node.id) return;
 
-      const ref = db.collection('public-insta-feed').doc(node.id.toString());
+      const ref = db.collection('public_insta_feed').doc(node.id.toString());
       
       batch.set(ref, {
         id: node.id,
@@ -51,7 +51,11 @@ export const updateInstaFeed = onSchedule('every 24 hours', async (event) => {
         mediaType: node.is_video ? 'video' : 'image',
         permalink: `https://instagram.com/p/${node.shortcode}`,
         timestamp: new Date(node.taken_at_timestamp * 1000).toISOString(),
-      });
+        visible: true,
+        pinned: false,
+        source: 'scrape',
+        rank: count, // simple ranking for now
+      }, { merge: true });
       count++;
     });
 

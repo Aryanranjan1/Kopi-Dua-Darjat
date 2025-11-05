@@ -180,7 +180,7 @@
         }
       },
       {
-        "path": "/public-insta-feed/{postId}",
+        "path": "/public_insta_feed/{postId}",
         "definition": {
           "entityName": "PublicInstaPost",
           "schema": { "$ref": "#/entities/PublicInstaPost" },

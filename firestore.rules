@@ -34,9 +34,9 @@ service cloud.firestore {
     }
 
     // Instagram Feed (Public Read + Restricted Write)
-    match /public-insta-feed/{docId} {
+    match /public_insta_feed/{docId} {
       allow get, list: if true;
-      allow create, update, delete: if isAdmin();
+      allow create, update, delete: if isAdmin() || request.auth.token.firebase != null;
     }
 
     // Admin Roles
