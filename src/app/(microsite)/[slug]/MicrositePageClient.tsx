@@ -15,7 +15,6 @@ import LatestStories from '@/components/home/LatestStories';
 import MicrositeNewsletterSignUp from './(components)/MicrositeNewsletterSignUp';
 import FranchiseTestimonials from './(components)/FranchiseTestimonials';
 import MenuShowcaseSection from './(components)/MenuShowcaseSection';
-import PromotionsSection from './(components)/PromotionsSection';
 
 
 // --- TYPES ---
@@ -47,12 +46,6 @@ export default function MicrositePageClient(data: PageData) {
       <MicrositeHero outlet={outlet} />
       <main>
         <SignatureDrinksCarousel items={itemsForSignatureCarousel} />
-        <PromotionsSection 
-            promotions={promotions}
-            items={allMenuItems}
-            blog={latestBlog}
-            instaPosts={instaPosts}
-        />
         <MenuShowcaseSection items={allMenuItems} categories={menuCategories} />
         {siteSettings && <BrandStorySection settings={siteSettings} />}
         <OutletLocatorSection currentOutlet={outlet} />
