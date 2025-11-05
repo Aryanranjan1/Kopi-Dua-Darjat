@@ -1,21 +1,34 @@
 
-import type { Metadata } from 'next';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import OutletDataMigration from './(components)/OutletDataMigration';
+'use client';
 
-export const metadata: Metadata = {
-  title: 'Outlet Management',
-  description: 'Manage outlets for Kopi Dua Darjat.',
-};
+import { Suspense } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import OutletsManager from './(components)/OutletsManager';
+
+function OutletsPageContent() {
+    return (
+        <div className="space-y-8">
+            <h1 className="text-3xl font-headline font-bold text-white">Outlet Management</h1>
+            
+            <Card className="bg-zinc-900 border-zinc-800 text-white">
+                <CardHeader>
+                    <CardTitle>All Outlets</CardTitle>
+                    <CardDescription className="text-zinc-400">
+                        Manage all outlet locations and their microsite content.
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <OutletsManager />
+                </CardContent>
+            </Card>
+        </div>
+    );
+}
 
 export default function OutletsPage() {
-  return (
-    <div className="space-y-8">
-      <h1 className="text-3xl font-headline font-bold text-white">Outlet Management</h1>
-      <p className="text-zinc-400">
-        This section is under construction. Here you will be able to manage all outlet locations, view their details, and link them to promotions.
-      </p>
-      <OutletDataMigration />
-    </div>
-  );
+    return (
+        <Suspense fallback={<div>Loading outlets...</div>}>
+            <OutletsPageContent />
+        </Suspense>
+    )
 }

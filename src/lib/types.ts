@@ -101,19 +101,19 @@ export type Outlet = {
   slug: string;
   address: string;
   city: string;
+  state: string;
   lat: number;
   lng: number;
   hours: string;
-  isOpenNow?: boolean; // Retaining for now, can be computed if needed
+  phone?: string;
+  email?: string;
+  status: 'active' | 'inactive';
   heroImage?: string;
   interiorImage?: string;
   tagline?: string;
   mapsLink?: string;
-  // New fields from brief
-  state?: string;
-  phone?: string;
-  email?: string;
-  status?: 'active' | 'inactive';
+  whatsappLink?: string;
+  chatbotEmbed?: string;
   createdAt?: any;
   updatedAt?: any;
 };

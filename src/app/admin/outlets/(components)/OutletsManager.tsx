@@ -1,0 +1,172 @@
+
+'use client';
+
+import { useState, useMemo } from 'react';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection, doc, deleteDoc, orderBy, query } from 'firebase/firestore';
+import type { Outlet } from '@/lib/types';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { Loader2, PlusCircle, Edit, Trash2, Search, ExternalLink } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
+import Link from 'next/link';
+import OutletForm from './OutletForm';
+
+export default function OutletsManager() {
+  const firestore = useFirestore();
+  const { toast } = useToast();
+  
+  const outletsQuery = useMemoFirebase(
+    () => firestore ? query(collection(firestore, 'outlets'), orderBy('name', 'asc')) : null,
+    [firestore]
+  );
+  const { data: outlets, isLoading } = useCollection<Outlet>(outletsQuery);
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedOutlet, setSelectedOutlet] = useState<Outlet | undefined>(undefined);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredOutlets = useMemo(() => {
+    if (!outlets) return [];
+    if (!searchQuery) return outlets;
+    return outlets.filter(outlet => 
+      outlet.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      outlet.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      outlet.state.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [outlets, searchQuery]);
+
+  const handleAddNew = () => {
+    setSelectedOutlet(undefined);
+    setIsDialogOpen(true);
+  };
+
+  const handleEdit = (outlet: Outlet) => {
+    setSelectedOutlet(outlet);
+    setIsDialogOpen(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!firestore) return;
+    try {
+      await deleteDoc(doc(firestore, 'outlets', id));
+      toast({ title: 'Success', description: 'Outlet deleted successfully.' });
+    } catch (error: any) {
+      toast({ variant: 'destructive', title: 'Error', description: `Could not delete outlet: ${error.message}` });
+    }
+  };
+
+  return (
+    <>
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
+        <div className="relative flex-grow w-full">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+          <Input 
+            placeholder="Search by name, city, or state..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-9 bg-zinc-800 border-zinc-700 w-full"
+          />
+        </div>
+        <Button onClick={handleAddNew} className="w-full sm:w-auto flex-shrink-0">
+          <PlusCircle className="mr-2 h-4 w-4" />
+          New Outlet
+        </Button>
+      </div>
+      <div className="max-h-[65vh] overflow-y-auto">
+        <Table>
+          <TableHeader className="sticky top-0 bg-zinc-900 z-10">
+            <TableRow className="border-zinc-700 hover:bg-zinc-800/80">
+              <TableHead>Name</TableHead>
+              <TableHead>City</TableHead>
+              <TableHead>State</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {isLoading && <TableRow><TableCell colSpan={5} className="text-center"><Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" /></TableCell></TableRow>}
+            {!isLoading && filteredOutlets.length === 0 && <TableRow><TableCell colSpan={5} className="text-center text-zinc-400 py-8">No outlets found.</TableCell></TableRow>}
+            {filteredOutlets?.map(outlet => (
+              <TableRow key={outlet.id} className="border-zinc-700 hover:bg-zinc-800/80">
+                <TableCell className="font-medium">{outlet.name}</TableCell>
+                <TableCell>{outlet.city}</TableCell>
+                <TableCell>{outlet.state}</TableCell>
+                <TableCell>
+                  <Badge variant={outlet.status === 'active' ? 'default' : 'destructive'} className={cn(
+                    outlet.status === 'active' ? 'bg-green-600' : 'bg-red-700'
+                  )}>
+                    {outlet.status}
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-right">
+                  <Button asChild variant="ghost" size="icon" disabled={outlet.status === 'inactive'}>
+                    <Link href={`/${outlet.slug}`} target="_blank"><ExternalLink className="h-4 w-4" /></Link>
+                  </Button>
+                  <Button variant="ghost" size="icon" onClick={() => handleEdit(outlet)}>
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="ghost" size="icon"><Trash2 className="h-4 w-4 text-red-500" /></Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
+                      <AlertDialogHeader>
+                          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                          <AlertDialogDescription className="text-zinc-400">This will permanently delete the "{outlet.name}" outlet.</AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
+                        <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleDelete(outlet.id)}>Delete</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-4xl h-[90vh]">
+          <DialogHeader>
+            <DialogTitle>{selectedOutlet ? 'Edit Outlet' : 'Create New Outlet'}</DialogTitle>
+            <DialogDescription className="text-zinc-400">
+              {selectedOutlet ? `Editing details for ${selectedOutlet.name}` : 'Add a new outlet to the system.'}
+            </DialogDescription>
+          </DialogHeader>
+          <OutletForm outlet={selectedOutlet} onSuccess={() => setIsDialogOpen(false)} />
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
