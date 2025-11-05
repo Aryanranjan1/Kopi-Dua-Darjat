@@ -47,11 +47,6 @@ const BentoCard = ({
                 {tag && <p className="text-sm font-semibold text-primary">{tag}</p>}
                 <h3 className="text-2xl font-headline font-bold text-white mt-1">{title}</h3>
                 <p className="text-white/80 mt-1 line-clamp-2">{description}</p>
-                 <div className="mt-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                    <div className="inline-block bg-primary text-primary-foreground rounded-full px-4 py-2 text-sm font-bold">
-                        {cta}
-                    </div>
-                </div>
             </div>
         </Link>
     </AnimateOnScroll>
@@ -78,11 +73,6 @@ const InstaCard = ({ post, className }: { post: PublicInstaPost, className?: str
             <div className="absolute bottom-0 left-0 p-6 text-white">
                 <Instagram className="w-6 h-6 text-white mb-2" />
                 <p className="text-white/80 mt-1 line-clamp-2 text-sm">{post.caption}</p>
-                <div className="mt-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                    <div className="inline-block bg-primary text-primary-foreground rounded-full px-4 py-2 text-sm font-bold">
-                        View Post
-                    </div>
-                </div>
             </div>
         </Link>
     </AnimateOnScroll>
