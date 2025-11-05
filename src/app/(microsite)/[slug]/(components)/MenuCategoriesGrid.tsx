@@ -33,14 +33,6 @@ export default function MenuCategoriesGrid({ categories }: { categories: MenuCat
   return (
     <section className="bg-white py-20 md:py-24">
       <div className="container mx-auto px-6 max-w-7xl">
-        <AnimateOnScroll className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-headline font-bold text-black">
-            Explore Our Menu
-          </h2>
-          <p className="mt-2 text-lg text-neutral-600">
-            From heritage brews to modern blends.
-          </p>
-        </AnimateOnScroll>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {categories.map((category) => (
             <CategoryCard key={category.id} category={category} />
