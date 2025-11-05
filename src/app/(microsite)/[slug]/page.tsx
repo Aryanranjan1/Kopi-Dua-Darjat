@@ -13,6 +13,7 @@ import OutletLocatorSection from './(components)/OutletLocatorSection';
 import TestimonialsSection from './(components)/TestimonialsSection';
 import SocialFeedSection from './(components)/SocialFeedSection';
 import NewsletterSection from './(components)/NewsletterSection';
+import MicrositeHero from './(components)/MicrositeHero';
 
 // --- MOCK DATA ---
 const menuCategories: MenuCategory[] = [
@@ -29,9 +30,10 @@ const featuredItems: MenuItem[] = [
 ];
 
 const promotions: Promotion[] = [
-  { id: '1', title: 'Weekend BOGO', description: 'Buy one Darjat series drink, get another free!', discountType: 'bogo', discountValue: 0, startDate: new Date(), endDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000), status: 'active', bannerImage: 'https://picsum.photos/seed/promo1/600/400', menuItemIds: ['1', '2'], createdAt: new Date(), updatedAt: new Date() },
+  { id: '1', title: 'Weekend BOGO', description: 'Buy one Darjat series drink, get another free!', discountType: 'bogo', discountValue: 0, startDate: new Date(), endDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000), status: 'active', bannerImage: 'https://picsum.photos/seed/promo1/800/600', menuItemIds: ['1', '2'], createdAt: new Date(), updatedAt: new Date() },
   { id: '2', title: 'Lunch Hour Special', description: 'Get 20% off any drink between 12 PM and 2 PM.', discountType: 'percentage', discountValue: 20, startDate: new Date(), endDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000), status: 'active', bannerImage: 'https://picsum.photos/seed/promo2/600/400', createdAt: new Date(), updatedAt: new Date() },
   { id: '3', title: 'Matcha Madness', description: 'Enjoy RM2 off all Matcha series drinks.', discountType: 'flat', discountValue: 2, startDate: new Date(), endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), status: 'active', bannerImage: 'https://picsum.photos/seed/promo3/600/400', menuItemIds: ['3'], createdAt: new Date(), updatedAt: new Date() },
+   { id: '4', title: 'New Drink!', description: 'Try our new Pandan Latte.', discountType: 'custom', discountValue: 0, customDiscountDescription: 'Intro Price RM5', startDate: new Date(), endDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), status: 'active', bannerImage: 'https://picsum.photos/seed/promo4/600/400', menuItemIds: [], createdAt: new Date(), updatedAt: new Date() },
 ];
 
 const testimonials: Testimonial[] = [
@@ -144,10 +146,11 @@ export default async function OutletMicrositePage({ params }: Props) {
 
   return (
     <div className="bg-white text-black">
+      <MicrositeHero outlet={outlet} />
       <main className="space-y-20 md:space-y-32">
-        <MenuCategoriesGrid categories={menuCategories} />
         <SignatureDrinksCarousel items={featuredItems} promotions={promotions || []} />
         {promotions && promotions.length > 0 && <PromotionsSection promotions={promotions} />}
+        <MenuCategoriesGrid categories={menuCategories} />
         {siteSettings && <BrandStorySection settings={siteSettings} />}
         <OutletLocatorSection currentOutlet={outlet} />
         {testimonials && testimonials.length > 0 && <TestimonialsSection testimonials={testimonials} />}

@@ -54,13 +54,6 @@ export default function SignatureDrinksCarousel({ items, promotions }: Signature
   return (
     <section className="bg-[#FAF3E0] py-20 md:py-32">
       <div className="container mx-auto px-6 max-w-7xl">
-        <AnimateOnScroll className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-headline font-bold text-black">
-                Signature Drinks
-            </h2>
-            <p className="mt-2 text-lg text-neutral-600">Crafted with passion, loved by many.</p>
-        </AnimateOnScroll>
-        
         <Carousel
           opts={{ align: 'start', loop: items.length > 4 }}
           className="w-full"
