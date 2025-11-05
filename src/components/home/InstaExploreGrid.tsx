@@ -1,3 +1,4 @@
+
 'use client';
 
 import React from 'react';
@@ -74,17 +75,27 @@ export default function InstaExploreGrid() {
             ))}
           </div>
         ) : (
-          <p className="text-center text-muted-foreground">
-            Could not load Instagram feed. Check back later!
-          </p>
-        )}
-        <div className="mt-8 text-center">
-            <Button asChild variant="outline" className="rounded-full border-yellow-400 text-black hover:bg-yellow-400">
-                <a href="https://www.instagram.com/explore/tags/kopiduadarjat/" target="_blank" rel="noopener noreferrer">
-                    Show More on Instagram
-                </a>
+          <div className="flex flex-col items-center py-10 text-center">
+            <p className="text-gray-500 mb-4">No posts available right now.</p>
+            <Button
+              onClick={() =>
+                window.open('https://www.instagram.com/explore/tags/kopiduadarjat/', '_blank')
+              }
+              className="rounded-full bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition"
+            >
+              View on Instagram &rarr;
             </Button>
-        </div>
+          </div>
+        )}
+        {posts && posts.length > 0 && (
+            <div className="mt-8 text-center">
+                <Button asChild variant="outline" className="rounded-full border-yellow-400 text-black hover:bg-yellow-400">
+                    <a href="https://www.instagram.com/explore/tags/kopiduadarjat/" target="_blank" rel="noopener noreferrer">
+                        Show More on Instagram
+                    </a>
+                </Button>
+            </div>
+        )}
       </AnimateOnScroll>
     </section>
   );

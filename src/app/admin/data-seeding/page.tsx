@@ -72,18 +72,41 @@ export default function DataSeedingPage() {
       }
       setIsInstaLoading(true);
       try {
-        const testPost = {
-            id: "test-post-1",
-            username: "kopiduadarjat",
-            caption: "Testing Insta Sync!",
-            mediaUrl: "https://picsum.photos/400/400",
-            mediaType: "image",
-            permalink: "https://instagram.com/kopiduadarjat",
-            timestamp: new Date().toISOString()
-        };
-        const postRef = doc(firestore, 'public-insta-feed', testPost.id);
-        await setDoc(postRef, testPost);
-        toast({ title: 'Success', description: 'Test Instagram post has been seeded.' });
+        const batch = writeBatch(firestore);
+        const collectionRef = collection(firestore, 'public_insta_feed');
+        const captions = [
+            "Kopi time! ☕ #kopiduadarjat",
+            "That first sip feeling. #kopi",
+            "Mid-day refuel. #coffeebreak",
+            "Heritage in a cup. ✨",
+            "Our favorite way to start the day.",
+        ];
+
+        for (let i = 1; i <= 20; i++) {
+            const id = `post_${String(i).padStart(2, '0')}`;
+            const postRef = doc(collectionRef, id);
+            const mediaType = Math.random() > 0.7 ? 'video' : 'image';
+            
+            batch.set(postRef, {
+                id,
+                username: "kopiduadarjat",
+                caption: captions[i % captions.length],
+                mediaUrl: mediaType === 'video' 
+                    ? `https://storage.googleapis.com/static-assets-2321/kdd-video-${(i%3)+1}.mp4`
+                    : `https://picsum.photos/seed/${id}/600/600`,
+                mediaType: mediaType,
+                permalink: "https://www.instagram.com/p/mockPostID/",
+                timestamp: new Date().toISOString(),
+                visible: true,
+                pinned: false,
+                rank: i,
+                source: "manual",
+            });
+        }
+        
+        await batch.commit();
+        toast({ title: 'Success', description: '20 mock Instagram posts have been seeded.' });
+
       } catch (error: any) {
         console.error("Error seeding test Instagram post: ", error);
         toast({
@@ -147,7 +170,7 @@ export default function DataSeedingPage() {
             <CardHeader>
                 <CardTitle className="flex items-center gap-2"><Instagram /> Insta-Feed Seeder</CardTitle>
                 <CardDescription className="text-zinc-400">
-                Use this to add a single test post to your Instagram feed collection. This is useful for frontend testing if the automated sync has not run yet.
+                Use this to add 20 mock posts to your Instagram feed collection. This is useful for frontend testing if the automated sync has not run yet.
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -157,7 +180,7 @@ export default function DataSeedingPage() {
                     ) : (
                         <Instagram className="mr-2 h-4 w-4" />
                     )}
-                    Seed Test Insta-Feed Post
+                    Seed 20 Mock Insta-Feed Posts
                 </Button>
             </CardContent>
         </Card>
