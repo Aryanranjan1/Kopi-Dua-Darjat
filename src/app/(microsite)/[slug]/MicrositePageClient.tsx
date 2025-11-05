@@ -16,7 +16,7 @@ import InstaExploreGrid from '@/components/home/InstaExploreGrid';
 import Community from '@/components/home/Community';
 import LatestStories from '@/components/home/LatestStories';
 import MicrositeNewsletterSignUp from './(components)/MicrositeNewsletterSignUp';
-import FranchiseTestimonials from '@/components/franchise/Testimonials';
+import FranchiseTestimonials from './(components)/FranchiseTestimonials';
 
 
 // --- TYPES ---

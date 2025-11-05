@@ -1,90 +1,128 @@
 
-"use client";
-
-import Link from 'next/link';
-import Image from 'next/image';
-import { useMedia } from '@/lib/media';
-import { Button } from '@/components/ui/button';
-import { ArrowRight, User, Users } from 'lucide-react';
+'use client';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
-import { Skeleton } from '../ui/skeleton';
+import { Plus } from 'lucide-react';
+import Image from 'next/image';
 
-const ImageCard = ({
-  id,
-  className,
-  overlayText,
-}: {
-  id: string;
-  className?: string;
-  overlayText?: string;
-}) => {
-  const { data: media, isLoading } = useMedia();
-  const image = media?.find((img) => img.id === id);
-
-  if (isLoading) {
-    return <Skeleton className={`rounded-2xl bg-muted ${className}`} />;
-  }
-  
-  if (!image) return null;
-
-  return (
-    <AnimateOnScroll animationType="fadeIn" className={`relative overflow-hidden rounded-2xl group ${className}`}>
-      <Image
-        src={image.imageUrl}
-        alt={image.description}
-        fill
-        sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 20vw"
-        className="object-cover transition-transform duration-300 group-hover:scale-105"
-        data-ai-hint={image.imageHint}
-      />
-      {overlayText && (
-        <div className="absolute bottom-0 left-0 right-0 bg-primary/80 text-primary-foreground p-4">
-          <p className="font-semibold text-center">{overlayText}</p>
-        </div>
-      )}
-    </AnimateOnScroll>
-  );
-};
+const communityData = [
+  {
+    type: 'portrait',
+    name: 'Marina Mogilko',
+    imageUrl: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=500',
+    bgColor: 'bg-cyan-300',
+  },
+  {
+    type: 'logo',
+    name: 'Superhuman',
+    imageUrl: '/image/1.svg', 
+  },
+  {
+    type: 'quote',
+    quote: "Passionfroot makes it incredibly easy for me to secure sponsorship deals with brands that resonate with my audience.",
+    name: 'Jörg Storm',
+    role: 'Founder of AI Newsletter Weekly Storm, Top 50 Creator Worldwide',
+    bgColor: 'bg-yellow-300',
+    textColor: 'text-black',
+  },
+  {
+    type: 'logo',
+    name: 'Milk Road',
+    imageUrl: '/image/1.svg', 
+  },
+  {
+    type: 'portrait',
+    name: 'Zain Kahn',
+    imageUrl: 'https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?w=500',
+    bgColor: 'bg-green-400',
+  },
+  {
+    type: 'logo',
+    name: 'Every',
+    imageUrl: '/image/1.svg', 
+  },
+  {
+    type: 'portrait',
+    name: 'Ali Abdaal',
+    imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500',
+    bgColor: 'bg-orange-400',
+  },
+  {
+    type: 'quote',
+    quote: "Passionfroot has become a valuable channel for connecting with sponsors. The platform simplifies the process, and payments are always secure, making it a reliable tool for managing our sponsorships.",
+    name: 'Paula Echeverria',
+    role: 'Manager at Youtube Channel Slidebean',
+    bgColor: 'bg-purple-400',
+    textColor: 'text-white',
+  },
+  {
+    type: 'portrait',
+    name: 'Bonnie Dilber',
+    imageUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500',
+    bgColor: 'bg-blue-400',
+  },
+  {
+    type: 'logo',
+    name: 'Sketchy',
+    imageUrl: '/image/1.svg', 
+  },
+];
 
 export default function Community() {
   return (
-    <section className="py-24 sm:py-32 bg-background">
-      <div className="container mx-auto px-12">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Right side: Image Grid */}
-          <div className="grid grid-cols-5 grid-rows-3 gap-4 h-[600px]">
-            <ImageCard id="community-grid-1" className="col-span-2 row-span-3" overlayText="Be part of a growing community, one cup at a time." />
-            <ImageCard id="community-grid-2" className="col-span-3 row-span-2" />
-            <ImageCard id="community-grid-3" className="col-span-1 row-span-1" />
-            <ImageCard id="community-grid-4" className="col-span-1 row-span-1" />
-            <ImageCard id="community-grid-5" className="col-span-1 row-span-1" />
-          </div>
-          
-          {/* Left side: Text Content */}
-          <AnimateOnScroll animationType="slideInFromRight" className="text-left">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Users className="w-5 h-5 text-accent" />
-              <span>Thousands of cups shared. Countless stories brewed. Join the movement.</span>
-            </div>
-            <h2 className="mt-4 text-5xl md:text-7xl font-headline font-bold text-foreground leading-tight">
-              One Cup. <br /> One Story. <br /> <span className="text-primary">One Community.</span>
-            </h2>
-            <p className="mt-6 text-lg max-w-prose text-muted-foreground">
-              Share your Kopi Dua Darjat moments with us. Because every cup we share is a new connection made, a new story waiting to be told.
-            </p>
-            <div className="mt-8 flex items-center gap-4">
-              <Button asChild size="lg" className="rounded-full bg-accent hover:bg-accent/90 text-accent-foreground">
-                <Link href="#">
-                  Join on Instagram
-                </Link>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="rounded-full border-foreground/50 hover:bg-foreground hover:text-background">
-                <Link href="/outlets">
-                  Explore Our Outlets <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
-          </AnimateOnScroll>
+    <section className="py-24 sm:py-32 bg-white">
+      <div className="container mx-auto px-4">
+        <AnimateOnScroll className="text-center max-w-2xl mx-auto mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold text-black">
+            Powered by passion, built for people like you
+          </h2>
+          <p className="mt-4 text-lg text-gray-600">
+            Join the community of leading creators and get more out of your business.
+          </p>
+        </AnimateOnScroll>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+          {communityData.map((item, index) => {
+            if (item.type === 'portrait') {
+              return (
+                <AnimateOnScroll key={index} className={`relative aspect-square rounded-2xl overflow-hidden group ${item.bgColor}`} delay={index * 0.1}>
+                  <Image src={item.imageUrl} alt={item.name} fill className="object-cover object-center grayscale" />
+                  <div className="absolute inset-0 bg-black/20"></div>
+                  <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center">
+                    <p className="text-white font-bold">{item.name}</p>
+                    <div className="w-8 h-8 rounded-full bg-white/30 flex items-center justify-center backdrop-blur-sm">
+                      <Plus className="w-5 h-5 text-white" />
+                    </div>
+                  </div>
+                </AnimateOnScroll>
+              );
+            }
+            if (item.type === 'logo') {
+              return (
+                <AnimateOnScroll key={index} className="relative aspect-square rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-center p-8" delay={index * 0.1}>
+                   <Image src={item.imageUrl} alt={item.name} width={150} height={40} className="object-contain filter grayscale" />
+                </AnimateOnScroll>
+              );
+            }
+            if (item.type === 'quote') {
+              return (
+                <AnimateOnScroll key={index} className={`md:col-span-2 relative aspect-auto md:aspect-[2/1] rounded-2xl p-8 flex flex-col justify-between ${item.bgColor} ${item.textColor}`} delay={index * 0.1}>
+                  <div>
+                    <p className="text-4xl font-serif">"</p>
+                    <p className="text-lg md:text-xl font-medium">{item.quote}</p>
+                  </div>
+                  <div className="flex justify-between items-end">
+                    <div>
+                      <p className="font-bold">{item.name}</p>
+                      <p className="text-sm opacity-80">{item.role}</p>
+                    </div>
+                    <div className="w-8 h-8 rounded-full bg-black/10 flex items-center justify-center backdrop-blur-sm">
+                      <Plus className="w-5 h-5" />
+                    </div>
+                  </div>
+                </AnimateOnScroll>
+              );
+            }
+            return null;
+          })}
         </div>
       </div>
     </section>
