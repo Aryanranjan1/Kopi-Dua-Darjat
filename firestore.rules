@@ -4,7 +4,7 @@ service cloud.firestore {
   match /databases/{database}/documents {
     
     function isAdmin() {
-      return exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid));
+      return request.auth != null && exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid));
     }
 
     // CMS Collections (Public Read + Admin Write)
@@ -16,8 +16,8 @@ service cloud.firestore {
     
     // Settings collection is special, only admin can write, but public can read
     match /settings/{docId} {
-      allow get: if true;
-      allow list, write: if isAdmin();
+      allow get, list: if true;
+      allow create, update, delete: if isAdmin();
     }
 
     // User-Submitted Collections
@@ -42,7 +42,7 @@ service cloud.firestore {
     // Instagram Feed (Public Read + Restricted Write by Cloud Function)
     match /public_insta_feed/{docId} {
       allow get, list: if true;
-      allow write: if isAdmin() || request.auth == null; // Allow server-side writes
+      allow create, update, delete: if isAdmin() || request.auth == null;
     }
 
     // Admin Roles

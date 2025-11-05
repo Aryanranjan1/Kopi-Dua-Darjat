@@ -11,7 +11,6 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2, Search, Trash, Pin, PinOff, Eye, EyeOff, RefreshCw, PlusCircle, ExternalLink } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { format } from 'date-fns';
-import { getFunctions, httpsCallable } from 'firebase/functions';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 
@@ -109,10 +108,17 @@ export default function SocialFeedManager() {
         toast({ title: "Syncing Feed", description: "This may take a moment..." });
         
         try {
-            const functions = getFunctions();
-            const manualSync = httpsCallable(functions, 'manualInstagramSync');
-            const result: any = await manualSync();
-            toast({ title: "Sync Complete", description: `Synced ${result.data.count} posts.` });
+            // In a real project, this URL should come from config or env variables.
+            const syncUrl = 'https://us-central1-studio-5747447299-c92b3.cloudfunctions.net/manualInstagramSync';
+            const response = await fetch(syncUrl, { method: 'POST' });
+            const result = await response.json();
+
+            if (response.ok) {
+                toast({ title: "Sync Complete", description: result.message });
+            } else {
+                throw new Error(result.message || 'Sync failed with no message.');
+            }
+
         } catch(error: any) {
             toast({ variant: 'destructive', title: "Sync Failed", description: error.message });
         } finally {
@@ -145,7 +151,7 @@ export default function SocialFeedManager() {
                             <label htmlFor="tag-input" className="text-sm font-medium text-zinc-400">Active Hashtag</label>
                             <div className="flex gap-2 mt-1">
                                 <span className="flex items-center pl-3 pr-1 border border-r-0 border-zinc-700 rounded-l-md bg-zinc-800 text-zinc-400">#</span>
-                                <Input id="tag-input" value={tagInput} onChange={(e) => setTagInput(e.target.value)} className="bg-zinc-800 border-zinc-700 rounded-l-none" />
+                                <Input id="tag-input" value={tagInput || ''} onChange={(e) => setTagInput(e.target.value)} className="bg-zinc-800 border-zinc-700 rounded-l-none" />
                                 <Button onClick={handleUpdateTag}>Update Tag</Button>
                             </div>
                         </div>
@@ -159,7 +165,7 @@ export default function SocialFeedManager() {
                         <Label htmlFor="auto-sync-toggle">Enable Daily Auto-Sync</Label>
                     </div>
                     {syncSettings?.last_synced && (
-                        <p className="text-xs text-zinc-500 pt-2">Last synced: {format(syncSettings.last_synced.toDate(), 'PPP p')}</p>
+                        <p className="text-xs text-zinc-500 pt-2">Last synced: {format(new Date(syncSettings.last_synced as any), 'PPP p')}</p>
                     )}
                 </CardContent>
             </Card>
