@@ -3,16 +3,16 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { outlets as allOutlets } from '@/lib/data';
 import MicrositePageClient from './MicrositePageClient';
-import type { Outlet, MenuItem, Promotion, MenuCategory, SiteSettings, Founder, Testimonial } from '@/lib/types';
+import type { Outlet, MenuItem, Promotion, MenuCategory, SiteSettings, Testimonial, Blog, PublicInstaPost } from '@/lib/types';
 import { initializeServerSideFirebase } from '@/firebase/server-init';
-import { collection, getDocs, query, Timestamp, doc, getDoc } from 'firebase/firestore';
+import { collection, getDocs, query, Timestamp, doc, getDoc, limit, orderBy } from 'firebase/firestore';
 
 
 // This remains a Server Component.
 
-async function fetchCollection<T>(firestore: any, collectionName: string): Promise<T[]> {
-    const q = query(collection(firestore, collectionName));
-    const snapshot = await getDocs(q);
+async function fetchCollection<T>(firestore: any, collectionName: string, q?: any): Promise<T[]> {
+    const finalQuery = q || query(collection(firestore, collectionName));
+    const snapshot = await getDocs(finalQuery);
     return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as T));
 }
 
@@ -30,13 +30,17 @@ async function getMicrositeData(slug: string) {
     allMenuCategories,
     allPromotions,
     allTestimonials,
-    mainSettings
+    mainSettings,
+    latestBlogs,
+    instaFeed
   ] = await Promise.all([
     fetchCollection<MenuItem>(firestore, 'menuItems'),
     fetchCollection<MenuCategory>(firestore, 'menuCategories'),
     fetchCollection<Promotion>(firestore, 'promotions'),
     fetchCollection<Testimonial>(firestore, 'testimonials'),
-    getDoc(doc(firestore, 'settings', 'main')).then(d => d.data() as SiteSettings)
+    getDoc(doc(firestore, 'settings', 'main')).then(d => d.data() as SiteSettings),
+    fetchCollection<Blog>(firestore, 'blogs', query(collection(firestore, 'blogs'), orderBy('publishedAt', 'desc'), limit(1))),
+    fetchCollection<PublicInstaPost>(firestore, 'public_insta_feed', query(collection(firestore, 'public_insta_feed'), orderBy('rank', 'asc'), limit(2)))
   ]);
   
   // Filter items relevant to this outlet (or general items)
@@ -55,6 +59,7 @@ async function getMicrositeData(slug: string) {
   const outletPromotions = allPromotions.filter(p => !p.outletIds || p.outletIds.length === 0 || p.outletIds.includes(outlet.slug));
 
   const serializeDates = (obj: any) => {
+    if (!obj) return obj;
     for (const key in obj) {
         if (obj[key] instanceof Timestamp) {
             obj[key] = obj[key].toDate().toISOString();
@@ -75,6 +80,8 @@ async function getMicrositeData(slug: string) {
     promotions: serializeDates(outletPromotions),
     testimonials: serializeDates(allTestimonials),
     siteSettings: serializeDates(mainSettings),
+    latestBlog: latestBlogs.length > 0 ? serializeDates(latestBlogs[0]) : null,
+    instaPosts: serializeDates(instaFeed),
   };
 }
 

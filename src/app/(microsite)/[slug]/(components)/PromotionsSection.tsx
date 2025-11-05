@@ -1,16 +1,19 @@
 
 'use client';
 
-import type { Promotion, MenuItem } from '@/lib/types';
+import type { Promotion, MenuItem, Blog, PublicInstaPost } from '@/lib/types';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import Link from 'next/link';
+import { Instagram } from 'lucide-react';
+import { format } from 'date-fns';
 
 interface BentoGridSectionProps {
   promotions: Promotion[];
   items: MenuItem[];
+  blog: Blog | null;
+  instaPosts: PublicInstaPost[];
 }
 
 const BentoCard = ({
@@ -52,74 +55,150 @@ const BentoCard = ({
   </AnimateOnScroll>
 );
 
-export default function PromotionsSection({ promotions, items }: BentoGridSectionProps) {
+
+const InstaCard = ({ post, className }: { post: PublicInstaPost, className?: string }) => (
+    <AnimateOnScroll
+        animationType="fadeIn"
+        className={`relative rounded-2xl overflow-hidden group border border-black/10 flex flex-col justify-end p-6 ${className}`}
+    >
+        {post.mediaType === 'VIDEO' ? (
+            <video src={post.mediaUrl} autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover -z-10" />
+        ) : (
+            <Image
+                src={post.mediaUrl}
+                alt={post.caption || 'Instagram Post'}
+                fill
+                className="object-cover -z-10"
+            />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent -z-10"></div>
+        <div className="relative z-10">
+            <Instagram className="w-6 h-6 text-white mb-2" />
+            <p className="text-white/80 mt-1 line-clamp-2 text-sm">{post.caption}</p>
+             <div className="mt-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                <Button asChild variant="default" className="bg-primary text-primary-foreground hover:bg-primary/90">
+                    <a href={post.permalink} target="_blank" rel="noopener noreferrer">View Post</a>
+                </Button>
+            </div>
+        </div>
+    </AnimateOnScroll>
+)
+
+
+export default function PromotionsSection({ promotions, items, blog, instaPosts }: BentoGridSectionProps) {
     if ((!promotions || promotions.length === 0) && (!items || items.length === 0)) return null;
 
-    // Prioritize promotions, then fill with items
-    const bentoItems = [
-        ...promotions.slice(0, 3).map(promo => ({
-            type: 'promo',
-            data: promo,
-        })),
-        ...items.slice(0, 4).map(item => ({
-            type: 'item',
-            data: item,
-        }))
+    // Create a pool of items to pick from
+    const contentPool = [
+        ...promotions.map(promo => ({ type: 'promo', data: promo })),
+        ...items.filter(item => item.isPopular).map(item => ({ type: 'item', data: item })),
+        ...(blog ? [{ type: 'blog', data: blog }] : []),
+        ...(instaPosts ? instaPosts.map(post => ({ type: 'insta', data: post })) : [])
     ];
 
-    const item1 = bentoItems[0];
-    const item2 = bentoItems[1];
-    const item3 = bentoItems[2];
-    const item4 = bentoItems[3];
-    const item5 = bentoItems[4];
+    const getItem = (type: 'promo' | 'item' | 'blog' | 'insta', fallbackIndex: number) => {
+        return contentPool.find(c => c.type === type) || contentPool[fallbackIndex];
+    }
+    
+    // Define the grid items
+    const item1 = getItem('promo', 0);
+    const item2 = getItem('blog', 1);
+    const item3 = getItem('item', 2);
+    const item4 = getItem('insta', 3);
+    const item5 = getItem('promo', 4);
+    const item6 = getItem('insta', 5);
+    const item7 = getItem('item', 6);
+    
+    const bentoItems = [item1, item2, item3, item4, item5, item6, item7].filter(Boolean);
+    
+    const renderCard = (item: any) => {
+        if (!item) return null;
+
+        switch (item.type) {
+            case 'promo':
+                return {
+                    title: item.data.title,
+                    description: item.data.description || 'Check out our latest offer!',
+                    imageUrl: item.data.bannerImage || `https://picsum.photos/seed/${item.data.id}/800/400`,
+                    cta: 'Redeem Now',
+                    tag: 'Limited Time Offer',
+                    ctaLink: `/promotions#${item.data.id}`
+                };
+            case 'item':
+                 return {
+                    title: item.data.name,
+                    description: item.data.description,
+                    imageUrl: item.data.imageUrl || `https://picsum.photos/seed/${item.data.id}/400/400`,
+                    cta: 'Try Now',
+                    tag: 'Fan Favorite',
+                    ctaLink: `/menu#${item.data.slug}`
+                };
+            case 'blog':
+                return {
+                    title: item.data.title,
+                    description: item.data.excerpt,
+                    imageUrl: item.data.coverImage.url || `https://picsum.photos/seed/${item.data.id}/400/400`,
+                    cta: 'Read More',
+                    tag: `Latest News • ${format(new Date(item.data.publishedAt), 'dd MMM')}`,
+                    ctaLink: `/news/${item.data.slug}`
+                };
+            default:
+                return null;
+        }
+    };
+    
+    const card1 = renderCard(bentoItems[0]);
+    const card2 = renderCard(bentoItems[1]);
+    const card3 = renderCard(bentoItems[2]);
+    const card4 = renderCard(bentoItems[4]);
+    const card5 = renderCard(bentoItems[5]);
+    const card6 = renderCard(bentoItems[6]);
+    const instaPost = bentoItems.find(item => item?.type === 'insta');
 
   return (
     <section className="bg-white py-20 md:py-32">
       <div className="container mx-auto px-6 max-w-7xl">
-        <AnimateOnScroll className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-headline font-bold text-black">
-                Mindful living, made simple
-            </h2>
-        </AnimateOnScroll>
-        <div className="grid md:grid-cols-3 grid-rows-2 gap-4 auto-rows-[250px]">
-            {item1 && (
+        <div className="grid md:grid-cols-4 gap-4 auto-rows-[250px]">
+            {card1 && (
                 <BentoCard
-                    className="md:col-span-2"
-                    title={item1.type === 'promo' ? item1.data.title : item1.data.name}
-                    description={item1.data.description || 'Check out our latest offer!'}
-                    imageUrl={item1.type === 'promo' ? item1.data.bannerImage || `https://picsum.photos/seed/bento1/800/400` : item1.data.imageUrl}
-                    cta={item1.type === 'promo' ? 'Redeem Now' : 'Try Now'}
-                    tag={item1.type === 'promo' ? 'Limited Time Offer' : 'Fan Favorite'}
+                    className="md:col-span-2 md:row-span-2"
+                    {...card1}
                 />
             )}
-            {item2 && (
-                 <BentoCard
-                    className=""
-                    title={item2.type === 'promo' ? item2.data.title : item2.data.name}
-                    description={item2.data.description || 'A delicious treat awaits.'}
-                    imageUrl={item2.type === 'promo' ? item2.data.bannerImage || `https://picsum.photos/seed/bento2/400/400` : item2.data.imageUrl}
-                    cta={item2.type === 'promo' ? 'View Deal' : 'Explore'}
-                    tag={item2.type === 'promo' ? 'Promotion' : 'Signature'}
-                />
-            )}
-             {item3 && (
-                 <BentoCard
-                    className=""
-                    title={item3.type === 'promo' ? item3.data.title : item3.data.name}
-                    description={item3.data.description || 'A delicious treat awaits.'}
-                    imageUrl={item3.type === 'promo' ? item3.data.bannerImage || `https://picsum.photos/seed/bento3/400/400` : item3.data.imageUrl}
-                    cta={item3.type === 'promo' ? 'View Deal' : 'Explore'}
-                    tag={item3.type === 'promo' ? 'Promotion' : 'Signature'}
-                />
-            )}
-            {item4 && (
+            {card2 && (
                  <BentoCard
                     className="md:col-span-2"
-                    title={item4.type === 'promo' ? item4.data.title : item4.data.name}
-                    description={item4.data.description || 'Check out our latest offer!'}
-                    imageUrl={item4.type === 'promo' ? item4.data.bannerImage || `https://picsum.photos/seed/bento4/800/400` : item4.data.imageUrl}
-                    cta={item4.type === 'promo' ? 'Redeem Now' : 'Try Now'}
-                    tag={item4.type === 'promo' ? 'Limited Time Offer' : 'Fan Favorite'}
+                    {...card2}
+                />
+            )}
+            {card3 && (
+                 <BentoCard
+                    className=""
+                    {...card3}
+                />
+            )}
+            {instaPost && (
+                 <InstaCard
+                    className=""
+                    post={instaPost.data}
+                />
+            )}
+             {card4 && (
+                 <BentoCard
+                    className="md:col-span-2"
+                    {...card4}
+                />
+            )}
+            {card5 && (
+                 <BentoCard
+                    className=""
+                    {...card5}
+                />
+            )}
+             {card6 && (
+                 <BentoCard
+                    className=""
+                    {...card6}
                 />
             )}
         </div>

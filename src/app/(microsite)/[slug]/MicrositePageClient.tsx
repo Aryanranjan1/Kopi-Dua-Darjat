@@ -2,7 +2,7 @@
 'use client';
 
 import { notFound, useParams } from 'next/navigation';
-import type { Outlet, MenuItem, Promotion, MenuCategory, SiteSettings, Testimonial } from '@/lib/types';
+import type { Outlet, MenuItem, Promotion, MenuCategory, SiteSettings, Testimonial, Blog, PublicInstaPost } from '@/lib/types';
 import { motion } from 'framer-motion';
 
 import SignatureDrinksCarousel from './(components)/SignatureDrinksCarousel';
@@ -27,11 +27,13 @@ interface PageData {
   promotions: Promotion[];
   testimonials: Testimonial[];
   siteSettings: SiteSettings;
+  latestBlog: Blog | null;
+  instaPosts: PublicInstaPost[];
 }
 
 // MAIN CLIENT PAGE COMPONENT
 export default function MicrositePageClient(data: PageData) {
-  const { outlet, menuCategories, featuredItems, promotions, testimonials, siteSettings, allMenuItems } = data;
+  const { outlet, menuCategories, featuredItems, promotions, testimonials, siteSettings, allMenuItems, latestBlog, instaPosts } = data;
 
   if (!outlet) {
     // This case should ideally be handled by the server component, but as a fallback:
@@ -43,8 +45,13 @@ export default function MicrositePageClient(data: PageData) {
       <MicrositeHero outlet={outlet} />
       <main>
         <SignatureDrinksCarousel items={featuredItems} />
-        {allMenuItems && promotions && <PromotionsSection items={allMenuItems} promotions={promotions} />}
-        {allMenuItems && <MenuShowcaseSection items={allMenuItems} categories={menuCategories} />}
+        <PromotionsSection 
+            promotions={promotions}
+            items={allMenuItems}
+            blog={latestBlog}
+            instaPosts={instaPosts}
+        />
+        <MenuShowcaseSection items={allMenuItems} categories={menuCategories} />
         {siteSettings && <BrandStorySection settings={siteSettings} />}
         <OutletLocatorSection currentOutlet={outlet} />
         {testimonials && testimonials.length > 0 && <FranchiseTestimonials />}
