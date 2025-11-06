@@ -23,7 +23,7 @@ export default function Hero() {
                 className="object-contain -rotate-90"
               />
             </div>
-            <div className="relative w-32 h-32 border-4 border-foreground rounded-full flex items-center justify-center -ml-12">
+            <div className="relative w-32 h-32 border-4 border-foreground rounded-full flex items-center justify-center -ml-20">
               <ArrowUpRight className="w-16 h-16 text-foreground" />
             </div>
           </div>
@@ -48,8 +48,8 @@ export default function Hero() {
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-headline font-bold text-foreground leading-tight text-center">
                   Good Coffee for Great Mornings
                 </h1>
-                <div className="mt-12">
-                  <p className="mt-4 text-sm md:text-base font-body font-bold text-foreground/80 max-w-md text-left ml-12">
+                <div className="mt-12 flex justify-start">
+                  <p className="mt-4 text-sm md:text-base font-body font-bold text-foreground/80 max-w-md text-left">
                     From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor , a golden mix of comfort, creativity, and caffeine confidence.
                   </p>
                 </div>
@@ -69,7 +69,7 @@ export default function Hero() {
                     src="/image/dua-darjat-cup.png"
                     alt="Kopi Dua Darjat Cup"
                     fill
-                    className="object-contain object-bottom rotate-[35deg] translate-x-5 translate-y-4"
+                    className="object-contain object-bottom translate-x-5 translate-y-4"
                 />
             </div>
         </div>
