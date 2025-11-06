@@ -147,8 +147,8 @@ export default function FeaturedDrinks() {
                 </CarouselItem>
               )})}
             </CarouselContent>
-            <CarouselPrevious className="left-2 sm:left-4" />
-            <CarouselNext className="right-2 sm:right-4" />
+            <CarouselPrevious className="left-0" />
+            <CarouselNext className="right-0" />
           </Carousel>
         </AnimateOnScroll>
       </div>

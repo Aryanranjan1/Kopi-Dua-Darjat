@@ -23,15 +23,15 @@ const DesktopHero = () => {
       >
         <div ref={containerRef} className="w-full">
             <AnimateOnScroll animationType="fadeIn">
-                <div>
+                <div className="w-full">
                     <h1
                     ref={h1Ref}
                     className="font-headline font-extrabold text-foreground leading-[1.05] text-[clamp(2.5rem,10vw,8rem)]"
                     >
                     Good Coffee for Great Morning
                     </h1>
-                    <p className="mt-6 text-base sm:text-lg md:text-xl font-body font-normal text-foreground/90 max-w-[420px] leading-relaxed">
-                    From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor , a golden mix of comfort, creativity, and caffeine confidence.
+                     <p className="mt-6 text-base sm:text-lg md:text-xl font-body font-normal text-foreground/90 max-w-[420px] leading-relaxed">
+                        From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor , a golden mix of comfort, creativity, and caffeine confidence.
                     </p>
                 </div>
             </AnimateOnScroll>
@@ -42,18 +42,18 @@ const DesktopHero = () => {
       <div className="absolute inset-0 w-full h-full pointer-events-none z-20">
         
         {/* Frame Image */}
-        <div className="absolute left-[calc(8%_-_60px)] top-[calc(55%_-_10px)] w-[144px] h-[144px] sm:w-[176px] sm:h-[176px]">
+        <div className="absolute left-[calc(8%_-_60px)] top-[calc(55%_+_40px)] w-[108px] h-[108px] sm:w-[132px] sm:h-[132px]">
           <AnimateOnScroll animationType="fadeIn" delay={0.2}>
-            <Image src="/image/image frame.png" alt="Frame decoration" layout="fill" className="object-contain scale-[1.5] -rotate-90"/>
+            <Image src="/image/image frame.png" alt="Frame decoration" layout="fill" className="object-contain scale-[2] -rotate-90"/>
           </AnimateOnScroll>
         </div>
         
         {/* Button next to image */}
-        <div className="absolute left-[calc(8%_+_80px)] top-[calc(55%_+_20px)] w-[40px] h-[40px] sm:w-[50px] sm:h-[50px] pointer-events-auto">
+         <div className="absolute left-[calc(8%_+_50px)] top-[calc(55%_+_70px)] w-[40px] h-[40px] sm:w-[50px] sm:h-[50px] pointer-events-auto">
           <AnimateOnScroll animationType="fadeIn" delay={0.3}>
-            <Link href="/outlets" className="flex items-center justify-center bg-white text-black border-2 border-black rounded-full w-full h-full hover:bg-black hover:text-white transition-all duration-300 group">
-                <ArrowUpRight className="h-4 w-4 sm:h-5 sm:w-5 transition-transform group-hover:rotate-45" />
-            </Link>
+              <Link href="/outlets" className="flex items-center justify-center bg-white text-black border-2 border-black rounded-full w-full h-full hover:bg-black hover:text-white transition-all duration-300 group">
+                  <ArrowUpRight className="h-4 w-4 sm:h-5 sm:w-5 transition-transform group-hover:rotate-45" />
+              </Link>
           </AnimateOnScroll>
         </div>
         
@@ -118,7 +118,7 @@ export default function Hero() {
   const isMobile = useMediaQuery('(max-width: 767px)');
   
   return (
-    <section className="relative w-full bg-primary overflow-hidden min-h-screen">
+    <section className="relative w-full bg-primary overflow-x-hidden min-h-screen">
       {isMobile ? <MobileHero /> : <DesktopHero />}
     </section>
   );
