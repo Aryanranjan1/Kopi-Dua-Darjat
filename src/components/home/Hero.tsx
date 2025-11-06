@@ -18,7 +18,7 @@ export default function Hero() {
                 src="/image/image frame.png"
                 alt="Image Frame"
                 fill
-                className="object-contain"
+                className="object-contain -rotate-90"
             />
         </div>
 
@@ -38,11 +38,11 @@ export default function Hero() {
             {/* Text Content */}
             <div className="text-left">
               <AnimateOnScroll animationType="fadeIn">
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-headline font-bold text-foreground leading-tight w-full text-center">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-headline font-bold text-foreground leading-tight text-center">
                   Good Coffee for Great Mornings
                 </h1>
                 <div className="mt-12">
-                  <p className="mt-12 text-sm md:text-base font-body font-bold text-foreground/80 max-w-md text-left ml-12">
+                  <p className="mt-4 text-sm md:text-base font-body font-bold text-foreground/80 max-w-md text-left ml-12">
                     From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor , a golden mix of comfort, creativity, and caffeine confidence.
                   </p>
                 </div>
