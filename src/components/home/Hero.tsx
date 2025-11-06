@@ -15,18 +15,18 @@ export default function Hero() {
         {/* Main Content Area */}
         <div className="container mx-auto px-6 z-10">
           <div className="w-full">
-            {/* Left Text Content */}
-            <div className="text-left">
+            {/* Text Content */}
+            <div className="text-center">
               <AnimateOnScroll animationType="fadeIn">
-                <h1 className="text-4xl md:text-5xl lg:text-[54.6px] font-headline font-bold text-foreground leading-tight w-full">
+                <h1 className="text-5xl md:text-6xl lg:text-7xl font-headline font-bold text-foreground leading-tight w-full">
                   Good Coffee for Great Mornings
                 </h1>
-                <p className="mt-4 text-sm md:text-base font-body font-bold text-foreground/80 max-w-md">
+                <p className="mt-4 text-sm md:text-base font-body font-bold text-foreground/80 max-w-md mx-auto">
                   From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor , a golden mix of comfort, creativity, and caffeine confidence.
                 </p>
               </AnimateOnScroll>
               
-              <AnimateOnScroll animationType='fadeIn' delay={0.2} className="mt-12 flex items-center gap-4">
+              <AnimateOnScroll animationType='fadeIn' delay={0.2} className="mt-12 flex items-center justify-center gap-4">
                   <div className="relative w-20 h-20 border-2 border-foreground rounded-full flex items-center justify-center">
                     <ArrowUpRight className="w-8 h-8 text-foreground" />
                   </div>
