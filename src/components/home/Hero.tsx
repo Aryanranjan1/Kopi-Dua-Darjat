@@ -1,9 +1,13 @@
+
 'use client';
 
 import { useRef } from 'react';
 import Image from 'next/image';
 import { useFitText } from '@/hooks/use-fit-text';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
+import { Button } from '../ui/button';
+import { ArrowUpRight } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -14,8 +18,9 @@ export default function Hero() {
       {/* === Main Text Content === */}
       <div
         className="relative container mx-auto px-6 sm:px-10 lg:px-16 flex flex-col justify-start z-30 pt-28"
+        ref={containerRef}
       >
-        <div className="w-full max-w-5xl" ref={containerRef}>
+        <div className="w-full max-w-5xl">
           <AnimateOnScroll animationType="fadeIn">
             <div>
               <h1
@@ -37,31 +42,32 @@ export default function Hero() {
         {/* Woman Image */}
         <div className="absolute left-[8%] top-[55%] w-[180px] h-[180px] sm:w-[220px] sm:h-[220px]">
           <AnimateOnScroll animationType="fadeIn" delay={0.2}>
-            <Image src="/image/hero-woman.png" alt="Woman enjoying coffee" layout="fill" className="object-contain"/>
+            <Image src="/image/image frame.png" alt="Frame decoration" layout="fill" className="object-contain"/>
           </AnimateOnScroll>
         </div>
-        {/* Doodle Arrow */}
-        <div className="absolute left-[20%] top-[62%] w-[80px] h-[80px] sm:w-[100px] sm:h-[100px]">
+        
+        {/* Diagonal Arrow Button */}
+        <div className="absolute left-[20%] top-[62%] w-[80px] h-[80px] sm:w-[100px] sm:h-[100px] pointer-events-auto">
           <AnimateOnScroll animationType="fadeIn" delay={0.4}>
-            <Image src="/image/doodle-arrow.png" alt="Doodle arrow" layout="fill" className="object-contain"/>
+             <Button asChild variant="outline" size="icon" className="w-full h-full rounded-full border-2 border-foreground/50 hover:bg-foreground group transition-transform hover:scale-105">
+                <Link href="/menu">
+                    <ArrowUpRight className="w-1/2 h-1/2 text-foreground group-hover:text-background" />
+                </Link>
+             </Button>
           </AnimateOnScroll>
         </div>
-        {/* Doodle Lines */}
-        <div className="absolute left-[5%] top-[60%] w-[60px] h-[60px]">
-          <AnimateOnScroll animationType="fadeIn" delay={0.5}>
-            <Image src="/image/doodle-lines.png" alt="Doodle lines" layout="fill" className="object-contain"/>
-          </AnimateOnScroll>
-        </div>
+        
         {/* Coffee Beans */}
         <div className="absolute right-[15%] bottom-[12%] w-[150px] h-[150px] sm:w-[200px] sm:h-[200px]">
           <AnimateOnScroll animationType="fadeIn" delay={0.3}>
-            <Image src="/image/hero-beans.png" alt="Coffee beans" layout="fill" className="object-contain"/>
+            <Image src="/image/coffee-bean.png" alt="Coffee beans" layout="fill" className="object-contain"/>
           </AnimateOnScroll>
         </div>
+
         {/* Main Cup */}
         <div className="absolute bottom-0 left-1/2 -translate-x-1/4 w-[50vh] h-[50vh] sm:w-[65vh] sm:h-[65vh]">
           <AnimateOnScroll animationType="slideInFromBottom" delay={0.1}>
-            <Image src="/image/new-hero-cup.png" alt="Kopi Dua Darjat splashing cup" layout="fill" className="object-contain"/>
+            <Image src="/image/dua-darjat-cup.png" alt="Kopi Dua Darjat splashing cup" layout="fill" className="object-contain"/>
           </AnimateOnScroll>
         </div>
       </div>
