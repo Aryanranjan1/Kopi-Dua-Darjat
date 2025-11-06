@@ -32,23 +32,23 @@ export default function AdminAuthLayout({
     return <>{children}</>;
   }
 
-  if (isUserLoading || !user) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-zinc-950">
-        <Loader2 className="h-12 w-12 animate-spin text-primary" />
-      </div>
-    );
+  // Render the layout immediately if there is a user, even if isUserLoading is true initially.
+  // The onAuthStateChanged listener will handle redirects if the user state changes.
+  if (user) {
+      return (
+        <div className="min-h-screen bg-zinc-900 text-white">
+          <AdminSidebar isOpen={isSidebarOpen} setIsOpen={setSidebarOpen} />
+          <div className="lg:pl-64 transition-all duration-300">
+            <AdminHeader onMenuClick={() => setSidebarOpen(true)} />
+            <main className="p-4 sm:p-6 lg:p-8">
+              {children}
+            </main>
+          </div>
+        </div>
+      );
   }
 
-  return (
-    <div className="min-h-screen bg-zinc-900 text-white">
-      <AdminSidebar isOpen={isSidebarOpen} setIsOpen={setSidebarOpen} />
-      <div className="lg:pl-64 transition-all duration-300">
-        <AdminHeader onMenuClick={() => setSidebarOpen(true)} />
-        <main className="p-4 sm:p-6 lg:p-8">
-          {children}
-        </main>
-      </div>
-    </div>
-  );
+  // Fallback for the brief moment before the redirect happens when no user is found.
+  // Or show the children optimistically.
+  return <>{children}</>;
 }

@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react';
@@ -20,23 +21,8 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     [firestore]
   );
   const { data: settings, isLoading } = useDoc<SiteSettings>(settingsRef);
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-
-  // While loading and if the component has mounted on the client, show the loader.
-  // This prevents a server/client mismatch.
-  if (isLoading && isMounted && !settings) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-background">
-        <Loader2 className="h-12 w-12 animate-spin text-primary" />
-      </div>
-    );
-  }
-
+  
+  // Directly return children without a loading screen
   return (
     <SettingsContext.Provider value={{ settings, isLoading }}>
       {children}
