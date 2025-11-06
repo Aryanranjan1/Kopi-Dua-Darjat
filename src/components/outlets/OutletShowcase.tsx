@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
@@ -76,7 +75,7 @@ function OutletShowcaseContent() {
   }, [firestore, menuItems.length]);
 
 
-  const { filteredAndSortedOutlets, dynamicTitle } = useMemo(() => {
+  const { filteredAndSortedOutlets } = useMemo(() => {
     let processedOutlets: Outlet[] = (outlets || []).map(outlet => ({
       ...outlet,
       distance: position
@@ -148,11 +147,6 @@ function OutletShowcaseContent() {
   return (
     <section id="outlet-showcase" className="py-24 sm:py-32 bg-white text-foreground scroll-mt-20">
       <div className="container mx-auto px-6">
-        <AnimateOnScroll animationType="slideInFromBottom" className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-4xl md:text-5xl font-headline font-bold text-black inline-block underline decoration-primary decoration-4 underline-offset-8">
-            {dynamicTitle}
-          </h2>
-        </AnimateOnScroll>
         
         <div className="flex flex-col md:flex-row gap-4 mb-8 justify-center items-center">
             <div className="relative w-full md:flex-grow-0 md:w-auto">
