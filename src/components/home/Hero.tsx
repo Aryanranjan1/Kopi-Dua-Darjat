@@ -23,7 +23,7 @@ export default function Hero() {
                 className="object-contain -rotate-90"
               />
             </div>
-            <div className="relative w-24 h-24 border-4 border-foreground rounded-full flex items-center justify-center -ml-20">
+            <div className="relative w-20 h-20 border-4 border-foreground rounded-full flex items-center justify-center -ml-12">
               <ArrowUpRight className="w-12 h-12 text-foreground" />
             </div>
           </div>
@@ -49,7 +49,7 @@ export default function Hero() {
                   Good Coffee for Great Mornings
                 </h1>
                 <div className="flex justify-start">
-                  <p className="mt-4 text-sm md:text-base font-body font-bold text-foreground/80 max-w-[410px] text-left">
+                  <p className="text-sm md:text-base font-body font-bold text-foreground/80 max-w-[410px] text-justify">
                     From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor , a golden mix of comfort, creativity, and caffeine confidence.
                   </p>
                 </div>
