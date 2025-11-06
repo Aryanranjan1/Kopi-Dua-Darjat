@@ -36,6 +36,18 @@ export default function Hero() {
           </div>
         </div>
 
+        {/* Cup Image Overlay */}
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-1/2 z-20 pointer-events-none">
+            <div className="relative w-full h-full">
+                <Image
+                    src="/image/dua-darjat-cup.png"
+                    alt="Kopi Dua Darjat Cup"
+                    fill
+                    className="object-contain object-bottom"
+                />
+            </div>
+        </div>
+
         {/* Bottom Wave SVG */}
         <div className="absolute bottom-0 left-0 right-0 w-full z-0 pointer-events-none h-32 md:h-48">
           <Image
