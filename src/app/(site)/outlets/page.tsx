@@ -39,17 +39,8 @@ export default function OutletsPage() {
         <OutletShowcase />
 
         {/* Interactive Map Section */}
-        <section className="py-24 sm:py-32 bg-background">
-          <div className="container mx-auto px-6">
-            <div className="text-center max-w-3xl mx-auto mb-16">
-              <h2 className="text-4xl md:text-5xl font-headline font-bold text-black inline-block underline decoration-primary decoration-4 underline-offset-8">
-                  Explore Our Locations
-              </h2>
-            </div>
-            <Card className="overflow-hidden shadow-lg rounded-3xl h-[80vh]">
-                <InteractiveMap />
-            </Card>
-          </div>
+        <section className="w-full h-[60vh]">
+          <InteractiveMap />
         </section>
         
         {/* Franchise CTA */}
