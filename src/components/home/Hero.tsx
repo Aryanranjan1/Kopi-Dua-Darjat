@@ -28,13 +28,7 @@ export default function Hero() {
               
               <AnimateOnScroll animationType='fadeIn' delay={0.2} className="mt-12 flex items-center gap-4">
                   <div className="relative w-32 h-32 hidden md:block">
-                     <Image
-                        src="/image/e.png"
-                        alt="Woman enjoying coffee"
-                        width={128}
-                        height={128}
-                        className="object-contain"
-                     />
+                     
                      {/* Doodle */}
                      <svg className="absolute -top-2 -left-2 w-8 h-8 text-foreground" viewBox="0 0 100 100">
                         <path d="M10 50 C 20 20, 40 20, 50 50" stroke="currentColor" fill="none" strokeWidth="4" strokeLinecap="round"/>
@@ -49,30 +43,14 @@ export default function Hero() {
             
             {/* Right Side Content & Images */}
             <div className="relative h-[500px] flex items-center justify-center">
-                {/* Main Coffee Cup Image */}
-                <AnimateOnScroll animationType='fadeIn' delay={0.3} className="z-10">
-                   <Image
-                    src="/image/coffee.png"
-                    alt="Kopi Dua Darjat splashing coffee"
-                    width={400}
-                    height={500}
-                    className="object-contain drop-shadow-2xl"
-                  />
-                </AnimateOnScroll>
-
+                
                 {/* Coffee Beans & Text */}
                 <AnimateOnScroll animationType='fadeIn' delay={0.5} className="absolute bottom-10 right-0 z-20 text-right">
                     <p className="font-body font-bold text-foreground/80 text-sm mb-2">
                         Coffee that fuels your hustle and warms your heart.
                     </p>
                     <div className="relative w-32 h-24 ml-auto">
-                        <Image
-                            src="/image/f.png"
-                            alt="Coffee beans"
-                            width={128}
-                            height={96}
-                            className="object-contain"
-                        />
+                        
                          {/* Doodle */}
                         <svg className="absolute -top-2 right-2 w-8 h-8 text-foreground scale-x-[-1]" viewBox="0 0 100 100">
                             <path d="M10 50 C 20 20, 40 20, 50 50" stroke="currentColor" fill="none" strokeWidth="4" strokeLinecap="round"/>
