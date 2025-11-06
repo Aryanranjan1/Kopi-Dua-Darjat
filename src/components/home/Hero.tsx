@@ -1,53 +1,23 @@
-
-'use client';
-
-import { useRef } from 'react';
-import Image from 'next/image';
-import { ArrowUpRight } from 'lucide-react';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
-import { useFitText } from '@/hooks/use-fit-text';
 
 export default function Hero() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const h1Ref = useFitText<HTMLHeadingElement>(containerRef);
-
   return (
-    <section className="relative w-full min-h-screen bg-primary">
-      {/* === Bottom Wave === */}
-      <div className="absolute bottom-0 left-0 w-full h-24 sm:h-36 md:h-48 z-10 pointer-events-none">
-        <Image
-          src="/image/wave.svg"
-          alt="Wave separator"
-          fill
-          className="object-cover object-bottom"
-          aria-hidden="true"
-        />
-      </div>
-
-      {/* === Main Text Content === */}
-      <div
-        className="relative container mx-auto px-6 sm:px-10 lg:px-16 flex flex-col justify-start z-30 min-h-screen"
-      >
-        <div className="w-full" ref={containerRef}>
-            <div className="pt-[190px]">
-              <AnimateOnScroll animationType="fadeIn">
-                <div>
-                  <h1
-                    ref={h1Ref}
-                    className="font-headline font-extrabold text-foreground leading-[1.05] text-[clamp(2.5rem,8.5vw,6.2rem)]"
-                  >
-                    Good Coffee for Great Mornings
-                  </h1>
-                </div>
-                <p className="mt-6 text-base sm:text-lg md:text-xl font-body font-semibold text-foreground/80 max-w-[420px] leading-relaxed">
-                  From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor — a golden mix of comfort, creativity, and caffeine confidence.
-                </p>
-              </AnimateOnScroll>
-            </div>
+    <>
+      <section className="relative w-full h-screen flex items-center justify-center text-center overflow-hidden bg-primary pt-20">
+        {/* Main Content Area */}
+        <div className="container mx-auto px-12 z-10">
+          
         </div>
-      </div>
-      
 
-    </section>
+        {/* Bottom Wave SVG */}
+        <div className="absolute bottom-0 left-0 right-0 w-full z-0 pointer-events-none">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+              <path fill="#f7f4ef" fillOpacity="1" d="M0,288L48,288C96,288,192,288,288,256C384,224,480,160,576,133.3C672,107,768,117,864,149.3C960,181,1056,235,1152,229.3C1248,224,1344,160,1392,128L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+          </svg>
+        </div>
+      </section>
+    </>
   );
 }
