@@ -25,7 +25,7 @@ export default function Hero() {
       </div>
       
        {/* === Bean Image === */}
-      <div className="absolute bottom-1/4 right-0 w-[15vw] h-[15vw] max-w-[150px] z-30 pointer-events-none hidden lg:block">
+      <div className="absolute bottom-10 right-0 w-[15vw] h-[15vw] max-w-[150px] z-30 pointer-events-none hidden lg:block">
         <AnimateOnScroll animationType="fadeIn" delay={0.7}>
           <Image
             src="/image/coffee-bean.png"
@@ -50,7 +50,7 @@ export default function Hero() {
               src="/image/dua-darjat-cup.png"
               alt="Kopi Dua Darjat Cup"
               fill
-              className="object-contain drop-shadow-2xl rotate-0 sm:rotate-12 md:rotate-12 lg:rotate-[25deg]"
+              className="object-contain drop-shadow-2xl rotate-0 sm:rotate-12 md:rotate-12 lg:rotate-[25deg] lg:-translate-x-[50px]"
               priority
             />
           </div>
