@@ -42,7 +42,7 @@ export default function Hero() {
       <div
         className="relative container mx-auto px-6 sm:px-10 lg:px-16 flex flex-col justify-start z-30 min-h-screen"
       >
-        <div className="w-full md:w-[48%]" ref={containerRef}>
+        <div className="w-full" ref={containerRef}>
             <div className="pt-[190px]">
               <AnimateOnScroll animationType="fadeIn">
                 <div>
