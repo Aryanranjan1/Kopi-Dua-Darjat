@@ -26,7 +26,7 @@ export default function Hero() {
               src="/image/dua-darjat-cup.png"
               alt="Kopi Dua Darjat Cup"
               fill
-              className="object-contain drop-shadow-2xl scale-75 rotate-12"
+              className="object-contain drop-shadow-2xl scale-75 rotate-0 sm:rotate-6 md:rotate-12 lg:rotate-[35deg]"
               priority
             />
           </div>
