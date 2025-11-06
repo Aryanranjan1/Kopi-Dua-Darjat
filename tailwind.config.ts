@@ -1,3 +1,4 @@
+
 import type {Config} from 'tailwindcss';
 
 const { fontFamily } = require('tailwindcss/defaultTheme');
@@ -19,10 +20,10 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['var(--font-pt-sans)', ...fontFamily.sans],
-        serif: ['var(--font-playfair-display)', ...fontFamily.serif],
-        body: ['var(--font-pt-sans)', ...fontFamily.sans],
-        headline: ['var(--font-playfair-display)', ...fontFamily.serif],
+        sans: ['var(--font-nunito-sans-condensed)', ...fontFamily.sans],
+        serif: ['var(--font-montserrat)', ...fontFamily.serif],
+        body: ['var(--font-nunito-sans-condensed)', ...fontFamily.sans],
+        headline: ['var(--font-montserrat)', ...fontFamily.serif],
       },
       colors: {
         background: 'hsl(var(--background))',

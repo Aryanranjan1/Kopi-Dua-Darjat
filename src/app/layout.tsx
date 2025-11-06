@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
-import { Playfair_Display, PT_Sans } from 'next/font/google';
+import { Montserrat, Nunito_Sans as Nunito_Sans_Condensed } from 'next/font/google';
 import { FirebaseClientProvider } from '@/firebase';
 import AppLayout from './AppLayout';
 import { SettingsProvider } from '@/components/layout/SettingsProvider';
@@ -12,16 +12,15 @@ import { initializeServerSideFirebase } from '@/firebase/server-init';
 import type { SiteSettings } from '@/lib/types';
 
 
-const playfairDisplay = Playfair_Display({
+const montserrat = Montserrat({
   subsets: ['latin'],
-  variable: '--font-playfair-display',
+  variable: '--font-montserrat',
   display: 'swap',
 });
 
-const ptSans = PT_Sans({
+const nunitoSansCondensed = Nunito_Sans_Condensed({
   subsets: ['latin'],
-  weight: ['400', '700'],
-  variable: '--font-pt-sans',
+  variable: '--font-nunito-sans-condensed',
   display: 'swap',
 });
 
@@ -77,8 +76,8 @@ export default function RootLayout({
         suppressHydrationWarning
         className={cn(
           'min-h-screen bg-background font-body antialiased',
-          playfairDisplay.variable,
-          ptSans.variable
+          montserrat.variable,
+          nunitoSansCondensed.variable
         )}
       >
         <FirebaseClientProvider>
