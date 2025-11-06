@@ -97,26 +97,26 @@ export default function OutletFinder() {
 
   return (
     <section className="py-24 sm:py-32 bg-white">
-      <div className="container mx-auto px-12">
-        <div className="grid lg:grid-cols-5 gap-8">
+      <div className="container mx-auto px-6 sm:px-12">
+        <div className="grid lg:grid-cols-5 gap-8 lg:gap-12">
           <div className="lg:col-span-2 flex flex-col">
             <AnimateOnScroll animationType="slideInFromLeft">
               <div className="text-center lg:text-left">
                 <h2 className="text-4xl font-headline font-bold text-foreground inline-block underline decoration-primary/50 decoration-4 underline-offset-8">
                   Find Us Near You
                 </h2>
-                <p className="mt-4 text-lg text-muted-foreground">
+                <p className="mt-4 text-base sm:text-lg text-muted-foreground">
                   Your daily dose of artisan Kopi Kampung is just around the corner.
                 </p>
               </div>
             </AnimateOnScroll>
             <AnimateOnScroll animationType="fadeIn" delay={0.2}>
-              <div className="mt-6 flex flex-col gap-4">
-                <div className="relative">
+              <div className="mt-6 flex flex-col sm:flex-row gap-4">
+                <div className="relative flex-grow">
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                   <Input 
                     placeholder="Enter city, postcode, or outlet name..." 
-                    className="bg-card/30 rounded-full pl-12"
+                    className="bg-card/30 rounded-full pl-12 w-full"
                     value={searchQuery}
                     onChange={(e) => {
                       setSearchQuery(e.target.value);
@@ -124,7 +124,7 @@ export default function OutletFinder() {
                     }}
                   />
                 </div>
-                <Button onClick={handleLocateMe} disabled={isGeolocationLoading} className="rounded-full bg-black text-white hover:bg-primary hover:text-black">
+                <Button onClick={handleLocateMe} disabled={isGeolocationLoading} className="rounded-full bg-black text-white hover:bg-primary hover:text-black shrink-0">
                   {isGeolocationLoading ? (
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                   ) : (
@@ -137,7 +137,7 @@ export default function OutletFinder() {
             
             {geolocationError && <p className="mt-2 text-sm text-destructive">{geolocationError}</p>}
 
-            <div className="mt-4 space-y-4 min-h-[300px] flex-grow">
+            <div className="mt-8 space-y-4 min-h-[300px] flex-grow">
               {isLoading ? (
                   <div className="flex items-center justify-center h-full pt-10">
                     <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -164,7 +164,7 @@ export default function OutletFinder() {
               )}
             </div>
           </div>
-          <AnimateOnScroll animationType='slideInFromRight' className="lg:col-span-3 min-h-[600px] h-full">
+          <AnimateOnScroll animationType='slideInFromRight' className="lg:col-span-3 min-h-[400px] sm:min-h-[600px] h-full mt-8 lg:mt-0">
             <Card className="overflow-hidden shadow-lg rounded-3xl h-full">
               <InteractiveMap />
             </Card>

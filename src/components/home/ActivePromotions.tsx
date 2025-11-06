@@ -16,15 +16,15 @@ export default function ActivePromotions() {
 
   return (
     <section className="py-24 sm:py-32 bg-black">
-      <div className="container mx-auto px-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+      <div className="container mx-auto px-6 sm:px-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12 lg:mb-16">
           <AnimateOnScroll animationType="slideInFromLeft" className="lg:ml-8">
             <h2 className="text-5xl md:text-7xl font-headline font-bold text-primary leading-tight">
               Sip Smart. <br /> <span className="text-accent">Stay Sharp.</span>
             </h2>
           </AnimateOnScroll>
           <AnimateOnScroll animationType="slideInFromRight">
-            <p className="mt-4 text-lg text-white max-w-prose">
+            <p className="mt-4 text-base sm:text-lg text-white max-w-prose">
               We know your day is challenging. Kopi Dua Darjat is more than just coffee; it's a daily ritual that connects you to a vibrant community and rich heritage. We're here to elevate your day.
             </p>
           </AnimateOnScroll>
@@ -33,7 +33,7 @@ export default function ActivePromotions() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Card 1: Large with video background */}
           <AnimateOnScroll animationType="slideInFromLeft" amount={0.2}>
-            <Card className="bg-zinc-900 shadow-lg rounded-3xl p-8 relative overflow-hidden min-h-[450px] flex flex-col justify-between text-primary-foreground col-span-1 lg:col-span-1">
+            <Card className="bg-zinc-900 shadow-lg rounded-3xl p-6 sm:p-8 relative overflow-hidden min-h-[350px] sm:min-h-[450px] flex flex-col justify-between text-primary-foreground col-span-1">
               <video
                   autoPlay
                   loop
@@ -43,12 +43,7 @@ export default function ActivePromotions() {
                   src="/video/bg1.mp4"
               />
               <div className="z-20 relative flex flex-col h-full">
-                  <div>
-                      
-                  </div>
-                  <div className="mt-auto grid grid-cols-2 gap-4">
-                      
-                  </div>
+                  {/* Content can be added here if needed */}
               </div>
             </Card>
           </AnimateOnScroll>
@@ -56,14 +51,14 @@ export default function ActivePromotions() {
           <div className="space-y-8">
             {/* Card 2: Refine Strategy */}
             <AnimateOnScroll animationType="slideInFromRight" amount={0.5} delay={0.1}>
-              <Card className="bg-zinc-900 shadow-lg rounded-3xl p-8 flex flex-col justify-between min-h-[210px]">
+              <Card className="bg-zinc-900 shadow-lg rounded-3xl p-6 sm:p-8 flex flex-col justify-between min-h-[220px] sm:min-h-[210px]">
                   <div>
                       <h3 className="font-headline text-2xl font-bold text-white">Latest Promos & Offers</h3>
-                      <p className="text-white/80 mt-2">
+                      <p className="text-white/80 mt-2 text-sm sm:text-base">
                           Stay ahead with our latest deals, new drink alerts, and exclusive offers for our community.
                       </p>
                   </div>
-                  <div className="flex gap-4 mt-4">
+                  <div className="flex flex-wrap gap-4 mt-4">
                       <Button asChild variant="outline" className="border-accent text-accent hover:bg-accent hover:text-white bg-transparent rounded-full">
                           <Link href="/promotions">Weekday Specials <ArrowRight className="ml-2 h-4 w-4" /></Link>
                       </Button>
@@ -76,9 +71,9 @@ export default function ActivePromotions() {
 
             {/* Card 3: Stay Informed */}
             <AnimateOnScroll animationType="slideInFromRight" amount={0.5} delay={0.2}>
-              <Card className="bg-zinc-900 shadow-lg rounded-3xl p-8 flex flex-col justify-between min-h-[210px] relative overflow-hidden">
+              <Card className="bg-zinc-900 shadow-lg rounded-3xl p-6 sm:p-8 flex flex-col justify-between min-h-[220px] sm:min-h-[210px] relative overflow-hidden">
                   {isLoadingCommunity ? <Skeleton className="absolute bottom-0 right-0 h-3/4 w-1/2"/> : communityImage && (
-                      <div className="absolute bottom-0 right-0 h-3/4 w-1/2">
+                      <div className="absolute bottom-0 right-0 h-full w-1/2 sm:h-3/4 sm:w-1/2">
                           <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900 to-transparent"></div>
                           <Image
                               src={communityImage.imageUrl}
@@ -92,11 +87,11 @@ export default function ActivePromotions() {
                   )}
                   <div className='relative z-10'>
                       <h3 className="font-headline text-2xl font-bold text-white">Join The Community</h3>
-                      <p className="text-white/80 mt-2 max-w-[60%]">
+                      <p className="text-white/80 mt-2 max-w-[60%] text-sm sm:text-base">
                         Get daily updates, news, and see what's brewing in our vibrant community.
                       </p>
                   </div>
-                  <div className="flex gap-4 mt-4 relative z-10">
+                  <div className="flex flex-wrap gap-4 mt-4 relative z-10">
                       <Button asChild className="bg-accent hover:bg-accent/90 text-accent-foreground rounded-full">
                           <Link href="#">Follow on Instagram <ArrowRight className="ml-2 h-4 w-4" /></Link>
                       </Button>

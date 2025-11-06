@@ -9,17 +9,20 @@ import { AnimateOnScroll } from "@/components/animations/AnimateOnScroll"
 export default function BrandStory() {
   return (
     <section className="bg-[#F7F4EF] text-foreground overflow-hidden">
-      <div className="container mx-auto">
-        <div className="grid lg:grid-cols-2 gap-x-8 gap-y-16 sm:gap-y-20 lg:gap-x-16 items-center">
+      <div className="container mx-auto px-6 lg:px-0">
+        <div className="grid lg:grid-cols-2 gap-y-12 items-center">
           {/* Left Side: Image */}
-          <div className="relative h-[500px] lg:h-full lg:min-h-[600px]">
-              <AnimateOnScroll animationType="slideInFromLeft" className="absolute -bottom-1/4 left-1/2 lg:left-0 lg:bottom-0 lg:w-[120%] lg:h-[120%] w-[200%] h-[200%] max-w-[60rem] -translate-x-1/2 lg:translate-x-0">
+          <div className="relative h-[300px] sm:h-[400px] lg:h-full lg:min-h-[600px]">
+              <AnimateOnScroll 
+                animationType="slideInFromLeft"
+                className="absolute left-1/2 -translate-x-1/2 bottom-0 w-[150%] h-[150%] max-w-[40rem] lg:left-0 lg:bottom-0 lg:w-[120%] lg:h-[120%] lg:max-w-[60rem] lg:translate-x-0"
+              >
                 <div className="relative w-full h-full">
                   <Image
                     src="/image/kdd-cup.png"
                     alt="Kopi Darjat"
                     fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    sizes="(max-width: 1023px) 100vw, 50vw"
                     className="object-contain drop-shadow-2xl"
                   />
                 </div>
@@ -27,14 +30,14 @@ export default function BrandStory() {
           </div>
 
           {/* Right Side: Text Content */}
-          <AnimateOnScroll animationType="slideInFromRight" className="pb-24 lg:pb-0 px-8 lg:px-0">
+          <AnimateOnScroll animationType="slideInFromRight" className="py-12 lg:py-0 px-4 lg:px-8 text-center lg:text-left">
             <h2 className="text-4xl md:text-5xl font-headline font-bold text-foreground leading-tight inline-block underline decoration-primary decoration-4 underline-offset-8">
               Antara Warisan & Artisan
             </h2>
-            <p className="mt-6 text-xl text-muted-foreground">
+            <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-lg mx-auto lg:mx-0">
               Kopi Dua Darjat was born from a simple vision: to honour the rich legacy of Malaysian Kopi Kampung while embracing the meticulous craft of artisan coffee. We bridge generations, serving nostalgic flavours with a modern touch.
             </p>
-            <div className="mt-8">
+            <div className="mt-8 flex justify-center lg:justify-start">
               <Button size="lg" asChild className="bg-accent hover:bg-accent/90 text-accent-foreground rounded-full">
                 <Link href="/about">
                   Discover Our Story

@@ -85,7 +85,6 @@ export default function MenuShowcase() {
         break;
       case 'default':
       default:
-        // Assume items are pre-sorted by displayOrder from Firestore if needed
         break;
     }
     
@@ -104,12 +103,12 @@ export default function MenuShowcase() {
     <section id="menu" className="bg-black py-20 md:py-32">
       <div className="container mx-auto px-6 max-w-7xl">
         <AnimateOnScroll className="text-left mb-12">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <h2 className="text-4xl md:text-5xl font-headline font-bold text-white uppercase underline decoration-primary decoration-4 underline-offset-8">
               Our Menu
             </h2>
-            <div className="flex flex-wrap items-start sm:items-center gap-4 text-white w-full md:w-auto">
-               <div className="relative w-full sm:w-64">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 text-white w-full md:w-auto">
+               <div className="relative w-full sm:w-auto md:w-64">
                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
                  <Input 
                     placeholder="Search menu..."
@@ -118,7 +117,7 @@ export default function MenuShowcase() {
                     className="pl-9 bg-zinc-800 border-zinc-700 w-full rounded-full"
                  />
                </div>
-               <div className="flex gap-4 w-full sm:w-auto">
+               <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
                 <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                     <SelectTrigger className="w-full sm:w-[180px] bg-zinc-800 border-zinc-700 rounded-full">
                         <SelectValue placeholder="Filter by category" />
@@ -147,11 +146,11 @@ export default function MenuShowcase() {
         </AnimateOnScroll>
 
         {isLoading ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
             {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-96 rounded-3xl bg-zinc-800" />)}
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
             {paginatedItems.map((item, index) => (
               <AnimateOnScroll key={item.id} animationType="fadeIn" delay={index * 0.05}>
                 <DrinkCard item={item} />
@@ -161,11 +160,13 @@ export default function MenuShowcase() {
         )}
         
         {totalPages > 1 && (
+           <div className="mt-12 flex justify-center">
             <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
                 onPageChange={setCurrentPage}
             />
+          </div>
         )}
 
       </div>

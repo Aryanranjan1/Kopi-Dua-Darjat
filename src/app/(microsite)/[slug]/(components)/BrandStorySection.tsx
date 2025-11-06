@@ -15,7 +15,7 @@ export default function BrandStorySection({ settings }: BrandStorySectionProps) 
   const founder1 = settings.founders?.[0];
 
   const story = {
-      title: "From Kampung to City",
+      title: "Antara Warisan & Artisan",
       content: [
           "Kopi Dua Darjat was born from a simple vision: to honour the rich legacy of Malaysian Kopi Kampung while embracing the meticulous craft of artisan coffee. We bridge generations, serving nostalgic flavours with a modern touch.",
           "Our journey began with a single stall and a passion for authentic taste. Today, with over 50 outlets, we continue to share the warmth of community and the joy of a perfect cup, brewed with heritage and heart."

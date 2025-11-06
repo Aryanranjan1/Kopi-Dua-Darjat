@@ -4,7 +4,7 @@
  * DO NOT MODIFY.
  */
 
-import { createApi } from '@genkit-ai/next/api';
+import { createApi } from '@genkit-ai/next';
 import { ai } from '@/ai/genkit';
 import cors from 'cors';
 

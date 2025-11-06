@@ -17,8 +17,7 @@ const PostItem = ({ post }: { post: PublicInstaPost }) => {
     <div
       className={cn(
         'group relative overflow-hidden rounded-lg',
-        'break-inside-avoid-column',
-        isVideo ? 'row-span-2' : ''
+        isVideo ? 'sm:row-span-2' : ''
       )}
     >
       <a
@@ -79,7 +78,7 @@ export default function InstaExploreGrid() {
   return (
     <section style={{ backgroundColor: '#fde047' }} className="px-4 sm:px-6 py-24 sm:py-32">
       <div className="container mx-auto">
-        <h2 className="text-center font-headline text-4xl font-bold text-foreground md:text-5xl uppercase underline decoration-black decoration-4 underline-offset-8 mb-16">
+        <h2 className="text-center font-headline text-4xl font-bold text-foreground md:text-5xl uppercase underline decoration-black decoration-4 underline-offset-8 mb-12 sm:mb-16">
             #KOPIDUADARJAT
         </h2>
         {isLoading ? (
@@ -87,7 +86,7 @@ export default function InstaExploreGrid() {
             <Loader2 className="w-12 h-12 text-primary animate-spin" />
           </div>
         ) : visiblePosts && visiblePosts.length > 0 ? (
-           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 auto-rows-[250px]">
+           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 auto-rows-[250px] grid-flow-row-dense">
             {visiblePosts.map((post) => (
               <PostItem key={post.id} post={post} />
             ))}

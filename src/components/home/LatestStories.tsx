@@ -16,7 +16,6 @@ import { useMemo } from 'react';
 
 export default function LatestStories() {
     const firestore = useFirestore();
-    // Fetch the latest published posts without server-side ordering to avoid needing a composite index.
     const blogsQuery = useMemoFirebase(
       () => firestore ? query(collection(firestore, 'blogs'), where('status', '==', 'published'), limit(10)) : null,
       [firestore]
@@ -25,7 +24,6 @@ export default function LatestStories() {
 
     const sortedBlogPosts = useMemo(() => {
         if (!blogPosts) return [];
-        // Sort the posts by date on the client side
         return blogPosts
             .sort((a, b) => b.publishedAt.toDate().getTime() - a.publishedAt.toDate().getTime())
             .slice(0, 4);
@@ -34,20 +32,20 @@ export default function LatestStories() {
     if (isLoadingBlogs) {
       return (
         <section className="py-24 sm:py-40 bg-black">
-          <div className="container mx-auto px-12">
-            <Skeleton className="h-12 w-1/3 mb-12 bg-zinc-800" />
-            <div className="grid lg:grid-cols-2 gap-8">
+          <div className="container mx-auto px-6 sm:px-12">
+            <Skeleton className="h-12 w-2/3 md:w-1/3 mb-12 bg-zinc-800" />
+            <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
               <div>
-                <Skeleton className="w-full h-[600px] mb-4 bg-zinc-800" />
+                <Skeleton className="w-full aspect-[4/3] mb-4 bg-zinc-800 rounded-2xl" />
                 <Skeleton className="h-4 w-1/4 mb-2 bg-zinc-800" />
-                <Skeleton className="h-8 w-3/4 mb-2 bg-zinc-800" />
+                <Skeleton className="h-8 w-3/4 mb-4 bg-zinc-800" />
                 <Skeleton className="h-4 w-1/2 mb-4 bg-zinc-800" />
-                <Skeleton className="h-16 w-full bg-zinc-800" />
+                <Skeleton className="h-24 w-full bg-zinc-800" />
               </div>
-              <div className="space-y-8">
-                <Skeleton className="h-32 w-full bg-zinc-800" />
-                <Skeleton className="h-32 w-full bg-zinc-800" />
-                <Skeleton className="h-32 w-full bg-zinc-800" />
+              <div className="space-y-6">
+                <Skeleton className="h-32 w-full bg-zinc-800 rounded-2xl" />
+                <Skeleton className="h-32 w-full bg-zinc-800 rounded-2xl" />
+                <Skeleton className="h-32 w-full bg-zinc-800 rounded-2xl" />
               </div>
             </div>
           </div>
@@ -58,7 +56,7 @@ export default function LatestStories() {
     if (!sortedBlogPosts || sortedBlogPosts.length === 0) {
       return (
           <section className="py-24 sm:py-40 bg-black">
-              <div className="container mx-auto px-12">
+              <div className="container mx-auto px-6 sm:px-12">
                   <h2 className="text-4xl md:text-5xl font-headline text-white inline-block underline decoration-primary decoration-4 underline-offset-8 mb-12">Latest Stories</h2>
                   <Alert className="bg-zinc-900 border-zinc-800 text-white">
                       <BookOpen className="h-4 w-4" />
@@ -77,21 +75,21 @@ export default function LatestStories() {
 
     return (
         <section className="py-24 sm:py-40 bg-black">
-            <div className="container mx-auto px-12">
+            <div className="container mx-auto px-6 sm:px-12">
                 <AnimateOnScroll animationType="slideInFromBottom">
-                    <div className="flex justify-between items-center mb-12">
-                        <h2 className="text-4xl md:text-5xl font-headline text-white inline-block underline decoration-primary decoration-4 underline-offset-8">Latest Stories</h2>
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-12">
+                        <h2 className="text-4xl md:text-5xl font-headline text-white inline-block underline decoration-primary decoration-4 underline-offset-8 mb-6 sm:mb-0">Latest Stories</h2>
                         <Button asChild variant="outline" className="rounded-full bg-transparent text-white border-white/50 hover:border-primary hover:text-primary">
                             <Link href="/news">Read all articles</Link>
                         </Button>
                     </div>
                 </AnimateOnScroll>
                 
-                <div className="grid lg:grid-cols-2 gap-8">
+                <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
                     {/* Featured Post */}
                     <AnimateOnScroll animationType="fadeIn">
                         <Link href={`/news/${featuredPost.slug}`} className="group block rounded-2xl p-2 transition-all hover:ring-2 hover:ring-white/50">
-                            <div className="overflow-hidden rounded-2xl mb-4">
+                            <div className="overflow-hidden rounded-2xl mb-4 aspect-[4/3]">
                                 <Image 
                                     src={featuredPost.coverImage.url} 
                                     alt={featuredPost.title} 
@@ -102,32 +100,32 @@ export default function LatestStories() {
                                 />
                             </div>
                             <p className="text-sm font-semibold text-accent mb-2">{featuredPost.category}</p>
-                            <h3 className="text-2xl font-bold text-white mb-2 transition-colors">{featuredPost.title}</h3>
+                            <h3 className="text-2xl font-bold text-white mb-2 transition-colors group-hover:text-primary">{featuredPost.title}</h3>
                             <p className="text-sm text-zinc-400 mb-4">
-                                {featuredPost.publishedAt ? format(featuredPost.publishedAt.toDate(), 'PPP') : ''} • by {featuredPost.author.name}
+                                {featuredPost.publishedAt ? format(featuredPost.publishedAt.toDate(), 'PPP') : ''} • by {featuredPost.author?.name || 'Admin'}
                             </p>
-                            <p className="text-zinc-400">{featuredPost.excerpt}</p>
+                            <p className="text-zinc-400 line-clamp-3">{featuredPost.excerpt}</p>
                         </Link>
                     </AnimateOnScroll>
 
                     {/* Other Posts */}
-                    <div className="space-y-8">
+                    <div className="space-y-6">
                         {otherPosts.map((post, index) => (
                             <AnimateOnScroll key={post.id} animationType="slideInFromRight" delay={index * 0.1}>
-                                <Link href={`/news/${post.slug}`} className="group flex items-center gap-6 rounded-2xl p-2 transition-all hover:ring-2 hover:ring-white/50">
-                                    <div className="relative w-32 h-32 shrink-0">
+                                <Link href={`/news/${post.slug}`} className="group flex items-center gap-4 sm:gap-6 rounded-2xl p-2 transition-all hover:ring-2 hover:ring-white/50">
+                                    <div className="relative w-24 h-24 sm:w-32 sm:h-32 shrink-0">
                                          <Image 
                                             src={post.coverImage.url} 
                                             alt={post.title}
                                             fill
-                                            sizes="128px"
+                                            sizes="(max-width: 640px) 96px, 128px"
                                             className="object-cover rounded-2xl transition-transform duration-300 group-hover:scale-105"
                                             data-ai-hint={post.coverImage.alt}
                                          />
                                     </div>
-                                    <div>
+                                    <div className="flex-grow">
                                         <p className="text-sm font-semibold text-accent mb-1">{post.category}</p>
-                                        <h4 className="font-bold text-lg text-white transition-colors">{post.title}</h4>
+                                        <h4 className="font-bold text-base sm:text-lg text-white transition-colors group-hover:text-primary line-clamp-2">{post.title}</h4>
                                         <p className="text-xs text-zinc-400 mt-1">
                                             {post.publishedAt ? format(post.publishedAt.toDate(), 'PPP') : ''}
                                         </p>
