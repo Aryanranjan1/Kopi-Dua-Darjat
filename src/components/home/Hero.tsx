@@ -40,7 +40,7 @@ export default function Hero() {
 
       {/* === Main Text Content === */}
       <div
-        className="relative container mx-auto px-6 sm:px-10 lg:px-16 flex flex-col justify-between z-30 min-h-screen"
+        className="relative container mx-auto px-6 sm:px-10 lg:px-16 flex flex-col justify-start z-30 min-h-screen"
       >
         <div className="w-full md:w-[48%]" ref={containerRef}>
             <div className="pt-[190px]">
@@ -57,25 +57,25 @@ export default function Hero() {
                   From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor — a golden mix of comfort, creativity, and caffeine confidence.
                 </p>
               </AnimateOnScroll>
-               {/* === Frame Group (Image + Arrow) === */}
-                <div className="mt-[100px] flex items-center gap-0">
-                    <div className="relative w-[576px] h-[576px] sm:w-[576px] sm:h-[576px] md:w-[576px] md:h-[576px] pointer-events-none">
-                        <Image
-                            src="/image/image%20frame.png"
-                            alt="Decorative frame with a person's photo"
-                            fill
-                            className="object-contain -rotate-90"
-                            aria-hidden="true"
-                        />
-                    </div>
-                    {/* === Arrow Button === */}
-                    <button
-                        aria-label="Locate outlet"
-                        className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 flex items-center justify-center rounded-full border-2 border-foreground bg-white shadow-md transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative z-30 -ml-[100px]"
-                    >
-                        <ArrowUpRight className="w-8 h-8 sm:w-10 sm:h-10 text-foreground" />
-                    </button>
+               <div className="mt-[100px] flex items-center -ml-[50px] -mt-[200px]">
+                {/* === Frame Group (Image + Arrow) === */}
+                <div className="relative w-[112px] h-[112px] sm:w-[128px] sm:h-[128px] pointer-events-none">
+                    <Image
+                        src="/image/image%20frame.png"
+                        alt="Decorative frame with a person's photo"
+                        fill
+                        className="object-contain"
+                        aria-hidden="true"
+                    />
                 </div>
+                {/* === Arrow Button === */}
+                <button
+                    aria-label="Locate outlet"
+                    className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 flex items-center justify-center rounded-full border-2 border-foreground bg-white shadow-md transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 z-30"
+                >
+                    <ArrowUpRight className="w-8 h-8 sm:w-10 sm:h-10 text-foreground" />
+                </button>
+              </div>
             </div>
         </div>
       </div>
