@@ -13,20 +13,20 @@ export default function Hero() {
       <section className="relative w-full min-h-screen flex items-center justify-center bg-primary pt-24 pb-32 md:pt-32">
 
         {/* Grouped Left Image and Arrow */}
-        <div className="absolute bottom-0 left-0 w-48 h-48 md:w-64 md:h-64 z-30 flex items-center justify-center">
-            <div className="relative w-full h-full">
-                <Image
-                    src="/image/image frame.png"
-                    alt="Image Frame"
-                    fill
-                    className="object-contain -rotate-90"
-                />
-                <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="relative w-20 h-20 border-2 border-foreground rounded-full flex items-center justify-center">
-                        <ArrowUpRight className="w-8 h-8 text-foreground" />
-                    </div>
-                </div>
+        <div className="absolute bottom-0 left-0 w-64 h-48 md:w-96 md:h-64 z-30 flex items-center justify-center">
+          <div className="relative w-full h-full flex items-center justify-center">
+            <div className="relative w-32 h-32 md:w-48 md:h-48">
+              <Image
+                src="/image/image frame.png"
+                alt="Image Frame"
+                fill
+                className="object-contain -rotate-90"
+              />
             </div>
+            <div className="relative w-20 h-20 border-2 border-foreground rounded-full flex items-center justify-center ml-4">
+              <ArrowUpRight className="w-8 h-8 text-foreground" />
+            </div>
+          </div>
         </div>
 
         {/* Right Image */}
