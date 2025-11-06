@@ -63,11 +63,12 @@ export default function Hero() {
       
        {/* === Frame Group (Image + Arrow) === */}
        <div className="absolute bottom-16 left-6 z-20 flex items-center">
-            <div className="relative w-[112px] h-[112px] sm:w-[128px] sm:h-[128px] pointer-events-none transform -rotate-90 scale-200">
+            <div className="relative pointer-events-none transform scale-[3]">
                 <Image
                     src="/image/image%20frame.png"
                     alt="Decorative frame with a person's photo"
-                    fill
+                    width={128}
+                    height={128}
                     className="object-contain"
                     aria-hidden="true"
                 />
@@ -75,7 +76,7 @@ export default function Hero() {
             {/* === Arrow Button === */}
             <button
                 aria-label="Locate outlet"
-                className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 flex items-center justify-center rounded-full border-2 border-foreground bg-white shadow-md transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 z-30 -ml-[100px]"
+                className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 flex items-center justify-center rounded-full border-2 border-foreground bg-white shadow-md transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative z-30 -ml-[100px]"
             >
                 <ArrowUpRight className="w-8 h-8 sm:w-10 sm:h-10 text-foreground" />
             </button>
