@@ -43,7 +43,7 @@ const DesktopHero = () => {
       {/* Decorative Images Layer */}
       <div className="absolute inset-0 w-full h-full pointer-events-none z-20">
         
-        <AnimateOnScroll animationType="slideInFromLeft" delay={0.2} className="absolute left-[calc(8%_-_60px)] top-[calc(55%_+_90px)] w-[128px] h-[128px] z-10 pointer-events-auto">
+        <AnimateOnScroll animationType="slideInFromLeft" delay={0.2} className="absolute left-[calc(8%_-_60px)] top-[calc(55%_+_90px)] w-[128px] h-[128px] pointer-events-auto">
           {/* Frame Image */}
           <div className="relative w-full h-full">
             <Image src="/image/image frame.png" alt="Frame decoration" layout="fill" className="object-contain scale-[2] -rotate-90"/>
@@ -62,7 +62,7 @@ const DesktopHero = () => {
         </AnimateOnScroll>
 
         {/* Main Cup */}
-        <div className="absolute bottom-[-100px] left-1/2 -translate-x-1/2 w-[90vh] h-[90vh]">
+        <div className="absolute bottom-[-75px] left-1/2 -translate-x-1/2 w-[90vh] h-[90vh] z-20">
           <AnimateOnScroll animationType="slideInFromBottom" delay={0.1}>
             <Image src="/image/dua-darjat-cup.png" alt="Kopi Dua Darjat splashing cup" layout="fill" className="object-contain rotate-[25deg]"/>
           </AnimateOnScroll>
