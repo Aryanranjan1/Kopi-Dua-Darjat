@@ -1,7 +1,8 @@
 
 'use client';
 
-import React, { useRef } from 'react';
+import * as React from 'react';
+import { useRef, useLayoutEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { useFitText } from '@/hooks/use-fit-text';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
@@ -48,7 +49,7 @@ const DesktopHero = () => {
         </div>
         
         {/* Diagonal Arrow Button */}
-        <div className="absolute left-[25%] top-[62%] w-[80px] h-[80px] sm:w-[100px] sm:h-[100px] pointer-events-auto">
+        <div className="absolute left-[calc(25%)] top-[62%] w-[80px] h-[80px] sm:w-[100px] sm:h-[100px] pointer-events-auto">
           <AnimateOnScroll animationType="fadeIn" delay={0.4}>
              <Button asChild variant="outline" size="icon" className="w-full h-full rounded-full border-2 border-foreground/50 hover:bg-foreground group transition-transform hover:scale-105">
                 <Link href="/outlets">
@@ -81,7 +82,7 @@ const DesktopHero = () => {
           className="w-full h-auto"
           preserveAspectRatio="none"
         >
-          <path fill="#f7f4ef" fill-opacity="1" d="M0,288L48,288C96,288,192,288,288,256C384,224,480,160,576,133.3C672,107,768,117,864,149.3C960,181,1056,235,1152,229.3C1248,224,1344,160,1392,128L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+          <path fill="#f7f4ef" fillOpacity="1" d="M0,288L48,288C96,288,192,288,288,256C384,224,480,160,576,133.3C672,107,768,117,864,149.3C960,181,1056,235,1152,229.3C1248,224,1344,160,1392,128L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
         </svg>
       </div>
     </>
