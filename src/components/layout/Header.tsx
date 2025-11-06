@@ -53,15 +53,14 @@ export default function Header() {
   return (
     <header
       className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-        isScrolled ? 'bg-black/80 backdrop-blur-sm' : 'bg-transparent',
+        'fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-primary',
         isHidden ? '-translate-y-full' : 'translate-y-0'
       )}
     >
       <div className="container mx-auto px-6 h-20 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="p-0 m-0 h-20 flex items-center">
-             <Logo />
+             <Image src="/image/1.svg" alt="Kopi Dua Darjat Logo" width={80} height={80} className="object-contain filter brightness-0" />
         </Link>
 
 
@@ -74,7 +73,7 @@ export default function Header() {
               className={cn(
                 'relative px-4 py-2 text-sm font-medium rounded-full transition-colors',
                 pathname === item.href
-                  ? 'text-black bg-primary'
+                  ? 'text-foreground bg-primary/90'
                   : 'text-background hover:text-primary'
               )}
             >
@@ -95,7 +94,7 @@ export default function Header() {
             {/* Mobile Navigation Trigger */}
             <Sheet>
                 <SheetTrigger asChild>
-                    <Button variant="ghost" size="icon" className="lg:hidden text-white hover:bg-zinc-800 hover:text-white">
+                    <Button variant="ghost" size="icon" className="lg:hidden">
                     <Menu className="h-6 w-6" />
                     <span className="sr-only">Toggle Menu</span>
                     </Button>
