@@ -44,14 +44,14 @@ const DesktopHero = () => {
       <div className="absolute inset-0 w-full h-full pointer-events-none z-20">
         
         {/* Frame Image */}
-        <div className="absolute left-[calc(8%_-_60px)] top-[calc(55%_+_140px)] w-[128px] h-[128px]">
+        <div className="absolute left-[calc(8%_-_60px)] top-[calc(55%_+_40px)] w-[128px] h-[128px] z-30">
           <AnimateOnScroll animationType="fadeIn" delay={0.2}>
             <Image src="/image/image frame.png" alt="Frame decoration" layout="fill" className="object-contain scale-[2] -rotate-90"/>
           </AnimateOnScroll>
         </div>
         
         {/* Button next to image */}
-         <div className="absolute left-[calc(8%_+_50px)] top-[calc(55%_+_185px)] w-[50px] h-[50px] pointer-events-auto">
+         <div className="absolute left-[calc(8%_+_50px)] top-[calc(55%_+_85px)] w-[50px] h-[50px] pointer-events-auto">
           <AnimateOnScroll animationType="fadeIn" delay={0.3}>
               <Link href="/outlets" className="flex items-center justify-center bg-white text-black border-2 border-black rounded-full w-full h-full hover:bg-black hover:text-white transition-all duration-300 group">
                   <ArrowUpRight className="h-4 w-4 sm:h-5 sm:w-5 transition-transform group-hover:rotate-45" />
@@ -82,7 +82,7 @@ const DesktopHero = () => {
           className="w-full h-auto"
           preserveAspectRatio="none"
         >
-          <path fill="#f7f4ef" fillOpacity="1" d="M0,288L48,288C96,288,192,288,288,256C384,224,480,160,576,133.3C672,107,768,117,864,149.3C960,181,1056,235,1152,229.3C1248,224,1344,160,1392,128L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+          <path fill="#F7F4EF" fillOpacity="1" d="M0,288L48,288C96,288,192,288,288,256C384,224,480,160,576,133.3C672,107,768,117,864,149.3C960,181,1056,235,1152,229.3C1248,224,1344,160,1392,128L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
         </svg>
       </div>
 
