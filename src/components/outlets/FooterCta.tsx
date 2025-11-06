@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -41,7 +42,7 @@ export default function FooterCta() {
                                 Locate Outlet
                             </Link>
                         </Button>
-                        <Button asChild size="lg" variant="outline" className="rounded-full border-white/80 text-white hover:bg-white hover:text-black">
+                        <Button asChild size="lg" variant="outline" className="rounded-full border-white/80 bg-white/90 text-black hover:bg-white hover:text-black">
                             <a href="#" target="_blank" rel="noopener noreferrer">
                                 <Instagram className="mr-2 h-5 w-5" />
                                 Follow Us
