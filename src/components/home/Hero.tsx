@@ -13,7 +13,7 @@ export default function Hero() {
       <section className="relative w-full min-h-screen flex items-center justify-center bg-primary pt-[130px] pb-32">
 
         {/* Grouped Left Image and Arrow */}
-        <div className="absolute bottom-0 -left-12 w-[20rem] h-[20rem] z-30 flex items-center justify-center">
+        <div className="absolute bottom-0 -left-24 w-[20rem] h-[20rem] z-30 flex items-center justify-center">
           <div className="relative w-full h-full flex items-center justify-center">
             <div className="relative w-[20rem] h-[20rem]">
               <Image
@@ -30,7 +30,7 @@ export default function Hero() {
         </div>
 
         {/* Right Image */}
-        <div className="absolute top-1/2 right-5 w-36 h-36 md:w-52 md:h-52 z-30">
+        <div className="absolute top-1/2 right-20 w-36 h-36 md:w-52 md:h-52 z-30">
              <Image
                 src="/image/coffee-bean.png"
                 alt="Coffee Bean"
