@@ -21,7 +21,7 @@ export default function Hero() {
           duration={1}
           className="w-full h-full"
         >
-          <div className="absolute right-0 sm:right-[10%] w-[35rem] h-[35rem] sm:w-[50rem] sm:h-[50rem] lg:w-[70rem] lg:h-[70rem] opacity-40 sm:opacity-50 lg:opacity-100 lg:-translate-x-[50px]">
+          <div className="absolute right-0 sm:right-[10%] w-[35rem] h-[35rem] sm:w-[50rem] sm:h-[50rem] lg:w-[35rem] lg:h-[35rem] opacity-40 sm:opacity-50 lg:opacity-100 lg:-translate-x-[50px]">
             <Image
               src="/image/dua-darjat-cup.png"
               alt="Kopi Dua Darjat Cup"
