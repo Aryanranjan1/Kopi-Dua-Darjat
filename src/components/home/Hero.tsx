@@ -24,8 +24,8 @@ export default function Hero() {
       </div>
 
       {/* === Left Frame (Girl + Arrow) === */}
-      <div className="absolute bottom-6 left-8 sm:left-12 md:left-16 z-30 flex flex-row items-center gap-4">
-        <div className="relative w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 pointer-events-none">
+      <div className="absolute bottom-6 left-8 sm:left-12 md:left-16 z-30 flex flex-row items-center gap-2.5">
+        <div className="relative w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 pointer-events-none">
           <Image
             src="/image/image%20frame.png"
             alt="Decorative frame with a person's photo"
@@ -36,9 +36,9 @@ export default function Hero() {
         </div>
         <button
           aria-label="Locate outlet"
-          className="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center rounded-full border-4 border-foreground bg-white shadow-md transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center rounded-full border-8 border-foreground bg-white shadow-md transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
-          <ArrowUpRight className="w-8 h-8 sm:w-10 sm:h-10 text-foreground" />
+          <ArrowUpRight className="w-16 h-16 sm:w-20 sm:h-20 text-foreground" />
         </button>
       </div>
 
@@ -58,7 +58,7 @@ export default function Hero() {
 
       {/* === Cup Image === */}
       <div
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 md:top-[40%] md:-translate-y-0 md:left-auto md:right-[28%] w-[220px] sm:w-[280px] md:w-[420px] z-20 pointer-events-none mt-24 md:mt-0 animate-fade-in-up"
+        className="animate-fade-in-up absolute left-1/2 top-1/2 z-20 mt-24 w-[220px] -translate-x-1/2 -translate-y-1/2 pointer-events-none sm:w-[280px] md:top-[40%] md:w-[420px] md:-translate-y-0 md:left-auto md:right-[28%] md:mt-0"
         style={{ transform: 'rotate(18deg)' }}
         aria-hidden="true"
       >
@@ -74,10 +74,9 @@ export default function Hero() {
 
       {/* === Text Content (anchored left) === */}
       <div
-        ref={containerRef}
         className="relative container mx-auto px-6 sm:px-10 lg:px-16 flex flex-col justify-center md:justify-start items-center md:items-start text-center md:text-left z-20 min-h-screen pt-[190px] pb-48 md:pb-0"
       >
-        <div className="w-full md:w-[48%]">
+        <div ref={containerRef} className="w-full md:w-[48%]">
           <AnimateOnScroll animationType="fadeIn">
             <div>
                 <h1
