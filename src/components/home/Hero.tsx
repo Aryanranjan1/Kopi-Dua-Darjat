@@ -57,14 +57,12 @@ const DesktopHero = () => {
         </AnimateOnScroll>
         
         {/* Coffee Beans */}
-        <div className="absolute right-[calc(10%_-_30px)] bottom-[calc(12%_+_20px)] w-[150px] h-[150px] sm:w-[200px] sm:h-[200px]">
-          <AnimateOnScroll animationType="slideInFromRight" delay={0.3}>
-            <Image src="/image/coffee-bean.png" alt="Coffee beans" layout="fill" className="object-contain"/>
-          </AnimateOnScroll>
-        </div>
+        <AnimateOnScroll animationType="slideInFromRight" delay={0.3} className="absolute right-[calc(10%_-_30px)] bottom-[calc(12%_+_20px)] w-[150px] h-[150px] sm:w-[200px] sm:h-[200px]">
+          <Image src="/image/coffee-bean.png" alt="Coffee beans" layout="fill" className="object-contain"/>
+        </AnimateOnScroll>
 
         {/* Main Cup */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[60vh] h-[60vh]">
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[90vh] h-[90vh]">
           <AnimateOnScroll animationType="slideInFromBottom" delay={0.1}>
             <Image src="/image/dua-darjat-cup.png" alt="Kopi Dua Darjat splashing cup" layout="fill" className="object-contain rotate-[25deg]"/>
           </AnimateOnScroll>
