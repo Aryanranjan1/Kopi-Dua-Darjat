@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useRef } from 'react';
@@ -26,7 +25,7 @@ export default function Hero() {
               src="/image/dua-darjat-cup.png"
               alt="Kopi Dua Darjat Cup"
               fill
-              className="object-contain drop-shadow-2xl"
+              className="object-contain drop-shadow-2xl scale-75 rotate-12"
               priority
             />
           </div>
