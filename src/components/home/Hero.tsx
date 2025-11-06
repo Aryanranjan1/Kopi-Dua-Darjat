@@ -40,12 +40,12 @@ export default function Hero() {
         </div>
 
         {/* Main Content Area */}
-        <div className="container mx-auto px-6 z-10 flex items-center pt-[200px] pb-32 overflow-hidden">
+        <div className="container mx-auto px-6 z-10 flex pt-[190px] pb-32 overflow-hidden">
           <div className="w-full">
             {/* Text Content */}
             <div className="text-left">
               <AnimateOnScroll animationType="fadeIn">
-                <h1 className="font-headline font-extrabold text-foreground text-center leading-tight text-[clamp(2rem,7vw,4rem)] md:whitespace-nowrap">
+                <h1 className="font-headline font-extrabold text-foreground text-center leading-none text-[clamp(2.5rem,7vw,5rem)] md:whitespace-nowrap">
                   Good Coffee for Great Mornings
                 </h1>
                 <div className="flex justify-start">
