@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useRef } from 'react';
@@ -78,7 +79,7 @@ export default function Hero() {
         {/* Bottom part for frame */}
         <div className="pb-6 w-full flex justify-start items-center gap-4">
             <div className="relative z-30 flex-shrink-0">
-                <div className="relative w-[288px] h-[288px] sm:w-[288px] sm:h-[288px] md:w-[288px] md:h-[288px] pointer-events-none">
+                <div className="relative w-[576px] h-[576px] sm:w-[576px] sm:h-[576px] md:w-[576px] md:h-[576px] pointer-events-none">
                 <Image
                     src="/image/image%20frame.png"
                     alt="Decorative frame with a person's photo"
@@ -99,3 +100,4 @@ export default function Hero() {
     </section>
   );
 }
+
