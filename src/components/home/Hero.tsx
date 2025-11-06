@@ -11,8 +11,6 @@ export default function Hero() {
   return (
     <>
       <section className="relative w-full min-h-screen flex items-center justify-center overflow-hidden bg-primary pt-24 pb-32 md:pt-32">
-        {/* Decorative Cyan Dot */}
-        <div className="absolute top-20 left-20 w-8 h-8 bg-cyan-400 rounded-full opacity-50 hidden md:block" />
 
         {/* Main Content Area */}
         <div className="container mx-auto px-6 z-10">
@@ -24,7 +22,7 @@ export default function Hero() {
                   Good Coffee for Great Mornings
                 </h1>
                 <p className="mt-4 text-sm md:text-base font-body font-bold text-foreground/80 max-w-md">
-                  From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor, a golden mix of comfort, creativity, and caffeine confidence.
+                  From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor , a golden mix of comfort, creativity, and caffeine confidence.
                 </p>
               </AnimateOnScroll>
               
@@ -54,7 +52,7 @@ export default function Hero() {
                 {/* Main Coffee Cup Image */}
                 <AnimateOnScroll animationType='fadeIn' delay={0.3} className="z-10">
                    <Image
-                    src="/image/kdd-cup.png"
+                    src="/image/coffee.png"
                     alt="Kopi Dua Darjat splashing coffee"
                     width={400}
                     height={500}
