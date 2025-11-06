@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useRef } from 'react';
@@ -63,8 +62,8 @@ export default function Hero() {
       
        {/* === Cup Image === */}
        <div
-        className="animate-fade-in-up absolute left-1/2 top-1/2 z-20 w-[220px] -translate-x-1/2 -translate-y-1/2 scale-200 pointer-events-none sm:w-[280px] md:w-[420px]"
-        style={{ transform: 'translateX(-50%) translateY(-50%) rotate(18deg) scale(2)' }}
+        className="animate-fade-in-up absolute left-1/2 top-1/2 z-20 w-[220px] -translate-x-1/2 -translate-y-1/2 scale-[3] pointer-events-none sm:w-[280px] md:w-[420px]"
+        style={{ transform: 'translateX(-50%) translateY(-50%) rotate(18deg) scale(3)' }}
         aria-hidden="true"
       >
         <Image
