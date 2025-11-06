@@ -12,8 +12,8 @@ export default function BrandStory() {
       <div className="container mx-auto">
         <div className="grid lg:grid-cols-2 gap-x-8 gap-y-16 sm:gap-y-20 lg:gap-x-16 items-center">
           {/* Left Side: Image */}
-          <div className="relative lg:pl-16 h-full min-h-[500px] lg:min-h-[600px]">
-              <AnimateOnScroll animationType="slideInFromLeft" className="absolute bottom-0 left-0 lg:-left-32 w-[30rem] h-[30rem] sm:w-[48rem] sm:h-[48rem] lg:w-[60rem] lg:h-[60rem]">
+          <div className="relative h-[500px] lg:h-full lg:min-h-[600px]">
+              <AnimateOnScroll animationType="slideInFromLeft" className="absolute -bottom-1/4 left-1/2 lg:left-0 lg:bottom-0 lg:w-[120%] lg:h-[120%] w-[200%] h-[200%] max-w-[60rem] -translate-x-1/2 lg:translate-x-0">
                 <div className="relative w-full h-full">
                   <Image
                     src="/image/kdd-cup.png"
