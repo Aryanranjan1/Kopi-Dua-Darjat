@@ -40,7 +40,7 @@ export default function Hero() {
         </div>
 
         {/* Main Content Area */}
-        <div className="container mx-auto px-6 z-10 pt-[130px]">
+        <div className="container mx-auto px-6 z-10 pt-[200px]">
           <div className="w-full">
             {/* Text Content */}
             <div className="text-left">
