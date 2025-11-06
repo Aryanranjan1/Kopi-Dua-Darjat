@@ -61,21 +61,6 @@ export default function Hero() {
         </div>
       </div>
       
-       {/* === Cup Image === */}
-       <div
-        className="animate-fade-in-up absolute left-1/2 top-1/2 z-20 w-[220px] -translate-x-1/2 -translate-y-1/2 scale-[5] pointer-events-none sm:w-[280px] md:w-[420px]"
-        style={{ transform: 'translateX(-50%) translateY(-50%) rotate(18deg) scale(5)' }}
-        aria-hidden="true"
-      >
-        <Image
-          src="/image/dua-darjat-cup.png"
-          alt=""
-          width={420}
-          height={500}
-          className="object-contain"
-          priority
-        />
-      </div>
 
     </section>
   );
