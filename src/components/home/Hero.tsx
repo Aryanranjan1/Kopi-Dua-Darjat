@@ -31,7 +31,7 @@ const DesktopHero = () => {
                     Good Coffee for Great Morning
                     </h1>
                      <div className="max-w-[40%]">
-                        <p className="mt-6 text-base sm:text-lg md:text-xl font-body font-normal text-foreground/90 leading-relaxed">
+                        <p className="relative z-10 mt-6 text-base sm:text-lg md:text-xl font-body font-bold text-foreground/90 leading-relaxed">
                             From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor , a golden mix of comfort, creativity, and caffeine confidence.
                         </p>
                         <AnimateOnScroll animationType="slideInFromLeft" delay={0.2} className="relative mt-8 w-[128px] h-[128px] pointer-events-auto">
