@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useLayoutEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { ArrowUpRight } from 'lucide-react';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
@@ -78,6 +78,7 @@ export default function Hero() {
 
         {/* Bottom part for frame */}
         <div className="pb-6 w-full flex justify-start items-center gap-4">
+            {/* Image Frame */}
             <div className="relative z-30 flex-shrink-0">
                 <div className="relative w-[576px] h-[576px] sm:w-[576px] sm:h-[576px] md:w-[576px] md:h-[576px] pointer-events-none">
                 <Image
@@ -89,15 +90,15 @@ export default function Hero() {
                 />
                 </div>
             </div>
+            {/* Arrow Button */}
             <button
-            aria-label="Locate outlet"
-            className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 flex items-center justify-center rounded-full border-2 border-foreground bg-white shadow-md transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative z-30"
+                aria-label="Locate outlet"
+                className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 flex items-center justify-center rounded-full border-2 border-foreground bg-white shadow-md transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative z-30 -ml-1.5"
             >
-            <ArrowUpRight className="w-8 h-8 sm:w-10 sm:h-10 text-foreground" />
+                <ArrowUpRight className="w-8 h-8 sm:w-10 sm:h-10 text-foreground" />
             </button>
         </div>
       </div>
     </section>
   );
 }
-
