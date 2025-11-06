@@ -41,28 +41,14 @@ const DesktopHero = () => {
       {/* Decorative Images Layer */}
       <div className="absolute inset-0 w-full h-full pointer-events-none z-20">
         {/* Woman Image */}
-        <div className="absolute left-[calc(8%_-_60px)] top-[calc(55%_+_40px)] w-[80px] h-[80px] sm:w-[100px] sm:h-[100px]">
+        <div className="absolute left-[calc(8%_-_60px)] top-[calc(55%_-_10px)] w-[100px] h-[100px] sm:w-[120px] sm:h-[120px]">
           <AnimateOnScroll animationType="fadeIn" delay={0.2}>
             <Image src="/image/image frame.png" alt="Frame decoration" layout="fill" className="object-contain scale-[2] -rotate-90"/>
           </AnimateOnScroll>
         </div>
         
-        {/* Diagonal Arrow Button */}
-        <div className="absolute left-[calc(8%_+_50px)] top-[calc(55%_+_50px)] w-[60px] h-[60px] sm:w-[80px] sm:h-[80px] pointer-events-auto">
-          <AnimateOnScroll animationType="fadeIn" delay={0.4}>
-             <div className="relative w-full h-full">
-                <div className="absolute inset-0 rounded-full border-2 border-foreground/30 animate-pulse"></div>
-                <Button asChild variant="outline" size="icon" className="w-full h-full rounded-full border-2 border-foreground/50 bg-background/50 hover:bg-foreground group transition-transform hover:scale-105">
-                    <Link href="/outlets">
-                        <ArrowUpRight className="w-1/2 h-1/2 text-foreground group-hover:text-background" />
-                    </Link>
-                </Button>
-             </div>
-          </AnimateOnScroll>
-        </div>
-        
         {/* Coffee Beans */}
-        <div className="absolute right-[calc(10%_-_50px)] bottom-[calc(12%_-_40px)] w-[150px] h-[150px] sm:w-[200px] sm:h-[200px]">
+        <div className="absolute right-[calc(10%_-_30px)] bottom-[calc(12%_+_20px)] w-[150px] h-[150px] sm:w-[200px] sm:h-[200px]">
           <AnimateOnScroll animationType="fadeIn" delay={0.3}>
             <Image src="/image/coffee-bean.png" alt="Coffee beans" layout="fill" className="object-contain"/>
           </AnimateOnScroll>
@@ -71,7 +57,7 @@ const DesktopHero = () => {
         {/* Main Cup */}
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[60vh] h-[60vh]">
           <AnimateOnScroll animationType="slideInFromBottom" delay={0.1}>
-            <Image src="/image/dua-darjat-cup.png" alt="Kopi Dua Darjat splashing cup" layout="fill" className="object-contain"/>
+            <Image src="/image/dua-darjat-cup.png" alt="Kopi Dua Darjat splashing cup" layout="fill" className="object-contain rotate-[25deg]"/>
           </AnimateOnScroll>
         </div>
       </div>
@@ -87,6 +73,20 @@ const DesktopHero = () => {
           <path fill="#f7f4ef" fillOpacity="1" d="M0,288L48,288C96,288,192,288,288,256C384,224,480,160,576,133.3C672,107,768,117,864,149.3C960,181,1056,235,1152,229.3C1248,224,1344,160,1392,128L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
         </svg>
       </div>
+
+       {/* Diagonal Arrow Button */}
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-[60px] h-[60px] sm:w-[80px] sm:h-[80px] pointer-events-auto z-30">
+          <AnimateOnScroll animationType="fadeIn" delay={0.4}>
+             <div className="relative w-full h-full">
+                <div className="absolute inset-0 rounded-full border-2 border-foreground/30 animate-pulse"></div>
+                <Button asChild variant="outline" size="icon" className="w-full h-full rounded-full border-2 border-foreground/50 bg-background/50 hover:bg-foreground group transition-transform hover:scale-105">
+                    <Link href="/outlets">
+                        <ArrowUpRight className="w-1/2 h-1/2 text-foreground group-hover:text-background" />
+                    </Link>
+                </Button>
+             </div>
+          </AnimateOnScroll>
+        </div>
     </>
   );
 };
