@@ -31,7 +31,7 @@ const DesktopHero = () => {
                     Good Coffee for Great Morning
                     </h1>
                      <div className="max-w-[40%]">
-                        <p className="mt-6 text-base sm:text-lg md:text-xl font-body font-normal text-foreground/90 leading-relaxed">
+                        <p className="mt-6 text-base sm:text-lg md:text-xl font-body font-bold text-foreground/90 leading-relaxed">
                             From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor , a golden mix of comfort, creativity, and caffeine confidence.
                         </p>
                     </div>
@@ -43,13 +43,13 @@ const DesktopHero = () => {
       {/* Decorative Images Layer */}
       <div className="absolute inset-0 w-full h-full pointer-events-none z-20">
         
-        <AnimateOnScroll animationType="slideInFromLeft" delay={0.2} className="absolute left-[calc(8%_-_60px)] top-[calc(55%_+_40px)] w-[128px] h-[128px] z-10 pointer-events-auto">
+        <AnimateOnScroll animationType="slideInFromLeft" delay={0.2} className="absolute left-[calc(8%_-_60px)] top-[calc(55%_+_90px)] w-[128px] h-[128px] z-10 pointer-events-auto">
           {/* Frame Image */}
           <div className="relative w-full h-full">
             <Image src="/image/image frame.png" alt="Frame decoration" layout="fill" className="object-contain scale-[2] -rotate-90"/>
           </div>
           {/* Button next to image */}
-          <div className="absolute left-[calc(50%_+_50px)] top-[50%] -translate-x-1/4 -translate-y-1/4 w-[50px] h-[50px]">
+          <div className="absolute left-[100%] top-[50%] -translate-x-1/4 -translate-y-1/4 w-[50px] h-[50px]">
               <Link href="/outlets" className="flex items-center justify-center bg-white text-black border-2 border-black rounded-full w-full h-full hover:bg-black hover:text-white transition-all duration-300 group">
                   <ArrowUpRight className="h-4 w-4 sm:h-5 sm:w-5 transition-transform group-hover:rotate-45" />
               </Link>
@@ -62,7 +62,7 @@ const DesktopHero = () => {
         </AnimateOnScroll>
 
         {/* Main Cup */}
-        <div className="absolute bottom-[-50px] left-1/2 -translate-x-1/2 w-[90vh] h-[90vh]">
+        <div className="absolute bottom-[-100px] left-1/2 -translate-x-1/2 w-[90vh] h-[90vh]">
           <AnimateOnScroll animationType="slideInFromBottom" delay={0.1}>
             <Image src="/image/dua-darjat-cup.png" alt="Kopi Dua Darjat splashing cup" layout="fill" className="object-contain rotate-[25deg]"/>
           </AnimateOnScroll>
