@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useRef } from 'react';
@@ -10,10 +11,10 @@ export default function Hero() {
   const h1Ref = useFitText<HTMLHeadingElement>(containerRef);
 
   return (
-    <section className="relative w-full bg-primary pt-20 overflow-hidden h-screen">
+    <section className="relative w-full bg-primary overflow-hidden h-screen">
       
       {/* === Cup Image === */}
-      <div className="absolute bottom-[-25px] left-1/2 -translate-x-1/2 w-full h-full pointer-events-none z-50">
+      <div className="absolute bottom-[-25px] lg:bottom-[175px] left-1/2 -translate-x-1/2 w-full h-full pointer-events-none z-50">
         <AnimateOnScroll
           animationType="fadeIn"
           delay={0.4}
@@ -25,7 +26,7 @@ export default function Hero() {
               src="/image/dua-darjat-cup.png"
               alt="Kopi Dua Darjat Cup"
               fill
-              className="object-contain drop-shadow-2xl scale-75 rotate-0 sm:rotate-6 md:rotate-12 lg:rotate-[25deg]"
+              className="object-contain drop-shadow-2xl rotate-0 sm:rotate-12 md:rotate-12 lg:rotate-[25deg]"
               priority
             />
           </div>
@@ -37,7 +38,7 @@ export default function Hero() {
         className="relative container mx-auto px-6 sm:px-10 lg:px-16 flex flex-col justify-start z-30 min-h-screen"
       >
         <div className="w-full" ref={containerRef}>
-            <div className="pt-[190px]">
+            <div className="pt-24 lg:pt-[190px]">
               <AnimateOnScroll animationType="fadeIn">
                 <div>
                   <h1
