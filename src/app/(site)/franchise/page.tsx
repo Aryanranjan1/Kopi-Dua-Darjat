@@ -3,7 +3,7 @@ import FranchiseHero from '@/components/franchise/FranchiseHero';
 import ValueProposition from '@/components/franchise/ValueProposition';
 import FranchiseModel from '@/components/franchise/FranchiseModel';
 import Investment from '@/components/franchise/Investment';
-import Testimonials from '@/components/franchise/Testimonials';
+import Testimonials from '@/app/(site)/franchise/Testimonials';
 import SupportAndTraining from '@/components/franchise/SupportAndTraining';
 import Faq from '@/components/franchise/Faq';
 import FinalCta from '@/components/franchise/FinalCta';
