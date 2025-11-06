@@ -48,8 +48,8 @@ export default function Hero() {
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-headline font-bold text-foreground leading-tight text-center">
                   Good Coffee for Great Mornings
                 </h1>
-                <div className="mt-12 flex justify-start">
-                  <p className="mt-4 text-sm md:text-base font-body font-bold text-foreground/80 max-w-[420px] text-left">
+                <div className="flex justify-start">
+                  <p className="mt-4 text-sm md:text-base font-body font-bold text-foreground/80 max-w-[410px] text-left">
                     From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor , a golden mix of comfort, creativity, and caffeine confidence.
                   </p>
                 </div>
