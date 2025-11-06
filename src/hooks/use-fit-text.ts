@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useRef, useLayoutEffect, useCallback } from 'react';
@@ -26,6 +27,7 @@ export function useFitText<T extends HTMLElement>(
     // Reset styles on mobile to let CSS handle wrapping
     if (window.innerWidth <= 768) {
       element.style.fontSize = ''; // Remove inline style
+      element.style.whiteSpace = 'normal';
       return;
     }
     

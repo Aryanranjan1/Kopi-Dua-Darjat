@@ -35,7 +35,7 @@ export default function Hero() {
           />
         </div>
         <button
-          aria-label="Open profile"
+          aria-label="Locate outlet"
           className="mt-3 w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center rounded-full border-4 border-foreground bg-white shadow-md transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           <ArrowUpRight className="w-8 h-8 sm:w-10 sm:h-10 text-foreground" />
@@ -52,12 +52,14 @@ export default function Hero() {
           alt=""
           fill
           className="object-contain"
+          loading="lazy"
         />
       </div>
 
       {/* === Cup Image === */}
       <div
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 md:top-[40%] md:-translate-y-0 md:right-[28%] md:left-auto md:-rotate-12 w-[220px] sm:w-[280px] md:w-[420px] z-10 pointer-events-none mt-24 md:mt-0 animate-fade-in-up"
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 md:top-[40%] md:-translate-y-0 md:left-auto md:right-[28%] w-[220px] sm:w-[280px] md:w-[420px] z-20 pointer-events-none mt-24 md:mt-0 animate-fade-in-up"
+        style={{ transform: 'rotate(18deg)' }}
         aria-hidden="true"
       >
         <Image
@@ -66,20 +68,21 @@ export default function Hero() {
           width={420}
           height={500}
           className="object-contain"
+          priority
         />
       </div>
 
       {/* === Text Content (anchored left) === */}
-      <div className="relative container mx-auto px-6 sm:px-10 lg:px-16 flex flex-col justify-start items-start text-left z-20 pt-[190px]">
+      <div className="relative container mx-auto px-6 sm:px-10 lg:px-16 flex flex-col justify-center md:justify-start items-center md:items-start text-center md:text-left z-20 min-h-screen pt-24 pb-48 md:pt-0 md:pb-0">
         <div className="w-full md:w-[48%]">
           <AnimateOnScroll animationType="fadeIn">
             <h1
               ref={h1Ref}
-              className="font-headline font-extrabold text-foreground leading-[1.05] text-[clamp(2.5rem,8.5vw,6.2rem)] md:whitespace-nowrap"
+              className="font-headline font-extrabold text-foreground leading-[1.05] text-[clamp(2.5rem,8.5vw,6.2rem)]"
             >
               Good Coffee for Great Mornings
             </h1>
-            <p className="mt-6 text-base sm:text-lg md:text-xl font-body font-semibold text-foreground/80 max-w-[420px] leading-relaxed">
+            <p className="mt-6 text-base sm:text-lg md:text-xl font-body font-semibold text-foreground/80 max-w-[420px] leading-relaxed mx-auto md:mx-0">
               From bean to cup, every pour is crafted with passion and
               precision. Our coffee celebrates the art of flavor — a golden mix
               of comfort, creativity, and caffeine confidence.
