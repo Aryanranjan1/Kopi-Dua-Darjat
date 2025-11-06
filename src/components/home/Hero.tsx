@@ -10,7 +10,7 @@ import { ArrowUpRight } from 'lucide-react';
 export default function Hero() {
   return (
     <>
-      <section className="relative w-full min-h-screen flex items-center justify-center bg-primary pt-[130px] pb-32 overflow-hidden">
+      <section className="relative w-full min-h-screen flex items-center justify-center bg-primary pb-32 overflow-hidden">
 
         {/* Grouped Left Image and Arrow */}
         <div className="absolute bottom-0 -left-24 w-[20rem] h-[20rem] z-30 flex items-center justify-center">
@@ -40,7 +40,7 @@ export default function Hero() {
         </div>
 
         {/* Main Content Area */}
-        <div className="container mx-auto px-6 z-10">
+        <div className="container mx-auto px-6 z-10 pt-[130px]">
           <div className="w-full">
             {/* Text Content */}
             <div className="text-left">
