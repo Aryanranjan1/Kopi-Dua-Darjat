@@ -9,6 +9,7 @@ import { Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import InteractiveMap from '@/components/home/InteractiveMap';
 import { Card } from '@/components/ui/card';
+import LatestStories from '@/components/home/LatestStories';
 
 export const metadata: Metadata = {
   title: 'Outlets',
@@ -63,6 +64,9 @@ export default function OutletsPage() {
 
         {/* Social Proof */}
         <InstaExploreGrid />
+        
+        {/* Latest Stories */}
+        <LatestStories />
       </div>
 
       <FooterCta />
