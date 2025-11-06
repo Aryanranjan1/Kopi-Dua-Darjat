@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useRef } from 'react';
@@ -13,7 +14,7 @@ export default function Hero() {
     <section className="relative w-full bg-primary pt-20">
       
       {/* === Cup Image === */}
-      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-full h-full pointer-events-none z-50">
+      <div className="absolute right-0 top-1/2 -translate-y-[calc(50%-50px)] w-full h-full pointer-events-none z-50">
         <AnimateOnScroll
           animationType="fadeIn"
           delay={0.4}
