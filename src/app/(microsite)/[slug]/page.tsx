@@ -1,7 +1,6 @@
 
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { outlets as allOutlets } from '@/lib/data';
 import MicrositePageClient from './MicrositePageClient';
 import type { Outlet, MenuItem, Promotion, MenuCategory, SiteSettings, Testimonial, Blog, PublicInstaPost } from '@/lib/types';
 import { initializeServerSideFirebase } from '@/firebase/server-init';
@@ -36,11 +35,16 @@ const serializeTimestamps = (obj: any): any => {
 // --- SERVER-SIDE DATA FETCHING ---
 async function getMicrositeData(slug: string) {
   const { firestore } = initializeServerSideFirebase();
-  const outlet = allOutlets.find(o => o.slug === slug);
-
-  if (!outlet) {
+  
+  // Fetch the outlet directly from Firestore using the slug as the document ID
+  const outletDocRef = doc(firestore, 'outlets', slug);
+  const outletDoc = await getDoc(outletDocRef);
+  
+  if (!outletDoc.exists()) {
     return { outlet: null };
   }
+
+  const outlet = { id: outletDoc.id, ...outletDoc.data() } as Outlet;
   
   const [
     allMenuItems, 
@@ -62,7 +66,7 @@ async function getMicrositeData(slug: string) {
   
   // Filter items relevant to this outlet (or general items)
   const outletMenuItems = allMenuItems.filter(item => 
-    item.isGeneral || !item.outletIds || item.outletIds.length === 0 || item.outletIds.includes(outlet.slug)
+    item.isGeneral || !item.outletIds || item.outletIds.length === 0 || item.outletIds.includes(outlet.id)
   );
 
   // Filter categories that have items for this outlet
@@ -73,10 +77,10 @@ async function getMicrositeData(slug: string) {
   const outletFeaturedItems = outletMenuItems.filter(item => item.isPopular);
   
   // Filter promotions relevant to this outlet (or global promotions)
-  const outletPromotions = allPromotions.filter(p => !p.outletIds || p.outletIds.length === 0 || p.outletIds.includes(outlet.slug));
+  const outletPromotions = allPromotions.filter(p => !p.outletIds || p.outletIds.length === 0 || p.outletIds.includes(outlet.id));
 
   return serializeTimestamps({ 
-    outlet: { ...outlet, id: slug }, // Ensure outlet has an id
+    outlet,
     menuCategories: outletMenuCategories,
     allMenuItems: outletMenuItems,
     featuredItems: outletFeaturedItems,
@@ -90,11 +94,15 @@ async function getMicrositeData(slug: string) {
 
 // DYNAMIC METADATA GENERATION
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const outlet = allOutlets.find(o => o.slug === params.slug);
+  const { firestore } = initializeServerSideFirebase();
+  const outletDocRef = doc(firestore, 'outlets', params.slug);
+  const outletDoc = await getDoc(outletDocRef);
 
-  if (!outlet) {
+  if (!outletDoc.exists()) {
     return { title: 'Outlet Not Found' };
   }
+  
+  const outlet = outletDoc.data() as Outlet;
 
   const description = `Visit ${outlet.name} in ${outlet.city || ''} — serving Kopi Dua Darjat from ${outlet.hours || ''}.`;
 
