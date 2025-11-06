@@ -42,7 +42,7 @@ const StickyGallery = () => {
             <div className='grid grid-cols-3 gap-2'>
               <GalleryColumn images={col1Images} className="space-y-2" />
               
-              <div className="md:sticky md:top-0 h-fit space-y-2">
+              <div className="sticky top-0 h-fit space-y-2">
                  {col2Images.map((image, index) => (
                     <figure key={index} className="w-full aspect-[4/5] relative">
                         {image ? (
