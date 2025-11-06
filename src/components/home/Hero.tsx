@@ -31,7 +31,7 @@ const DesktopHero = () => {
                     Good Coffee for Great Morning
                     </h1>
                      <div className="max-w-[40%]">
-                        <p className="mt-6 text-base sm:text-lg md:text-xl font-body font-normal text-foreground/90 leading-relaxed">
+                        <p className="mt-6 text-base sm:text-lg md:text-xl font-body font-bold text-foreground/90 leading-relaxed">
                             From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor , a golden mix of comfort, creativity, and caffeine confidence.
                         </p>
                     </div>
@@ -41,15 +41,15 @@ const DesktopHero = () => {
       </div>
 
       {/* Decorative Images Layer */}
-      <div className="absolute inset-0 w-full h-full pointer-events-none z-20">
+      <div className="absolute inset-0 w-full h-full pointer-events-none z-10">
         
-        <AnimateOnScroll animationType="slideInFromLeft" delay={0.2} className="absolute left-[calc(8%_-_60px)] top-[calc(55%_+_90px)] w-[128px] h-[128px] pointer-events-auto">
+        <AnimateOnScroll animationType="slideInFromLeft" delay={0.2} className="absolute left-[calc(8%_-_60px)] top-[calc(55%_-_150px)] w-[128px] h-[128px] pointer-events-auto">
           {/* Frame Image */}
           <div className="relative w-full h-full">
             <Image src="/image/image frame.png" alt="Frame decoration" layout="fill" className="object-contain scale-[2] -rotate-90"/>
           </div>
           {/* Button next to image */}
-          <div className="absolute left-[50%] top-[50%] -translate-x-1/4 -translate-y-1/4 w-[50px] h-[50px]">
+          <div className="absolute left-[100%] top-[50%] -translate-x-1/4 -translate-y-1/4 w-[50px] h-[50px]">
               <Link href="/outlets" className="flex items-center justify-center bg-white text-black border-2 border-black rounded-full w-full h-full hover:bg-black hover:text-white transition-all duration-300 group">
                   <ArrowUpRight className="h-4 w-4 sm:h-5 sm:w-5 transition-transform group-hover:rotate-45" />
               </Link>
@@ -57,8 +57,12 @@ const DesktopHero = () => {
         </AnimateOnScroll>
         
         {/* Coffee Beans */}
-        <AnimateOnScroll animationType="slideInFromRight" delay={0.3} className="absolute right-[calc(10%_-_30px)] bottom-[calc(12%_+_20px)] w-[150px] h-[150px] sm:w-[200px] sm:h-[200px]">
+        <AnimateOnScroll animationType="slideInFromRight" delay={0.3} className="absolute right-[calc(10%_-_30px)] bottom-[calc(12%_-_30px)] w-[150px] h-[150px] sm:w-[200px] sm:h-[200px]">
           <Image src="/image/coffee-bean.png" alt="Coffee beans" layout="fill" className="object-contain"/>
+        </AnimateOnScroll>
+
+         <AnimateOnScroll animationType="fadeIn" delay={0.4} className="absolute right-[calc(10%_-_30px)] bottom-[calc(12%_+_150px)] w-[250px] pointer-events-auto">
+          <p className="text-sm font-body font-bold text-foreground/90 leading-relaxed text-right">Brewed for Great Taste</p>
         </AnimateOnScroll>
 
         {/* Main Cup */}
