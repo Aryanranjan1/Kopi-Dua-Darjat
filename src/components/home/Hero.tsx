@@ -24,20 +24,6 @@ export default function Hero() {
         />
       </div>
 
-      {/* === Bean Accent === */}
-      <div
-        className="absolute bottom-4 left-4 md:left-[100px] w-20 h-20 sm:w-28 sm:h-28 z-40 pointer-events-none"
-        aria-hidden="true"
-      >
-        <Image
-          src="/image/coffee-bean.png"
-          alt=""
-          fill
-          className="object-contain"
-          loading="lazy"
-        />
-      </div>
-
       {/* === Main Text Content === */}
       <div
         className="relative container mx-auto px-6 sm:px-10 lg:px-16 flex flex-col justify-start z-30 min-h-screen"
@@ -53,7 +39,7 @@ export default function Hero() {
                     Good Coffee for Great Mornings
                   </h1>
                 </div>
-                <p className="mt-6 text-base sm:text-lg md:text-xl font-body font-bold text-foreground/80 max-w-[420px] leading-relaxed">
+                <p className="mt-6 text-base sm:text-lg md:text-xl font-body font-semibold text-foreground/80 max-w-[420px] leading-relaxed">
                   From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor — a golden mix of comfort, creativity, and caffeine confidence.
                 </p>
               </AnimateOnScroll>
