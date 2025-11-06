@@ -15,7 +15,7 @@ export default function BrandStory() {
           <div className="relative h-[300px] sm:h-[400px] lg:h-full lg:min-h-[600px]">
               <AnimateOnScroll 
                 animationType="slideInFromLeft"
-                className="absolute left-1/2 -translate-x-1/2 bottom-0 w-[150%] h-[150%] max-w-[40rem] lg:left-0 lg:bottom-0 lg:w-[120%] lg:h-[120%] lg:max-w-[60rem] lg:translate-x-0"
+                className="absolute left-0 bottom-0 w-full h-full"
               >
                 <div className="relative w-full h-full">
                   <Image
