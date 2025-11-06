@@ -10,7 +10,7 @@ import { ArrowUpRight } from 'lucide-react';
 export default function Hero() {
   return (
     <>
-      <section className="relative w-full min-h-screen flex justify-center bg-primary pb-32 overflow-hidden">
+      <section className="relative w-full flex justify-center bg-primary pb-32 overflow-hidden">
 
         {/* Grouped Left Image and Arrow */}
         <div className="absolute bottom-0 -left-24 w-[20rem] h-[20rem] z-30 flex items-center justify-center">
@@ -45,7 +45,7 @@ export default function Hero() {
             {/* Text Content */}
             <div className="text-left">
               <AnimateOnScroll animationType="fadeIn">
-                <h1 className="text-[clamp(2rem,6vw,4.5rem)] font-headline font-bold text-foreground text-center leading-none md:whitespace-nowrap mx-4">
+                <h1 className="text-[clamp(2.5rem,10vw,8rem)] font-headline font-bold text-foreground text-center leading-none md:whitespace-nowrap">
                   Good Coffee for Great Mornings
                 </h1>
                 <div className="flex justify-start">
