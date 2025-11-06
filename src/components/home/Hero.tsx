@@ -10,7 +10,7 @@ import { ArrowUpRight } from 'lucide-react';
 export default function Hero() {
   return (
     <>
-      <section className="relative w-full min-h-screen flex items-center justify-center overflow-hidden bg-primary pt-24 pb-32 md:pt-32">
+      <section className="relative w-full min-h-screen flex items-center justify-center bg-primary pt-24 pb-32 md:pt-32">
 
         {/* Main Content Area */}
         <div className="container mx-auto px-6 z-10">
