@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -62,7 +63,7 @@ export default function Hero() {
         </div>
 
         {/* Cup Image Overlay */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[72rem] h-[112.5vh] z-20 pointer-events-none">
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[58rem] h-[90vh] z-20 pointer-events-none">
             <div className="relative w-full h-full">
                 <Image
                     src="/image/dua-darjat-cup.png"
