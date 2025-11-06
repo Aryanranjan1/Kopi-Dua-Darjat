@@ -45,7 +45,7 @@ export default function Hero() {
             {/* Text Content */}
             <div className="text-left">
               <AnimateOnScroll animationType="fadeIn">
-                <h1 className="text-[clamp(2rem,6vw,4.5rem)] font-headline font-bold text-foreground text-center leading-none md:whitespace-nowrap">
+                <h1 className="text-[clamp(2rem,6vw,4.5rem)] font-headline font-bold text-foreground text-center leading-none md:whitespace-nowrap mx-4">
                   Good Coffee for Great Mornings
                 </h1>
                 <div className="flex justify-start">
