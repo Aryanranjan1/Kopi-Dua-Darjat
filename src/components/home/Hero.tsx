@@ -21,12 +21,12 @@ export default function Hero() {
           duration={1}
           className="w-full h-full"
         >
-          <div className="absolute left-1/2 -translate-x-1/2 w-[35rem] h-[35rem] sm:w-[50rem] sm:h-[50rem] lg:w-[35rem] lg:h-[35rem] bottom-0">
+          <div className="absolute left-1/2 -translate-x-1/2 w-[35rem] h-[35rem] sm:w-[50rem] sm:h-[50rem] lg:w-[65vh] lg:h-[65vh] bottom-0">
             <Image
               src="/image/dua-darjat-cup.png"
               alt="Kopi Dua Darjat Cup"
               fill
-              className="object-contain drop-shadow-2xl rotate-0 sm:rotate-12 md:rotate-12 lg:rotate-[25deg]"
+              className="object-contain drop-shadow-2xl rotate-0 sm:rotate-12 md:rotate-12 lg:rotate-[25deg] lg:-translate-x-[50px]"
               priority
             />
           </div>
