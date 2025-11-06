@@ -10,12 +10,12 @@ import { ArrowUpRight } from 'lucide-react';
 export default function Hero() {
   return (
     <>
-      <section className="relative w-full min-h-screen flex items-center justify-center bg-primary pb-32">
+      <section className="relative w-full min-h-screen flex items-center justify-center bg-primary pt-[130px] pb-32">
 
         {/* Grouped Left Image and Arrow */}
-        <div className="absolute bottom-5 -left-14 w-[24rem] h-[24rem] z-30 flex items-center justify-center">
+        <div className="absolute bottom-0 -left-12 w-[20rem] h-[20rem] z-30 flex items-center justify-center">
           <div className="relative w-full h-full flex items-center justify-center">
-            <div className="relative w-[24rem] h-[24rem]">
+            <div className="relative w-[20rem] h-[20rem]">
               <Image
                 src="/image/image frame.png"
                 alt="Image Frame"
@@ -30,7 +30,7 @@ export default function Hero() {
         </div>
 
         {/* Right Image */}
-        <div className="absolute top-1/2 right-20 w-48 h-48 md:w-64 md:h-64 z-30 mt-16">
+        <div className="absolute top-1/2 right-5 w-36 h-36 md:w-52 md:h-52 z-30">
              <Image
                 src="/image/coffee-bean.png"
                 alt="Coffee Bean"
@@ -45,8 +45,8 @@ export default function Hero() {
             {/* Text Content */}
             <div className="text-left">
               <AnimateOnScroll animationType="fadeIn">
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-headline font-bold text-foreground text-center">
-                  Good Coffee for Great Mornings
+                <h1 className="text-[clamp(2.5rem,10vw,6rem)] font-headline font-bold text-foreground text-center leading-none">
+                  Good Coffee for Great <br className="sm:hidden" />Mornings
                 </h1>
                 <div className="flex justify-start">
                   <p className="text-sm md:text-base font-body font-bold text-foreground/80 max-w-[370px] text-justify ml-8 mt-5">
@@ -69,7 +69,7 @@ export default function Hero() {
                     src="/image/dua-darjat-cup.png"
                     alt="Kopi Dua Darjat Cup"
                     fill
-                    className="object-contain object-bottom translate-x-5 translate-y-12 rotate-[20deg]"
+                    className="object-contain object-bottom translate-y-12 rotate-[20deg]"
                 />
             </div>
         </div>
