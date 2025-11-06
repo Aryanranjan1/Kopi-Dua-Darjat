@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -22,7 +23,7 @@ const DesktopHero = () => {
       >
         <div className="w-full max-w-5xl" ref={containerRef}>
           <AnimateOnScroll animationType="fadeIn">
-            <div>
+            <div className="max-w-2xl">
               <h1
                 ref={h1Ref}
                 className="font-headline font-extrabold text-foreground leading-[1.05] text-[clamp(2.5rem,10vw,8rem)]"
@@ -40,7 +41,7 @@ const DesktopHero = () => {
       {/* Decorative Images Layer */}
       <div className="absolute inset-0 w-full h-full pointer-events-none z-20">
         {/* Woman Image */}
-        <div className="absolute left-[calc(8%_-_60px)] top-[calc(55%_-_60px)] w-[144px] h-[144px] sm:w-[176px] sm:h-[176px]">
+        <div className="absolute left-[calc(8%_-_60px)] top-[calc(55%_+_40px)] w-[100px] h-[100px] sm:w-[120px] sm:h-[120px]">
           <AnimateOnScroll animationType="fadeIn" delay={0.2}>
             <Image src="/image/image frame.png" alt="Frame decoration" layout="fill" className="object-contain scale-[2] -rotate-90"/>
           </AnimateOnScroll>
