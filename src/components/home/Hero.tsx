@@ -57,26 +57,28 @@ export default function Hero() {
         className="relative container mx-auto px-6 sm:px-10 lg:px-16 flex flex-col justify-between z-20 min-h-screen"
       >
         {/* Top part for text */}
-        <div className="pt-[190px] w-full md:w-[48%]" ref={containerRef}>
-            <AnimateOnScroll animationType="fadeIn">
-              <div>
-                <h1
-                  ref={h1Ref}
-                  className="font-headline font-extrabold text-foreground leading-[1.05] text-[clamp(2.5rem,8.5vw,6.2rem)]"
-                >
-                  Good Coffee for Great Mornings
-                </h1>
-              </div>
-              <p className="mt-6 text-base sm:text-lg md:text-xl font-body font-semibold text-foreground/80 max-w-[420px] leading-relaxed">
-                From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor — a golden mix of comfort, creativity, and caffeine confidence.
-              </p>
-            </AnimateOnScroll>
+        <div className="w-full md:w-[48%]" ref={containerRef}>
+            <div className="pt-[190px]">
+              <AnimateOnScroll animationType="fadeIn">
+                <div>
+                  <h1
+                    ref={h1Ref}
+                    className="font-headline font-extrabold text-foreground leading-[1.05] text-[clamp(2.5rem,8.5vw,6.2rem)]"
+                  >
+                    Good Coffee for Great Mornings
+                  </h1>
+                </div>
+                <p className="mt-6 text-base sm:text-lg md:text-xl font-body font-semibold text-foreground/80 max-w-[420px] leading-relaxed">
+                  From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor — a golden mix of comfort, creativity, and caffeine confidence.
+                </p>
+              </AnimateOnScroll>
+            </div>
         </div>
 
         {/* Bottom part for frame */}
-        <div className="pb-6 w-full flex justify-start">
-            <div className="relative z-30 flex flex-row items-center gap-x-2.5">
-                <div className="relative w-[168px] h-[168px] sm:w-[168px] sm:h-[168px] md:w-[168px] md:h-[168px] pointer-events-none">
+        <div className="pb-6 w-full flex justify-start items-center gap-4">
+            <div className="relative z-30 flex-shrink-0">
+                <div className="relative w-[288px] h-[288px] sm:w-[288px] sm:h-[288px] md:w-[288px] md:h-[288px] pointer-events-none">
                 <Image
                     src="/image/image%20frame.png"
                     alt="Decorative frame with a person's photo"
@@ -85,13 +87,13 @@ export default function Hero() {
                     aria-hidden="true"
                 />
                 </div>
-                <button
-                aria-label="Locate outlet"
-                className="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center rounded-full border-2 border-foreground bg-white shadow-md transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                >
-                <ArrowUpRight className="w-8 h-8 sm:w-10 sm:h-10 text-foreground" />
-                </button>
             </div>
+            <button
+            aria-label="Locate outlet"
+            className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 flex items-center justify-center rounded-full border-2 border-foreground bg-white shadow-md transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative z-30"
+            >
+            <ArrowUpRight className="w-8 h-8 sm:w-10 sm:h-10 text-foreground" />
+            </button>
         </div>
       </div>
     </section>
