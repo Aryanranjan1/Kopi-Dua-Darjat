@@ -18,7 +18,7 @@ export default function Hero() {
             {/* Text Content */}
             <div className="text-center">
               <AnimateOnScroll animationType="fadeIn">
-                <h1 className="text-5xl md:text-6xl lg:text-7xl font-headline font-bold text-foreground leading-tight w-full">
+                <h1 className="text-5xl md:text-6xl font-headline font-bold text-foreground leading-tight w-full">
                   Good Coffee for Great Mornings
                 </h1>
                 <p className="mt-4 text-sm md:text-base font-body font-bold text-foreground/80 max-w-md text-left ml-12">
