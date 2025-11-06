@@ -43,7 +43,7 @@ const DesktopHero = () => {
       {/* Decorative Images Layer */}
       <div className="absolute inset-0 w-full h-full pointer-events-none z-10">
         
-        <AnimateOnScroll animationType="slideInFromLeft" delay={0.2} className="absolute left-[calc(8%_-_60px)] top-[calc(55%_-_150px)] w-[128px] h-[128px] pointer-events-auto">
+        <AnimateOnScroll animationType="slideInFromLeft" delay={0.2} className="absolute left-[calc(8%_-_60px)] top-[calc(55%_-_250px)] w-[128px] h-[128px] pointer-events-auto">
           {/* Frame Image */}
           <div className="relative w-full h-full">
             <Image src="/image/image frame.png" alt="Frame decoration" layout="fill" className="object-contain scale-[2] -rotate-90"/>
@@ -57,12 +57,12 @@ const DesktopHero = () => {
         </AnimateOnScroll>
         
         {/* Coffee Beans */}
-        <AnimateOnScroll animationType="slideInFromRight" delay={0.3} className="absolute right-[calc(10%_-_30px)] bottom-[calc(12%_-_30px)] w-[150px] h-[150px] sm:w-[200px] sm:h-[200px]">
+        <AnimateOnScroll animationType="slideInFromRight" delay={0.3} className="absolute right-[calc(10%_-_30px)] bottom-[calc(12%_-_80px)] w-[150px] h-[150px] sm:w-[200px] sm:h-[200px]">
           <Image src="/image/coffee-bean.png" alt="Coffee beans" layout="fill" className="object-contain"/>
         </AnimateOnScroll>
 
-         <AnimateOnScroll animationType="fadeIn" delay={0.4} className="absolute right-[calc(10%_-_30px)] bottom-[calc(12%_+_150px)] w-[250px] pointer-events-auto">
-          <p className="text-sm font-body font-bold text-foreground/90 leading-relaxed text-right">Brewed for Great Taste</p>
+         <AnimateOnScroll animationType="fadeIn" delay={0.4} className="absolute right-[calc(10%_-_30px)] bottom-[calc(12%_+_100px)] w-[250px] pointer-events-auto">
+          <p className="text-base sm:text-lg md:text-xl font-body font-bold text-foreground/90 leading-relaxed text-right">Brewed for Great Taste</p>
         </AnimateOnScroll>
 
         {/* Main Cup */}
