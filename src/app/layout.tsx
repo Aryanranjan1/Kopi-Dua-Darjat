@@ -71,7 +71,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <body
         suppressHydrationWarning
         className={cn(
@@ -81,10 +81,10 @@ export default function RootLayout({
         )}
       >
         <FirebaseClientProvider>
-          <SettingsProvider>
-            <AppLayout>{children}</AppLayout>
-          </SettingsProvider>
-          <Toaster />
+            <SettingsProvider>
+                <AppLayout>{children}</AppLayout>
+            </SettingsProvider>
+            <Toaster />
         </FirebaseClientProvider>
       </body>
     </html>
