@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useRef } from 'react';
@@ -48,7 +47,7 @@ const DesktopHero = () => {
         </div>
         
         {/* Diagonal Arrow Button */}
-        <div className="absolute left-[25%] top-[62%] w-[80px] h-[80px] sm:w-[100px] sm:h-[100px] pointer-events-auto">
+        <div className="absolute left-[calc(25%_+_50px)] top-[62%] w-[80px] h-[80px] sm:w-[100px] sm:h-[100px] pointer-events-auto">
           <AnimateOnScroll animationType="fadeIn" delay={0.4}>
              <Button asChild variant="outline" size="icon" className="w-full h-full rounded-full border-2 border-foreground/50 hover:bg-foreground group transition-transform hover:scale-105">
                 <Link href="/menu">
@@ -59,14 +58,14 @@ const DesktopHero = () => {
         </div>
         
         {/* Coffee Beans */}
-        <div className="absolute right-[10%] bottom-[12%] w-[150px] h-[150px] sm:w-[200px] sm:h-[200px]">
+        <div className="absolute right-[calc(10%_-_50px)] bottom-[12%] w-[150px] h-[150px] sm:w-[200px] sm:h-[200px]">
           <AnimateOnScroll animationType="fadeIn" delay={0.3}>
             <Image src="/image/coffee-bean.png" alt="Coffee beans" layout="fill" className="object-contain"/>
           </AnimateOnScroll>
         </div>
 
         {/* Main Cup */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[100vh] h-[100vh] sm:w-[130vh] sm:h-[130vh]">
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[112.5vh] h-[112.5vh]">
           <AnimateOnScroll animationType="slideInFromBottom" delay={0.1}>
             <Image src="/image/dua-darjat-cup.png" alt="Kopi Dua Darjat splashing cup" layout="fill" className="object-contain rotate-[25deg] -translate-x-[50px]"/>
           </AnimateOnScroll>
