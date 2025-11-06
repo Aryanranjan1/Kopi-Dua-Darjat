@@ -13,7 +13,7 @@ export default function Hero() {
       <section className="relative w-full min-h-screen flex items-center justify-center bg-primary pt-24 pb-32 md:pt-32">
 
         {/* Left Image */}
-        <div className="absolute top-1/4 left-0 w-48 h-48 md:w-64 md:h-64 z-0">
+        <div className="absolute bottom-0 left-0 w-48 h-48 md:w-64 md:h-64 z-30">
             <Image
                 src="/image/image frame.png"
                 alt="Image Frame"
@@ -23,7 +23,7 @@ export default function Hero() {
         </div>
 
         {/* Right Image */}
-        <div className="absolute top-1/2 right-0 w-48 h-48 md:w-64 md:h-64 z-0">
+        <div className="absolute top-1/2 right-0 w-48 h-48 md:w-64 md:h-64 z-30">
              <Image
                 src="/image/coffee-bean.png"
                 alt="Coffee Bean"
