@@ -1,4 +1,3 @@
-
 'use client';
 
 import * as React from 'react';
@@ -29,7 +28,7 @@ const DesktopHero = () => {
                 ref={h1Ref}
                 className="font-headline font-extrabold text-foreground leading-[1.05] text-[clamp(2.5rem,10vw,8rem)]"
               >
-                Good Coffee for Great Mornings
+                Good Coffee for Great Morning
               </h1>
             </div>
             <p className="mt-6 text-base sm:text-lg md:text-xl font-body font-normal text-foreground/90 max-w-[420px] leading-relaxed">
@@ -42,7 +41,7 @@ const DesktopHero = () => {
       {/* Decorative Images Layer */}
       <div className="absolute inset-0 w-full h-full pointer-events-none z-20">
         {/* Woman Image */}
-        <div className="absolute left-[calc(8%_-_60px)] top-[calc(55%_-_60px)] w-[144px] h-[144px] sm:w-[176px] sm:h-[176px]">
+        <div className="absolute left-[calc(8%_-_80px)] top-[calc(55%_-_80px)] w-[115px] h-[115px] sm:w-[140px] sm:h-[140px]">
           <AnimateOnScroll animationType="fadeIn" delay={0.2}>
             <Image src="/image/image frame.png" alt="Frame decoration" layout="fill" className="object-contain scale-[2] -rotate-90"/>
           </AnimateOnScroll>
@@ -60,14 +59,14 @@ const DesktopHero = () => {
         </div>
         
         {/* Coffee Beans */}
-        <div className="absolute right-[calc(10%_-_0px)] bottom-[calc(12%_-_20px)] w-[150px] h-[150px] sm:w-[200px] sm:h-[200px]">
+        <div className="absolute right-[calc(10%_-_50px)] bottom-[calc(12%_-_40px)] w-[150px] h-[150px] sm:w-[200px] sm:h-[200px]">
           <AnimateOnScroll animationType="fadeIn" delay={0.3}>
             <Image src="/image/coffee-bean.png" alt="Coffee beans" layout="fill" className="object-contain"/>
           </AnimateOnScroll>
         </div>
 
         {/* Main Cup */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-[calc(50%_+_50px)] w-[56.25vh] h-[56.25vh] sm:w-[75vh] sm:h-[75vh]">
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[75vh] h-[75vh]">
           <AnimateOnScroll animationType="slideInFromBottom" delay={0.1}>
             <Image src="/image/dua-darjat-cup.png" alt="Kopi Dua Darjat splashing cup" layout="fill" className="object-contain rotate-[25deg]"/>
           </AnimateOnScroll>
