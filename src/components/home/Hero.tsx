@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useRef } from 'react';
@@ -21,25 +20,6 @@ export default function Hero() {
           fill
           className="object-cover object-bottom"
         />
-      </div>
-
-      {/* === Left Frame (Girl + Arrow) === */}
-      <div className="absolute bottom-6 left-8 sm:left-12 md:left-16 z-30 flex flex-row items-center gap-2.5">
-        <div className="relative w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 pointer-events-none">
-          <Image
-            src="/image/image%20frame.png"
-            alt="Decorative frame with a person's photo"
-            fill
-            className="object-contain -rotate-90"
-            aria-hidden="true"
-          />
-        </div>
-        <button
-          aria-label="Locate outlet"
-          className="w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center rounded-full border-8 border-foreground bg-white shadow-md transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-        >
-          <ArrowUpRight className="w-16 h-16 sm:w-20 sm:h-20 text-foreground" />
-        </button>
       </div>
 
       {/* === Coffee Bean === */}
@@ -72,24 +52,48 @@ export default function Hero() {
         />
       </div>
 
-      {/* === Text Content (anchored left) === */}
+      {/* === Text Content & Frame Group Container === */}
       <div
-        className="relative container mx-auto px-6 sm:px-10 lg:px-16 flex flex-col justify-center md:justify-start items-center md:items-start text-center md:text-left z-20 min-h-screen pt-[190px] pb-48 md:pb-0"
+        className="relative container mx-auto px-6 sm:px-10 lg:px-16 flex flex-col justify-between z-20 min-h-screen"
       >
-        <div ref={containerRef} className="w-full md:w-[48%]">
-          <AnimateOnScroll animationType="fadeIn">
-            <div>
+        {/* Top part for text */}
+        <div className="pt-[190px] w-full md:w-[48%]">
+          <div ref={containerRef} className="w-full">
+            <AnimateOnScroll animationType="fadeIn">
+              <div>
                 <h1
-                ref={h1Ref}
-                className="font-headline font-extrabold text-foreground leading-[1.05] text-[clamp(2.5rem,8.5vw,6.2rem)]"
+                  ref={h1Ref}
+                  className="font-headline font-extrabold text-foreground leading-[1.05] text-[clamp(2.5rem,8.5vw,6.2rem)]"
                 >
-                Good Coffee for Great Mornings
+                  Good Coffee for Great Mornings
                 </h1>
+              </div>
+              <p className="mt-6 text-base sm:text-lg md:text-xl font-body font-semibold text-foreground/80 max-w-[420px] leading-relaxed">
+                From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor — a golden mix of comfort, creativity, and caffeine confidence.
+              </p>
+            </AnimateOnScroll>
+          </div>
+        </div>
+
+        {/* Bottom part for frame */}
+        <div className="pb-6 w-full flex justify-start">
+            <div className="relative z-30 flex flex-row items-center gap-[0.7rem]">
+                <div className="relative w-[192px] h-[192px] sm:w-[240px] sm:h-[240px] md:w-[288px] md:h-[288px] pointer-events-none">
+                <Image
+                    src="/image/image%20frame.png"
+                    alt="Decorative frame with a person's photo"
+                    fill
+                    className="object-contain -rotate-90"
+                    aria-hidden="true"
+                />
+                </div>
+                <button
+                aria-label="Locate outlet"
+                className="w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center rounded-full border-8 border-foreground bg-white shadow-md transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                >
+                <ArrowUpRight className="w-16 h-16 sm:w-20 sm:h-20 text-foreground" />
+                </button>
             </div>
-            <p className="mt-6 text-base sm:text-lg md:text-xl font-body font-semibold text-foreground/80 max-w-[420px] leading-relaxed mx-auto md:mx-0">
-              From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor — a golden mix of comfort, creativity, and caffeine confidence.
-            </p>
-          </AnimateOnScroll>
         </div>
       </div>
     </section>
