@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -20,9 +21,9 @@ const DesktopHero = () => {
       <div
         className="relative container mx-auto px-6 sm:px-10 lg:px-16 flex flex-col justify-start z-30 pt-28"
       >
-        <div className="max-w-5xl">
+        <div ref={containerRef} className="w-full">
             <AnimateOnScroll animationType="fadeIn">
-                <div ref={containerRef} className="max-w-2xl">
+                <div>
                     <h1
                     ref={h1Ref}
                     className="font-headline font-extrabold text-foreground leading-[1.05] text-[clamp(2.5rem,10vw,8rem)]"
@@ -48,7 +49,7 @@ const DesktopHero = () => {
         </div>
         
         {/* Button next to image */}
-        <div className="absolute left-[calc(8%_+_120px)] top-[calc(55%_-_20px)] w-[40px] h-[40px] sm:w-[50px] sm:h-[50px] pointer-events-auto">
+        <div className="absolute left-[calc(8%_+_80px)] top-[calc(55%_+_20px)] w-[40px] h-[40px] sm:w-[50px] sm:h-[50px] pointer-events-auto">
           <AnimateOnScroll animationType="fadeIn" delay={0.3}>
             <Link href="/outlets" className="flex items-center justify-center bg-white text-black border-2 border-black rounded-full w-full h-full hover:bg-black hover:text-white transition-all duration-300 group">
                 <ArrowUpRight className="h-4 w-4 sm:h-5 sm:w-5 transition-transform group-hover:rotate-45" />
