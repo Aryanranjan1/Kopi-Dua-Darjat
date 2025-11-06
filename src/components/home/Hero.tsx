@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useRef } from 'react';
@@ -23,20 +22,6 @@ export default function Hero() {
         />
       </div>
 
-      {/* === Coffee Bean === */}
-      <div
-        className="absolute right-4 top-1/2 md:right-16 md:top-[45%] w-20 h-20 sm:w-28 sm:h-28 z-20 pointer-events-none md:block hidden"
-        aria-hidden="true"
-      >
-        <Image
-          src="/image/coffee-bean.png"
-          alt=""
-          fill
-          className="object-contain"
-          loading="lazy"
-        />
-      </div>
-
       {/* === Cup Image === */}
       <div
         className="animate-fade-in-up absolute left-1/2 top-1/2 z-20 mt-24 w-[220px] -translate-x-1/2 -translate-y-1/2 pointer-events-none sm:w-[280px] md:top-[40%] md:w-[420px] md:-translate-y-0 md:left-auto md:right-[28%] md:mt-0"
@@ -52,13 +37,27 @@ export default function Hero() {
           priority
         />
       </div>
+      
+      {/* === Bean Accent === */}
+      <div
+        className="absolute right-4 top-1/2 md:right-16 md:top-[45%] w-20 h-20 sm:w-28 sm:h-28 z-20 pointer-events-none md:block hidden"
+        aria-hidden="true"
+      >
+        <Image
+          src="/image/coffee-bean.png"
+          alt=""
+          fill
+          className="object-contain"
+          loading="lazy"
+        />
+      </div>
 
       {/* === Text Content & Frame Group Container === */}
       <div
         className="relative container mx-auto px-6 sm:px-10 lg:px-16 flex flex-col justify-between z-20 min-h-screen"
       >
         {/* Top part for text */}
-        <div ref={containerRef} className="pt-[190px] w-full md:w-[48%]">
+        <div className="pt-[190px] w-full md:w-[48%]" ref={containerRef}>
             <AnimateOnScroll animationType="fadeIn">
               <div>
                 <h1
@@ -76,8 +75,8 @@ export default function Hero() {
 
         {/* Bottom part for frame */}
         <div className="pb-6 w-full flex justify-start">
-            <div className="relative z-30 flex flex-row items-center gap-[0.7rem]">
-                <div className="relative w-[336px] h-[336px] sm:w-[420px] sm:h-[420px] md:w-[504px] md:h-[504px] pointer-events-none">
+            <div className="relative z-30 flex flex-row items-center gap-x-2.5">
+                <div className="relative w-[168px] h-[168px] sm:w-[168px] sm:h-[168px] md:w-[168px] md:h-[168px] pointer-events-none">
                 <Image
                     src="/image/image%20frame.png"
                     alt="Decorative frame with a person's photo"
@@ -88,9 +87,9 @@ export default function Hero() {
                 </div>
                 <button
                 aria-label="Locate outlet"
-                className="w-48 h-48 sm:w-56 sm:h-56 flex items-center justify-center rounded-full border-8 border-foreground bg-white shadow-md transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                className="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center rounded-full border-2 border-foreground bg-white shadow-md transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
-                <ArrowUpRight className="w-28 h-28 sm:w-36 sm:h-36 text-foreground" />
+                <ArrowUpRight className="w-8 h-8 sm:w-10 sm:h-10 text-foreground" />
                 </button>
             </div>
         </div>
