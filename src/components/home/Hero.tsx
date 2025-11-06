@@ -15,7 +15,7 @@ export default function Hero() {
         {/* Grouped Left Image and Arrow */}
         <div className="absolute bottom-0 left-0 w-[30rem] h-[20rem] z-30 flex items-center justify-center -ml-12">
           <div className="relative w-full h-full flex items-center justify-center">
-            <div className="relative w-[20rem] h-[20rem]">
+            <div className="relative w-[24rem] h-[24rem]">
               <Image
                 src="/image/image frame.png"
                 alt="Image Frame"
@@ -23,7 +23,7 @@ export default function Hero() {
                 className="object-contain -rotate-90"
               />
             </div>
-            <div className="relative w-20 h-20 border-4 border-foreground rounded-full flex items-center justify-center -ml-12">
+            <div className="relative w-20 h-20 border-4 border-foreground rounded-full flex items-center justify-center -ml-20">
               <ArrowUpRight className="w-12 h-12 text-foreground" />
             </div>
           </div>
@@ -49,7 +49,7 @@ export default function Hero() {
                   Good Coffee for Great Mornings
                 </h1>
                 <div className="flex justify-start">
-                  <p className="text-sm md:text-base font-body font-bold text-foreground/80 max-w-[410px] text-justify">
+                  <p className="text-sm md:text-base font-body font-bold text-foreground/80 max-w-[410px] text-justify ml-8 mt-5">
                     From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor , a golden mix of comfort, creativity, and caffeine confidence.
                   </p>
                 </div>
