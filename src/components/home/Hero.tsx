@@ -10,30 +10,31 @@ import { ArrowUpRight } from 'lucide-react';
 export default function Hero() {
   return (
     <>
-      <section className="relative w-full h-screen flex justify-center bg-primary">
+      <section className="relative w-full h-screen flex items-center justify-center bg-primary">
 
         {/* Grouped Left Image and Arrow */}
         <div className="absolute bottom-0 -left-24 w-[20rem] h-[20rem] z-30 flex items-center justify-center">
           <div className="relative w-full h-full flex items-center justify-center">
             <div className="relative w-[20rem] h-[20rem]">
               <Image
-                src="/image/image frame.png"
+                src="/image/image%20frame.png"
                 alt="Image Frame"
                 fill
-                className="object-contain -rotate-90"
+                className="object-contain -rotate-90 pointer-events-none"
               />
             </div>
-            <div className="relative w-16 h-16 border-4 border-foreground rounded-full flex items-center justify-center -ml-20">
+            <button className="relative w-16 h-16 border-4 border-foreground rounded-full flex items-center justify-center -ml-20 bg-white cursor-pointer" aria-label="Open profile">
               <ArrowUpRight className="w-10 h-10 text-foreground" />
-            </div>
+            </button>
           </div>
         </div>
 
         {/* Right Image */}
-        <div className="absolute top-1/2 right-20 w-36 h-36 md:w-52 md:h-52 z-30">
+        <div className="absolute top-1/2 right-20 w-36 h-36 md:w-52 md:h-52 z-30 pointer-events-none">
              <Image
                 src="/image/coffee-bean.png"
-                alt="Coffee Bean"
+                alt=""
+                aria-hidden="true"
                 fill
                 className="object-contain"
             />
@@ -45,17 +46,16 @@ export default function Hero() {
             {/* Text Content */}
             <div className="text-left">
               <AnimateOnScroll animationType="fadeIn">
-                <h1 className="font-headline font-extrabold text-foreground text-center leading-none text-[clamp(2.5rem,7vw,5rem)] md:whitespace-nowrap">
+                <h1 className="font-headline font-extrabold text-foreground text-center leading-none text-[clamp(2.5rem,8vw,5rem)] md:whitespace-nowrap">
                   Good Coffee for Great Mornings
                 </h1>
                 <div className="flex justify-start">
-                  <p className="text-sm md:text-base font-body font-bold text-foreground/80 max-w-[390px] text-justify ml-8 mt-[50px]">
-                    From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor , a golden mix of comfort, creativity, and caffeine confidence.
-                  </p>
+                  <div className="mt-[50px]">
+                    <p className="text-base md:text-lg font-body font-bold text-foreground/80 max-w-[390px] text-justify ml-8">
+                        From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor , a golden mix of comfort, creativity, and caffeine confidence.
+                    </p>
+                  </div>
                 </div>
-              </AnimateOnScroll>
-              
-              <AnimateOnScroll animationType='fadeIn' delay={0.2} className="mt-12 flex items-center justify-center gap-4">
               </AnimateOnScroll>
             </div>
             
@@ -67,7 +67,8 @@ export default function Hero() {
             <div className="relative w-full h-full">
                 <Image
                     src="/image/dua-darjat-cup.png"
-                    alt="Kopi Dua Darjat Cup"
+                    alt=""
+                    aria-hidden="true"
                     fill
                     className="object-contain object-bottom translate-y-12 rotate-[20deg]"
                 />
