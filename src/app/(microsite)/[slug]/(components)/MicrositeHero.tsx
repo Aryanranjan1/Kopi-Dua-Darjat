@@ -42,7 +42,7 @@ export default function MicrositeHero({ outlet }: MicrositeHeroProps) {
                     <Button asChild size="lg" className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90">
                         <a href="#menu">View Our Menu</a>
                     </Button>
-                    <Button asChild size="lg" variant="outline" className="rounded-full border-white text-white hover:bg-white hover:text-black">
+                    <Button asChild size="lg" variant="outline" className="rounded-full border-white bg-white text-black hover:bg-white/90 hover:text-black">
                         <a href={`https://www.google.com/maps/dir/?api=1&destination=${outlet.lat},${outlet.lng}`} target="_blank" rel="noopener noreferrer">
                             Get Directions
                         </a>
