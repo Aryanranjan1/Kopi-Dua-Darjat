@@ -19,9 +19,8 @@ const DesktopHero = () => {
       {/* === Main Text Content === */}
       <div
         className="relative container mx-auto px-6 sm:px-10 lg:px-16 flex flex-col justify-start z-30 pt-28"
-        ref={containerRef}
       >
-        <div className="w-full max-w-5xl">
+        <div className="w-full max-w-5xl" ref={containerRef}>
           <AnimateOnScroll animationType="fadeIn">
             <div>
               <h1
@@ -41,7 +40,7 @@ const DesktopHero = () => {
       {/* Decorative Images Layer */}
       <div className="absolute inset-0 w-full h-full pointer-events-none z-20">
         {/* Woman Image */}
-        <div className="absolute left-[calc(8%_-_80px)] top-[calc(55%_-_80px)] w-[115px] h-[115px] sm:w-[140px] sm:h-[140px]">
+        <div className="absolute left-[calc(8%_-_60px)] top-[calc(55%_-_60px)] w-[144px] h-[144px] sm:w-[176px] sm:h-[176px]">
           <AnimateOnScroll animationType="fadeIn" delay={0.2}>
             <Image src="/image/image frame.png" alt="Frame decoration" layout="fill" className="object-contain scale-[2] -rotate-90"/>
           </AnimateOnScroll>
@@ -66,7 +65,7 @@ const DesktopHero = () => {
         </div>
 
         {/* Main Cup */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[75vh] h-[75vh]">
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[60vh] h-[60vh]">
           <AnimateOnScroll animationType="slideInFromBottom" delay={0.1}>
             <Image src="/image/dua-darjat-cup.png" alt="Kopi Dua Darjat splashing cup" layout="fill" className="object-contain rotate-[25deg]"/>
           </AnimateOnScroll>
