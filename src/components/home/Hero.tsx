@@ -20,11 +20,12 @@ export default function Hero() {
           alt="Wave separator"
           fill
           className="object-cover object-bottom"
+          aria-hidden="true"
         />
       </div>
 
-      {/* === Girl Image Frame === */}
-      <div className="absolute z-20 bottom-6 left-8 sm:left-12 md:left-16 flex items-center -ml-12 gap-0">
+      {/* === Girl Image Frame + Arrow Button === */}
+      <div className="absolute z-20 bottom-6 left-8 sm:left-12 md:left-16 flex items-center gap-0">
         <div className="relative w-[576px] h-[576px] sm:w-[576px] sm:h-[576px] md:w-[576px] md:h-[576px] pointer-events-none">
             <Image
                 src="/image/image%20frame.png"
@@ -37,7 +38,7 @@ export default function Hero() {
         {/* === Arrow Button === */}
         <button
             aria-label="Locate outlet"
-            className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 flex items-center justify-center rounded-full border-2 border-foreground bg-white shadow-md transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative z-30 -ml-[50px]"
+            className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 flex items-center justify-center rounded-full border-2 border-foreground bg-white shadow-md transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative z-30 -ml-[100px]"
         >
             <ArrowUpRight className="w-8 h-8 sm:w-10 sm:h-10 text-foreground" />
         </button>
