@@ -62,9 +62,9 @@ const DesktopHero = () => {
         </AnimateOnScroll>
 
         {/* Main Cup */}
-        <div className="absolute bottom-[-75px] left-1/2 -translate-x-1/2 w-[90vh] h-[90vh] z-20">
+        <div className="absolute bottom-[-85px] left-1/2 -translate-x-1/2 w-[90vh] h-[90vh] z-20">
           <AnimateOnScroll animationType="slideInFromBottom" delay={0.1}>
-            <Image src="/image/dua-darjat-cup.png" alt="Kopi Dua Darjat splashing cup" layout="fill" className="object-contain rotate-[25deg]"/>
+            <Image src="/image/dua-darjat-cup.png" alt="Kopi Dua Darjat splashing cup" layout="fill" className="object-contain animate-float"/>
           </AnimateOnScroll>
         </div>
       </div>
