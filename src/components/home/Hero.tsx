@@ -24,7 +24,7 @@ export default function Hero() {
         />
       </div>
 
-      {/* === Girl Image Frame + Arrow Button === */}
+      {/* === Frame Group (Image + Arrow) === */}
       <div className="absolute z-20 bottom-6 left-8 sm:left-12 md:left-16 flex items-center gap-0">
         <div className="relative w-[576px] h-[576px] sm:w-[576px] sm:h-[576px] md:w-[576px] md:h-[576px] pointer-events-none">
             <Image
@@ -73,7 +73,7 @@ export default function Hero() {
                     Good Coffee for Great Mornings
                   </h1>
                 </div>
-                <p className="mt-6 text-base sm:text-lg md:text-xl font-body font-semibold text-foreground/80 max-w-[420px] leading-relaxed">
+                <p className="mt-6 text-base sm:text-lg md:text-xl font-body font-bold text-foreground/80 max-w-[420px] leading-relaxed">
                   From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor — a golden mix of comfort, creativity, and caffeine confidence.
                 </p>
               </AnimateOnScroll>
