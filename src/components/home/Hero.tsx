@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useRef } from 'react';
@@ -40,17 +41,17 @@ const DesktopHero = () => {
       {/* Decorative Images Layer */}
       <div className="absolute inset-0 w-full h-full pointer-events-none z-20">
         {/* Woman Image */}
-        <div className="absolute left-[calc(8%_-_20px)] top-[calc(55%_-_20px)] w-[144px] h-[144px] sm:w-[176px] sm:h-[176px]">
+        <div className="absolute left-[calc(8%_-_40px)] top-[calc(55%_-_40px)] w-[144px] h-[144px] sm:w-[176px] sm:h-[176px]">
           <AnimateOnScroll animationType="fadeIn" delay={0.2}>
             <Image src="/image/image frame.png" alt="Frame decoration" layout="fill" className="object-contain scale-[2] -rotate-90"/>
           </AnimateOnScroll>
         </div>
         
         {/* Diagonal Arrow Button */}
-        <div className="absolute left-[calc(25%_+_50px)] top-[62%] w-[80px] h-[80px] sm:w-[100px] sm:h-[100px] pointer-events-auto">
+        <div className="absolute left-[25%] top-[62%] w-[80px] h-[80px] sm:w-[100px] sm:h-[100px] pointer-events-auto">
           <AnimateOnScroll animationType="fadeIn" delay={0.4}>
              <Button asChild variant="outline" size="icon" className="w-full h-full rounded-full border-2 border-foreground/50 hover:bg-foreground group transition-transform hover:scale-105">
-                <Link href="/menu">
+                <Link href="/outlets">
                     <ArrowUpRight className="w-1/2 h-1/2 text-foreground group-hover:text-background" />
                 </Link>
              </Button>
@@ -58,7 +59,7 @@ const DesktopHero = () => {
         </div>
         
         {/* Coffee Beans */}
-        <div className="absolute right-[calc(10%_-_100px)] bottom-[calc(12%_-_20px)] w-[150px] h-[150px] sm:w-[200px] sm:h-[200px]">
+        <div className="absolute right-[calc(10%_-_50px)] bottom-[calc(12%)] w-[150px] h-[150px] sm:w-[200px] sm:h-[200px]">
           <AnimateOnScroll animationType="fadeIn" delay={0.3}>
             <Image src="/image/coffee-bean.png" alt="Coffee beans" layout="fill" className="object-contain"/>
           </AnimateOnScroll>
