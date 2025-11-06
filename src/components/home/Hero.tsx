@@ -30,7 +30,7 @@ export default function Hero() {
         </div>
 
         {/* Right Image */}
-        <div className="absolute top-1/2 right-20 w-48 h-48 md:w-64 md:h-64 z-30 mt-12">
+        <div className="absolute top-1/2 right-20 w-48 h-48 md:w-64 md:h-64 z-30 mt-16">
              <Image
                 src="/image/coffee-bean.png"
                 alt="Coffee Bean"
@@ -63,7 +63,7 @@ export default function Hero() {
         </div>
 
         {/* Cup Image Overlay */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-1/2 z-20 pointer-events-none">
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[96rem] h-[150vh] z-20 pointer-events-none">
             <div className="relative w-full h-full">
                 <Image
                     src="/image/dua-darjat-cup.png"
