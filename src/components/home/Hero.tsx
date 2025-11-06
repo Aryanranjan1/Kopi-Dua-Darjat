@@ -12,7 +12,7 @@ export default function Hero() {
   const h1Ref = useFitText<HTMLHeadingElement>(containerRef);
 
   return (
-    <section ref={containerRef} className="relative w-full min-h-screen bg-primary overflow-hidden">
+    <section className="relative w-full min-h-screen bg-primary overflow-hidden">
       {/* === Bottom Wave === */}
       <div className="absolute bottom-0 left-0 w-full h-24 sm:h-36 md:h-48 z-10 pointer-events-none">
         <Image
@@ -73,19 +73,22 @@ export default function Hero() {
       </div>
 
       {/* === Text Content (anchored left) === */}
-      <div className="relative container mx-auto px-6 sm:px-10 lg:px-16 flex flex-col justify-center md:justify-start items-center md:items-start text-center md:text-left z-20 min-h-screen pt-24 pb-48 md:pt-0 md:pb-0">
+      <div
+        ref={containerRef}
+        className="relative container mx-auto px-6 sm:px-10 lg:px-16 flex flex-col justify-center md:justify-start items-center md:items-start text-center md:text-left z-20 min-h-screen pt-[190px] pb-48 md:pb-0"
+      >
         <div className="w-full md:w-[48%]">
           <AnimateOnScroll animationType="fadeIn">
-            <h1
-              ref={h1Ref}
-              className="font-headline font-extrabold text-foreground leading-[1.05] text-[clamp(2.5rem,8.5vw,6.2rem)]"
-            >
-              Good Coffee for Great Mornings
-            </h1>
+            <div>
+                <h1
+                ref={h1Ref}
+                className="font-headline font-extrabold text-foreground leading-[1.05] text-[clamp(2.5rem,8.5vw,6.2rem)]"
+                >
+                Good Coffee for Great Mornings
+                </h1>
+            </div>
             <p className="mt-6 text-base sm:text-lg md:text-xl font-body font-semibold text-foreground/80 max-w-[420px] leading-relaxed mx-auto md:mx-0">
-              From bean to cup, every pour is crafted with passion and
-              precision. Our coffee celebrates the art of flavor — a golden mix
-              of comfort, creativity, and caffeine confidence.
+              From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor — a golden mix of comfort, creativity, and caffeine confidence.
             </p>
           </AnimateOnScroll>
         </div>
