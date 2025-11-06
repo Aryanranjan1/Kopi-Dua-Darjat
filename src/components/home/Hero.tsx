@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useRef } from 'react';
@@ -57,8 +58,7 @@ export default function Hero() {
         className="relative container mx-auto px-6 sm:px-10 lg:px-16 flex flex-col justify-between z-20 min-h-screen"
       >
         {/* Top part for text */}
-        <div className="pt-[190px] w-full md:w-[48%]">
-          <div ref={containerRef} className="w-full">
+        <div ref={containerRef} className="pt-[190px] w-full md:w-[48%]">
             <AnimateOnScroll animationType="fadeIn">
               <div>
                 <h1
@@ -72,13 +72,12 @@ export default function Hero() {
                 From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor — a golden mix of comfort, creativity, and caffeine confidence.
               </p>
             </AnimateOnScroll>
-          </div>
         </div>
 
         {/* Bottom part for frame */}
         <div className="pb-6 w-full flex justify-start">
             <div className="relative z-30 flex flex-row items-center gap-[0.7rem]">
-                <div className="relative w-[192px] h-[192px] sm:w-[240px] sm:h-[240px] md:w-[288px] md:h-[288px] pointer-events-none">
+                <div className="relative w-[336px] h-[336px] sm:w-[420px] sm:h-[420px] md:w-[504px] md:h-[504px] pointer-events-none">
                 <Image
                     src="/image/image%20frame.png"
                     alt="Decorative frame with a person's photo"
@@ -89,9 +88,9 @@ export default function Hero() {
                 </div>
                 <button
                 aria-label="Locate outlet"
-                className="w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center rounded-full border-8 border-foreground bg-white shadow-md transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                className="w-48 h-48 sm:w-56 sm:h-56 flex items-center justify-center rounded-full border-8 border-foreground bg-white shadow-md transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
-                <ArrowUpRight className="w-16 h-16 sm:w-20 sm:h-20 text-foreground" />
+                <ArrowUpRight className="w-28 h-28 sm:w-36 sm:h-36 text-foreground" />
                 </button>
             </div>
         </div>
