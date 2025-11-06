@@ -75,7 +75,7 @@ export default function RootLayout({
       <body
         suppressHydrationWarning
         className={cn(
-          'min-h-screen bg-background font-body antialiased',
+          'min-h-screen bg-background font-body antialiased overflow-x-hidden',
           montserrat.variable,
           nunitoSansCondensed.variable
         )}

@@ -20,9 +20,8 @@ const DesktopHero = () => {
       {/* === Main Text Content === */}
       <div
         className="relative container mx-auto px-6 sm:px-10 lg:px-16 flex flex-col justify-start z-30 pt-28"
-        ref={containerRef}
       >
-        <div className="w-full">
+        <div ref={containerRef} className="w-full">
             <AnimateOnScroll animationType="fadeIn">
                 <div className="w-full">
                     <h1

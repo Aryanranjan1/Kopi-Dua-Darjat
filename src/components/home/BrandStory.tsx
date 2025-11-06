@@ -9,12 +9,12 @@ import { AnimateOnScroll } from "@/components/animations/AnimateOnScroll"
 export default function BrandStory() {
   return (
     <section className="bg-[#F7F4EF] text-foreground overflow-hidden">
-      <div className="mx-auto">
+      <div className="container mx-auto">
         <div className="grid lg:grid-cols-2 gap-x-8 gap-y-16 sm:gap-y-20 lg:gap-x-16 items-center">
           {/* Left Side: Image */}
-          <div className="relative lg:pl-16 h-full">
-              <AnimateOnScroll animationType="slideInFromLeft" className="relative flex justify-center items-end h-full">
-                <div className="relative w-[30rem] h-[30rem] sm:w-[48rem] sm:h-[48rem] lg:w-[60rem] lg:h-[60rem] lg:max-w-none ml-0 lg:-ml-48">
+          <div className="relative lg:pl-16 h-full min-h-[500px] lg:min-h-[600px]">
+              <AnimateOnScroll animationType="slideInFromLeft" className="absolute bottom-0 left-0 lg:-left-32 w-[30rem] h-[30rem] sm:w-[48rem] sm:h-[48rem] lg:w-[60rem] lg:h-[60rem]">
+                <div className="relative w-full h-full">
                   <Image
                     src="/image/kdd-cup.png"
                     alt="Kopi Darjat"
