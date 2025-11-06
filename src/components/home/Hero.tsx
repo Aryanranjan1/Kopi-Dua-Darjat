@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -43,7 +44,7 @@ const DesktopHero = () => {
         {/* Woman Image */}
         <div className="absolute left-[calc(8%_-_60px)] top-[calc(55%_-_60px)] w-[144px] h-[144px] sm:w-[176px] sm:h-[176px]">
           <AnimateOnScroll animationType="fadeIn" delay={0.2}>
-            <Image src="/image/image-frame.png" alt="Frame decoration" layout="fill" className="object-contain scale-[2] -rotate-90"/>
+            <Image src="/image/image frame.png" alt="Frame decoration" layout="fill" className="object-contain scale-[2] -rotate-90"/>
           </AnimateOnScroll>
         </div>
         
