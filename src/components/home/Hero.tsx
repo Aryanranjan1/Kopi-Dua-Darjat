@@ -44,14 +44,14 @@ const DesktopHero = () => {
       <div className="absolute inset-0 w-full h-full pointer-events-none z-20">
         
         {/* Frame Image */}
-        <div className="absolute left-[calc(8%_-_60px)] top-[calc(55%_+_140px)] w-[64px] h-[64px]">
+        <div className="absolute left-[calc(8%_-_60px)] top-[calc(55%_+_140px)] w-[128px] h-[128px]">
           <AnimateOnScroll animationType="fadeIn" delay={0.2}>
             <Image src="/image/image frame.png" alt="Frame decoration" layout="fill" className="object-contain scale-[2] -rotate-90"/>
           </AnimateOnScroll>
         </div>
         
         {/* Button next to image */}
-         <div className="absolute left-[calc(8%_+_10px)] top-[calc(55%_+_150px)] w-[40px] h-[40px] sm:w-[50px] sm:h-[50px] pointer-events-auto">
+         <div className="absolute left-[calc(8%_+_50px)] top-[calc(55%_+_185px)] w-[50px] h-[50px] pointer-events-auto">
           <AnimateOnScroll animationType="fadeIn" delay={0.3}>
               <Link href="/outlets" className="flex items-center justify-center bg-white text-black border-2 border-black rounded-full w-full h-full hover:bg-black hover:text-white transition-all duration-300 group">
                   <ArrowUpRight className="h-4 w-4 sm:h-5 sm:w-5 transition-transform group-hover:rotate-45" />
