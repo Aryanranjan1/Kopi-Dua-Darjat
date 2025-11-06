@@ -12,7 +12,7 @@ export default function Hero() {
   const h1Ref = useFitText<HTMLHeadingElement>(containerRef);
 
   return (
-    <section className="relative w-full min-h-screen bg-primary overflow-hidden">
+    <section className="relative w-full min-h-screen bg-primary">
       {/* === Bottom Wave === */}
       <div className="absolute bottom-0 left-0 w-full h-24 sm:h-36 md:h-48 z-10 pointer-events-none">
         <Image
