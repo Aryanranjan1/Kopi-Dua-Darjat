@@ -1,139 +1,173 @@
 
 'use client';
 
-import Link from 'next/link';
 import { useState, useMemo, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
-import { AnimateOnScroll } from '../animations/AnimateOnScroll';
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, query, where, limit, getDocs } from 'firebase/firestore';
 import type { MenuItem, MenuCategory, Promotion, DailySpecial } from '@/lib/types';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '@/components/ui/carousel';
-import MenuShowcaseCard from './MenuShowcaseCard';
+import Image from 'next/image';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
+import Link from 'next/link';
+import { ArrowUpRight, Star, Search } from 'lucide-react';
+import { Pagination } from '@/components/shared/Pagination';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { getDiscountDisplay } from '@/lib/utils';
 import { Skeleton } from '../ui/skeleton';
+
+const ITEMS_PER_PAGE = 10;
+
+type SortOption = 'default' | 'price-asc' | 'price-desc' | 'name-asc';
+
+const DrinkCard = ({ item }: { item: MenuItem }) => (
+  <Card className="rounded-3xl overflow-hidden group bg-primary border-black/10 transition-all duration-300 transform hover:shadow-xl hover:-translate-y-1 h-full flex flex-col">
+    <div className="relative aspect-square w-full">
+      <Image src={item.imageUrl} alt={item.name} fill className="object-contain p-4 drop-shadow-lg transition-transform duration-300 group-hover:scale-105" />
+      {item.isPopular && <Badge className="absolute top-2 right-2 bg-black text-white">Popular</Badge>}
+    </div>
+    <CardContent className="p-4 flex flex-col flex-grow text-black">
+      <h4 className="font-headline font-bold text-lg truncate">{item.name}</h4>
+      <p className="text-sm text-black/70 line-clamp-2 mt-1 h-10 flex-grow">{item.description}</p>
+      <div className="flex items-center gap-2 mt-2">
+        {[...Array(5)].map((_, i) => (
+          <Star key={i} className="w-4 h-4 text-black/80 fill-black/80" />
+        ))}
+      </div>
+      <div className="flex justify-between items-center mt-2">
+        <p className="font-semibold text-black text-lg">RM{item.price.toFixed(2)}</p>
+        <Link href={`/outlets?item=${item.slug}`} className="bg-black text-white rounded-full p-2 hover:bg-neutral-800">
+            <ArrowUpRight className="h-5 w-5" />
+        </Link>
+      </div>
+    </CardContent>
+  </Card>
+);
 
 export default function MenuShowcase() {
   const firestore = useFirestore();
-  const [activeFilter, setActiveFilter] = useState<string>('featured');
-  const [promotions, setPromotions] = useState<Promotion[]>([]);
-  const [dailySpecials, setDailySpecials] = useState<DailySpecial[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortOrder, setSortOrder] = useState<SortOption>('default');
+  const [selectedCategory, setSelectedCategory] = useState('all');
 
-  const categoriesQuery = useMemoFirebase(
-    () => firestore ? query(collection(firestore, 'menuCategories'), limit(4)) : null,
-    [firestore]
+  const { data: categories, isLoading: isLoadingCategories } = useCollection<MenuCategory>(
+    useMemoFirebase(() => firestore ? query(collection(firestore, 'menuCategories')) : null, [firestore])
   );
-  const { data: categories, isLoading: isLoadingCategories } = useCollection<MenuCategory>(categoriesQuery);
-
-  const itemsQuery = useMemoFirebase(
-    () => {
-      if (!firestore) return null;
-      let q = query(collection(firestore, 'menuItems'), where('status', '==', 'published'), limit(10));
-      
-      if (activeFilter && !categories?.find(c => c.id === activeFilter)) {
-        q = query(q, where('tags', 'array-contains', activeFilter));
-      } else if (activeFilter) {
-        q = query(q, where('categoryId', '==', activeFilter));
-      }
-      return q;
-    },
-    [firestore, activeFilter, categories]
+  
+  const { data: items, isLoading: isLoadingItems } = useCollection<MenuItem>(
+    useMemoFirebase(() => firestore ? query(collection(firestore, 'menuItems'), where('status', '==', 'published')) : null, [firestore])
   );
-  const { data: menuItems, isLoading: isLoadingItems } = useCollection<MenuItem>(itemsQuery);
 
-  useEffect(() => {
-    if (!firestore) return;
-    const fetchOffers = async () => {
-      const promosQuery = query(collection(firestore, 'promotions'), where('status', '==', 'active'));
-      const promosSnap = await getDocs(promosQuery);
-      setPromotions(promosSnap.docs.map(d => ({id: d.id, ...d.data()} as Promotion)));
-      
-      const specialsQuery = query(collection(firestore, 'dailySpecials'));
-      const specialsSnap = await getDocs(specialsQuery);
-      setDailySpecials(specialsSnap.docs.map(d => d.data() as DailySpecial));
-    }
-    fetchOffers();
-  }, [firestore]);
+  const filteredAndSortedItems = useMemo(() => {
+    if (!items) return [];
 
-  const filterOptions = useMemo(() => {
-    const filters = [{ id: 'featured', name: 'Featured' }];
-    if (categories) {
-        filters.push(...categories.slice(0, 3));
+    let filtered = [...items];
+
+    if (selectedCategory !== 'all') {
+      filtered = filtered.filter(item => item.categoryId === selectedCategory);
     }
-    return filters;
-  }, [categories]);
+    
+    if (searchQuery) {
+      filtered = filtered.filter(item => item.name.toLowerCase().includes(searchQuery.toLowerCase()));
+    }
+
+    switch (sortOrder) {
+      case 'price-asc':
+        filtered.sort((a, b) => a.price - b.price);
+        break;
+      case 'price-desc':
+        filtered.sort((a, b) => b.price - a.price);
+        break;
+      case 'name-asc':
+        filtered.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case 'default':
+      default:
+        // Assume items are pre-sorted by displayOrder from Firestore if needed
+        break;
+    }
+    
+    return filtered;
+  }, [items, searchQuery, sortOrder, selectedCategory]);
+
+  const totalPages = Math.ceil(filteredAndSortedItems.length / ITEMS_PER_PAGE);
+  const paginatedItems = filteredAndSortedItems.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
 
   const isLoading = isLoadingCategories || isLoadingItems;
 
   return (
-    <section className="py-24 sm:py-32 bg-black text-white group/showcase overflow-hidden">
-      <div className="container mx-auto px-4 sm:px-12">
-        <div className="flex flex-col md:flex-row justify-between md:items-center gap-8 mb-12">
-          <h1 className="text-5xl md:text-7xl font-headline font-bold text-primary tracking-widest text-center md:text-left inline-block underline decoration-white decoration-4 underline-offset-8">
-            MENU
-          </h1>
-          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
-            {filterOptions.map((option) => (
-              <button
-                key={option.id}
-                onClick={() => setActiveFilter(option.id)}
-                className="relative text-lg font-medium text-white transition-colors hover:text-primary"
-              >
-                {option.name}
-                {activeFilter === option.id && (
-                  <span className="absolute -bottom-2 left-0 w-full h-1 bg-primary rounded-full" />
-                )}
-              </button>
+    <section id="menu" className="bg-black py-20 md:py-32">
+      <div className="container mx-auto px-6 max-w-7xl">
+        <AnimateOnScroll className="text-left mb-12">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <h2 className="text-4xl md:text-5xl font-headline font-bold text-white uppercase underline decoration-primary decoration-4 underline-offset-8">
+              Our Menu
+            </h2>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 text-white w-full md:w-auto">
+               <div className="relative w-full sm:w-64">
+                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+                 <Input 
+                    placeholder="Search menu..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-9 bg-zinc-800 border-zinc-700 w-full rounded-full"
+                 />
+               </div>
+               <div className="flex gap-4 w-full sm:w-auto">
+                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                    <SelectTrigger className="w-full sm:w-[180px] bg-zinc-800 border-zinc-700 rounded-full">
+                        <SelectValue placeholder="Filter by category" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                        <SelectItem value="all">All Categories</SelectItem>
+                        {categories?.map(cat => (
+                          <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
+                        ))}
+                    </SelectContent>
+                    </Select>
+                    <Select value={sortOrder} onValueChange={(value) => setSortOrder(value as SortOption)}>
+                        <SelectTrigger className="w-full sm:w-[180px] bg-zinc-800 border-zinc-700 rounded-full">
+                            <SelectValue placeholder="Sort by" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                            <SelectItem value="default">Default</SelectItem>
+                            <SelectItem value="price-asc">Price: Low to High</SelectItem>
+                            <SelectItem value="price-desc">Price: High to Low</SelectItem>
+                            <SelectItem value="name-asc">Name (A-Z)</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+            </div>
+          </div>
+        </AnimateOnScroll>
+
+        {isLoading ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-96 rounded-3xl bg-zinc-800" />)}
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            {paginatedItems.map((item, index) => (
+              <AnimateOnScroll key={item.id} animationType="fadeIn" delay={index * 0.05}>
+                <DrinkCard item={item} />
+              </AnimateOnScroll>
             ))}
           </div>
-        </div>
+        )}
+        
+        {totalPages > 1 && (
+            <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+            />
+        )}
 
-        <AnimateOnScroll animationType="fadeIn" delay={0.2} className="mt-16">
-          {isLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-[450px] rounded-3xl bg-zinc-800" />)}
-            </div>
-          ) : (
-            <Carousel
-              opts={{
-                align: 'start',
-                loop: menuItems && menuItems.length > 4,
-                slidesToScroll: 1,
-              }}
-              className="w-full relative"
-            >
-              <CarouselContent className="-ml-4 py-8">
-                {menuItems?.map((drink) => (
-                  <CarouselItem key={drink.id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 pl-4">
-                    <div className="h-full">
-                      <MenuShowcaseCard 
-                        drink={drink as MenuItem} 
-                        promotions={promotions}
-                        dailySpecials={dailySpecials}
-                      />
-                    </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious className="absolute left-0 top-1/2 -translate-y-1/2 opacity-0 group-hover/showcase:opacity-100 transition-opacity bg-transparent border-white border-2 text-white hover:bg-primary hover:text-primary-foreground hover:border-primary hidden sm:flex" />
-              <CarouselNext className="absolute right-0 top-1/2 -translate-y-1/2 opacity-0 group-hover/showcase:opacity-100 transition-opacity bg-transparent border-white border-2 text-white hover:bg-primary hover:text-primary-foreground hover:border-primary hidden sm:flex" />
-            </Carousel>
-          )}
-        </AnimateOnScroll>
-
-        <AnimateOnScroll animationType="fadeIn" delay={0.4} className="mt-12 text-center">
-          <Button asChild size="lg" className="rounded-full">
-            <Link href="/menu">
-              View Full Menu <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
-        </AnimateOnScroll>
       </div>
     </section>
   );

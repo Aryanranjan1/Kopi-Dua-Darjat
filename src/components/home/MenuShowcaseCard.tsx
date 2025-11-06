@@ -32,30 +32,32 @@ export default function MenuShowcaseCard({ drink, promotions, dailySpecials }: M
   const offerText = getOfferBadge();
 
   return (
-    <Card className="bg-black text-white border-zinc-800 rounded-3xl w-full h-full flex flex-col">
+    <Card className="bg-black text-white border-zinc-800 rounded-3xl w-full h-full flex flex-col transition-all duration-300 transform hover:shadow-xl hover:border-primary hover:-translate-y-1">
       <CardContent className="p-4 flex flex-col flex-grow">
-        <div className="relative aspect-[3/4] w-full rounded-lg overflow-hidden mb-4 bg-zinc-800/50">
-          {offerText && (
-             <Badge className="absolute top-2 right-2 bg-accent text-accent-foreground z-10 shadow-lg">{offerText}</Badge>
-          )}
-          <Image
-            src={drink.imageUrl}
-            alt={drink.name}
-            fill
-            className="object-contain"
-          />
-        </div>
-        <div className="flex flex-col flex-grow">
-          <h3 className="text-xl font-headline font-semibold">{drink.name}</h3>
-          <p className="text-sm text-zinc-400 flex-grow mt-1">{drink.description}</p>
-          <div className="mt-4 flex justify-between items-center">
-             <p className="text-2xl font-bold text-primary">RM{drink.price.toFixed(2)}</p>
-             <Button asChild variant="outline" size="icon" className="rounded-full border-2 border-white/50 hover:bg-primary hover:border-primary shrink-0 bg-transparent text-white hover:text-foreground">
-              <Link href={`/outlets?item=${drink.slug}`}>
-                <ArrowUpRight className="w-5 h-5" />
-              </Link>
-             </Button>
+        <Link href={`/outlets?item=${drink.slug}`} className="block">
+          <div className="relative aspect-[4/5] w-full rounded-2xl overflow-hidden mb-4 bg-zinc-800/50 group">
+            {offerText && (
+              <Badge className="absolute top-2 right-2 bg-accent text-accent-foreground z-10 shadow-lg">{offerText}</Badge>
+            )}
+            <Image
+              src={drink.imageUrl}
+              alt={drink.name}
+              fill
+              className="object-contain transition-transform duration-300 group-hover:scale-110"
+            />
           </div>
+          <div className="flex-grow">
+            <h3 className="text-xl font-headline font-semibold group-hover:text-primary transition-colors">{drink.name}</h3>
+            <p className="text-sm text-zinc-400 mt-1">{drink.description}</p>
+          </div>
+        </Link>
+        <div className="mt-4 flex justify-between items-center">
+            <p className="text-2xl font-bold text-primary">RM{drink.price.toFixed(2)}</p>
+            <Button asChild variant="outline" size="icon" className="rounded-full border-2 border-white/50 hover:bg-primary hover:border-primary shrink-0 bg-transparent text-white hover:text-foreground">
+            <Link href={`/outlets?item=${drink.slug}`}>
+              <ArrowUpRight className="w-5 h-5" />
+            </Link>
+            </Button>
         </div>
       </CardContent>
     </Card>
