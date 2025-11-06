@@ -12,7 +12,30 @@ export default function Hero() {
 
   return (
     <section className="relative w-full bg-primary overflow-hidden h-screen">
-      
+      {/* === Bean Image === */}
+      <div className="absolute top-1/4 right-0 w-[15vw] h-[15vw] max-w-[150px] z-30 pointer-events-none hidden lg:block">
+        <AnimateOnScroll animationType="fadeIn" delay={0.8}>
+          <Image
+            src="/image/bean.png"
+            alt="Coffee Bean"
+            fill
+            className="object-contain"
+          />
+        </AnimateOnScroll>
+      </div>
+
+      {/* === Frame Image === */}
+      <div className="absolute bottom-1/4 left-0 w-[20vw] h-[20vw] max-w-[200px] z-30 pointer-events-none hidden lg:block">
+        <AnimateOnScroll animationType="fadeIn" delay={0.6}>
+           <Image
+            src="/image/frame.png"
+            alt="Frame"
+            fill
+            className="object-contain"
+          />
+        </AnimateOnScroll>
+      </div>
+
       {/* === Cup Image === */}
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none z-20">
         <AnimateOnScroll
