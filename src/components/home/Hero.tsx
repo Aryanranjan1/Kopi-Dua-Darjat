@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -17,7 +18,7 @@ export default function Hero() {
             {/* Text Content */}
             <div className="text-center">
               <AnimateOnScroll animationType="fadeIn">
-                <h1 className="text-4xl md:text-7xl lg:text-8xl font-headline font-bold text-foreground leading-tight w-full text-center">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-headline font-bold text-foreground leading-tight w-full text-center">
                   Good Coffee for Great Mornings
                 </h1>
                 <p className="mt-12 text-sm md:text-base font-body font-bold text-foreground/80 max-w-md text-left ml-12">
