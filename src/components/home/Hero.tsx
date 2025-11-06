@@ -13,7 +13,7 @@ export default function Hero() {
       <section className="relative w-full min-h-screen flex items-center justify-center bg-primary pb-32">
 
         {/* Grouped Left Image and Arrow */}
-        <div className="absolute bottom-5 left-0 w-[26rem] h-[26rem] z-30 flex items-center justify-center -ml-14">
+        <div className="absolute bottom-5 -left-14 w-[24rem] h-[24rem] z-30 flex items-center justify-center">
           <div className="relative w-full h-full flex items-center justify-center">
             <div className="relative w-[24rem] h-[24rem]">
               <Image
@@ -23,8 +23,8 @@ export default function Hero() {
                 className="object-contain -rotate-90"
               />
             </div>
-            <div className="relative w-20 h-20 border-4 border-foreground rounded-full flex items-center justify-center -ml-20">
-              <ArrowUpRight className="w-12 h-12 text-foreground" />
+            <div className="relative w-16 h-16 border-4 border-foreground rounded-full flex items-center justify-center -ml-20">
+              <ArrowUpRight className="w-10 h-10 text-foreground" />
             </div>
           </div>
         </div>
@@ -63,7 +63,7 @@ export default function Hero() {
         </div>
 
         {/* Cup Image Overlay */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[58rem] h-[90vh] z-20 pointer-events-none">
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[52rem] h-[81vh] z-20 pointer-events-none">
             <div className="relative w-full h-full">
                 <Image
                     src="/image/dua-darjat-cup.png"
