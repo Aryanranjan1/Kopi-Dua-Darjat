@@ -11,7 +11,7 @@ export default function Hero() {
   const h1Ref = useFitText<HTMLHeadingElement>(containerRef);
 
   return (
-    <section className="relative w-full bg-primary pt-20 overflow-hidden">
+    <section className="relative w-full bg-primary pt-20 overflow-hidden h-screen">
       
       {/* === Cup Image === */}
       <div className="absolute bottom-[-25px] left-1/2 -translate-x-1/2 w-full h-full pointer-events-none z-50">
