@@ -11,21 +11,34 @@ export default function Hero() {
   const h1Ref = useFitText<HTMLHeadingElement>(containerRef);
 
   return (
-    <section className="relative w-full bg-primary overflow-hidden h-screen">
+    <section className="relative w-full bg-primary h-screen overflow-hidden">
       {/* === Frame Image === */}
       <div className="absolute bottom-1/4 left-0 w-[20vw] h-[20vw] max-w-[200px] z-30 pointer-events-none hidden lg:block">
         <AnimateOnScroll animationType="fadeIn" delay={0.6}>
            <Image
-            src="/image/frame.png"
+            src="/image/image frame.png"
             alt="Frame"
             fill
             className="object-contain"
           />
         </AnimateOnScroll>
       </div>
+      
+       {/* === Bean Image === */}
+      <div className="absolute top-1/2 -translate-y-1/2 right-0 w-[15vw] h-[15vw] max-w-[150px] z-30 pointer-events-none hidden lg:block">
+        <AnimateOnScroll animationType="fadeIn" delay={0.7}>
+          <Image
+            src="/image/coffee-bean.png"
+            alt="Coffee Bean"
+            fill
+            className="object-contain"
+          />
+        </AnimateOnScroll>
+      </div>
+
 
       {/* === Cup Image === */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none z-20">
+      <div className="absolute left-1/2 -translate-x-1/2 w-full h-full pointer-events-none z-20">
         <AnimateOnScroll
           animationType="fadeIn"
           delay={0.4}
@@ -37,7 +50,7 @@ export default function Hero() {
               src="/image/dua-darjat-cup.png"
               alt="Kopi Dua Darjat Cup"
               fill
-              className="object-contain drop-shadow-2xl rotate-0 sm:rotate-12 md:rotate-12 lg:rotate-[25deg] lg:-translate-x-[50px]"
+              className="object-contain drop-shadow-2xl rotate-0 sm:rotate-12 md:rotate-12 lg:rotate-[25deg]"
               priority
             />
           </div>
