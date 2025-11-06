@@ -14,7 +14,7 @@ export default function Hero() {
     <section className="relative w-full bg-primary pt-20">
       
       {/* === Cup Image === */}
-      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-full h-full pointer-events-none z-0">
+      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-full h-full pointer-events-none z-50">
         <AnimateOnScroll
           animationType="fadeIn"
           delay={0.4}
@@ -23,7 +23,7 @@ export default function Hero() {
         >
           <div className="absolute right-0 sm:right-[10%] w-[35rem] h-[35rem] sm:w-[50rem] sm:h-[50rem] lg:w-[70rem] lg:h-[70rem] opacity-40 sm:opacity-50 lg:opacity-100">
             <Image
-              src="/image/kdd-cup.png"
+              src="/image/dua-darjat-cup.png"
               alt="Kopi Dua Darjat Cup"
               fill
               className="object-contain drop-shadow-2xl"
