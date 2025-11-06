@@ -59,7 +59,7 @@ export default function Hero() {
               </AnimateOnScroll>
                <div className="mt-[100px] flex items-center -ml-[50px] -mt-[200px]">
                 {/* === Frame Group (Image + Arrow) === */}
-                <div className="relative w-[112px] h-[112px] sm:w-[128px] sm:h-[128px] pointer-events-none">
+                <div className="relative w-[112px] h-[112px] sm:w-[128px] sm:h-[128px] pointer-events-none transform -rotate-90 scale-200">
                     <Image
                         src="/image/image%20frame.png"
                         alt="Decorative frame with a person's photo"
