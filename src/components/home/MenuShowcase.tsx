@@ -108,7 +108,7 @@ export default function MenuShowcase() {
             <h2 className="text-4xl md:text-5xl font-headline font-bold text-white uppercase underline decoration-primary decoration-4 underline-offset-8">
               Our Menu
             </h2>
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 text-white w-full md:w-auto">
+            <div className="flex flex-wrap items-start sm:items-center gap-4 text-white w-full md:w-auto">
                <div className="relative w-full sm:w-64">
                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
                  <Input 

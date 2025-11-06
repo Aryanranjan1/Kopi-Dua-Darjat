@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
@@ -148,8 +149,8 @@ function OutletShowcaseContent() {
     <section id="outlet-showcase" className="py-24 sm:py-32 bg-white text-foreground scroll-mt-20">
       <div className="container mx-auto px-6">
         
-        <div className="flex flex-col md:flex-row gap-4 mb-8 justify-center items-center">
-            <div className="relative w-full md:flex-grow-0 md:w-auto">
+        <div className="flex flex-wrap gap-4 mb-8 justify-center items-center">
+            <div className="relative w-full md:flex-grow">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                     placeholder="Search outlets..."
