@@ -13,9 +13,9 @@ export default function Hero() {
       <section className="relative w-full min-h-screen flex items-center justify-center bg-primary pb-32">
 
         {/* Grouped Left Image and Arrow */}
-        <div className="absolute bottom-0 left-0 w-[38rem] h-[26rem] z-30 flex items-center justify-center">
+        <div className="absolute bottom-0 left-0 w-[30rem] h-[20rem] z-30 flex items-center justify-center">
           <div className="relative w-full h-full flex items-center justify-center">
-            <div className="relative w-[26rem] h-[26rem]">
+            <div className="relative w-[20rem] h-[20rem]">
               <Image
                 src="/image/image frame.png"
                 alt="Image Frame"
@@ -23,8 +23,8 @@ export default function Hero() {
                 className="object-contain -rotate-90"
               />
             </div>
-            <div className="relative w-32 h-32 border-4 border-foreground rounded-full flex items-center justify-center -ml-20">
-              <ArrowUpRight className="w-16 h-16 text-foreground" />
+            <div className="relative w-24 h-24 border-4 border-foreground rounded-full flex items-center justify-center -ml-16">
+              <ArrowUpRight className="w-12 h-12 text-foreground" />
             </div>
           </div>
         </div>
