@@ -21,8 +21,8 @@ export default function Hero() {
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-headline font-bold text-foreground leading-tight w-full text-center">
                   Good Coffee for Great Mornings
                 </h1>
-                <div className="flex justify-center">
-                  <p className="mt-12 text-sm md:text-base font-body font-bold text-foreground/80 max-w-md text-left">
+                <div className="mt-12">
+                  <p className="text-sm md:text-base font-body font-bold text-foreground/80 max-w-md text-left">
                     From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor , a golden mix of comfort, creativity, and caffeine confidence.
                   </p>
                 </div>
