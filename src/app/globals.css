@@ -106,3 +106,9 @@
     break-inside: avoid;
   }
 }
+
+@keyframes fade-in-up {
+  0% { opacity: 0; transform: translateY(40px) rotate(18deg); }
+  100% { opacity: 1; transform: translateY(0) rotate(18deg); }
+}
+.animate-fade-in-up { animation: fade-in-up 1s ease-out forwards; }
