@@ -43,7 +43,7 @@ export default function Hero() {
                     src="/image/dua-darjat-cup.png"
                     alt="Kopi Dua Darjat Cup"
                     fill
-                    className="object-contain object-bottom rotate-[35deg]"
+                    className="object-contain object-bottom rotate-[35deg] translate-x-5 translate-y-4"
                 />
             </div>
         </div>
