@@ -17,20 +17,20 @@ export default function OutletCard({ outlet, userLocation }: OutletCardProps) {
     : `https://www.google.com/maps/search/?api=1&query=${outlet.lat},${outlet.lng}`;
 
   return (
-    <Card className="p-4 flex justify-between items-center bg-[#f3e5d3]/35 rounded-3xl">
-      <div className="flex-1 overflow-hidden pr-2">
-        <h4 className="font-bold text-foreground flex items-center truncate">
+    <Card className="p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[#f3e5d3]/35 rounded-3xl">
+      <div className="flex-1 overflow-hidden pr-2 w-full">
+        <h4 className="font-bold text-base sm:text-base text-foreground flex items-center">
             <Pin className="w-4 h-4 mr-2 text-accent shrink-0" />
             <span className="truncate">{outlet.name}</span>
         </h4>
-        <p className="text-sm text-muted-foreground truncate">{outlet.address}</p>
+        <p className="text-sm text-muted-foreground truncate pl-6">{outlet.address}</p>
         {outlet.distance && (
-          <p className="text-xs font-bold text-accent mt-1">
+          <p className="text-xs font-bold text-accent mt-1 pl-6">
             {outlet.distance.toFixed(1)} km away
           </p>
         )}
       </div>
-      <Button asChild className="bg-foreground/80 text-background hover:bg-foreground/70 rounded-full shrink-0">
+      <Button asChild className="bg-foreground/80 text-background hover:bg-foreground/70 rounded-full shrink-0 w-full sm:w-auto">
         <a href={directionsUrl} target="_blank" rel="noopener noreferrer">
           <Map className="mr-2 h-4 w-4" />
           Directions
