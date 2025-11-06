@@ -20,8 +20,9 @@ const DesktopHero = () => {
       {/* === Main Text Content === */}
       <div
         className="relative container mx-auto px-6 sm:px-10 lg:px-16 flex flex-col justify-start z-30 pt-28"
+        ref={containerRef}
       >
-        <div ref={containerRef} className="w-full">
+        <div className="w-full">
             <AnimateOnScroll animationType="fadeIn">
                 <div className="w-full">
                     <h1
@@ -30,9 +31,11 @@ const DesktopHero = () => {
                     >
                     Good Coffee for Great Morning
                     </h1>
-                     <p className="mt-6 text-base sm:text-lg md:text-xl font-body font-normal text-foreground/90 max-w-[420px] leading-relaxed">
-                        From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor , a golden mix of comfort, creativity, and caffeine confidence.
-                    </p>
+                     <div className="max-w-2xl">
+                        <p className="mt-6 text-base sm:text-lg md:text-xl font-body font-normal text-foreground/90 leading-relaxed">
+                            From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor , a golden mix of comfort, creativity, and caffeine confidence.
+                        </p>
+                    </div>
                 </div>
             </AnimateOnScroll>
         </div>
@@ -118,7 +121,7 @@ export default function Hero() {
   const isMobile = useMediaQuery('(max-width: 767px)');
   
   return (
-    <section className="relative w-full bg-primary overflow-x-hidden min-h-screen">
+    <section className="relative w-full bg-primary overflow-hidden min-h-screen">
       {isMobile ? <MobileHero /> : <DesktopHero />}
     </section>
   );
