@@ -14,14 +14,14 @@ export default function Hero() {
     <section className="relative w-full bg-primary overflow-hidden h-screen">
       
       {/* === Cup Image === */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none z-10">
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none z-20">
         <AnimateOnScroll
           animationType="fadeIn"
           delay={0.4}
           duration={1}
           className="w-full h-full"
         >
-          <div className="absolute right-0 sm:right-[10%] w-[35rem] h-[35rem] sm:w-[50rem] sm:h-[50rem] lg:w-[35rem] lg:h-[35rem] opacity-40 sm:opacity-50 lg:opacity-100 lg:-translate-x-[50px]">
+          <div className="absolute left-1/2 -translate-x-1/2 w-[35rem] h-[35rem] sm:w-[50rem] sm:h-[50rem] lg:w-[35rem] lg:h-[35rem] bottom-0">
             <Image
               src="/image/dua-darjat-cup.png"
               alt="Kopi Dua Darjat Cup"
@@ -57,7 +57,7 @@ export default function Hero() {
       </div>
       
       {/* Bottom Wave SVG */}
-      <div className="absolute bottom-0 left-0 right-0 w-full z-40 pointer-events-none">
+      <div className="absolute bottom-0 left-0 right-0 w-full z-10 pointer-events-none">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
             <path fill="#f7f4ef" fillOpacity="1" d="M0,288L48,288C96,288,192,288,288,256C384,224,480,160,576,133.3C672,107,768,117,864,149.3C960,181,1056,235,1152,229.3C1248,224,1344,160,1392,128L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
         </svg>
