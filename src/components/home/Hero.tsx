@@ -13,7 +13,7 @@ export default function Hero() {
       <section className="relative w-full min-h-screen flex items-center justify-center bg-primary pb-32">
 
         {/* Grouped Left Image and Arrow */}
-        <div className="absolute bottom-0 left-0 w-[30rem] h-[20rem] z-30 flex items-center justify-center">
+        <div className="absolute bottom-0 left-0 w-[30rem] h-[20rem] z-30 flex items-center justify-center -ml-12">
           <div className="relative w-full h-full flex items-center justify-center">
             <div className="relative w-[20rem] h-[20rem]">
               <Image
@@ -23,14 +23,14 @@ export default function Hero() {
                 className="object-contain -rotate-90"
               />
             </div>
-            <div className="relative w-24 h-24 border-4 border-foreground rounded-full flex items-center justify-center -ml-16">
+            <div className="relative w-24 h-24 border-4 border-foreground rounded-full flex items-center justify-center -ml-20">
               <ArrowUpRight className="w-12 h-12 text-foreground" />
             </div>
           </div>
         </div>
 
         {/* Right Image */}
-        <div className="absolute top-1/2 right-0 w-48 h-48 md:w-64 md:h-64 z-30">
+        <div className="absolute top-1/2 right-5 w-48 h-48 md:w-64 md:h-64 z-30 mt-12">
              <Image
                 src="/image/coffee-bean.png"
                 alt="Coffee Bean"
