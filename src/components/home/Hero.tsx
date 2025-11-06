@@ -21,20 +21,20 @@ const DesktopHero = () => {
       <div
         className="relative container mx-auto px-6 sm:px-10 lg:px-16 flex flex-col justify-start z-30 pt-28"
       >
-        <div className="w-full max-w-5xl" ref={containerRef}>
-          <AnimateOnScroll animationType="fadeIn">
-             <div className="max-w-2xl">
-              <h1
-                ref={h1Ref}
-                className="font-headline font-extrabold text-foreground leading-[1.05] text-[clamp(2.5rem,10vw,8rem)]"
-              >
-                Good Coffee for Great Morning
-              </h1>
-              <p className="mt-6 text-base sm:text-lg md:text-xl font-body font-normal text-foreground/90 max-w-[420px] leading-relaxed">
-                From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor , a golden mix of comfort, creativity, and caffeine confidence.
-              </p>
-             </div>
-          </AnimateOnScroll>
+        <div className="w-full max-w-5xl">
+          <div ref={containerRef} className="max-w-2xl">
+            <AnimateOnScroll animationType="fadeIn">
+                <h1
+                  ref={h1Ref}
+                  className="font-headline font-extrabold text-foreground leading-[1.05] text-[clamp(2.5rem,10vw,8rem)]"
+                >
+                  Good Coffee for Great Morning
+                </h1>
+                <p className="mt-6 text-base sm:text-lg md:text-xl font-body font-normal text-foreground/90 max-w-[420px] leading-relaxed">
+                  From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor , a golden mix of comfort, creativity, and caffeine confidence.
+                </p>
+            </AnimateOnScroll>
+          </div>
         </div>
       </div>
 
@@ -75,16 +75,11 @@ const DesktopHero = () => {
       </div>
 
        {/* Diagonal Arrow Button */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-[60px] h-[60px] sm:w-[80px] sm:h-[80px] pointer-events-auto z-30">
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 pointer-events-auto z-30">
           <AnimateOnScroll animationType="fadeIn" delay={0.4}>
-             <div className="relative w-full h-full">
-                <div className="absolute inset-0 rounded-full border-2 border-foreground/30 animate-pulse"></div>
-                <Button asChild variant="outline" size="icon" className="w-full h-full rounded-full border-2 border-foreground/50 bg-background/50 hover:bg-foreground group transition-transform hover:scale-105">
-                    <Link href="/outlets">
-                        <ArrowUpRight className="w-1/2 h-1/2 text-foreground group-hover:text-background" />
-                    </Link>
-                </Button>
-             </div>
+             <Link href="/outlets" className="bg-black text-white rounded-full p-4 hover:bg-neutral-800 transition-colors">
+                <ArrowUpRight className="h-8 w-8" />
+            </Link>
           </AnimateOnScroll>
         </div>
     </>
