@@ -23,17 +23,17 @@ const DesktopHero = () => {
       >
         <div className="w-full max-w-5xl" ref={containerRef}>
           <AnimateOnScroll animationType="fadeIn">
-            <div className="max-w-2xl">
+             <div className="max-w-2xl">
               <h1
                 ref={h1Ref}
                 className="font-headline font-extrabold text-foreground leading-[1.05] text-[clamp(2.5rem,10vw,8rem)]"
               >
                 Good Coffee for Great Morning
               </h1>
-            </div>
-            <p className="mt-6 text-base sm:text-lg md:text-xl font-body font-normal text-foreground/90 max-w-[420px] leading-relaxed">
-              From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor , a golden mix of comfort, creativity, and caffeine confidence.
-            </p>
+              <p className="mt-6 text-base sm:text-lg md:text-xl font-body font-normal text-foreground/90 max-w-[420px] leading-relaxed">
+                From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor , a golden mix of comfort, creativity, and caffeine confidence.
+              </p>
+             </div>
           </AnimateOnScroll>
         </div>
       </div>
@@ -41,20 +41,23 @@ const DesktopHero = () => {
       {/* Decorative Images Layer */}
       <div className="absolute inset-0 w-full h-full pointer-events-none z-20">
         {/* Woman Image */}
-        <div className="absolute left-[calc(8%_-_60px)] top-[calc(55%_+_40px)] w-[100px] h-[100px] sm:w-[120px] sm:h-[120px]">
+        <div className="absolute left-[calc(8%_-_60px)] top-[calc(55%_+_40px)] w-[80px] h-[80px] sm:w-[100px] sm:h-[100px]">
           <AnimateOnScroll animationType="fadeIn" delay={0.2}>
             <Image src="/image/image frame.png" alt="Frame decoration" layout="fill" className="object-contain scale-[2] -rotate-90"/>
           </AnimateOnScroll>
         </div>
         
         {/* Diagonal Arrow Button */}
-        <div className="absolute left-[25%] top-[62%] w-[80px] h-[80px] sm:w-[100px] sm:h-[100px] pointer-events-auto">
+        <div className="absolute left-[calc(8%_+_50px)] top-[calc(55%_+_50px)] w-[60px] h-[60px] sm:w-[80px] sm:h-[80px] pointer-events-auto">
           <AnimateOnScroll animationType="fadeIn" delay={0.4}>
-             <Button asChild variant="outline" size="icon" className="w-full h-full rounded-full border-2 border-foreground/50 hover:bg-foreground group transition-transform hover:scale-105">
-                <Link href="/outlets">
-                    <ArrowUpRight className="w-1/2 h-1/2 text-foreground group-hover:text-background" />
-                </Link>
-             </Button>
+             <div className="relative w-full h-full">
+                <div className="absolute inset-0 rounded-full border-2 border-foreground/30 animate-pulse"></div>
+                <Button asChild variant="outline" size="icon" className="w-full h-full rounded-full border-2 border-foreground/50 bg-background/50 hover:bg-foreground group transition-transform hover:scale-105">
+                    <Link href="/outlets">
+                        <ArrowUpRight className="w-1/2 h-1/2 text-foreground group-hover:text-background" />
+                    </Link>
+                </Button>
+             </div>
           </AnimateOnScroll>
         </div>
         
@@ -68,7 +71,7 @@ const DesktopHero = () => {
         {/* Main Cup */}
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[60vh] h-[60vh]">
           <AnimateOnScroll animationType="slideInFromBottom" delay={0.1}>
-            <Image src="/image/dua-darjat-cup.png" alt="Kopi Dua Darjat splashing cup" layout="fill" className="object-contain rotate-[25deg]"/>
+            <Image src="/image/dua-darjat-cup.png" alt="Kopi Dua Darjat splashing cup" layout="fill" className="object-contain"/>
           </AnimateOnScroll>
         </div>
       </div>
