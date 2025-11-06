@@ -24,7 +24,7 @@ export default function Hero() {
       </div>
 
       {/* === Left Frame (Girl + Arrow) === */}
-      <div className="absolute bottom-6 left-8 sm:left-12 md:left-16 z-30 flex flex-col items-center">
+      <div className="absolute bottom-6 left-8 sm:left-12 md:left-16 z-30 flex flex-row items-center gap-4">
         <div className="relative w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 pointer-events-none">
           <Image
             src="/image/image%20frame.png"
@@ -36,7 +36,7 @@ export default function Hero() {
         </div>
         <button
           aria-label="Locate outlet"
-          className="mt-3 w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center rounded-full border-4 border-foreground bg-white shadow-md transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center rounded-full border-4 border-foreground bg-white shadow-md transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           <ArrowUpRight className="w-8 h-8 sm:w-10 sm:h-10 text-foreground" />
         </button>
