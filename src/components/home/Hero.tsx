@@ -1,20 +1,21 @@
 
 'use client';
 
-import { useRef } from 'react';
+import React, { useRef } from 'react';
 import Image from 'next/image';
 import { useFitText } from '@/hooks/use-fit-text';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { Button } from '../ui/button';
 import { ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
+import { useMediaQuery } from '@/hooks/use-media-query';
 
-export default function Hero() {
+const DesktopHero = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const h1Ref = useFitText<HTMLHeadingElement>(containerRef);
 
   return (
-    <section className="relative w-full bg-primary min-h-screen overflow-hidden flex flex-col justify-between">
+    <>
       {/* === Main Text Content === */}
       <div
         className="relative container mx-auto px-6 sm:px-10 lg:px-16 flex flex-col justify-start z-30 pt-28"
@@ -42,7 +43,7 @@ export default function Hero() {
         {/* Woman Image */}
         <div className="absolute left-[8%] top-[55%] w-[180px] h-[180px] sm:w-[220px] sm:h-[220px]">
           <AnimateOnScroll animationType="fadeIn" delay={0.2}>
-            <Image src="/image/image frame.png" alt="Frame decoration" layout="fill" className="object-contain"/>
+            <Image src="/image/image frame.png" alt="Frame decoration" layout="fill" className="object-contain scale-[2] -rotate-90"/>
           </AnimateOnScroll>
         </div>
         
@@ -67,13 +68,13 @@ export default function Hero() {
         {/* Main Cup */}
         <div className="absolute bottom-0 left-1/2 -translate-x-1/4 w-[50vh] h-[50vh] sm:w-[65vh] sm:h-[65vh]">
           <AnimateOnScroll animationType="slideInFromBottom" delay={0.1}>
-            <Image src="/image/dua-darjat-cup.png" alt="Kopi Dua Darjat splashing cup" layout="fill" className="object-contain"/>
+            <Image src="/image/dua-darjat-cup.png" alt="Kopi Dua Darjat splashing cup" layout="fill" className="object-contain rotate-[25deg]"/>
           </AnimateOnScroll>
         </div>
       </div>
 
       {/* Bottom Wave SVG */}
-      <div className="relative w-full z-10 pointer-events-none mt-auto">
+      <div className="absolute bottom-0 left-0 w-full z-10 pointer-events-none">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 1440 320"
@@ -87,6 +88,42 @@ export default function Hero() {
           ></path>
         </svg>
       </div>
+    </>
+  );
+};
+
+const MobileHero = () => {
+  return (
+    <div className="container mx-auto px-6 pt-24 pb-20 text-center">
+      <AnimateOnScroll>
+        <h1 className="font-headline font-extrabold text-foreground leading-tight text-5xl">
+          Good Coffee for Great Mornings
+        </h1>
+        <p className="mt-4 text-base font-body font-semibold text-foreground/80 max-w-md mx-auto leading-relaxed">
+          From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor.
+        </p>
+      </AnimateOnScroll>
+      <AnimateOnScroll delay={0.2} className="mt-8">
+        <div className="relative w-full max-w-sm mx-auto aspect-square">
+          <Image
+            src="/image/dua-darjat-cup.png"
+            alt="Kopi Dua Darjat Cup"
+            fill
+            className="object-contain drop-shadow-2xl"
+            priority
+          />
+        </div>
+      </AnimateOnScroll>
+    </div>
+  );
+};
+
+export default function Hero() {
+  const isMobile = useMediaQuery('(max-width: 767px)');
+  
+  return (
+    <section className="relative w-full bg-primary overflow-hidden min-h-screen">
+      {isMobile ? <MobileHero /> : <DesktopHero />}
     </section>
   );
 }
