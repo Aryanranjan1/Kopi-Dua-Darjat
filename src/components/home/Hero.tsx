@@ -14,7 +14,7 @@ export default function Hero() {
     <section className="relative w-full bg-primary overflow-hidden h-screen">
       
       {/* === Cup Image === */}
-      <div className="absolute bottom-[-25px] lg:bottom-[175px] left-1/2 -translate-x-1/2 w-full h-full pointer-events-none z-50">
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none z-10">
         <AnimateOnScroll
           animationType="fadeIn"
           delay={0.4}
