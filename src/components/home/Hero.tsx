@@ -2,7 +2,7 @@
 'use client';
 
 import * as React from 'react';
-import { useRef, useLayoutEffect, useCallback } from 'react';
+import { useRef } from 'react';
 import Image from 'next/image';
 import { useFitText } from '@/hooks/use-fit-text';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
