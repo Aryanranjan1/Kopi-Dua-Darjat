@@ -1,4 +1,3 @@
-
 'use client';
 
 import * as React from 'react';
@@ -21,9 +20,9 @@ const DesktopHero = () => {
       <div
         className="relative container mx-auto px-6 sm:px-10 lg:px-16 flex flex-col justify-start z-30 pt-28"
       >
-        <div ref={containerRef} className="max-w-5xl">
+        <div className="max-w-5xl">
             <AnimateOnScroll animationType="fadeIn">
-                <div className="max-w-2xl">
+                <div ref={containerRef} className="max-w-2xl">
                     <h1
                     ref={h1Ref}
                     className="font-headline font-extrabold text-foreground leading-[1.05] text-[clamp(2.5rem,10vw,8rem)]"
@@ -40,14 +39,19 @@ const DesktopHero = () => {
 
       {/* Decorative Images Layer */}
       <div className="absolute inset-0 w-full h-full pointer-events-none z-20">
-        {/* Woman Image & Button */}
-        <div className="absolute left-[calc(8%_-_60px)] top-[calc(55%_-_10px)] w-[280px] h-[144px] flex items-center gap-4">
-          <AnimateOnScroll animationType="fadeIn" delay={0.2} className="relative w-[144px] h-[144px]">
+        
+        {/* Frame Image */}
+        <div className="absolute left-[calc(8%_-_60px)] top-[calc(55%_-_10px)] w-[144px] h-[144px] sm:w-[176px] sm:h-[176px]">
+          <AnimateOnScroll animationType="fadeIn" delay={0.2}>
             <Image src="/image/image frame.png" alt="Frame decoration" layout="fill" className="object-contain scale-[1.5] -rotate-90"/>
           </AnimateOnScroll>
-          <AnimateOnScroll animationType="fadeIn" delay={0.3} className="pointer-events-auto">
-             <Link href="/outlets" className="flex items-center justify-center bg-white text-black border-2 border-black rounded-full w-20 h-20 hover:bg-black hover:text-white transition-all duration-300 group">
-                <ArrowUpRight className="h-8 w-8 transition-transform group-hover:rotate-45" />
+        </div>
+        
+        {/* Button next to image */}
+        <div className="absolute left-[calc(8%_+_120px)] top-[calc(55%_-_20px)] w-[40px] h-[40px] sm:w-[50px] sm:h-[50px] pointer-events-auto">
+          <AnimateOnScroll animationType="fadeIn" delay={0.3}>
+            <Link href="/outlets" className="flex items-center justify-center bg-white text-black border-2 border-black rounded-full w-full h-full hover:bg-black hover:text-white transition-all duration-300 group">
+                <ArrowUpRight className="h-4 w-4 sm:h-5 sm:w-5 transition-transform group-hover:rotate-45" />
             </Link>
           </AnimateOnScroll>
         </div>
