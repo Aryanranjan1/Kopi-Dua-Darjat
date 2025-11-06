@@ -12,17 +12,37 @@ export default function Hero() {
     <>
       <section className="relative w-full min-h-screen flex items-center justify-center bg-primary pt-24 pb-32 md:pt-32">
 
+        {/* Left Image */}
+        <div className="absolute top-1/4 left-0 w-48 h-48 md:w-64 md:h-64 z-0">
+            <Image
+                src="/image/image frame.png"
+                alt="Image Frame"
+                fill
+                className="object-contain"
+            />
+        </div>
+
+        {/* Right Image */}
+        <div className="absolute top-1/2 right-0 w-48 h-48 md:w-64 md:h-64 z-0">
+             <Image
+                src="/image/coffee-bean.png"
+                alt="Coffee Bean"
+                fill
+                className="object-contain"
+            />
+        </div>
+
         {/* Main Content Area */}
         <div className="container mx-auto px-6 z-10">
           <div className="w-full">
             {/* Text Content */}
-            <div className="text-center">
+            <div className="text-left">
               <AnimateOnScroll animationType="fadeIn">
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-headline font-bold text-foreground leading-tight w-full text-center">
                   Good Coffee for Great Mornings
                 </h1>
                 <div className="mt-12">
-                  <p className="text-sm md:text-base font-body font-bold text-foreground/80 max-w-md text-left">
+                  <p className="mt-12 text-sm md:text-base font-body font-bold text-foreground/80 max-w-md text-left ml-12">
                     From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor , a golden mix of comfort, creativity, and caffeine confidence.
                   </p>
                 </div>
