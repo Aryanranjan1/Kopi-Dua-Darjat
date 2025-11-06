@@ -26,7 +26,7 @@ export default function Hero() {
 
       {/* === Bean Accent === */}
       <div
-        className="absolute right-4 top-1/2 md:right-16 md:top-[45%] w-20 h-20 sm:w-28 sm:h-28 z-40 pointer-events-none md:block hidden"
+        className="absolute bottom-4 left-4 md:left-[100px] w-20 h-20 sm:w-28 sm:h-28 z-40 pointer-events-none"
         aria-hidden="true"
       >
         <Image
