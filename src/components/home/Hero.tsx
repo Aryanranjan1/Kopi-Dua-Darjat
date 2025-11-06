@@ -45,11 +45,11 @@ export default function Hero() {
             {/* Text Content */}
             <div className="text-left">
               <AnimateOnScroll animationType="fadeIn">
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-headline font-bold text-foreground leading-tight text-center">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-headline font-bold text-foreground text-center">
                   Good Coffee for Great Mornings
                 </h1>
                 <div className="flex justify-start">
-                  <p className="text-sm md:text-base font-body font-bold text-foreground/80 max-w-[410px] text-justify ml-8 mt-5">
+                  <p className="text-sm md:text-base font-body font-bold text-foreground/80 max-w-[400px] text-justify ml-8 mt-5">
                     From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor , a golden mix of comfort, creativity, and caffeine confidence.
                   </p>
                 </div>
