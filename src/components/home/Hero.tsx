@@ -21,29 +21,34 @@ const DesktopHero = () => {
       <div
         className="relative container mx-auto px-6 sm:px-10 lg:px-16 flex flex-col justify-start z-30 pt-28"
       >
-        <div className="w-full max-w-5xl">
-          <div ref={containerRef} className="max-w-2xl">
+        <div ref={containerRef} className="max-w-5xl">
             <AnimateOnScroll animationType="fadeIn">
-                <h1
-                  ref={h1Ref}
-                  className="font-headline font-extrabold text-foreground leading-[1.05] text-[clamp(2.5rem,10vw,8rem)]"
-                >
-                  Good Coffee for Great Morning
-                </h1>
-                <p className="mt-6 text-base sm:text-lg md:text-xl font-body font-normal text-foreground/90 max-w-[420px] leading-relaxed">
-                  From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor , a golden mix of comfort, creativity, and caffeine confidence.
-                </p>
+                <div className="max-w-2xl">
+                    <h1
+                    ref={h1Ref}
+                    className="font-headline font-extrabold text-foreground leading-[1.05] text-[clamp(2.5rem,10vw,8rem)]"
+                    >
+                    Good Coffee for Great Morning
+                    </h1>
+                    <p className="mt-6 text-base sm:text-lg md:text-xl font-body font-normal text-foreground/90 max-w-[420px] leading-relaxed">
+                    From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor , a golden mix of comfort, creativity, and caffeine confidence.
+                    </p>
+                </div>
             </AnimateOnScroll>
-          </div>
         </div>
       </div>
 
       {/* Decorative Images Layer */}
       <div className="absolute inset-0 w-full h-full pointer-events-none z-20">
-        {/* Woman Image */}
-        <div className="absolute left-[calc(8%_-_60px)] top-[calc(55%_-_10px)] w-[100px] h-[100px] sm:w-[120px] sm:h-[120px]">
-          <AnimateOnScroll animationType="fadeIn" delay={0.2}>
-            <Image src="/image/image frame.png" alt="Frame decoration" layout="fill" className="object-contain scale-[2] -rotate-90"/>
+        {/* Woman Image & Button */}
+        <div className="absolute left-[calc(8%_-_60px)] top-[calc(55%_-_10px)] w-[280px] h-[144px] flex items-center gap-4">
+          <AnimateOnScroll animationType="fadeIn" delay={0.2} className="relative w-[144px] h-[144px]">
+            <Image src="/image/image frame.png" alt="Frame decoration" layout="fill" className="object-contain scale-[1.5] -rotate-90"/>
+          </AnimateOnScroll>
+          <AnimateOnScroll animationType="fadeIn" delay={0.3} className="pointer-events-auto">
+             <Link href="/outlets" className="flex items-center justify-center bg-white text-black border-2 border-black rounded-full w-20 h-20 hover:bg-black hover:text-white transition-all duration-300 group">
+                <ArrowUpRight className="h-8 w-8 transition-transform group-hover:rotate-45" />
+            </Link>
           </AnimateOnScroll>
         </div>
         
@@ -74,14 +79,6 @@ const DesktopHero = () => {
         </svg>
       </div>
 
-       {/* Diagonal Arrow Button */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 pointer-events-auto z-30">
-          <AnimateOnScroll animationType="fadeIn" delay={0.4}>
-             <Link href="/outlets" className="bg-black text-white rounded-full p-4 hover:bg-neutral-800 transition-colors">
-                <ArrowUpRight className="h-8 w-8" />
-            </Link>
-          </AnimateOnScroll>
-        </div>
     </>
   );
 };
