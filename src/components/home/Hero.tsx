@@ -43,25 +43,22 @@ const DesktopHero = () => {
       {/* Decorative Images Layer */}
       <div className="absolute inset-0 w-full h-full pointer-events-none z-20">
         
-        {/* Frame Image */}
-        <div className="absolute left-[calc(8%_-_60px)] top-[calc(55%_+_40px)] w-[128px] h-[128px] z-30">
-          <AnimateOnScroll animationType="fadeIn" delay={0.2}>
+        <AnimateOnScroll animationType="slideInFromLeft" delay={0.2} className="absolute left-[calc(8%_-_60px)] top-[calc(55%_+_40px)] w-[128px] h-[128px] z-30 pointer-events-auto">
+          {/* Frame Image */}
+          <div className="relative w-full h-full">
             <Image src="/image/image frame.png" alt="Frame decoration" layout="fill" className="object-contain scale-[2] -rotate-90"/>
-          </AnimateOnScroll>
-        </div>
-        
-        {/* Button next to image */}
-         <div className="absolute left-[calc(8%_+_50px)] top-[calc(55%_+_85px)] w-[50px] h-[50px] pointer-events-auto">
-          <AnimateOnScroll animationType="fadeIn" delay={0.3}>
+          </div>
+          {/* Button next to image */}
+          <div className="absolute left-[50%] top-[50%] -translate-x-1/4 -translate-y-1/4 w-[50px] h-[50px]">
               <Link href="/outlets" className="flex items-center justify-center bg-white text-black border-2 border-black rounded-full w-full h-full hover:bg-black hover:text-white transition-all duration-300 group">
                   <ArrowUpRight className="h-4 w-4 sm:h-5 sm:w-5 transition-transform group-hover:rotate-45" />
               </Link>
-          </AnimateOnScroll>
-        </div>
+          </div>
+        </AnimateOnScroll>
         
         {/* Coffee Beans */}
         <div className="absolute right-[calc(10%_-_30px)] bottom-[calc(12%_+_20px)] w-[150px] h-[150px] sm:w-[200px] sm:h-[200px]">
-          <AnimateOnScroll animationType="fadeIn" delay={0.3}>
+          <AnimateOnScroll animationType="slideInFromRight" delay={0.3}>
             <Image src="/image/coffee-bean.png" alt="Coffee beans" layout="fill" className="object-contain"/>
           </AnimateOnScroll>
         </div>
