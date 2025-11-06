@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -13,7 +12,7 @@ export default function Hero() {
       <section className="relative w-full min-h-screen flex items-center justify-center bg-primary pb-32">
 
         {/* Grouped Left Image and Arrow */}
-        <div className="absolute bottom-5 left-0 w-[30rem] h-[26rem] z-30 flex items-center justify-center -ml-14">
+        <div className="absolute bottom-5 left-0 w-[26rem] h-[26rem] z-30 flex items-center justify-center -ml-14">
           <div className="relative w-full h-full flex items-center justify-center">
             <div className="relative w-[24rem] h-[24rem]">
               <Image
@@ -63,13 +62,13 @@ export default function Hero() {
         </div>
 
         {/* Cup Image Overlay */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[96rem] h-[150vh] z-20 pointer-events-none">
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[72rem] h-[112.5vh] z-20 pointer-events-none">
             <div className="relative w-full h-full">
                 <Image
                     src="/image/dua-darjat-cup.png"
                     alt="Kopi Dua Darjat Cup"
                     fill
-                    className="object-contain object-bottom translate-x-5 translate-y-4"
+                    className="object-contain object-bottom translate-x-5 translate-y-12"
                 />
             </div>
         </div>
