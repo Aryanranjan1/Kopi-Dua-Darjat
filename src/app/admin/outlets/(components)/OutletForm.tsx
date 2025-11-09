@@ -18,9 +18,9 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, ChevronsUpDown, Trash2, Edit, PlusCircle, Check } from 'lucide-react';
+import { Loader2, ChevronsUpDown, Trash2, Edit, PlusCircle, Check, MapPin } from 'lucide-react';
 import { useFirestore, errorEmitter, FirestorePermissionError, useCollection, useMemoFirebase } from '@/firebase';
-import { doc, setDoc, serverTimestamp, collection, query, where, addDoc, deleteDoc, writeBatch } from 'firebase/firestore';
+import { doc, setDoc, serverTimestamp, collection, query, where, addDoc, deleteDoc, writeBatch, getDocs } from 'firebase/firestore';
 import type { Outlet, Testimonial, Promotion, MenuItem } from '@/lib/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
@@ -106,6 +106,13 @@ function MultiSelectPopover({ title, options, selected, onChange }: {
         option.label.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    const handleSelectAll = () => {
+        onChange(options.map(opt => opt.value));
+    }
+    const handleDeselectAll = () => {
+        onChange([]);
+    }
+
     return (
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
@@ -135,6 +142,10 @@ function MultiSelectPopover({ title, options, selected, onChange }: {
                             className="bg-zinc-800 border-zinc-700"
                             autoFocus
                         />
+                    </div>
+                     <div className="p-2 border-b border-zinc-800 flex gap-2">
+                        <Button size="sm" variant="ghost" onClick={handleSelectAll} className="flex-1">Select All</Button>
+                        <Button size="sm" variant="ghost" onClick={handleDeselectAll} className="flex-1">Deselect All</Button>
                     </div>
                     <ScrollArea className="h-48">
                         <div className="p-2 space-y-1">
@@ -186,41 +197,48 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: outlet ? {
+    defaultValues: {
+      name: '', slug: '', address: '', city: '', state: '', lat: 0, lng: 0, hours: '', phone: '', email: '',
+      status: 'active', heroImage: '', interiorImage: '', tagline: '', mapsLink: '', whatsappLink: '',
+      chatbotEmbed: '', isChatbotEnabled: false, placeId: '', menuItemIds: [],
+      seo: { title: '', description: '', keywords: '' },
+    },
+  });
+  
+  useEffect(() => {
+    if (outlet) {
+      form.reset({
         ...outlet,
+        phone: outlet.phone || '',
+        email: outlet.email || '',
+        heroImage: outlet.heroImage || '',
+        interiorImage: outlet.interiorImage || '',
+        tagline: outlet.tagline || '',
+        mapsLink: outlet.mapsLink || '',
+        whatsappLink: outlet.whatsappLink || '',
+        chatbotEmbed: outlet.chatbotEmbed || '',
+        placeId: outlet.placeId || '',
         menuItemIds: allItems?.filter(item => item.outletIds?.includes(outlet.id)).map(item => item.id) || [],
         seo: {
           title: outlet.seo?.title || '',
           description: outlet.seo?.description || '',
           keywords: outlet.seo?.keywords || '',
         },
-    } : {
-      name: '',
-      slug: '',
-      address: '',
-      city: '',
-      state: '',
-      lat: 0,
-      lng: 0,
-      hours: '',
-      phone: '',
-      email: '',
-      status: 'active',
-      heroImage: '',
-      interiorImage: '',
-      tagline: '',
-      mapsLink: '',
-      whatsappLink: '',
-      chatbotEmbed: '',
-      isChatbotEnabled: false,
-      placeId: '',
-      menuItemIds: [],
-      seo: { title: '', description: '', keywords: '' },
-    },
-  });
+      });
+    } else {
+        form.reset({
+            name: '', slug: '', address: '', city: '', state: '', lat: 0, lng: 0, hours: '', phone: '', email: '',
+            status: 'active', heroImage: '', interiorImage: '', tagline: '', mapsLink: '', whatsappLink: '',
+            chatbotEmbed: '', isChatbotEnabled: false, placeId: '', menuItemIds: [],
+            seo: { title: '', description: '', keywords: '' },
+        })
+    }
+  }, [outlet, allItems, form]);
+
 
   const { isSubmitting, watch, setValue } = form;
   const watchedName = watch('name');
+  const watchedMenuItemIds = watch('menuItemIds');
 
   useEffect(() => {
     if (watchedName && !form.formState.dirtyFields.slug) {
@@ -319,32 +337,31 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
 
     // --- Menu Item Linking Logic ---
     const newLinkedIds = new Set(values.menuItemIds || []);
+    // Correctly determine old linked items for the specific outlet being edited
     const oldLinkedIds = new Set(outlet ? allItems.filter(i => i.outletIds?.includes(outlet.id)).map(i => i.id) : []);
 
-    // 1. Items to UNLINK (was linked, now is not)
-    for (const itemId of oldLinkedIds) {
-        if (!newLinkedIds.has(itemId)) {
-            const itemRef = doc(firestore, 'menuItems', itemId);
-            const currentItem = allItems.find(i => i.id === itemId);
-            const updatedOutletIds = currentItem?.outletIds?.filter(id => id !== docId) || [];
-            batch.update(itemRef, { 
-                outletIds: updatedOutletIds,
-                isGeneral: updatedOutletIds.length === 0,
-            });
-        }
-    }
+    const allAffectedItemIds = new Set([...newLinkedIds, ...oldLinkedIds]);
 
-    // 2. Items to LINK (was not linked, now is)
-    for (const itemId of newLinkedIds) {
-        if (!oldLinkedIds.has(itemId)) {
-            const itemRef = doc(firestore, 'menuItems', itemId);
-            const currentItem = allItems.find(i => i.id === itemId);
-            const updatedOutletIds = [...(currentItem?.outletIds || []), docId];
-             batch.update(itemRef, { 
-                outletIds: updatedOutletIds,
-                isGeneral: false,
-            });
-        }
+    for (const itemId of allAffectedItemIds) {
+      const itemRef = doc(firestore, 'menuItems', itemId);
+      const currentItem = allItems.find(i => i.id === itemId);
+      if (!currentItem) continue;
+
+      const currentOutletIds = new Set(currentItem.outletIds || []);
+      const shouldBeLinked = newLinkedIds.has(itemId);
+
+      if (shouldBeLinked) {
+        currentOutletIds.add(docId); // Use current outlet's ID (slug)
+      } else {
+        currentOutletIds.delete(docId); // Use current outlet's ID (slug)
+      }
+      
+      const updatedOutletIds = Array.from(currentOutletIds);
+      
+      batch.update(itemRef, {
+        outletIds: updatedOutletIds,
+        isGeneral: updatedOutletIds.length === 0,
+      });
     }
     // --- End Menu Item Logic ---
 
@@ -555,7 +572,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
                           )}
                         />
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {form.getValues('menuItemIds')?.map(itemId => {
+                            {watchedMenuItemIds?.map(itemId => {
                                 const item = allItems.find(i => i.id === itemId);
                                 if (!item) return null;
                                 return (
@@ -567,7 +584,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
                                                 <p className="text-sm text-zinc-400">RM{item.price.toFixed(2)}</p>
                                             </div>
                                         </div>
-                                        <Button type="button" variant="ghost" size="icon" onClick={() => setValue('menuItemIds', form.getValues('menuItemIds')?.filter(id => id !== itemId))}>
+                                        <Button type="button" variant="ghost" size="icon" onClick={() => setValue('menuItemIds', watchedMenuItemIds?.filter(id => id !== itemId), { shouldDirty: true })}>
                                             <Trash2 className="h-4 w-4 text-red-500" />
                                         </Button>
                                     </div>
