@@ -37,6 +37,8 @@ export default function MicrositePageClient(data: PageData) {
     notFound();
   }
   
+  const hasReviews = reviewData && reviewData.reviews && reviewData.reviews.length > 0;
+
   return (
     <div className="bg-white text-black">
       <MicrositeHero outlet={outlet} />
@@ -45,7 +47,7 @@ export default function MicrositePageClient(data: PageData) {
         <MenuShowcaseSection items={allMenuItems} categories={menuCategories} />
         {siteSettings && <BrandStorySection settings={siteSettings} />}
         <OutletLocatorSection currentOutlet={outlet} />
-        <CustomerReviews reviewData={reviewData} isLoading={!reviewData} />
+        {hasReviews && <CustomerReviews reviewData={reviewData} />}
         <InstaExploreGrid />
         <Community />
         <LatestStories />

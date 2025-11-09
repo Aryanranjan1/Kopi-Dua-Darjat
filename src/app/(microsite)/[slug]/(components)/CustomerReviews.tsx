@@ -13,8 +13,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Timestamp } from 'firebase/firestore';
 
 interface CustomerReviewsProps {
-    reviewData: ReviewDocument | null;
-    isLoading: boolean;
+    reviewData: ReviewDocument;
 }
 
 const ReviewCard = ({ review }: { review: Review }) => {
@@ -59,28 +58,8 @@ const ReviewCard = ({ review }: { review: Review }) => {
     );
 };
 
-export default function CustomerReviews({ reviewData, isLoading }: CustomerReviewsProps) {
+export default function CustomerReviews({ reviewData }: CustomerReviewsProps) {
     const [showAll, setShowAll] = useState(false);
-
-    if (isLoading) {
-        return (
-            <section className="py-24 sm:py-32 bg-background">
-                <div className="container mx-auto px-4">
-                    <Skeleton className="h-12 w-1/2 mb-4" />
-                    <Skeleton className="h-8 w-1/4 mb-12" />
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {[...Array(3)].map((_, i) => (
-                            <Skeleton key={i} className="h-64 rounded-xl" />
-                        ))}
-                    </div>
-                </div>
-            </section>
-        )
-    }
-
-    if (!reviewData || !reviewData.reviews || reviewData.reviews.length === 0) {
-        return null; // Don't render the section if there are no reviews
-    }
 
     const { aggregate, reviews } = reviewData;
 

@@ -1,4 +1,5 @@
 
+
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import MicrositePageClient from './MicrositePageClient';
@@ -46,6 +47,11 @@ async function getMicrositeData(slug: string) {
 
   const outlet = { id: outletDoc.id, ...outletDoc.data() } as Outlet;
   
+  // Return 404 if the outlet is inactive
+  if (outlet.status === 'inactive') {
+    return { outlet: null };
+  }
+  
   const [
     allMenuItems, 
     allMenuCategories,
@@ -61,7 +67,7 @@ async function getMicrositeData(slug: string) {
     getDoc(doc(firestore, 'reviews', outlet.id)).then(d => d.exists() ? d.data() as ReviewDocument : null),
     getDoc(doc(firestore, 'settings', 'main')).then(d => d.data() as SiteSettings),
     fetchCollection<Blog>(firestore, 'blogs', query(collection(firestore, 'blogs'), orderBy('publishedAt', 'desc'), limit(1))),
-    fetchCollection<PublicInstaPost>(firestore, 'public_insta_feed', query(collection(firestore, 'public_insta_feed'), orderBy('rank', 'asc'), limit(2)))
+    fetchCollection<PublicInstaPost>(firestore, 'public_insta_feed', query(collection(firestore, 'public_insta_feed'), orderBy('rank', 'asc'), limit(20)))
   ]);
   
   const outletMenuItems = allMenuItems.filter(item => 
@@ -132,7 +138,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const outletDocRef = doc(firestore, 'outlets', params.slug);
   const outletDoc = await getDoc(outletDocRef);
 
-  if (!outletDoc.exists()) {
+  if (!outletDoc.exists() || outletDoc.data()?.status === 'inactive') {
     return { title: 'Outlet Not Found' };
   }
   
