@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
       hours: result.opening_hours?.weekday_text?.join('\n') || 'Not available',
       mapsLink: result.url || '',
       rating: result.rating || 0,
-      reviewCount: result.user_ratings_total || 0,
+      user_ratings_total: result.user_ratings_total || 0,
       reviews: result.reviews || [],
     };
 

@@ -52,9 +52,8 @@ export default function GooglePlacesSync() {
     let successCount = 0;
     let errorCount = 0;
     
-    // We process fetches in parallel but Firestore writes sequentially to avoid contention
     const updatePromises = outlets.map(async (outlet) => {
-        if (!outlet.placeId) return;
+        if (!outlet.placeId) return null;
       
         try {
             const response = await fetch('/api/fetch-google-place-details', {
@@ -70,7 +69,7 @@ export default function GooglePlacesSync() {
         } catch (error: any) {
             console.error(`Failed to fetch data for outlet ${outlet.name}:`, error);
             errorCount++;
-            return null; // Indicate failure
+            return null;
         }
     });
 
@@ -83,34 +82,35 @@ export default function GooglePlacesSync() {
         validResults.forEach(result => {
             if (!result) return;
             const { outlet, fetchedData } = result;
+            
+            const fetchedRating = fetchedData.rating || 0;
+            const fetchedReviewCount = fetchedData.user_ratings_total || 0;
 
-            // 1. Update the outlet document itself
             const outletRef = doc(firestore, 'outlets', outlet.id);
             batch.update(outletRef, {
-            rating: fetchedData.rating,
-            reviewCount: fetchedData.user_ratings_total,
-            lastFetched: new Date(),
+                rating: fetchedRating,
+                reviewCount: fetchedReviewCount,
+                lastFetched: new Date(),
             });
 
-            // 2. Update the reviews document
             const reviewDocRef = doc(firestore, 'reviews', outlet.id);
             const reviewData: ReviewDocument = {
-            outletId: outlet.id,
-            aggregate: {
-                ratingValue: fetchedData.rating,
-                reviewCount: fetchedData.user_ratings_total,
-            },
-            reviews: fetchedData.reviews.map((r: any): Review => ({
-                source: 'google',
-                author_name: r.author_name,
-                rating: r.rating,
-                text: r.text,
-                time: r.time,
-                profile_photo_url: r.profile_photo_url,
-                relative_time_description: r.relative_time_description,
-            })),
+                outletId: outlet.id,
+                aggregate: {
+                    ratingValue: fetchedRating,
+                    reviewCount: fetchedReviewCount,
+                },
+                reviews: fetchedData.reviews.map((r: any): Review => ({
+                    source: 'google',
+                    author_name: r.author_name,
+                    rating: r.rating,
+                    text: r.text,
+                    time: r.time,
+                    profile_photo_url: r.profile_photo_url,
+                    relative_time_description: r.relative_time_description,
+                })),
             };
-            batch.set(reviewDocRef, reviewData, { merge: true }); // Merge to keep manual reviews if any
+            batch.set(reviewDocRef, reviewData, { merge: true });
             successCount++;
         });
 
@@ -119,7 +119,7 @@ export default function GooglePlacesSync() {
         } catch(batchError) {
              console.error(`Batch commit failed:`, batchError);
              errorCount += validResults.length - successCount;
-             successCount = 0; // Reset success count as batch failed
+             successCount = 0;
         }
     }
 
