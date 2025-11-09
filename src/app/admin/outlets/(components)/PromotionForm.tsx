@@ -94,7 +94,7 @@ export default function PromotionForm({ promotion, outletId, onSuccess }: Promot
     },
   });
 
-  const { isSubmitting, watch } = form;
+  const { isSubmitting, watch, control } = form;
   const discountType = watch("discountType");
 
   const getStatus = (start: Date, end: Date): 'scheduled' | 'active' | 'expired' => {
@@ -249,52 +249,8 @@ export default function PromotionForm({ promotion, outletId, onSuccess }: Promot
 
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <FormField
-            control={form.control}
-            name="startDate"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Start Date</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button variant="outline" className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground", inputStyles)}>
-                        {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="endDate"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>End Date</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button variant="outline" className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground", inputStyles)}>
-                        {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <DateTimePicker fieldName="startDate" label="Start Date" control={control} />
+            <DateTimePicker fieldName="endDate" label="End Date" control={control} />
         </div>
 
         <FormField
@@ -324,6 +280,49 @@ export default function PromotionForm({ promotion, outletId, onSuccess }: Promot
       </form>
     </Form>
   );
+}
+
+const DateTimePicker = ({ fieldName, label, control }: { fieldName: "startDate" | "endDate", label: string, control: any }) => {
+    const inputStyles = "bg-zinc-800 border-zinc-700 text-white focus-visible:ring-primary";
+    return (
+        <FormField
+            control={control}
+            name={fieldName}
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>{label}</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button variant="outline" className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground", inputStyles)}>
+                        {field.value ? format(field.value, "PPP HH:mm") : <span>Pick a date</span>}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
+                    <div className="p-2 border-t border-zinc-800">
+                        <Input 
+                            type="time"
+                            value={field.value ? format(field.value, 'HH:mm') : ''}
+                            onChange={(e) => {
+                                const newTime = e.target.value;
+                                const [hours, minutes] = newTime.split(':').map(Number);
+                                const newDate = field.value ? new Date(field.value) : new Date();
+                                newDate.setHours(hours, minutes);
+                                field.onChange(newDate);
+                            }}
+                            className={inputStyles}
+                        />
+                    </div>
+                  </PopoverContent>
+                </Popover>
+                <FormMessage />
+              </FormItem>
+            )}
+        />
+    )
 }
 
 function MultiSelectPopover({ title, options, selected, onChange }: {

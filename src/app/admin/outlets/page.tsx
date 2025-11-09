@@ -4,7 +4,6 @@
 import { Suspense } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import OutletsManager from './(components)/OutletsManager';
-import OutletDataMigration from './(components)/OutletDataMigration';
 import GooglePlacesSync from './(components)/GooglePlacesSync';
 
 function OutletsPageContent() {
@@ -24,10 +23,7 @@ function OutletsPageContent() {
                 </CardContent>
             </Card>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <OutletDataMigration />
-              <GooglePlacesSync />
-            </div>
+            <GooglePlacesSync />
         </div>
     );
 }
