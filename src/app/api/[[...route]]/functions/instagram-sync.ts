@@ -56,26 +56,34 @@ export const syncInstagramPosts = async () => {
 
 
 export const fetchGooglePlaceDetails = async (input: { placeId: string }) => {
+    console.log("Function 'fetchGooglePlaceDetails' invoked with input:", input);
     const { placeId } = input;
+
     if (!placeId) {
+        console.error("Validation Error: 'placeId' is missing from the input.");
         throw new functions.https.HttpsError('invalid-argument', 'The function must be called with a "placeId" argument.');
     }
 
     const apiKey = process.env.GOOGLE_MAPS_API_KEY;
     if (!apiKey) {
+        console.error("Configuration Error: GOOGLE_MAPS_API_KEY environment variable not set.");
         throw new functions.https.HttpsError('failed-precondition', 'The Google Maps API key is not configured in environment variables (GOOGLE_MAPS_API_KEY).');
     }
+    console.log("Found GOOGLE_MAPS_API_KEY.");
 
     const fields = 'name,formatted_address,geometry,formatted_phone_number,opening_hours,photos,place_id,url,rating,user_ratings_total,reviews,address_components';
     const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=${fields}&key=${apiKey}`;
+    console.log(`Fetching from Google Places API: ${url.replace(apiKey, '[REDACTED]')}`);
 
     try {
         const response = await fetch(url);
         const data: any = await response.json();
 
         if (data.status !== 'OK') {
+            console.error(`Google Places API Error: ${data.status} - ${data.error_message || 'No error message provided.'}`);
             throw new functions.https.HttpsError('not-found', `Google Places API error: ${data.status} - ${data.error_message || 'Check the Place ID and API key.'}`);
         }
+        console.log("Successfully received data from Google Places API.");
 
         const result = data.result;
         
@@ -109,14 +117,16 @@ export const fetchGooglePlaceDetails = async (input: { placeId: string }) => {
             })) || [],
         };
         
+        console.log("Successfully processed place details. Returning data to client.");
         return outletData;
+
     } catch (error: any) {
-        console.error('Error fetching from Google Places API:', error);
+        console.error('CRITICAL: An unexpected error occurred in fetchGooglePlaceDetails:', error);
         // If it's already an HttpsError, rethrow it, otherwise wrap it.
         if (error instanceof functions.https.HttpsError) {
             throw error;
         }
-        throw new functions.https.HttpsError('internal', 'An unexpected error occurred while fetching place details. Check server logs.');
+        throw new functions.https.HttpsError('internal', 'An unexpected error occurred while fetching place details. Check server logs for the full error object.');
     }
 };
 
