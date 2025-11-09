@@ -32,7 +32,6 @@ import {
 import { Switch } from '@/components/ui/switch';
 import slugify from 'slugify';
 import { useEffect, useState } from 'react';
-import { getFunctions, httpsCallable } from 'firebase/functions';
 
 interface OutletFormProps {
   outlet?: Outlet;
@@ -120,14 +119,18 @@ export default function OutletForm({ outlet, onSuccess }: OutletFormProps) {
     });
 
     try {
-      const functions = getFunctions();
-      const fetchGooglePlaceDetails = httpsCallable(functions, 'fetchGooglePlaceDetails');
-      const result = await fetchGooglePlaceDetails({ placeId });
-      const data = result.data as any;
+      const response = await fetch('/api/fetch-google-place-details', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ placeId }),
+      });
 
-      if (!data) {
-        throw new Error('No data returned from the server.');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `Request failed with status ${response.status}`);
       }
+
+      const data = await response.json();
       
       // Populate form with fetched data
       form.setValue('name', data.name, { shouldValidate: true });
@@ -146,10 +149,10 @@ export default function OutletForm({ outlet, onSuccess }: OutletFormProps) {
       });
 
     } catch (error: any) {
-      console.error('Error calling fetchGooglePlaceDetails function:', error);
+      console.error('Error calling fetchGooglePlaceDetails API:', error);
       toast({
         variant: 'destructive',
-        title: error.code === 'functions/failed-precondition' ? 'Configuration Error' : 'Fetch Failed',
+        title: 'Fetch Failed',
         description: error.message || 'Could not fetch data from Google Places.',
         duration: 9000,
       });
