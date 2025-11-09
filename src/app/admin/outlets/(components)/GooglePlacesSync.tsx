@@ -21,18 +21,11 @@ import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, where, doc, writeBatch } from 'firebase/firestore';
 import type { Outlet, Review, ReviewDocument } from '@/lib/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function GooglePlacesSync() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const firestore = useFirestore();
-  const [scheduleDay, setScheduleDay] = useState('monday');
-  const [scheduleTime, setScheduleTime] = useState('03:00');
-  const [scheduleTimezone, setScheduleTimezone] = useState('Asia/Kuala_Lumpur');
-
 
   const outletsWithPlaceIdQuery = useMemoFirebase(
     () => firestore ? query(collection(firestore, 'outlets'), where('placeId', '!=', null)) : null,
@@ -40,7 +33,7 @@ export default function GooglePlacesSync() {
   );
   const { data: outlets, isLoading: isLoadingOutlets } = useCollection<Outlet>(outletsWithPlaceIdQuery);
 
-  const triggerSync = async () => {
+  const handleManualSync = async () => {
     if (!firestore || !outlets || outlets.length === 0) {
       toast({
         variant: 'destructive',
@@ -58,59 +51,78 @@ export default function GooglePlacesSync() {
 
     let successCount = 0;
     let errorCount = 0;
-
-    for (const outlet of outlets) {
-      if (!outlet.placeId) continue;
+    
+    // We process fetches in parallel but Firestore writes sequentially to avoid contention
+    const updatePromises = outlets.map(async (outlet) => {
+        if (!outlet.placeId) return;
       
-      try {
-        const response = await fetch('/api/fetch-google-place-details', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ placeId: outlet.placeId }),
-        });
+        try {
+            const response = await fetch('/api/fetch-google-place-details', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ placeId: outlet.placeId }),
+            });
 
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.message || 'Failed to fetch from Google');
-        
-        // Prepare batch write for this outlet
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message || 'Failed to fetch from Google');
+
+            return { outlet, fetchedData: data };
+        } catch (error: any) {
+            console.error(`Failed to fetch data for outlet ${outlet.name}:`, error);
+            errorCount++;
+            return null; // Indicate failure
+        }
+    });
+
+    const results = await Promise.all(updatePromises);
+    const validResults = results.filter(Boolean);
+
+    if (validResults.length > 0 && firestore) {
         const batch = writeBatch(firestore);
         
-        // 1. Update the outlet document itself
-        const outletRef = doc(firestore, 'outlets', outlet.id);
-        batch.update(outletRef, {
-          rating: data.rating,
-          reviewCount: data.reviewCount,
-          lastFetched: new Date(),
+        validResults.forEach(result => {
+            if (!result) return;
+            const { outlet, fetchedData } = result;
+
+            // 1. Update the outlet document itself
+            const outletRef = doc(firestore, 'outlets', outlet.id);
+            batch.update(outletRef, {
+            rating: fetchedData.rating,
+            reviewCount: fetchedData.user_ratings_total,
+            lastFetched: new Date(),
+            });
+
+            // 2. Update the reviews document
+            const reviewDocRef = doc(firestore, 'reviews', outlet.id);
+            const reviewData: ReviewDocument = {
+            outletId: outlet.id,
+            aggregate: {
+                ratingValue: fetchedData.rating,
+                reviewCount: fetchedData.user_ratings_total,
+            },
+            reviews: fetchedData.reviews.map((r: any): Review => ({
+                source: 'google',
+                author_name: r.author_name,
+                rating: r.rating,
+                text: r.text,
+                time: r.time,
+                profile_photo_url: r.profile_photo_url,
+                relative_time_description: r.relative_time_description,
+            })),
+            };
+            batch.set(reviewDocRef, reviewData, { merge: true }); // Merge to keep manual reviews if any
+            successCount++;
         });
 
-        // 2. Update the reviews document
-        const reviewDocRef = doc(firestore, 'reviews', outlet.id);
-        const reviewData: ReviewDocument = {
-          outletId: outlet.id,
-          aggregate: {
-            ratingValue: data.rating,
-            reviewCount: data.reviewCount,
-          },
-          reviews: data.reviews.map((r: any): Review => ({
-              source: 'google',
-              author_name: r.author_name,
-              rating: r.rating,
-              text: r.text,
-              time: r.time,
-              profile_photo_url: r.profile_photo_url,
-              relative_time_description: r.relative_time_description,
-          })),
-        };
-        batch.set(reviewDocRef, reviewData, { merge: true }); // Merge to keep manual reviews if any
-
-        await batch.commit();
-        successCount++;
-
-      } catch (error: any) {
-        console.error(`Failed to sync outlet ${outlet.name}:`, error);
-        errorCount++;
-      }
+        try {
+            await batch.commit();
+        } catch(batchError) {
+             console.error(`Batch commit failed:`, batchError);
+             errorCount += validResults.length - successCount;
+             successCount = 0; // Reset success count as batch failed
+        }
     }
+
 
     setIsLoading(false);
     toast({
@@ -124,7 +136,7 @@ export default function GooglePlacesSync() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2"><RefreshCw /> Google Places Sync</CardTitle>
         <CardDescription className="text-zinc-400">
-          Manually trigger a data sync from Google Places to update ratings and reviews for outlets with a Place ID.
+          Manually trigger a data sync from Google Places to update ratings and reviews for all outlets with a Place ID.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -180,73 +192,10 @@ export default function GooglePlacesSync() {
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                   <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
-                  <AlertDialogAction className="bg-blue-600 hover:bg-blue-700" onClick={triggerSync}>Yes, sync now</AlertDialogAction>
+                  <AlertDialogAction className="bg-blue-600 hover:bg-blue-700" onClick={handleManualSync}>Yes, sync now</AlertDialogAction>
                   </AlertDialogFooter>
               </AlertDialogContent>
           </AlertDialog>
-          
-          <div className="border-t border-zinc-800 pt-6">
-              <h4 className="font-medium text-zinc-300">Automated Sync Schedule (Simulation)</h4>
-              <p className="text-sm text-zinc-500 mb-4">Set a recurring time for automatic background syncing. In this prototype, this button will trigger an immediate manual sync.</p>
-              <div className="flex flex-col sm:flex-row items-end gap-4">
-                  <div className="grid w-full items-center gap-1.5">
-                    <Label htmlFor="sync-day" className="text-zinc-400">Day of the Week</Label>
-                    <Select value={scheduleDay} onValueChange={setScheduleDay}>
-                        <SelectTrigger id="sync-day" className="bg-zinc-800 border-zinc-700"><SelectValue /></SelectTrigger>
-                        <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                            <SelectItem value="monday">Monday</SelectItem>
-                            <SelectItem value="tuesday">Tuesday</SelectItem>
-                            <SelectItem value="wednesday">Wednesday</SelectItem>
-                            <SelectItem value="thursday">Thursday</SelectItem>
-                            <SelectItem value="friday">Friday</SelectItem>
-                            <SelectItem value="saturday">Saturday</SelectItem>
-                            <SelectItem value="sunday">Sunday</SelectItem>
-                        </SelectContent>
-                    </Select>
-                  </div>
-                   <div className="grid w-full items-center gap-1.5">
-                    <Label htmlFor="sync-timezone" className="text-zinc-400">Timezone</Label>
-                    <Select value={scheduleTimezone} onValueChange={setScheduleTimezone}>
-                        <SelectTrigger id="sync-timezone" className="bg-zinc-800 border-zinc-700"><SelectValue /></SelectTrigger>
-                        <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                            <SelectItem value="Asia/Kuala_Lumpur">Asia/Kuala_Lumpur (MYT)</SelectItem>
-                            <SelectItem value="UTC">UTC</SelectItem>
-                            <SelectItem value="America/New_York">America/New_York (EST)</SelectItem>
-                            <SelectItem value="Europe/London">Europe/London (GMT)</SelectItem>
-                        </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="grid w-full items-center gap-1.5">
-                    <Label htmlFor="sync-time" className="text-zinc-400">Time (24hr format)</Label>
-                    <Input id="sync-time" type="time" value={scheduleTime} onChange={e => setScheduleTime(e.target.value)} className="bg-zinc-800 border-zinc-700" />
-                  </div>
-                  <div className="w-full sm:w-auto">
-                     <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                            <Button disabled={isLoading} className="w-full sm:w-auto">Set Schedule & Sync</Button>
-                        </AlertDialogTrigger>
-                         <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
-                          <AlertDialogHeader>
-                              <AlertDialogTitle>Schedule & Sync Now?</AlertDialogTitle>
-                              <AlertDialogDescription className="text-zinc-400">
-                                  This will simulate setting the schedule and will also trigger an immediate sync for all outlets.
-                              </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                          <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
-                          <AlertDialogAction className="bg-primary/90 hover:bg-primary/80" onClick={() => {
-                              toast({
-                                  title: 'Recurring Sync Scheduled',
-                                  description: `Automated sync will now run every ${scheduleDay.charAt(0).toUpperCase() + scheduleDay.slice(1)} at ${scheduleTime} (${scheduleTimezone}). Starting initial sync now...`
-                              });
-                              triggerSync();
-                          }}>Yes, Set & Sync</AlertDialogAction>
-                          </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  </div>
-              </div>
-          </div>
       </CardContent>
     </Card>
   );
