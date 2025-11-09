@@ -55,17 +55,18 @@ export const syncInstagramPosts = async () => {
 };
 
 
-export const fetchGooglePlaceDetails = async (placeId: string) => {
+export const fetchGooglePlaceDetails = async (input: { placeId: string }) => {
+    const { placeId } = input;
     if (!placeId) {
         throw new functions.https.HttpsError('invalid-argument', 'The function must be called with a "placeId" argument.');
     }
 
     const apiKey = process.env.GOOGLE_MAPS_API_KEY;
     if (!apiKey) {
-        throw new functions.https.HttpsError('failed-precondition', 'The Google Maps API key is not configured.');
+        throw new functions.https.HttpsError('failed-precondition', 'The Google Maps API key is not configured in environment variables (GOOGLE_MAPS_API_KEY).');
     }
 
-    const fields = 'name,formatted_address,geometry,formatted_phone_number,opening_hours,photos,place_id,url,rating,user_ratings_total,reviews';
+    const fields = 'name,formatted_address,geometry,formatted_phone_number,opening_hours,photos,place_id,url,rating,user_ratings_total,reviews,address_components';
     const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=${fields}&key=${apiKey}`;
 
     try {
@@ -73,11 +74,11 @@ export const fetchGooglePlaceDetails = async (placeId: string) => {
         const data: any = await response.json();
 
         if (data.status !== 'OK') {
-            throw new functions.https.HttpsError('not-found', `Google Places API error: ${data.status} - ${data.error_message || ''}`);
+            throw new functions.https.HttpsError('not-found', `Google Places API error: ${data.status} - ${data.error_message || 'Check the Place ID and API key.'}`);
         }
 
         const result = data.result;
-
+        
         const getAddressComponent = (type: string) => {
             const component = result.address_components?.find((c: any) => c.types.includes(type));
             return component ? component.long_name : '';
@@ -94,7 +95,7 @@ export const fetchGooglePlaceDetails = async (placeId: string) => {
             lat: result.geometry?.location?.lat || 0,
             lng: result.geometry?.location?.lng || 0,
             phone: result.formatted_phone_number || '',
-            hours: result.opening_hours?.weekday_text?.join('\n') || '',
+            hours: result.opening_hours?.weekday_text?.join('\\n') || '',
             mapsLink: result.url || '',
             rating: result.rating || 0,
             reviewCount: result.user_ratings_total || 0,
@@ -111,9 +112,11 @@ export const fetchGooglePlaceDetails = async (placeId: string) => {
         return outletData;
     } catch (error: any) {
         console.error('Error fetching from Google Places API:', error);
+        // If it's already an HttpsError, rethrow it, otherwise wrap it.
         if (error instanceof functions.https.HttpsError) {
             throw error;
         }
-        throw new functions.https.HttpsError('internal', 'An unexpected error occurred while fetching place details.');
+        throw new functions.https.HttpsError('internal', 'An unexpected error occurred while fetching place details. Check server logs.');
     }
 };
+
