@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -117,44 +118,49 @@ export default function OutletForm({ outlet, onSuccess }: OutletFormProps) {
       description: `Fetching details for Place ID: ${placeId}`,
     });
 
-    // In a real implementation, this would call the backend Cloud Function
-    // For now, we simulate a delay and populate with dummy data.
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // This is where you would call your backend:
-    // const response = await fetch(`/api/outlet/fetchFromGoogle?placeId=${placeId}`);
-    // const data = await response.json();
-    // form.reset(data); // Reset the form with the fetched data
-    
-    // --- Mock Data for UI demonstration ---
-    const mockData = {
-        name: "Mock Coffee Shop",
-        address: "123 Mockingbird Lane, Kuala Lumpur, Malaysia",
-        city: "Kuala Lumpur",
-        state: "Kuala Lumpur",
-        lat: 3.1390,
-        lng: 101.6869,
-        phone: '03-1234 5678',
-        hours: '9:00 AM - 10:00 PM',
-        tagline: 'The best mock coffee in town.',
-    };
+    try {
+      const response = await fetch('/api/google-places-fetch', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ placeId }),
+      });
 
-    form.setValue('name', mockData.name);
-    form.setValue('address', mockData.address);
-    form.setValue('city', mockData.city);
-    form.setValue('state', mockData.state);
-    form.setValue('lat', mockData.lat);
-    form.setValue('lng', mockData.lng);
-    form.setValue('phone', mockData.phone);
-    form.setValue('hours', mockData.hours);
-    form.setValue('tagline', mockData.tagline);
-    // --- End Mock Data ---
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error.message || 'Failed to fetch data from Google.');
+      }
 
-    setIsFetching(false);
-     toast({
-      title: 'Data Fetched!',
-      description: 'The form has been populated with data from Google. Please review and save.',
-    });
+      const data = await response.json();
+      
+      // Populate form with fetched data
+      form.setValue('name', data.name);
+      form.setValue('address', data.address);
+      form.setValue('city', data.city);
+      form.setValue('state', data.state);
+      form.setValue('lat', data.lat);
+      form.setValue('lng', data.lng);
+      form.setValue('phone', data.phone);
+      form.setValue('hours', data.hours);
+      form.setValue('mapsLink', data.mapsLink);
+      // We don't populate tagline, heroImage etc. as they are not standard fields.
+      // Rating and reviews are stored separately and not part of this form.
+
+      toast({
+        title: 'Data Fetched!',
+        description: 'The form has been populated with data from Google. Please review and save.',
+      });
+
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        title: 'Fetch Failed',
+        description: error.message,
+      });
+    } finally {
+      setIsFetching(false);
+    }
   };
 
   const onSubmit = async (values: FormValues) => {
