@@ -385,6 +385,12 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
     }
   };
 
+  const handleDeleteReview = async (reviewId: string) => {
+    if(!firestore) return;
+    await deleteDoc(doc(firestore, "testimonials", reviewId));
+    toast({ title: "Review Deleted" });
+  }
+
   const handleDeletePromotion = async (promoId: string) => {
     if(!firestore) return;
     await deleteDoc(doc(firestore, "promotions", promoId));
@@ -400,12 +406,12 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
       <form onSubmit={form.handleSubmit(onSubmit)} className="h-full flex flex-col">
         <ScrollArea className="flex-grow pr-4">
           <Tabs defaultValue="general" className="w-full">
-              <TabsList className="grid w-full grid-cols-5 bg-zinc-800">
+              <TabsList className="grid w-full grid-cols-3 md:grid-cols-5 bg-zinc-800">
                 <TabsTrigger value="general">General</TabsTrigger>
                 <TabsTrigger value="seo">SEO</TabsTrigger>
                 <TabsTrigger value="menu">Menu</TabsTrigger>
-                <TabsTrigger value="promotions">Promotions</TabsTrigger>
-                <TabsTrigger value="reviews">Reviews</TabsTrigger>
+                {outlet && <TabsTrigger value="promotions">Promotions</TabsTrigger>}
+                {outlet && <TabsTrigger value="reviews">Reviews</TabsTrigger>}
               </TabsList>
               <div className="mt-4">
                 <TabsContent value="general">
@@ -593,6 +599,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
                         </div>
                     </div>
                 </TabsContent>
+                {outlet && (
                 <TabsContent value="promotions">
                   <div className="space-y-4">
                      <div className="flex justify-between items-center">
@@ -639,18 +646,34 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
                      </div>
                   </div>
                 </TabsContent>
+                )}
+                {outlet && (
                 <TabsContent value="reviews">
-                  <p className="text-zinc-400">Manage reviews for this outlet here. You can hide reviews that are not suitable.</p>
                    <div className="space-y-2 mt-4">
                         {outletReviews.map(review => (
-                            <div key={review.id} className="bg-zinc-800 rounded-lg p-3">
+                            <div key={review.id} className="bg-zinc-800 rounded-lg p-3 flex items-center justify-between">
+                              <div>
                                 <p className="text-sm italic">"{review.quote}"</p>
                                 <p className="text-xs text-right font-semibold mt-2">- {review.name}, {review.designation}</p>
+                              </div>
+                              <AlertDialog>
+                                  <AlertDialogTrigger asChild>
+                                      <Button type="button" variant="ghost" size="icon"><Trash2 className="h-4 w-4 text-red-500" /></Button>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
+                                      <AlertDialogHeader><AlertDialogTitle>Are you sure?</AlertDialogTitle><AlertDialogDescription className="text-zinc-400">This will permanently delete this review.</AlertDialogDescription></AlertDialogHeader>
+                                      <AlertDialogFooter>
+                                          <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
+                                          <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleDeleteReview(review.id)}>Delete</AlertDialogAction>
+                                      </AlertDialogFooter>
+                                  </AlertDialogContent>
+                              </AlertDialog>
                             </div>
                         ))}
                         {outletReviews.length === 0 && <p className="text-zinc-500 text-center py-8">No reviews linked to this outlet yet.</p>}
                    </div>
                 </TabsContent>
+                )}
               </div>
           </Tabs>
         </ScrollArea>
