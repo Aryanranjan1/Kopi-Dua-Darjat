@@ -704,12 +704,9 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
                     <div className="space-y-4">
                         <div className="flex justify-between items-center">
                             <h3 className="text-lg font-medium text-primary">Reviews for {outlet?.name}</h3>
-                            <Button type="button" size="sm" onClick={() => { setSelectedTestimonial(undefined); setIsTestimonialDialogOpen(true); }}>
-                                <PlusCircle className="mr-2 h-4 w-4" /> Add Manual Review
-                            </Button>
                         </div>
                         {isLoadingReviews && <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin"/></div>}
-                        {!isLoadingReviews && currentReviews.length === 0 && <p className="text-zinc-500 text-center py-8">No reviews for this outlet yet.</p>}
+                        
                         <div className="max-h-[400px] overflow-y-auto pr-2 space-y-2">
                             {currentReviews.sort((a,b) => (typeof b.time === 'number' ? b.time : b.time.seconds) - (typeof a.time === 'number' ? a.time : a.time.seconds)).map((review, index) => (
                                 <div key={review.id || index} className="bg-zinc-800 p-3 rounded-lg flex justify-between items-start">
