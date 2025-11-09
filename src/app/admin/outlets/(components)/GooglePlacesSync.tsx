@@ -5,7 +5,7 @@ import { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, RefreshCw, AlertTriangle, MapPin } from 'lucide-react';
+import { Loader2, RefreshCw, AlertTriangle, MapPin, Calendar as CalendarIcon } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,11 +23,53 @@ import type { Outlet } from '@/lib/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
+
+const DateTimePicker = ({ label, date, setDate }: { label: string; date: Date | undefined; setDate: (date: Date | undefined) => void; }) => {
+    const inputStyles = "bg-zinc-800 border-zinc-700 text-white focus-visible:ring-primary";
+
+    return (
+        <div className="grid w-full items-center gap-1.5">
+            <Label htmlFor={label.toLowerCase().replace(' ', '-')} className="text-zinc-400">{label}</Label>
+             <Popover>
+                  <PopoverTrigger asChild>
+                      <Button variant="outline" className={cn("w-full justify-start text-left font-normal", !date && "text-muted-foreground", inputStyles)}>
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {date ? format(date, "PPP HH:mm") : <span>Pick a date</span>}
+                      </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0 z-50 bg-zinc-900 border-zinc-800" align="start">
+                    <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
+                    <div className="p-2 border-t border-zinc-800">
+                        <Input 
+                            type="time"
+                            value={date ? format(date, 'HH:mm') : ''}
+                            onChange={(e) => {
+                                const newTime = e.target.value;
+                                const [hours, minutes] = newTime.split(':').map(Number);
+                                const newDate = date ? new Date(date) : new Date();
+                                newDate.setHours(hours, minutes);
+                                setDate(newDate);
+                            }}
+                            className={inputStyles}
+                        />
+                    </div>
+                  </PopoverContent>
+                </Popover>
+        </div>
+    );
+};
+
 
 export default function GooglePlacesSync() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const firestore = useFirestore();
+  const [startDate, setStartDate] = useState<Date | undefined>();
+  const [endDate, setEndDate] = useState<Date | undefined>();
 
   const outletsWithPlaceIdQuery = useMemoFirebase(
     () => firestore ? query(collection(firestore, 'outlets'), where('placeId', '!=', null)) : null,
@@ -52,6 +94,31 @@ export default function GooglePlacesSync() {
       description: `Outlet reviews and ratings have been updated.`,
     });
   };
+  
+  const handleScheduleSync = () => {
+    if (!startDate || !endDate) {
+        toast({
+            variant: 'destructive',
+            title: 'Invalid Dates',
+            description: 'Please select both a start and end date for the sync schedule.',
+        });
+        return;
+    }
+    if (endDate <= startDate) {
+        toast({
+            variant: 'destructive',
+            title: 'Invalid Date Range',
+            description: 'The end date must be after the start date.',
+        });
+        return;
+    }
+    
+    // Simulate scheduling a backend job
+    toast({
+        title: 'Sync Scheduled',
+        description: `Automated sync will run between ${format(startDate, 'PPP HH:mm')} and ${format(endDate, 'PPP HH:mm')}.`
+    });
+  }
 
   return (
     <Card className="bg-zinc-900 border-zinc-800 text-white">
@@ -65,7 +132,7 @@ export default function GooglePlacesSync() {
           <div className="flex items-start gap-4 rounded-lg border border-blue-500/50 bg-blue-500/10 p-4">
               <AlertTriangle className="h-6 w-6 text-blue-400 mt-1" />
               <div>
-                  <h3 className="font-semibold text-blue-300">Note on Automatic Sync</h3>
+                  <h3 className="font-semibold text-blue-300">Note on Automated Sync</h3>
                   <p className="text-sm text-blue-400/80">
                   This manual trigger is for immediate updates. Automated syncs can be configured with your backend.
                   </p>
@@ -102,7 +169,7 @@ export default function GooglePlacesSync() {
                       ) : (
                           <RefreshCw className="mr-2 h-4 w-4" />
                       )}
-                      Sync All ({outlets?.length || 0}) Outlets
+                      Sync All ({outlets?.length || 0}) Outlets Now
                   </Button>
               </AlertDialogTrigger>
               <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
@@ -120,16 +187,13 @@ export default function GooglePlacesSync() {
           </AlertDialog>
           
           <div className="border-t border-zinc-800 pt-6">
-              <h4 className="font-medium text-zinc-300">Automated Sync Schedule (UI Only)</h4>
-              <p className="text-sm text-zinc-500 mb-4">Set a date range for automatic background syncing. Backend implementation required.</p>
-              <div className="flex items-center gap-4">
-                  <div className="grid w-full items-center gap-1.5">
-                      <Label htmlFor="start-date" className="text-zinc-400">Sync Start</Label>
-                      <Input type="datetime-local" id="start-date" className="bg-zinc-800 border-zinc-700" />
-                  </div>
-                   <div className="grid w-full items-center gap-1.5">
-                      <Label htmlFor="end-date" className="text-zinc-400">Sync End</Label>
-                      <Input type="datetime-local" id="end-date" className="bg-zinc-800 border-zinc-700" />
+              <h4 className="font-medium text-zinc-300">Automated Sync Schedule</h4>
+              <p className="text-sm text-zinc-500 mb-4">Set a date range for automatic background syncing. This is a UI prototype.</p>
+              <div className="flex flex-col sm:flex-row items-center gap-4">
+                  <DateTimePicker label="Sync Start" date={startDate} setDate={setStartDate} />
+                  <DateTimePicker label="Sync End" date={endDate} setDate={setEndDate} />
+                  <div className="w-full sm:w-auto self-end">
+                     <Button onClick={handleScheduleSync} className="w-full sm:w-auto mt-4 sm:mt-0">Schedule Sync</Button>
                   </div>
               </div>
           </div>
