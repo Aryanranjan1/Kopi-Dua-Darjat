@@ -24,8 +24,14 @@ export default function EditOutletPage() {
   const { data: outlet, isLoading } = useDoc<Outlet>(outletRef);
 
   const handleSuccess = () => {
-    router.push('/admin/outlets');
-    router.refresh(); // Refresh the page to reflect changes
+    // If it was a new outlet, redirect to its new edit page
+    if (isNew) {
+      // The slug would have been set in the form, need to get it from there.
+      // For now, let's just go back to the list. A more robust solution might
+      // pass the new slug back from the onSuccess callback.
+      router.push('/admin/outlets');
+    }
+    router.refresh(); // Refresh data on the page
   };
 
   return (
@@ -40,7 +46,7 @@ export default function EditOutletPage() {
         {isNew ? 'Create New Outlet' : `Edit: ${outlet?.name || '...'}`}
       </h1>
 
-      {isLoading && !isNew ? (
+      {(isLoading && !isNew) ? (
         <div className="flex justify-center items-center h-64">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>

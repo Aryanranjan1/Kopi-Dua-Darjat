@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -32,7 +33,7 @@ import { Switch } from '@/components/ui/switch';
 import slugify from 'slugify';
 import { useEffect, useState } from 'react';
 import ImageUpload from '@/components/shared/ImageUpload';
-
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface OutletFormProps {
   outlet?: Outlet;
@@ -133,7 +134,6 @@ export default function OutletForm({ outlet, onSuccess }: OutletFormProps) {
 
       const data = await response.json();
       
-      // Populate form with fetched data
       form.setValue('name', data.name, { shouldValidate: true });
       form.setValue('address', data.address, { shouldValidate: true });
       form.setValue('city', data.city, { shouldValidate: true });
@@ -206,137 +206,155 @@ export default function OutletForm({ outlet, onSuccess }: OutletFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="h-full flex flex-col">
-        <ScrollArea className="flex-grow pr-6 -mr-6 max-h-[calc(80vh-150px)]">
-          <div className="space-y-6">
-            <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2">Core Information</h3>
-             <FormField control={form.control} name="placeId" render={({ field }) => (
-                <FormItem>
-                    <FormLabel>Google Place ID</FormLabel>
-                     <div className="flex items-center gap-2">
-                        <FormControl>
-                            <Input placeholder="ChIJ..." {...field} className={inputStyles}/>
-                        </FormControl>
-                        <Button type="button" onClick={handleFetchFromGoogle} disabled={isFetching}>
-                            {isFetching ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Fetch'}
-                        </Button>
+        <Tabs defaultValue="general" className="w-full">
+            <TabsList className="grid w-full grid-cols-4 bg-zinc-800">
+              <TabsTrigger value="general">General</TabsTrigger>
+              <TabsTrigger value="menu">Menu</TabsTrigger>
+              <TabsTrigger value="promotions">Promotions</TabsTrigger>
+              <TabsTrigger value="testimonials">Testimonials</TabsTrigger>
+            </TabsList>
+            <div className="mt-4">
+              <TabsContent value="general">
+                  <div className="space-y-6">
+                    <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2">Core Information</h3>
+                    <FormField control={form.control} name="placeId" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Google Place ID</FormLabel>
+                            <div className="flex items-center gap-2">
+                                <FormControl>
+                                    <Input placeholder="ChIJ..." {...field} className={inputStyles}/>
+                                </FormControl>
+                                <Button type="button" onClick={handleFetchFromGoogle} disabled={isFetching}>
+                                    {isFetching ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Fetch'}
+                                </Button>
+                            </div>
+                            <FormDescription>Enter a Place ID and click 'Fetch' to auto-populate data.</FormDescription>
+                            <FormMessage/>
+                        </FormItem>
+                    )}/>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField control={form.control} name="name" render={({ field }) => (
+                            <FormItem><FormLabel>Outlet Name</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                        )}/>
+                        <FormField control={form.control} name="slug" render={({ field }) => (
+                            <FormItem><FormLabel>Slug (URL Identifier)</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormDescription>Auto-generated from name. Must be unique.</FormDescription><FormMessage/></FormItem>
+                        )}/>
                     </div>
-                    <FormDescription>Enter a Place ID and click 'Fetch' to auto-populate data.</FormDescription>
-                    <FormMessage/>
-                </FormItem>
-            )}/>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField control={form.control} name="name" render={({ field }) => (
-                    <FormItem><FormLabel>Outlet Name</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
-                )}/>
-                <FormField control={form.control} name="slug" render={({ field }) => (
-                    <FormItem><FormLabel>Slug (URL Identifier)</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormDescription>Auto-generated from name. Must be unique.</FormDescription><FormMessage/></FormItem>
-                )}/>
-            </div>
-            <FormField control={form.control} name="address" render={({ field }) => (
-                <FormItem><FormLabel>Full Address</FormLabel><FormControl><Textarea {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
-            )}/>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField control={form.control} name="city" render={({ field }) => (
-                    <FormItem><FormLabel>City</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
-                )}/>
-                <FormField control={form.control} name="state" render={({ field }) => (
-                    <FormItem><FormLabel>State</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
-                )}/>
-            </div>
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField control={form.control} name="lat" render={({ field }) => (
-                    <FormItem><FormLabel>Latitude</FormLabel><FormControl><Input type="number" {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
-                )}/>
-                <FormField control={form.control} name="lng" render={({ field }) => (
-                    <FormItem><FormLabel>Longitude</FormLabel><FormControl><Input type="number" {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
-                )}/>
-            </div>
+                    <FormField control={form.control} name="address" render={({ field }) => (
+                        <FormItem><FormLabel>Full Address</FormLabel><FormControl><Textarea {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                    )}/>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField control={form.control} name="city" render={({ field }) => (
+                            <FormItem><FormLabel>City</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                        )}/>
+                        <FormField control={form.control} name="state" render={({ field }) => (
+                            <FormItem><FormLabel>State</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                        )}/>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField control={form.control} name="lat" render={({ field }) => (
+                            <FormItem><FormLabel>Latitude</FormLabel><FormControl><Input type="number" {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                        )}/>
+                        <FormField control={form.control} name="lng" render={({ field }) => (
+                            <FormItem><FormLabel>Longitude</FormLabel><FormControl><Input type="number" {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                        )}/>
+                    </div>
 
-            <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">Contact & Hours</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField control={form.control} name="hours" render={({ field }) => (
-                    <FormItem><FormLabel>Operating Hours</FormLabel><FormControl><Input placeholder="e.g. 8 AM - 10 PM" {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
-                )}/>
-                 <FormField control={form.control} name="phone" render={({ field }) => (
-                    <FormItem><FormLabel>Phone Number</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
-                )}/>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField control={form.control} name="email" render={({ field }) => (
-                    <FormItem><FormLabel>Email</FormLabel><FormControl><Input type="email" {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
-                )}/>
-                <FormField control={form.control} name="whatsappLink" render={({ field }) => (
-                    <FormItem><FormLabel>WhatsApp Link</FormLabel><FormControl><Input placeholder="https://wa.me/..." {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
-                )}/>
-            </div>
+                    <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">Contact & Hours</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField control={form.control} name="hours" render={({ field }) => (
+                            <FormItem><FormLabel>Operating Hours</FormLabel><FormControl><Input placeholder="e.g. 8 AM - 10 PM" {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                        )}/>
+                        <FormField control={form.control} name="phone" render={({ field }) => (
+                            <FormItem><FormLabel>Phone Number</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                        )}/>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField control={form.control} name="email" render={({ field }) => (
+                            <FormItem><FormLabel>Email</FormLabel><FormControl><Input type="email" {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                        )}/>
+                        <FormField control={form.control} name="whatsappLink" render={({ field }) => (
+                            <FormItem><FormLabel>WhatsApp Link</FormLabel><FormControl><Input placeholder="https://wa.me/..." {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                        )}/>
+                    </div>
 
-            <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">Microsite Content</h3>
-             <FormField control={form.control} name="tagline" render={({ field }) => (
-                <FormItem><FormLabel>Tagline</FormLabel><FormControl><Input placeholder="A catchy tagline for this outlet" {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
-            )}/>
-            <div className="space-y-4">
-                 <FormField
-                    control={form.control}
-                    name="heroImage"
-                    render={({ field }) => (
-                        <ImageUpload
-                            label="Hero Image"
-                            value={field.value || ''}
-                            onChange={field.onChange}
-                            folderName={`outlets/${outlet?.slug || 'new'}/hero`}
-                        />
-                    )}
-                />
-                 <FormField
-                    control={form.control}
-                    name="interiorImage"
-                    render={({ field }) => (
-                        <ImageUpload
-                            label="Interior Image"
-                            value={field.value || ''}
-                            onChange={field.onChange}
-                            folderName={`outlets/${outlet?.slug || 'new'}/interior`}
-                        />
-                    )}
-                />
-            </div>
-             <FormField control={form.control} name="chatbotEmbed" render={({ field }) => (
-                <FormItem>
-                    <div className="flex items-center justify-between">
-                        <FormLabel>Chatbot Embed Code</FormLabel>
+                    <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">Microsite Content</h3>
+                    <FormField control={form.control} name="tagline" render={({ field }) => (
+                        <FormItem><FormLabel>Tagline</FormLabel><FormControl><Input placeholder="A catchy tagline for this outlet" {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                    )}/>
+                    <div className="space-y-4">
                         <FormField
                             control={form.control}
-                            name="isChatbotEnabled"
+                            name="heroImage"
                             render={({ field }) => (
-                                <FormItem className="flex items-center gap-2 space-y-0">
-                                    <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
-                                    <FormLabel className="text-sm !mt-0">{field.value ? "Enabled" : "Disabled"}</FormLabel>
-                                </FormItem>
+                                <ImageUpload
+                                    label="Hero Image"
+                                    value={field.value || ''}
+                                    onChange={field.onChange}
+                                    folderName={`outlets/${outlet?.slug || 'new'}/hero`}
+                                />
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="interiorImage"
+                            render={({ field }) => (
+                                <ImageUpload
+                                    label="Interior Image"
+                                    value={field.value || ''}
+                                    onChange={field.onChange}
+                                    folderName={`outlets/${outlet?.slug || 'new'}/interior`}
+                                />
                             )}
                         />
                     </div>
-                    <FormControl><Textarea placeholder="<script>...</script>" {...field} className={`${inputStyles} font-mono`} /></FormControl>
-                    <FormDescription>Paste the full embed code for a chatbot if applicable.</FormDescription>
-                    <FormMessage/>
-                </FormItem>
-            )}/>
+                    <FormField control={form.control} name="chatbotEmbed" render={({ field }) => (
+                        <FormItem>
+                            <div className="flex items-center justify-between">
+                                <FormLabel>Chatbot Embed Code</FormLabel>
+                                <FormField
+                                    control={form.control}
+                                    name="isChatbotEnabled"
+                                    render={({ field }) => (
+                                        <FormItem className="flex items-center gap-2 space-y-0">
+                                            <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                                            <FormLabel className="text-sm !mt-0">{field.value ? "Enabled" : "Disabled"}</FormLabel>
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                            <FormControl><Textarea placeholder="<script>...</script>" {...field} className={`${inputStyles} font-mono`} /></FormControl>
+                            <FormDescription>Paste the full embed code for a chatbot if applicable.</FormDescription>
+                            <FormMessage/>
+                        </FormItem>
+                    )}/>
 
+                    <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">System</h3>
+                    <FormField control={form.control} name="status" render={({ field }) => (
+                            <FormItem><FormLabel>Status</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl><SelectTrigger className={inputStyles}><SelectValue /></SelectTrigger></FormControl>
+                                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                                        <SelectItem value="active">Active</SelectItem>
+                                        <SelectItem value="inactive">Inactive</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            <FormMessage/></FormItem>
+                        )}/>
+                  </div>
+              </TabsContent>
+              <TabsContent value="menu">
+                <p className="text-zinc-400">Manage menu items for this outlet here.</p>
+              </TabsContent>
+              <TabsContent value="promotions">
+                <p className="text-zinc-400">Manage promotions for this outlet here.</p>
+              </TabsContent>
+              <TabsContent value="testimonials">
+                <p className="text-zinc-400">Manage testimonials for this outlet here.</p>
+              </TabsContent>
+            </div>
+        </Tabs>
 
-             <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">System</h3>
-              <FormField control={form.control} name="status" render={({ field }) => (
-                    <FormItem><FormLabel>Status</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl><SelectTrigger className={inputStyles}><SelectValue /></SelectTrigger></FormControl>
-                            <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                                <SelectItem value="active">Active</SelectItem>
-                                <SelectItem value="inactive">Inactive</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    <FormMessage/></FormItem>
-                )}/>
-
-          </div>
-        </ScrollArea>
         <div className="flex-shrink-0 pt-6">
             <Button type="submit" disabled={isSubmitting} className="w-full">
             {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

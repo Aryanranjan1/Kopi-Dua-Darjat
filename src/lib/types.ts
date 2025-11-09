@@ -193,6 +193,7 @@ export type Testimonial = {
   designation: string;
   image: string;
   company?: string;
+  outletId?: string;
   createdAt?: any; // Firestore Timestamp
 };
 

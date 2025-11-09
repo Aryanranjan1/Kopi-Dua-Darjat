@@ -2,6 +2,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, doc, deleteDoc, orderBy, query } from 'firebase/firestore';
 import type { Outlet } from '@/lib/types';
@@ -15,13 +16,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from '@/components/ui/dialog';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -39,13 +33,13 @@ import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { Pagination } from '@/components/shared/Pagination';
-import OutletForm from './OutletForm';
 
 const OUTLETS_PER_PAGE = 8;
 
 export default function OutletsManager() {
   const firestore = useFirestore();
   const { toast } = useToast();
+  const router = useRouter();
   
   const outletsQuery = useMemoFirebase(
     () => firestore ? query(collection(firestore, 'outlets'), orderBy('name', 'asc')) : null,
@@ -53,8 +47,6 @@ export default function OutletsManager() {
   );
   const { data: outlets, isLoading } = useCollection<Outlet>(outletsQuery);
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedOutlet, setSelectedOutlet] = useState<Outlet | undefined>(undefined);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -75,13 +67,11 @@ export default function OutletsManager() {
   );
 
   const handleAddNew = () => {
-    setSelectedOutlet(undefined);
-    setIsDialogOpen(true);
+    router.push('/admin/outlets/edit/new');
   };
 
   const handleEdit = (outlet: Outlet) => {
-    setSelectedOutlet(outlet);
-    setIsDialogOpen(true);
+    router.push(`/admin/outlets/edit/${outlet.id}`);
   };
 
   const handleDelete = async (id: string) => {
@@ -171,18 +161,6 @@ export default function OutletsManager() {
             onPageChange={setCurrentPage}
           />
        </div>
-
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>{selectedOutlet ? 'Edit Outlet' : 'Add New Outlet'}</DialogTitle>
-             <DialogDescription className="text-zinc-400">
-                {selectedOutlet ? `Editing details for ${selectedOutlet.name}` : 'Add a new outlet to the system.'}
-              </DialogDescription>
-          </DialogHeader>
-          <OutletForm outlet={selectedOutlet} onSuccess={() => setIsDialogOpen(false)} />
-        </DialogContent>
-      </Dialog>
     </>
   );
 }
