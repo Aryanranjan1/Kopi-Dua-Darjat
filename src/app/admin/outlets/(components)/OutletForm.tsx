@@ -119,7 +119,7 @@ export default function OutletForm({ outlet, onSuccess }: OutletFormProps) {
     });
 
     try {
-      const response = await fetch('/api/google-places-fetch', {
+      const response = await fetch('/api/fetchGooglePlaceDetails', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -127,25 +127,24 @@ export default function OutletForm({ outlet, onSuccess }: OutletFormProps) {
         body: JSON.stringify({ placeId }),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error.message || 'Failed to fetch data from Google.');
-      }
-
       const data = await response.json();
+
+      if (!response.ok) {
+        // The 'message' property is where Firebase Functions HttpsError places the error message.
+        const errorMessage = data?.message || 'An unknown error occurred on the server.';
+        throw new Error(errorMessage);
+      }
       
       // Populate form with fetched data
-      form.setValue('name', data.name);
-      form.setValue('address', data.address);
-      form.setValue('city', data.city);
-      form.setValue('state', data.state);
-      form.setValue('lat', data.lat);
-      form.setValue('lng', data.lng);
-      form.setValue('phone', data.phone);
-      form.setValue('hours', data.hours);
-      form.setValue('mapsLink', data.mapsLink);
-      // We don't populate tagline, heroImage etc. as they are not standard fields.
-      // Rating and reviews are stored separately and not part of this form.
+      form.setValue('name', data.name, { shouldValidate: true });
+      form.setValue('address', data.address, { shouldValidate: true });
+      form.setValue('city', data.city, { shouldValidate: true });
+      form.setValue('state', data.state, { shouldValidate: true });
+      form.setValue('lat', data.lat, { shouldValidate: true });
+      form.setValue('lng', data.lng, { shouldValidate: true });
+      form.setValue('phone', data.phone, { shouldValidate: true });
+      form.setValue('hours', data.hours, { shouldValidate: true });
+      form.setValue('mapsLink', data.mapsLink, { shouldValidate: true });
 
       toast({
         title: 'Data Fetched!',
@@ -156,7 +155,7 @@ export default function OutletForm({ outlet, onSuccess }: OutletFormProps) {
       toast({
         variant: 'destructive',
         title: 'Fetch Failed',
-        description: error.message,
+        description: error.message || 'Could not fetch data. Please check the Place ID and ensure your API key is configured correctly.',
       });
     } finally {
       setIsFetching(false);
