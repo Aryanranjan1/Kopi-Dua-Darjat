@@ -8,97 +8,91 @@ import type { Testimonial } from '@/lib/types';
 import { useMediaAsset } from '@/lib/media';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import { Card, CardContent } from '@/components/ui/card';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '@/components/ui/carousel';
-import Autoplay from "embla-carousel-autoplay"
 import React from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Loader2 } from 'lucide-react';
+import { Loader2, MessageSquare } from 'lucide-react';
 
 const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
   const { asset: image, isLoading } = useMediaAsset(testimonial.image);
   
   return (
-    <div className="p-4 h-full">
-        <div className="relative h-full mt-10">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full overflow-hidden border-4 border-accent shadow-lg z-10">
-                {isLoading ? <Skeleton className="w-full h-full" /> : image && (
-                    <Image
-                        src={image.imageUrl}
-                        alt={testimonial.name}
-                        fill
-                        className="object-cover"
-                        data-ai-hint={image.imageHint}
-                    />
-                )}
+      <Card className="bg-white border-zinc-200 rounded-3xl h-full shadow-sm flex flex-col">
+          <CardContent className="p-8 flex flex-col flex-grow">
+            <div className="flex justify-between items-start mb-4">
+              <div className="flex items-center gap-4">
+                <div className="relative w-14 h-14 rounded-full overflow-hidden">
+                    {isLoading ? <Skeleton className="w-full h-full" /> : image && (
+                        <Image
+                            src={image.imageUrl}
+                            alt={testimonial.name}
+                            fill
+                            className="object-cover"
+                            data-ai-hint={image.imageHint}
+                        />
+                    )}
+                </div>
+                 <div className="relative w-16 h-10">
+                    <MessageSquare className="w-16 h-16 text-zinc-200" strokeWidth={1} />
+                </div>
+              </div>
+               <div className="flex items-center gap-2 border rounded-full px-3 py-1 text-sm">
+                 <div className="w-12 h-12 relative">
+                  <Image src="/image/1.svg" alt="Company Logo" fill className="object-contain p-2 filter grayscale" />
+                 </div>
+                 <span className="font-semibold text-zinc-600">{testimonial.company || 'KDD Franchise'}</span>
+               </div>
             </div>
-            <Card className="bg-zinc-900 border-zinc-800 rounded-3xl h-full pt-20 shadow-lg text-center">
-                <CardContent className="p-8 min-h-[320px] flex flex-col justify-center">
-                <blockquote className="text-lg font-medium text-white/90">
-                “{testimonial.quote}”
-                </blockquote>
-                <footer className="mt-6">
-                <p className="font-bold text-accent text-xl">{testimonial.name}</p>
-                <p className="text-white/60">{testimonial.designation}</p>
-                </footer>
-                </CardContent>
-            </Card>
-        </div>
-    </div>
+
+            <blockquote className="text-xl font-medium text-zinc-800 flex-grow my-4">
+            “{testimonial.quote}”
+            </blockquote>
+            
+            <div className="border-t border-zinc-200 pt-4">
+              <p className="font-bold text-zinc-900 text-lg">{testimonial.name}</p>
+              <p className="text-zinc-600">{testimonial.designation}</p>
+            </div>
+          </CardContent>
+      </Card>
   );
 }
 
 export default function Testimonials() {
-  const plugin = React.useRef(
-    Autoplay({ delay: 5000, stopOnInteraction: true })
-  )
-
   const firestore = useFirestore();
   const testimonialsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'testimonials'), limit(6)) : null, [firestore]);
   const { data: testimonials, isLoading } = useCollection<Testimonial>(testimonialsQuery);
   
+  if (isLoading) {
+      return (
+          <section className="py-24 sm:py-32 bg-white">
+              <div className="container mx-auto px-4">
+                  <div className="flex justify-center items-center h-64">
+                      <Loader2 className="h-12 w-12 animate-spin text-primary" />
+                  </div>
+              </div>
+          </section>
+      )
+  }
+
+  if (!testimonials || testimonials.length === 0) {
+      return null;
+  }
+
   return (
-    <section className="py-24 sm:py-32 bg-black text-white">
+    <section className="py-24 sm:py-32 bg-white">
       <div className="container mx-auto px-4">
-        <AnimateOnScroll animationType="slideInFromBottom" className="text-center max-w-3xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-headline text-primary">Success Stories</h2>
-          <p className="mt-4 text-lg text-white/70">
-            Hear from our partners who are brewing success with Kopi Dua Darjat.
-          </p>
+        <AnimateOnScroll animationType="slideInFromBottom" className="text-left max-w-4xl mb-12">
+          <p className="font-semibold text-zinc-500 uppercase">Our Reviews</p>
+          <h2 className="text-4xl md:text-5xl font-bold text-zinc-900 mt-2">
+            What Our <span className="text-zinc-400">Clients Say</span>
+          </h2>
         </AnimateOnScroll>
 
         <AnimateOnScroll animationType="fadeIn" delay={0.2}>
-          {isLoading ? (
-            <div className="flex justify-center items-center h-64">
-              <Loader2 className="h-12 w-12 animate-spin text-primary" />
-            </div>
-          ) : (
-            <Carousel
-              plugins={[plugin.current]}
-              opts={{
-                align: 'start',
-                loop: true,
-              }}
-              className="w-full max-w-5xl mx-auto mt-24"
-              onMouseEnter={plugin.current.stop}
-              onMouseLeave={plugin.current.reset}
-            >
-              <CarouselContent className="-ml-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {testimonials?.map((testimonial) => (
-                  <CarouselItem key={testimonial.id} className="md:basis-1/2 pl-8">
-                    <TestimonialCard testimonial={testimonial} />
-                  </CarouselItem>
+                    <TestimonialCard key={testimonial.id} testimonial={testimonial} />
                 ))}
-              </CarouselContent>
-              <CarouselPrevious className="-left-4 md:-left-12 bg-zinc-800 border-zinc-700 text-white hover:bg-primary hover:text-black" />
-              <CarouselNext className="-right-4 md:-right-12 bg-zinc-800 border-zinc-700 text-white hover:bg-primary hover:text-black" />
-            </Carousel>
-          )}
+            </div>
         </AnimateOnScroll>
       </div>
     </section>

@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import InteractiveMap from '@/components/home/InteractiveMap';
 import { Loader2, Star } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy } from 'firebase/firestore';
+import { collection, query, orderBy, limit } from 'firebase/firestore';
 import type { Outlet } from '@/lib/types';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { ScrollArea } from '../ui/scroll-area';

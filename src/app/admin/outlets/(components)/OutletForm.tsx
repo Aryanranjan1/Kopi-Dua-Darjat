@@ -57,6 +57,7 @@ const formSchema = z.object({
   whatsappLink: z.string().url('Must be a valid URL').optional().or(z.literal('')),
   chatbotEmbed: z.string().optional(),
   isChatbotEnabled: z.boolean().default(false),
+  placeId: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -86,6 +87,7 @@ export default function OutletForm({ outlet, onSuccess }: OutletFormProps) {
       whatsappLink: '',
       chatbotEmbed: '',
       isChatbotEnabled: false,
+      placeId: '',
     },
   });
 
@@ -114,6 +116,7 @@ export default function OutletForm({ outlet, onSuccess }: OutletFormProps) {
         mapsLink: values.mapsLink || null,
         whatsappLink: values.whatsappLink || null,
         chatbotEmbed: values.chatbotEmbed || null,
+        placeId: values.placeId || null,
         updatedAt: serverTimestamp(),
         ...(outlet ? {} : { createdAt: serverTimestamp() }),
       };
@@ -139,6 +142,9 @@ export default function OutletForm({ outlet, onSuccess }: OutletFormProps) {
         <ScrollArea className="flex-grow pr-6">
           <div className="space-y-6">
             <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2">Core Information</h3>
+            <FormField control={form.control} name="placeId" render={({ field }) => (
+                <FormItem><FormLabel>Google Place ID</FormLabel><FormControl><Input placeholder="ChIJ..." {...field} className={inputStyles}/></FormControl><FormDescription>Optional. Used to fetch reviews and ratings.</FormDescription><FormMessage/></FormItem>
+            )}/>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField control={form.control} name="name" render={({ field }) => (
                     <FormItem><FormLabel>Outlet Name</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>

@@ -8,7 +8,6 @@ import { Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import LatestStories from '@/components/home/LatestStories';
 import TopRatedOutlets from '@/components/outlets/TopRatedOutlets';
-import Testimonials from '@/components/franchise/Testimonials';
 
 export const metadata: Metadata = {
   title: 'Outlets',
