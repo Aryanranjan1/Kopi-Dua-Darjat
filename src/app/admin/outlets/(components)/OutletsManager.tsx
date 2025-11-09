@@ -74,6 +74,7 @@ export default function OutletsManager() {
     if (!searchQuery) return outlets;
     return outlets.filter(outlet => 
       outlet.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      outlet.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
       outlet.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
       outlet.state.toLowerCase().includes(searchQuery.toLowerCase())
     );
