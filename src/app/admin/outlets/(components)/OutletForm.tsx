@@ -149,8 +149,9 @@ export default function OutletForm({ outlet, onSuccess }: OutletFormProps) {
       console.error('Error calling fetchGooglePlaceDetails function:', error);
       toast({
         variant: 'destructive',
-        title: 'Fetch Failed',
-        description: error.message || 'Could not fetch data. Please check the Place ID and ensure your API key and Cloud Function are configured correctly.',
+        title: error.code === 'functions/failed-precondition' ? 'Configuration Error' : 'Fetch Failed',
+        description: error.message || 'Could not fetch data from Google Places.',
+        duration: 9000,
       });
     } finally {
       setIsFetching(false);
