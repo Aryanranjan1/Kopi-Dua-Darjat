@@ -32,7 +32,7 @@ export const fetchGooglePlaceDetails = functions.https.onCall(async (data, conte
   
   const apiKey = process.env.GOOGLE_MAPS_API_KEY;
   if (!apiKey) {
-    console.error('[Function] Error: GOOGLE_MAPS_API_KEY is not set in environment variables.');
+    console.error('[Function] FATAL Error: GOOGLE_MAPS_API_KEY is not set in environment variables.');
     throw new functions.https.HttpsError('internal', 'The server is missing the required API key for Google Maps. Please configure it in your environment.');
   }
 
@@ -47,7 +47,7 @@ export const fetchGooglePlaceDetails = functions.https.onCall(async (data, conte
 
     if (response.data.status !== 'OK') {
       console.error(`[Function] Google Places API Error: ${response.data.status} - ${response.data.error_message || 'No error message'}`);
-      throw new functions.https.HttpsError('internal', `Google Places API Error: ${response.data.status}`);
+      throw new functions.https.HttpsError('internal', `Google Places API Error: ${response.data.status}. ${response.data.error_message || ''}`);
     }
 
     const result = response.data.result;
@@ -74,10 +74,11 @@ export const fetchGooglePlaceDetails = functions.https.onCall(async (data, conte
     return output;
 
   } catch (error: any) {
-    console.error('[Function] An unexpected error occurred:', error);
+    console.error('[Function] An unexpected error occurred while calling Google Maps API:', error);
     if (error.isHttpsError) {
       throw error;
     }
-    throw new functions.https.HttpsError('internal', 'An unexpected error occurred while fetching place details.');
+    // Re-throw other errors as internal to be caught by the client.
+    throw new functions.https.HttpsError('internal', `An unexpected server error occurred: ${error.message}`);
   }
 });
