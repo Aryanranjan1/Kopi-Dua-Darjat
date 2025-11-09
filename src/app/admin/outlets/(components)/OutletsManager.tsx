@@ -5,7 +5,7 @@ import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, doc, deleteDoc, orderBy, query } from 'firebase/firestore';
-import type { Outlet } from '@/lib/types';
+import type { Outlet, MenuItem } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -16,6 +16,13 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -33,6 +40,7 @@ import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { Pagination } from '@/components/shared/Pagination';
+import OutletForm from './OutletForm';
 
 const OUTLETS_PER_PAGE = 8;
 
@@ -40,12 +48,19 @@ export default function OutletsManager() {
   const firestore = useFirestore();
   const { toast } = useToast();
   const router = useRouter();
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedOutlet, setSelectedOutlet] = useState<Outlet | undefined>(undefined);
   
   const outletsQuery = useMemoFirebase(
     () => firestore ? query(collection(firestore, 'outlets'), orderBy('name', 'asc')) : null,
     [firestore]
   );
   const { data: outlets, isLoading } = useCollection<Outlet>(outletsQuery);
+
+  const { data: menuItems, isLoading: isLoadingItems } = useCollection<MenuItem>(
+    useMemoFirebase(() => firestore ? query(collection(firestore, 'menuItems')) : null, [firestore])
+  );
 
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -67,11 +82,13 @@ export default function OutletsManager() {
   );
 
   const handleAddNew = () => {
-    router.push('/admin/outlets/edit/new');
+    setSelectedOutlet(undefined);
+    setIsDialogOpen(true);
   };
 
   const handleEdit = (outlet: Outlet) => {
-    router.push(`/admin/outlets/edit/${outlet.id}`);
+    setSelectedOutlet(outlet);
+    setIsDialogOpen(true);
   };
 
   const handleDelete = async (id: string) => {
@@ -161,6 +178,30 @@ export default function OutletsManager() {
             onPageChange={setCurrentPage}
           />
        </div>
+
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-4xl h-[90vh] flex flex-col">
+                <DialogHeader>
+                    <DialogTitle>{selectedOutlet ? `Edit: ${selectedOutlet.name}` : 'Create New Outlet'}</DialogTitle>
+                    <DialogDescription className="text-zinc-400">
+                        Manage all details for this outlet and its microsite.
+                    </DialogDescription>
+                </DialogHeader>
+                <div className="flex-grow overflow-hidden">
+                    {isLoadingItems ? (
+                        <div className="flex items-center justify-center h-full">
+                            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                        </div>
+                    ) : (
+                        <OutletForm 
+                            outlet={selectedOutlet} 
+                            allItems={menuItems || []} 
+                            onSuccess={() => setIsDialogOpen(false)} 
+                        />
+                    )}
+                </div>
+            </DialogContent>
+        </Dialog>
     </>
   );
 }
