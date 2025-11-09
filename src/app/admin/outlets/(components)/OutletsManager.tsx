@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, doc, deleteDoc, orderBy, query } from 'firebase/firestore';
@@ -55,7 +55,7 @@ export default function OutletsManager() {
     () => firestore ? query(collection(firestore, 'outlets'), orderBy('name', 'asc')) : null,
     [firestore]
   );
-  const { data: outlets, isLoading } = useCollection<Outlet>(outletsQuery);
+  const { data: outlets, isLoading: isLoadingOutlets } = useCollection<Outlet>(outletsQuery);
 
   const { data: menuItems, isLoading: isLoadingItems } = useCollection<MenuItem>(
     useMemoFirebase(() => firestore ? query(collection(firestore, 'menuItems')) : null, [firestore])
@@ -105,7 +105,15 @@ export default function OutletsManager() {
     }
   };
   
-  const isDataLoading = isLoading || isLoadingItems || isLoadingTestimonials;
+  const isDataLoading = isLoadingOutlets || isLoadingItems || isLoadingTestimonials;
+  
+  // Effect to close dialog if the selected outlet is deleted
+  useEffect(() => {
+    if(selectedOutlet && !outlets?.find(o => o.id === selectedOutlet.id)) {
+      setIsDialogOpen(false);
+    }
+  }, [outlets, selectedOutlet]);
+
 
   return (
     <>
@@ -136,8 +144,8 @@ export default function OutletsManager() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {isDataLoading && <TableRow><TableCell colSpan={5} className="text-center"><Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" /></TableCell></TableRow>}
-            {!isDataLoading && paginatedOutlets.length === 0 && <TableRow><TableCell colSpan={5} className="text-center text-zinc-400 py-8">No outlets found.</TableCell></TableRow>}
+            {isLoadingOutlets && <TableRow><TableCell colSpan={5} className="text-center"><Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" /></TableCell></TableRow>}
+            {!isLoadingOutlets && paginatedOutlets.length === 0 && <TableRow><TableCell colSpan={5} className="text-center text-zinc-400 py-8">No outlets found.</TableCell></TableRow>}
             {paginatedOutlets?.map(outlet => (
               <TableRow key={outlet.id} className="border-zinc-700 hover:bg-zinc-800/80">
                 <TableCell className="font-medium">{outlet.name}</TableCell>

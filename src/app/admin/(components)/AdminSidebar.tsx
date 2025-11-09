@@ -4,40 +4,11 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import {
-  LayoutDashboard,
-  Mail,
-  Users,
-  Coffee,
-  Store,
-  Tag,
-  BookOpen,
-  ImageIcon,
-  Settings,
-  X,
-  Sparkles,
-  MessageSquareQuote,
-  Database,
-  Instagram,
-} from 'lucide-react';
+import { navItems } from '../sidebar-items';
 import { Logo } from '@/components/layout/Logo';
 import { Button } from '@/components/ui/button';
+import { X } from 'lucide-react';
 
-const navItems = [
-  { href: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { href: '/admin/messages', icon: Mail, label: 'Messages' },
-  { href: '/admin/leads', icon: Users, label: 'Leads' },
-  { href: '/admin/menu', icon: Coffee, label: 'Menu' },
-  { href: '/admin/specials', icon: Sparkles, label: 'Daily Specials' },
-  { href: '/admin/promotions', icon: Tag, label: 'Promotions' },
-  { href: '/admin/outlets', icon: Store, label: 'Outlets' },
-  { href: '/admin/blog', icon: BookOpen, label: 'Blog' },
-  { href: '/admin/media', icon: ImageIcon, label: 'Media Library' },
-  { href: '/admin/social-feed', icon: Instagram, label: 'Social Feed' },
-  { href: '/admin/faq-testimonials', icon: MessageSquareQuote, label: 'FAQ & Testimonials' },
-  { href: '/admin/settings', icon: Settings, label: 'Settings' },
-  { href: '/admin/data-seeding', icon: Database, label: 'Data Seeding' },
-];
 
 export default function AdminSidebar({
   isOpen,
