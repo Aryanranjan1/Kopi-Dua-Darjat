@@ -293,7 +293,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
       });
 
     } catch (error: any) {
-      console.error('Error calling fetchGooglePlaceDetails API:', error);
+      console.error('Error calling fetch-google-place-details API:', error);
       toast({
         variant: 'destructive',
         title: 'Fetch Failed',
