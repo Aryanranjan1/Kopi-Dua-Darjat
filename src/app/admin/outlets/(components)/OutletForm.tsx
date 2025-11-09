@@ -18,7 +18,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, ChevronsUpDown, Trash2, Edit, PlusCircle, Check } from 'lucide-react';
-import { useFirestore, errorEmitter, FirestorePermissionError } from '@/firebase';
+import { useFirestore, errorEmitter, FirestorePermissionError, useCollection, useMemoFirebase } from '@/firebase';
 import { doc, setDoc, serverTimestamp, collection, query, where, addDoc, deleteDoc, writeBatch } from 'firebase/firestore';
 import type { Outlet, Testimonial, Promotion, MenuItem } from '@/lib/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -36,7 +36,6 @@ import ImageUpload from '@/components/shared/ImageUpload';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Checkbox } from '@/components/ui/checkbox';
-import { useCollection, useMemoFirebase } from '@/firebase';
 import Image from 'next/image';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import PromotionForm from '../../promotions/(components)/PromotionForm';
@@ -298,6 +297,11 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
       whatsappLink: values.whatsappLink || null,
       chatbotEmbed: values.chatbotEmbed || null,
       placeId: values.placeId || null,
+      seo: {
+        title: values.seo?.title || null,
+        description: values.seo?.description || null,
+        keywords: values.seo?.keywords || null,
+      },
       updatedAt: serverTimestamp(),
       ...(outlet ? {} : { createdAt: serverTimestamp() }),
     };
