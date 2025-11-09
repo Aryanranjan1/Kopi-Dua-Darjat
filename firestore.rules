@@ -16,6 +16,11 @@ service cloud.firestore {
       allow read: if true;
       allow write, delete: if isAdmin();
     }
+    
+    match /reviews/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
 
     // CMS Collections (Public Read + Admin Write)
     match /{collectionName}/{docId} where
