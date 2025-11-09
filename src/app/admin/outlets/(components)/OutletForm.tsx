@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -32,6 +31,8 @@ import {
 import { Switch } from '@/components/ui/switch';
 import slugify from 'slugify';
 import { useEffect, useState } from 'react';
+import ImageUpload from '@/components/shared/ImageUpload';
+
 
 interface OutletFormProps {
   outlet?: Outlet;
@@ -273,13 +274,31 @@ export default function OutletForm({ outlet, onSuccess }: OutletFormProps) {
              <FormField control={form.control} name="tagline" render={({ field }) => (
                 <FormItem><FormLabel>Tagline</FormLabel><FormControl><Input placeholder="A catchy tagline for this outlet" {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
             )}/>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                 <FormField control={form.control} name="heroImage" render={({ field }) => (
-                    <FormItem><FormLabel>Hero Image URL</FormLabel><FormControl><Input type="url" {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
-                )}/>
-                <FormField control={form.control} name="interiorImage" render={({ field }) => (
-                    <FormItem><FormLabel>Interior Image URL</FormLabel><FormControl><Input type="url" {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
-                )}/>
+            <div className="space-y-4">
+                 <FormField
+                    control={form.control}
+                    name="heroImage"
+                    render={({ field }) => (
+                        <ImageUpload
+                            label="Hero Image"
+                            value={field.value || ''}
+                            onChange={field.onChange}
+                            folderName={`outlets/${outlet?.slug || 'new'}/hero`}
+                        />
+                    )}
+                />
+                 <FormField
+                    control={form.control}
+                    name="interiorImage"
+                    render={({ field }) => (
+                        <ImageUpload
+                            label="Interior Image"
+                            value={field.value || ''}
+                            onChange={field.onChange}
+                            folderName={`outlets/${outlet?.slug || 'new'}/interior`}
+                        />
+                    )}
+                />
             </div>
              <FormField control={form.control} name="chatbotEmbed" render={({ field }) => (
                 <FormItem>

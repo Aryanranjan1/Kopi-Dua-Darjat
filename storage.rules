@@ -1,0 +1,25 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Helper function to check if a user is an admin
+    function isAdmin() {
+      // Check if the user is authenticated and if a document for their UID exists in the admin roles collection.
+      return request.auth != null && exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid));
+    }
+
+    // Match any file in the 'uploads' folder
+    match /uploads/{allPaths=**} {
+      // Only authenticated admins can read, write, or delete files.
+      allow read, write, delete: if isAdmin();
+    }
+
+    // Public read access for specific folders like 'menu-items' or 'outlet-images' can be added here if needed.
+    // For example:
+    // match /outlet-images/{allPaths=**} {
+    //   allow read: if true;
+    //   allow write, delete: if isAdmin();
+    // }
+  }
+}
