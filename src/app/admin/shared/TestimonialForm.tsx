@@ -20,11 +20,13 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { useFirestore } from '@/firebase';
 import { useMedia } from '@/lib/media';
-import { collection, addDoc, doc, setDoc } from 'firebase/firestore';
+import { collection, addDoc, doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import type { Testimonial } from '@/lib/types';
+import { useEffect } from 'react';
 
 interface TestimonialFormProps {
   testimonial?: Testimonial;
+  outletId?: string;
   onSuccess: () => void;
 }
 
@@ -34,34 +36,63 @@ const formSchema = z.object({
   company: z.string().optional(),
   quote: z.string().min(10, 'Quote is too short.'),
   image: z.string({ required_error: 'Please select an image.' }),
+  outletId: z.string().optional(),
 });
 
-export default function TestimonialForm({ testimonial, onSuccess }: TestimonialFormProps) {
+export default function TestimonialForm({ testimonial, outletId, onSuccess }: TestimonialFormProps) {
   const { toast } = useToast();
   const firestore = useFirestore();
   const { data: media, isLoading: isLoadingMedia } = useMedia();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: testimonial || {
+    defaultValues: {
       name: '',
       designation: '',
       company: '',
       quote: '',
       image: '',
+      outletId: outletId || '',
     },
   });
+  
+  useEffect(() => {
+    if (testimonial) {
+      form.reset({
+        name: testimonial.name || '',
+        designation: testimonial.designation || '',
+        company: testimonial.company || '',
+        quote: testimonial.quote || '',
+        image: testimonial.image || '',
+        outletId: outletId || testimonial.outletId || '',
+      })
+    } else {
+       form.reset({
+        name: '',
+        designation: '',
+        company: '',
+        quote: '',
+        image: '',
+        outletId: outletId || '',
+      })
+    }
+  }, [testimonial, outletId, form]);
 
   const { isSubmitting } = form.formState;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (!firestore) return;
     try {
+      const dataToSave = {
+        ...values,
+        createdAt: serverTimestamp(),
+      }
+
       if (testimonial) {
-        await setDoc(doc(firestore, 'testimonials', testimonial.id), values, { merge: true });
+        await setDoc(doc(firestore, 'testimonials', testimonial.id), dataToSave, { merge: true });
         toast({ title: 'Testimonial Updated' });
       } else {
-        await addDoc(collection(firestore, 'testimonials'), values);
+        await addDoc(collection(firestore, 'testimonials'), dataToSave);
         toast({ title: 'Testimonial Created' });
       }
       onSuccess();

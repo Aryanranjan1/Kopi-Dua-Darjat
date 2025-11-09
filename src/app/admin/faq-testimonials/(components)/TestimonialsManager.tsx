@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -32,7 +33,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Loader2, PlusCircle, Edit, Trash2 } from 'lucide-react';
-import TestimonialForm from './TestimonialForm';
+import TestimonialForm from '../../shared/TestimonialForm';
 import { useToast } from '@/hooks/use-toast';
 import { useMediaAsset } from '@/lib/media';
 import Image from 'next/image';
@@ -49,7 +50,7 @@ export default function TestimonialsManager() {
   const firestore = useFirestore();
   const { toast } = useToast();
   const testimonialsQuery = useMemoFirebase(
-    () => firestore ? query(collection(firestore, 'testimonials')) : null,
+    () => firestore ? query(collection(firestore, 'testimonials'), orderBy('createdAt', 'desc')) : null,
     [firestore]
   );
   const { data: testimonials, isLoading } = useCollection<Testimonial>(testimonialsQuery);

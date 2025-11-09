@@ -40,6 +40,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import Image from 'next/image';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import PromotionForm from '../../promotions/(components)/PromotionForm';
+import TestimonialForm from '../../shared/TestimonialForm';
 import { Badge } from '@/components/ui/badge';
 import { cn, getDiscountDisplay } from '@/lib/utils';
 import { format } from 'date-fns';
@@ -189,8 +190,12 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
   const { toast } = useToast();
   const firestore = useFirestore();
   const [isFetching, setIsFetching] = useState(false);
+  
   const [isPromoDialogOpen, setIsPromoDialogOpen] = useState(false);
   const [selectedPromo, setSelectedPromo] = useState<Promotion | undefined>(undefined);
+  
+  const [isTestimonialDialogOpen, setIsTestimonialDialogOpen] = useState(false);
+  const [selectedTestimonial, setSelectedTestimonial] = useState<Testimonial | undefined>(undefined);
 
   const { data: promotions } = useCollection<Promotion>(
     useMemoFirebase(() => outlet ? query(collection(firestore, 'promotions'), where('outletIds', 'array-contains', outlet.id)) : null, [firestore, outlet])
@@ -405,7 +410,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
   }
 
   const inputStyles = "bg-zinc-800 border-zinc-700 text-white focus-visible:ring-primary";
-  const outletReviews = useMemo(() => allTestimonials.filter(t => t.outletId === outlet?.id), [allTestimonials, outlet]);
+  const outletReviews = useMemo(() => outlet ? allTestimonials.filter(t => t.outletId === outlet.id) : [], [allTestimonials, outlet]);
 
   return (
     <>
@@ -655,7 +660,14 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
                 <TabsContent value="reviews">
                     <div className="space-y-6">
                         <div>
-                            <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2">Manual Testimonials</h3>
+                             <div className="flex justify-between items-center">
+                                <h3 className="text-lg font-medium text-primary">Manual Testimonials</h3>
+                                {outlet && (
+                                    <Button type="button" size="sm" onClick={() => { setSelectedTestimonial(undefined); setIsTestimonialDialogOpen(true); }}>
+                                        <PlusCircle className="mr-2 h-4 w-4" /> New Testimonial
+                                    </Button>
+                                )}
+                            </div>
                             <div className="space-y-2 mt-4">
                                 {outletReviews.map(review => (
                                     <div key={review.id} className="bg-zinc-800 rounded-lg p-3 flex items-center justify-between">
@@ -663,18 +675,23 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
                                         <p className="text-sm italic">"{review.quote}"</p>
                                         <p className="text-xs text-right font-semibold mt-2">- {review.name}, {review.designation}</p>
                                       </div>
-                                      <AlertDialog>
-                                          <AlertDialogTrigger asChild>
-                                              <Button type="button" variant="ghost" size="icon"><Trash2 className="h-4 w-4 text-red-500" /></Button>
-                                          </AlertDialogTrigger>
-                                          <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
-                                              <AlertDialogHeader><AlertDialogTitle>Are you sure?</AlertDialogTitle><AlertDialogDescription className="text-zinc-400">This will permanently delete this testimonial.</AlertDialogDescription></AlertDialogHeader>
-                                              <AlertDialogFooter>
-                                                  <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
-                                                  <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleDeleteReview(review.id)}>Delete</AlertDialogAction>
-                                              </AlertDialogFooter>
-                                          </AlertDialogContent>
-                                      </AlertDialog>
+                                      <div className="flex gap-1">
+                                          <Button type="button" variant="ghost" size="icon" onClick={() => { setSelectedTestimonial(review); setIsTestimonialDialogOpen(true); }}>
+                                            <Edit className="h-4 w-4" />
+                                          </Button>
+                                          <AlertDialog>
+                                              <AlertDialogTrigger asChild>
+                                                  <Button type="button" variant="ghost" size="icon"><Trash2 className="h-4 w-4 text-red-500" /></Button>
+                                              </AlertDialogTrigger>
+                                              <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
+                                                  <AlertDialogHeader><AlertDialogTitle>Are you sure?</AlertDialogTitle><AlertDialogDescription className="text-zinc-400">This will permanently delete this testimonial.</AlertDialogDescription></AlertDialogHeader>
+                                                  <AlertDialogFooter>
+                                                      <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
+                                                      <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleDeleteReview(review.id)}>Delete</AlertDialogAction>
+                                                  </AlertDialogFooter>
+                                              </AlertDialogContent>
+                                          </AlertDialog>
+                                      </div>
                                     </div>
                                 ))}
                                 {outletReviews.length === 0 && <p className="text-zinc-500 text-center py-4">No manual testimonials linked to this outlet yet.</p>}
@@ -714,6 +731,23 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
         </div>
       </form>
     </Form>
+    
+    <Dialog open={isTestimonialDialogOpen} onOpenChange={setIsTestimonialDialogOpen}>
+        <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-lg">
+          <DialogHeader>
+            <DialogTitle>{selectedTestimonial ? 'Edit Testimonial' : 'Add New Testimonial'}</DialogTitle>
+             <DialogDescription>
+              This testimonial will be linked to {outlet?.name || 'this outlet'}.
+            </DialogDescription>
+          </DialogHeader>
+          <TestimonialForm 
+            testimonial={selectedTestimonial}
+            outletId={outlet?.id}
+            onSuccess={() => setIsTestimonialDialogOpen(false)} 
+          />
+        </DialogContent>
+      </Dialog>
+
      <Dialog open={isPromoDialogOpen} onOpenChange={setIsPromoDialogOpen}>
         <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-2xl">
           <DialogHeader>

@@ -68,58 +68,6 @@ export const outlets: Omit<Outlet, 'id' | 'createdAt' | 'updatedAt'>[] = [
     // Johor
     { name: 'JB City Square', slug: 'jb-city-square', address: '106-108 Jalan Wong Ah Fook, Johor Bahru', city: 'Johor Bahru', state: 'Johor', lat: 1.46, lng: 103.76, hours: '10 AM - 10 PM', phone: '012-345-6789', email: 'jb@kopi.com', status: 'active', rating: 4.7, reviewCount: 300 },
     { name: 'Mount Austin', slug: 'mount-austin', address: 'Jalan Austin Heights 8/5, Taman Mount Austin', city: 'Johor Bahru', state: 'Johor', lat: 1.56, lng: 103.77, hours: '9 AM - 11 PM', phone: '012-345-6789', email: 'austin@kopi.com', status: 'active', rating: 4.9, reviewCount: 350 },
-    { name: 'Kluang', slug: 'kluang', address: 'Jalan Lambak, Kluang', city: 'Kluang', state: 'Johor', lat: 2.03, lng: 103.32, hours: '8 AM - 9 PM', phone: '012-345-6789', email: 'kluang@kopi.com', status: 'active', rating: 4.6, reviewCount: 110 },
-    { name: 'Batu Pahat', slug: 'batu-pahat', address: 'Jalan Rahmat, Batu Pahat', city: 'Batu Pahat', state: 'Johor', lat: 1.85, lng: 102.93, hours: '8 AM - 9 PM', phone: '012-345-6789', email: 'pahat@kopi.com', status: 'active', rating: 4.5, reviewCount: 95 },
-    { name: 'Muar', slug: 'muar', address: 'Jalan Sisi, Muar', city: 'Muar', state: 'Johor', lat: 2.05, lng: 102.57, hours: '8 AM - 9 PM', phone: '012-345-6789', email: 'muar@kopi.com', status: 'active', rating: 4.6, reviewCount: 105 },
-    { name: 'Skudai', slug: 'skudai', address: 'Jalan Laksamana, Skudai', city: 'Skudai', state: 'Johor', lat: 1.54, lng: 103.66, hours: '8 AM - 10 PM', phone: '012-345-6789', email: 'skudai@kopi.com', status: 'inactive', rating: 4.1, reviewCount: 60 },
-
-    // Penang
-    { name: 'Georgetown', slug: 'georgetown', address: '25 Lebuh Campbell, Georgetown', city: 'Georgetown', state: 'Penang', lat: 5.419, lng: 100.33, hours: '9 AM - 10 PM', phone: '012-345-6789', email: 'georgetown@kopi.com', status: 'active', rating: 4.9, reviewCount: 400 },
-    { name: 'Bayan Lepas', slug: 'bayan-lepas', address: 'Jalan Mayang Pasir, Bayan Lepas', city: 'Bayan Lepas', state: 'Penang', lat: 5.32, lng: 100.28, hours: '8 AM - 10 PM', phone: '012-345-6789', email: 'bayanlepas@kopi.com', status: 'active', rating: 4.7, reviewCount: 230 },
-    { name: 'Gurney Drive', slug: 'gurney-drive', address: 'Persiaran Gurney, Georgetown', city: 'Georgetown', state: 'Penang', lat: 5.43, lng: 100.31, hours: '10 AM - 11 PM', phone: '012-345-6789', email: 'gurney@kopi.com', status: 'active', rating: 4.8, reviewCount: 330 },
-    { name: 'Bukit Mertajam', slug: 'bukit-mertajam', address: 'Jalan Arumugam Pillai, Bukit Mertajam', city: 'Bukit Mertajam', state: 'Penang', lat: 5.36, lng: 100.45, hours: '8 AM - 9 PM', phone: '012-345-6789', email: 'mertajam@kopi.com', status: 'active', rating: 4.6, reviewCount: 130 },
-    { name: 'Butterworth', slug: 'butterworth', address: 'Jalan Bagan Luar, Butterworth', city: 'Butterworth', state: 'Penang', lat: 5.39, lng: 100.36, hours: '8 AM - 9 PM', phone: '012-345-6789', email: 'butterworth@kopi.com', status: 'active', rating: 4.5, reviewCount: 115 },
-    { name: 'Tanjung Tokong', slug: 'tanjung-tokong', address: 'Jalan Seri Tanjung Pinang', city: 'Tanjung Tokong', state: 'Penang', lat: 5.45, lng: 100.3, hours: '9 AM - 10 PM', phone: '012-345-6789', email: 'tokong@kopi.com', status: 'inactive', rating: 4.4, reviewCount: 85 },
-    
-    // Perak
-    { name: 'Ipoh Old Town', slug: 'ipoh-old-town', address: 'Jalan Panglima, Ipoh', city: 'Ipoh', state: 'Perak', lat: 4.59, lng: 101.07, hours: '9 AM - 9 PM', phone: '012-345-6789', email: 'ipoh@kopi.com', status: 'active', rating: 4.8, reviewCount: 290 },
-    { name: 'Taiping', slug: 'taiping', address: 'Jalan Kota, Taiping', city: 'Taiping', state: 'Perak', lat: 4.85, lng: 100.74, hours: '8 AM - 8 PM', phone: '012-345-6789', email: 'taiping@kopi.com', status: 'active', rating: 4.7, reviewCount: 150 },
-    { name: 'Teluk Intan', slug: 'teluk-intan', address: 'Jalan Ah Cheong, Teluk Intan', city: 'Teluk Intan', state: 'Perak', lat: 4.02, lng: 101.02, hours: '8 AM - 8 PM', phone: '012-345-6789', email: 'telukintan@kopi.com', status: 'active', rating: 4.6, reviewCount: 100 },
-
-    // Melaka
-    { name: 'Jonker Street', slug: 'jonker-street', address: 'Jalan Hang Jebat, Melaka', city: 'Melaka', state: 'Melaka', lat: 2.19, lng: 102.24, hours: '10 AM - 10 PM', phone: '012-345-6789', email: 'jonker@kopi.com', status: 'active', rating: 4.9, reviewCount: 420 },
-    { name: 'Mahkota Parade', slug: 'mahkota-parade', address: 'Jalan Merdeka, Melaka', city: 'Melaka', state: 'Melaka', lat: 2.18, lng: 102.25, hours: '10 AM - 10 PM', phone: '012-345-6789', email: 'mahkota@kopi.com', status: 'active', rating: 4.7, reviewCount: 260 },
-
-    // Negeri Sembilan
-    { name: 'Seremban', slug: 'seremban', address: 'Jalan Dato Bandar Tunggal, Seremban', city: 'Seremban', state: 'Negeri Sembilan', lat: 2.72, lng: 101.94, hours: '9 AM - 9 PM', phone: '012-345-6789', email: 'seremban@kopi.com', status: 'active', rating: 4.6, reviewCount: 180 },
-    { name: 'Port Dickson', slug: 'port-dickson', address: 'Jalan Pantai, Port Dickson', city: 'Port Dickson', state: 'Negeri Sembilan', lat: 2.52, lng: 101.79, hours: '10 AM - 9 PM', phone: '012-345-6789', email: 'pd@kopi.com', status: 'inactive', rating: 4.2, reviewCount: 70 },
-
-    // Pahang
-    { name: 'Kuantan', slug: 'kuantan', address: 'Jalan Mahkota, Kuantan', city: 'Kuantan', state: 'Pahang', lat: 3.81, lng: 103.32, hours: '9 AM - 10 PM', phone: '012-345-6789', email: 'kuantan@kopi.com', status: 'active', rating: 4.7, reviewCount: 200 },
-    { name: 'Genting Highlands', slug: 'genting', address: 'Genting Highlands', city: 'Genting Highlands', state: 'Pahang', lat: 3.42, lng: 101.79, hours: '10 AM - 12 AM', phone: '012-345-6789', email: 'genting@kopi.com', status: 'active', rating: 4.8, reviewCount: 360 },
-
-    // Terengganu
-    { name: 'Kuala Terengganu', slug: 'kuala-terengganu', address: 'Jalan Sultan Zainal Abidin, KT', city: 'Kuala Terengganu', state: 'Terengganu', lat: 5.33, lng: 103.13, hours: '9 AM - 10 PM', phone: '012-345-6789', email: 'kt@kopi.com', status: 'active', rating: 4.7, reviewCount: 190 },
-
-    // Kelantan
-    { name: 'Kota Bharu', slug: 'kota-bharu', address: 'Jalan Pintu Pong, Kota Bharu', city: 'Kota Bharu', state: 'Kelantan', lat: 6.13, lng: 102.23, hours: '9 AM - 10 PM', phone: '012-345-6789', email: 'kb@kopi.com', status: 'active', rating: 4.6, reviewCount: 170 },
-
-    // Kedah
-    { name: 'Alor Setar', slug: 'alor-setar', address: 'Jalan Langgar, Alor Setar', city: 'Alor Setar', state: 'Kedah', lat: 6.12, lng: 100.36, hours: '9 AM - 9 PM', phone: '012-345-6789', email: 'alorsetar@kopi.com', status: 'active', rating: 4.5, reviewCount: 125 },
-    { name: 'Langkawi', slug: 'langkawi', address: 'Pantai Cenang, Langkawi', city: 'Langkawi', state: 'Kedah', lat: 6.29, lng: 99.72, hours: '10 AM - 10 PM', phone: '012-345-6789', email: 'langkawi@kopi.com', status: 'active', rating: 4.8, reviewCount: 240 },
-
-    // Perlis
-    { name: 'Kangar', slug: 'kangar', address: 'Jalan Penjara, Kangar', city: 'Kangar', state: 'Perlis', lat: 6.44, lng: 100.19, hours: '9 AM - 9 PM', phone: '012-345-6789', email: 'kangar@kopi.com', status: 'inactive', rating: 4.0, reviewCount: 50 },
-
-    // Sabah
-    { name: 'Kota Kinabalu', slug: 'kota-kinabalu', address: 'Jalan Gaya, Kota Kinabalu', city: 'Kota Kinabalu', state: 'Sabah', lat: 5.98, lng: 116.07, hours: '9 AM - 10 PM', phone: '012-345-6789', email: 'kk@kopi.com', status: 'active', rating: 4.9, reviewCount: 410 },
-    { name: 'Sandakan', slug: 'sandakan', address: 'Jalan Pelabuhan, Sandakan', city: 'Sandakan', state: 'Sabah', lat: 5.84, lng: 118.11, hours: '8 AM - 8 PM', phone: '012-345-6789', email: 'sandakan@kopi.com', status: 'active', rating: 4.6, reviewCount: 135 },
-    { name: 'Tawau', slug: 'tawau', address: 'Jalan Kuhara, Tawau', city: 'Tawau', state: 'Sabah', lat: 4.24, lng: 117.88, hours: '8 AM - 8 PM', phone: '012-345-6789', email: 'tawau@kopi.com', status: 'active', rating: 4.7, reviewCount: 145 },
-
-    // Sarawak
-    { name: 'Kuching', slug: 'kuching', address: 'Jalan Main Bazaar, Kuching', city: 'Kuching', state: 'Sarawak', lat: 1.55, lng: 110.34, hours: '9 AM - 10 PM', phone: '012-345-6789', email: 'kuching@kopi.com', status: 'active', rating: 4.8, reviewCount: 300 },
-    { name: 'Miri', slug: 'miri', address: 'Jalan North Yu Seng, Miri', city: 'Miri', state: 'Sarawak', lat: 4.41, lng: 114.0, hours: '9 AM - 10 PM', phone: '012-345-6789', email: 'miri@kopi.com', status: 'active', rating: 4.7, reviewCount: 220 },
-    { name: 'Sibu', slug: 'sibu', address: 'Jalan Channel, Sibu', city: 'Sibu', state: 'Sarawak', lat: 2.29, lng: 111.82, hours: '8 AM - 9 PM', phone: '012-345-6789', email: 'sibu@kopi.com', status: 'inactive', rating: 4.3, reviewCount: 75 },
 ];
 
 export const blogSeedData: Omit<Blog, 'createdAt' | 'updatedAt'>[] = [
@@ -201,3 +149,4 @@ export const testimonialSeedData: Omit<Testimonial, 'id' | 'createdAt'>[] = [
 ]
 
     
+
