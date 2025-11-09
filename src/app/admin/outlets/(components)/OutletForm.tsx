@@ -19,9 +19,9 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, ChevronsUpDown, Trash2, Edit, PlusCircle, Check, MapPin, Star as StarIcon } from 'lucide-react';
-import { useFirestore, errorEmitter, FirestorePermissionError, useCollection, useMemoFirebase } from '@/firebase';
-import { doc, setDoc, serverTimestamp, collection, query, where, addDoc, deleteDoc, writeBatch, getDocs } from 'firebase/firestore';
-import type { Outlet, Testimonial, Promotion, MenuItem, Review } from '@/lib/types';
+import { useFirestore, errorEmitter, FirestorePermissionError, useCollection, useMemoFirebase, useDoc } from '@/firebase';
+import { doc, setDoc, serverTimestamp, collection, query, where, addDoc, deleteDoc, writeBatch, getDocs, updateDoc, arrayRemove, arrayUnion } from 'firebase/firestore';
+import type { Outlet, Testimonial, Promotion, MenuItem, Review, ReviewDocument } from '@/lib/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Select,
@@ -40,10 +40,9 @@ import { Checkbox } from '@/components/ui/checkbox';
 import Image from 'next/image';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import PromotionForm from '../../promotions/(components)/PromotionForm';
-import TestimonialForm from '../../shared/TestimonialForm';
 import { Badge } from '@/components/ui/badge';
 import { cn, getDiscountDisplay } from '@/lib/utils';
-import { format } from 'date-fns';
+import { format, fromUnixTime } from 'date-fns';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -60,7 +59,6 @@ import {
 interface OutletFormProps {
   outlet?: Outlet;
   allItems: MenuItem[];
-  allTestimonials: Testimonial[];
   onSuccess: () => void;
 }
 
@@ -185,7 +183,7 @@ function MultiSelectPopover({ title, options, selected, onChange }: {
 }
 
 
-export default function OutletForm({ outlet, allItems, allTestimonials, onSuccess }: OutletFormProps) {
+export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormProps) {
   const { toast } = useToast();
   const firestore = useFirestore();
   const [isFetching, setIsFetching] = useState(false);
@@ -193,12 +191,12 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
   const [isPromoDialogOpen, setIsPromoDialogOpen] = useState(false);
   const [selectedPromo, setSelectedPromo] = useState<Promotion | undefined>(undefined);
   
-  const [isTestimonialDialogOpen, setIsTestimonialDialogOpen] = useState(false);
-  const [selectedTestimonial, setSelectedTestimonial] = useState<Testimonial | undefined>(undefined);
-
   const { data: promotions } = useCollection<Promotion>(
     useMemoFirebase(() => outlet ? query(collection(firestore, 'promotions'), where('outletIds', 'array-contains', outlet.id)) : null, [firestore, outlet])
   );
+
+  const reviewDocRef = useMemoFirebase(() => (outlet?.id && firestore) ? doc(firestore, 'reviews', outlet.id) : null, [outlet, firestore]);
+  const { data: reviewData } = useDoc<ReviewDocument>(reviewDocRef);
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -274,7 +272,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
         keywords: values.seo?.keywords || null,
       },
       updatedAt: serverTimestamp(),
-      ...(outlet ? {} : { createdAt: serverTimestamp() }),
+      ...(outlet ? {} : { createdAt: serverTimestamp(), rating: 0, reviewCount: 0, reviewsPath: `reviews/${docId}` }),
     };
 
     delete (dataToSave as any).menuItemIds;
@@ -337,6 +335,21 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
     toast({ title: "Promotion Deleted" });
   }
 
+  const handleDeleteReview = async (reviewToDelete: Review) => {
+    if (!reviewDocRef) return;
+    
+    const newReviewCount = (reviewData?.aggregate.reviewCount || 1) - 1;
+    let newTotalRating = ((reviewData?.aggregate.ratingValue || 0) * (reviewData?.aggregate.reviewCount || 1)) - reviewToDelete.rating;
+    const newAverageRating = newReviewCount > 0 ? newTotalRating / newReviewCount : 0;
+    
+    await updateDoc(reviewDocRef, {
+        reviews: arrayRemove(reviewToDelete),
+        'aggregate.reviewCount': newReviewCount,
+        'aggregate.ratingValue': newAverageRating
+    });
+    toast({ title: "Review Deleted", description: "The review has been removed from this outlet." });
+  }
+
   const inputStyles = "bg-zinc-800 border-zinc-700 text-white focus-visible:ring-primary";
 
   return (
@@ -345,11 +358,12 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
       <form onSubmit={form.handleSubmit(onSubmit)} className="h-full flex flex-col">
         <ScrollArea className="flex-grow pr-4">
           <Tabs defaultValue="general" className="w-full">
-              <TabsList className="grid w-full grid-cols-3 md:grid-cols-4 bg-zinc-800">
+              <TabsList className="grid w-full grid-cols-4 md:grid-cols-5 bg-zinc-800">
                 <TabsTrigger value="general">General</TabsTrigger>
                 <TabsTrigger value="seo">SEO</TabsTrigger>
                 <TabsTrigger value="menu">Menu</TabsTrigger>
                 <TabsTrigger value="promotions" disabled={!outlet}>Promotions</TabsTrigger>
+                <TabsTrigger value="reviews" disabled={!outlet}>Reviews</TabsTrigger>
               </TabsList>
               <div className="mt-4">
                 <TabsContent value="general">
@@ -569,6 +583,44 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
                      </div>
                   </div>
                 </TabsContent>
+                 <TabsContent value="reviews">
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-medium text-primary">Reviews for {outlet?.name}</h3>
+                        {!reviewData?.reviews?.length && <p className="text-zinc-500 text-center py-8">No reviews for this outlet yet.</p>}
+                        <div className="max-h-[400px] overflow-y-auto pr-2 space-y-2">
+                            {reviewData?.reviews?.map((review, index) => (
+                                <div key={index} className="bg-zinc-800 p-3 rounded-lg flex justify-between items-start">
+                                    <div>
+                                        <div className="flex items-center gap-2">
+                                             <Badge variant={review.source === 'google' ? 'secondary' : 'default'} className={review.source === 'google' ? 'bg-blue-600' : ''}>
+                                                {review.source}
+                                            </Badge>
+                                            <p className="font-semibold">{review.author_name}</p>
+                                        </div>
+                                        <p className="text-sm text-zinc-300 mt-2">"{review.text}"</p>
+                                        <div className="flex items-center gap-2 mt-2">
+                                            <StarIcon className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                                            <span>{review.rating}</span>
+                                            <span className="text-xs text-zinc-500">{format(fromUnixTime(typeof review.time === 'number' ? review.time : review.time.seconds), 'PPP')}</span>
+                                        </div>
+                                    </div>
+                                     <AlertDialog>
+                                        <AlertDialogTrigger asChild>
+                                            <Button type="button" variant="ghost" size="icon" className="shrink-0"><Trash2 className="h-4 w-4 text-red-500" /></Button>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
+                                            <AlertDialogHeader><AlertDialogTitle>Delete Review?</AlertDialogTitle><AlertDialogDescription className="text-zinc-400">This will permanently remove this review from your website.</AlertDialogDescription></AlertDialogHeader>
+                                            <AlertDialogFooter>
+                                                <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
+                                                <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleDeleteReview(review)}>Delete</AlertDialogAction>
+                                            </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                    </AlertDialog>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                 </TabsContent>
               </div>
           </Tabs>
         </ScrollArea>
@@ -599,3 +651,5 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
     </>
   );
 }
+
+    
