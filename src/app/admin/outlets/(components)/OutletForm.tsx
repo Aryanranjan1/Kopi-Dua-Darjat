@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useForm } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
@@ -188,6 +188,11 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
     defaultValues: outlet ? {
         ...outlet,
         menuItemIds: allItems?.filter(item => item.outletIds?.includes(outlet.id)).map(item => item.id) || [],
+        seo: {
+          title: outlet.seo?.title || '',
+          description: outlet.seo?.description || '',
+          keywords: outlet.seo?.keywords || '',
+        },
     } : {
       name: '',
       slug: '',
@@ -209,6 +214,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
       isChatbotEnabled: false,
       placeId: '',
       menuItemIds: [],
+      seo: { title: '', description: '', keywords: '' },
     },
   });
 
@@ -495,13 +501,13 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
                   <div className="space-y-6">
                     <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2">Search Engine Optimization</h3>
                      <FormField control={form.control} name="seo.title" render={({ field }) => (
-                        <FormItem><FormLabel>Meta Title</FormLabel><FormControl><Input placeholder="Custom title for this outlet's page" {...field} className={inputStyles} /></FormControl><FormDescription>If empty, the outlet name will be used.</FormDescription><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Meta Title</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormDescription>If empty, the outlet name will be used.</FormDescription><FormMessage /></FormItem>
                     )} />
                     <FormField control={form.control} name="seo.description" render={({ field }) => (
-                        <FormItem><FormLabel>Meta Description</FormLabel><FormControl><Textarea placeholder="A short, compelling description for search results." {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Meta Description</FormLabel><FormControl><Textarea {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                     )} />
                     <FormField control={form.control} name="seo.keywords" render={({ field }) => (
-                        <FormItem><FormLabel>Keywords</FormLabel><FormControl><Input placeholder="e.g., kopi kajang, best coffee in bangi" {...field} className={inputStyles} /></FormControl><FormDescription>Comma-separated keywords relevant to this outlet.</FormDescription><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Keywords</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormDescription>Comma-separated keywords relevant to this outlet.</FormDescription><FormMessage /></FormItem>
                     )} />
                   </div>
                 </TabsContent>
@@ -538,7 +544,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
                                                 <p className="text-sm text-zinc-400">RM{item.price.toFixed(2)}</p>
                                             </div>
                                         </div>
-                                        <Button variant="ghost" size="icon" onClick={() => setValue('menuItemIds', form.getValues('menuItemIds')?.filter(id => id !== itemId))}>
+                                        <Button type="button" variant="ghost" size="icon" onClick={() => setValue('menuItemIds', form.getValues('menuItemIds')?.filter(id => id !== itemId))}>
                                             <Trash2 className="h-4 w-4 text-red-500" />
                                         </Button>
                                     </div>
