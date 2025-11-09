@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -31,7 +30,7 @@ import {
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import slugify from 'slugify';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 interface OutletFormProps {
   outlet?: Outlet;
@@ -65,6 +64,7 @@ type FormValues = z.infer<typeof formSchema>;
 export default function OutletForm({ outlet, onSuccess }: OutletFormProps) {
   const { toast } = useToast();
   const firestore = useFirestore();
+  const [isFetching, setIsFetching] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -99,6 +99,63 @@ export default function OutletForm({ outlet, onSuccess }: OutletFormProps) {
         setValue('slug', slugify(watchedName, { lower: true, strict: true }));
     }
   }, [watchedName, setValue, form.formState.dirtyFields.slug]);
+
+  const handleFetchFromGoogle = async () => {
+    const placeId = form.getValues('placeId');
+    if (!placeId) {
+      toast({
+        variant: 'destructive',
+        title: 'Missing Place ID',
+        description: 'Please enter a Google Place ID before fetching.',
+      });
+      return;
+    }
+
+    setIsFetching(true);
+    toast({
+      title: 'Fetching Data...',
+      description: `Fetching details for Place ID: ${placeId}`,
+    });
+
+    // In a real implementation, this would call the backend Cloud Function
+    // For now, we simulate a delay and populate with dummy data.
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    // This is where you would call your backend:
+    // const response = await fetch(`/api/outlet/fetchFromGoogle?placeId=${placeId}`);
+    // const data = await response.json();
+    // form.reset(data); // Reset the form with the fetched data
+    
+    // --- Mock Data for UI demonstration ---
+    const mockData = {
+        name: "Mock Coffee Shop",
+        address: "123 Mockingbird Lane, Kuala Lumpur, Malaysia",
+        city: "Kuala Lumpur",
+        state: "Kuala Lumpur",
+        lat: 3.1390,
+        lng: 101.6869,
+        phone: '03-1234 5678',
+        hours: '9:00 AM - 10:00 PM',
+        tagline: 'The best mock coffee in town.',
+    };
+
+    form.setValue('name', mockData.name);
+    form.setValue('address', mockData.address);
+    form.setValue('city', mockData.city);
+    form.setValue('state', mockData.state);
+    form.setValue('lat', mockData.lat);
+    form.setValue('lng', mockData.lng);
+    form.setValue('phone', mockData.phone);
+    form.setValue('hours', mockData.hours);
+    form.setValue('tagline', mockData.tagline);
+    // --- End Mock Data ---
+
+    setIsFetching(false);
+     toast({
+      title: 'Data Fetched!',
+      description: 'The form has been populated with data from Google. Please review and save.',
+    });
+  };
 
   const onSubmit = async (values: FormValues) => {
     if (!firestore) return;
@@ -142,8 +199,20 @@ export default function OutletForm({ outlet, onSuccess }: OutletFormProps) {
         <ScrollArea className="flex-grow pr-6">
           <div className="space-y-6">
             <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2">Core Information</h3>
-            <FormField control={form.control} name="placeId" render={({ field }) => (
-                <FormItem><FormLabel>Google Place ID</FormLabel><FormControl><Input placeholder="ChIJ..." {...field} className={inputStyles}/></FormControl><FormDescription>Optional. Used to fetch reviews and ratings.</FormDescription><FormMessage/></FormItem>
+             <FormField control={form.control} name="placeId" render={({ field }) => (
+                <FormItem>
+                    <FormLabel>Google Place ID</FormLabel>
+                     <div className="flex items-center gap-2">
+                        <FormControl>
+                            <Input placeholder="ChIJ..." {...field} className={inputStyles}/>
+                        </FormControl>
+                        <Button type="button" onClick={handleFetchFromGoogle} disabled={isFetching}>
+                            {isFetching ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Fetch'}
+                        </Button>
+                    </div>
+                    <FormDescription>Enter a Place ID and click 'Fetch' to auto-populate data.</FormDescription>
+                    <FormMessage/>
+                </FormItem>
             )}/>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField control={form.control} name="name" render={({ field }) => (
