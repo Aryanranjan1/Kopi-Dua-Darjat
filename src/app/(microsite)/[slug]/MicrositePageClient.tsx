@@ -45,7 +45,7 @@ export default function MicrositePageClient(data: PageData) {
         <MenuShowcaseSection items={allMenuItems} categories={menuCategories} />
         {siteSettings && <BrandStorySection settings={siteSettings} />}
         <OutletLocatorSection currentOutlet={outlet} />
-        <CustomerReviews reviewData={reviewData} isLoading={false} />
+        <CustomerReviews reviewData={reviewData} isLoading={!reviewData} />
         <InstaExploreGrid />
         <Community />
         <LatestStories />

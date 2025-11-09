@@ -64,7 +64,7 @@ export default function CustomerReviews({ reviewData, isLoading }: CustomerRevie
 
     if (isLoading) {
         return (
-            <section className="py-24 sm:py-32 bg-white">
+            <section className="py-24 sm:py-32 bg-background">
                 <div className="container mx-auto px-4">
                     <Skeleton className="h-12 w-1/2 mb-4" />
                     <Skeleton className="h-8 w-1/4 mb-12" />
