@@ -1,5 +1,4 @@
 
-
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import MicrositePageClient from './MicrositePageClient';
@@ -35,64 +34,61 @@ const serializeTimestamps = (obj: any): any => {
 
 // --- SERVER-SIDE DATA FETCHING ---
 async function getMicrositeData(slug: string) {
-  try {
-    const { firestore } = initializeServerSideFirebase();
-    
-    const outletDocRef = doc(firestore, 'outlets', slug);
-    const outletDoc = await getDoc(outletDocRef);
-    
-    if (!outletDoc.exists()) {
-      return { outlet: null };
-    }
-
-    const outlet = { id: outletDoc.id, ...outletDoc.data() } as Outlet;
-    
-    const [
-      allMenuItems, 
-      allMenuCategories,
-      allPromotions,
-      reviewDoc,
-      mainSettings,
-      latestBlogs,
-      instaFeed
-    ] = await Promise.all([
-      fetchCollection<MenuItem>(firestore, 'menuItems'),
-      fetchCollection<MenuCategory>(firestore, 'menuCategories'),
-      fetchCollection<Promotion>(firestore, 'promotions'),
-      getDoc(doc(firestore, 'reviews', outlet.id)).then(d => d.exists() ? d.data() as ReviewDocument : null),
-      getDoc(doc(firestore, 'settings', 'main')).then(d => d.data() as SiteSettings),
-      fetchCollection<Blog>(firestore, 'blogs', query(collection(firestore, 'blogs'), orderBy('publishedAt', 'desc'), limit(1))),
-      fetchCollection<PublicInstaPost>(firestore, 'public_insta_feed', query(collection(firestore, 'public_insta_feed'), orderBy('rank', 'asc'), limit(2)))
-    ]);
-    
-    const outletMenuItems = allMenuItems.filter(item => 
-      item.isGeneral || !item.outletIds || item.outletIds.length === 0 || item.outletIds.includes(outlet.id)
-    );
-
-    const relevantCategoryIds = new Set(outletMenuItems.map(item => item.categoryId));
-    const outletMenuCategories = allMenuCategories.filter(cat => relevantCategoryIds.has(cat.id));
-
-    const outletFeaturedItems = outletMenuItems.filter(item => item.isPopular);
-    
-    const outletPromotions = allPromotions.filter(p => !p.outletIds || p.outletIds.length === 0 || p.outletIds.includes(outlet.id));
-
-    return serializeTimestamps({ 
-      outlet,
-      menuCategories: outletMenuCategories,
-      allMenuItems: outletMenuItems,
-      featuredItems: outletFeaturedItems,
-      promotions: outletPromotions,
-      reviewData: reviewDoc,
-      siteSettings: mainSettings,
-      latestBlog: latestBlogs.length > 0 ? latestBlogs[0] : null,
-      instaPosts: instaFeed,
-    });
-  } catch (error) {
-    console.error(`[getMicrositeData] Failed to fetch data for slug "${slug}":`, error);
-    // In case of a permissions error or other issue, return null for outlet to trigger a 404
-    // This prevents the page from crashing.
+  // The try/catch block is removed to allow detailed Firestore permission errors to be displayed in development.
+  // This helps identify the exact query that is failing.
+  const { firestore } = initializeServerSideFirebase();
+  
+  const outletDocRef = doc(firestore, 'outlets', slug);
+  const outletDoc = await getDoc(outletDocRef);
+  
+  if (!outletDoc.exists()) {
+    // Return null to trigger a 404 if the outlet document itself doesn't exist.
+    // This is a specific check that is safe to keep.
     return { outlet: null };
   }
+
+  const outlet = { id: outletDoc.id, ...outletDoc.data() } as Outlet;
+  
+  const [
+    allMenuItems, 
+    allMenuCategories,
+    allPromotions,
+    reviewDoc,
+    mainSettings,
+    latestBlogs,
+    instaFeed
+  ] = await Promise.all([
+    fetchCollection<MenuItem>(firestore, 'menuItems'),
+    fetchCollection<MenuCategory>(firestore, 'menuCategories'),
+    fetchCollection<Promotion>(firestore, 'promotions'),
+    getDoc(doc(firestore, 'reviews', outlet.id)).then(d => d.exists() ? d.data() as ReviewDocument : null),
+    getDoc(doc(firestore, 'settings', 'main')).then(d => d.data() as SiteSettings),
+    fetchCollection<Blog>(firestore, 'blogs', query(collection(firestore, 'blogs'), orderBy('publishedAt', 'desc'), limit(1))),
+    fetchCollection<PublicInstaPost>(firestore, 'public_insta_feed', query(collection(firestore, 'public_insta_feed'), orderBy('rank', 'asc'), limit(2)))
+  ]);
+  
+  const outletMenuItems = allMenuItems.filter(item => 
+    item.isGeneral || !item.outletIds || item.outletIds.length === 0 || item.outletIds.includes(outlet.id)
+  );
+
+  const relevantCategoryIds = new Set(outletMenuItems.map(item => item.categoryId));
+  const outletMenuCategories = allMenuCategories.filter(cat => relevantCategoryIds.has(cat.id));
+
+  const outletFeaturedItems = outletMenuItems.filter(item => item.isPopular);
+  
+  const outletPromotions = allPromotions.filter(p => !p.outletIds || p.outletIds.length === 0 || p.outletIds.includes(outlet.id));
+
+  return serializeTimestamps({ 
+    outlet,
+    menuCategories: outletMenuCategories,
+    allMenuItems: outletMenuItems,
+    featuredItems: outletFeaturedItems,
+    promotions: outletPromotions,
+    reviewData: reviewDoc,
+    siteSettings: mainSettings,
+    latestBlog: latestBlogs.length > 0 ? latestBlogs[0] : null,
+    instaPosts: instaFeed,
+  });
 }
 
 function generateJsonLd(outlet: Outlet, reviewData: ReviewDocument | null) {
@@ -190,4 +186,3 @@ export default async function OutletMicrositePage({ params }: Props) {
     </>
   );
 }
-
