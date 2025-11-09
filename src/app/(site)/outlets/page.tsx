@@ -7,7 +7,6 @@ import OutletShowcase from '@/components/outlets/OutletShowcase';
 import { Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import LatestStories from '@/components/home/LatestStories';
-import Testimonials from '@/app/(site)/franchise/Testimonials';
 
 export const metadata: Metadata = {
   title: 'Outlets',
@@ -36,9 +35,6 @@ export default function OutletsPage() {
         
         {/* Our Presence Section */}
         <OutletShowcase />
-
-        {/* Testimonials Section */}
-        <Testimonials />
         
         {/* Franchise CTA */}
         <FranchiseCta />
