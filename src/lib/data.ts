@@ -1,9 +1,44 @@
 
-import type { Outlet, Blog, Testimonial, FaqItem, SiteSettings } from './types';
+import type { Outlet, Blog, Testimonial, FaqItem, SiteSettings, MenuGroup, MenuCategory, MenuItem, Promotion } from './types';
 import { Timestamp } from 'firebase/firestore';
 
 // This file now contains only data that is not part of the main CMS.
 // Menu items, categories, and promotions are now fetched from Firestore.
+
+export const menuGroups: Omit<MenuGroup, 'createdAt' | 'updatedAt'>[] = [
+  { id: 'nak-kopi', name: 'Nak Kopi?', slug: 'nak-kopi', displayOrder: 1, status: 'published' },
+  { id: 'nak-makan', name: 'Nak Makan?', slug: 'nak-makan', displayOrder: 2, status: 'published' },
+  { id: 'nak-lain', name: 'Nak Lain?', slug: 'nak-lain', displayOrder: 3, status: 'published' },
+];
+
+export const menuCategories: Omit<MenuCategory, 'createdAt' | 'updatedAt'>[] = [
+  { id: 'darjat-series', name: 'Darjat Series', slug: 'darjat-series', groupId: 'nak-kopi', displayOrder: 1, status: 'published' },
+  { id: 'kopi-series', name: 'Kopi Series', slug: 'kopi-series', groupId: 'nak-kopi', displayOrder: 2, status: 'published' },
+  { id: 'coklat-series', name: 'Coklat Series', slug: 'coklat-series', groupId: 'nak-lain', displayOrder: 3, status: 'published' },
+  { id: 'matcha-series', name: 'Matcha Series', slug: 'matcha-series', groupId: 'nak-lain', displayOrder: 4, status: 'published' },
+];
+
+export const menuItems: Omit<MenuItem, 'createdAt' | 'updatedAt'>[] = [
+  { id: 'darjat-caramel', name: 'Darjat Caramel', slug: 'darjat-caramel', description: 'Our signature blend with a sweet caramel twist.', price: 6.00, imageUrl: '/image/kdd-cup.png', categoryId: 'darjat-series', isGeneral: true, status: 'published', isPopular: true, displayOrder: 1 },
+  { id: 'darjat-borneo', name: 'Darjat Borneo', slug: 'darjat-borneo', description: 'A taste of Borneo with rich Gula Apong.', price: 6.00, imageUrl: '/image/kdd-cup.png', categoryId: 'darjat-series', isGeneral: true, status: 'published', isPopular: true, displayOrder: 2 },
+  { id: 'kopi-darjat', name: 'Kopi Darjat', slug: 'kopi-darjat', description: 'The original classic Kopi Dua Darjat.', price: 5.00, imageUrl: '/image/kdd-cup.png', categoryId: 'kopi-series', isGeneral: true, status: 'published', isPopular: false, displayOrder: 1 },
+  { id: 'kopi-o', name: 'Kopi O', slug: 'kopi-o', description: 'Classic black coffee, Malaysian style.', price: 3.00, imageUrl: '/image/kdd-cup.png', categoryId: 'kopi-series', isGeneral: true, status: 'published', isPopular: false, displayOrder: 2 },
+  { id: 'coklat-artisan', name: 'Coklat Artisan', slug: 'coklat-artisan', description: 'Rich, decadent chocolate for the soul.', price: 6.00, imageUrl: '/image/kdd-cup.png', categoryId: 'coklat-series', isGeneral: true, status: 'published', isPopular: true, displayOrder: 1 },
+  { id: 'matcha-latte', name: 'Matcha Latte', slug: 'matcha-latte', description: 'Earthy and creamy premium matcha latte.', price: 6.00, imageUrl: '/image/kdd-cup.png', categoryId: 'matcha-series', isGeneral: true, status: 'published', isPopular: false, displayOrder: 1 },
+];
+
+export const promotions: Omit<Promotion, 'id' | 'createdAt' | 'updatedAt' | 'status'>[] = [
+    {
+        title: "Weekday Kopi Kickstart",
+        description: "Get your favorite Kopi Series drink for only RM4 every weekday morning.",
+        discountType: 'flat',
+        discountValue: 1, // Represents logic for special price, actual enforcement in code.
+        customDiscountDescription: "RM4 for Kopi Series",
+        startDate: Timestamp.fromDate(new Date('2024-01-01')),
+        endDate: Timestamp.fromDate(new Date('2024-12-31')),
+        menuItemIds: ['kopi-darjat', 'kopi-o'],
+    }
+]
 
 export const outlets: Omit<Outlet, 'id' | 'createdAt' | 'updatedAt'>[] = [
     // Selangor
@@ -444,3 +479,5 @@ export const testimonialSeedData = [
   { outletId: "georgetown", quote: "Perfect companion for a walk around historical Georgetown. The Coklat Artisan is my kid's favorite.", name: "Emily T.", designation: "Tourist, Australia", image: "testimonial-2", company: "KDD Fan" },
   { outletId: "kota-kinabalu", quote: "The view is great, but the coffee is even better. Love this place!", name: "Jackson R.", designation: "Local Resident, KK", image: "testimonial-1", company: "KDD Fan" }
 ]
+
+    
