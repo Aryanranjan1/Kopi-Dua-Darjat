@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -127,4 +126,3 @@ export default function CustomerReviews({ reviewData, isLoading }: CustomerRevie
         </section>
     );
 }
-
