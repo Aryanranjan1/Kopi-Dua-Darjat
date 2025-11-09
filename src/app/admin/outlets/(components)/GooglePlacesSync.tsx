@@ -31,6 +31,7 @@ export default function GooglePlacesSync() {
   const firestore = useFirestore();
   const [scheduleDay, setScheduleDay] = useState('monday');
   const [scheduleTime, setScheduleTime] = useState('03:00');
+  const [scheduleTimezone, setScheduleTimezone] = useState('Asia/Kuala_Lumpur');
 
 
   const outletsWithPlaceIdQuery = useMemoFirebase(
@@ -70,7 +71,7 @@ export default function GooglePlacesSync() {
     // Simulate scheduling a backend job (e.g., a cron job)
     toast({
         title: 'Recurring Sync Scheduled',
-        description: `Automated sync will now run every ${scheduleDay.charAt(0).toUpperCase() + scheduleDay.slice(1)} at ${scheduleTime}.`
+        description: `Automated sync will now run every ${scheduleDay.charAt(0).toUpperCase() + scheduleDay.slice(1)} at ${scheduleTime} (${scheduleTimezone}).`
     });
   }
 
@@ -159,6 +160,18 @@ export default function GooglePlacesSync() {
                         </SelectContent>
                     </Select>
                   </div>
+                   <div className="grid w-full items-center gap-1.5">
+                    <Label htmlFor="sync-timezone" className="text-zinc-400">Timezone</Label>
+                    <Select value={scheduleTimezone} onValueChange={setScheduleTimezone}>
+                        <SelectTrigger id="sync-timezone" className="bg-zinc-800 border-zinc-700"><SelectValue /></SelectTrigger>
+                        <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                            <SelectItem value="Asia/Kuala_Lumpur">Asia/Kuala_Lumpur (MYT)</SelectItem>
+                            <SelectItem value="UTC">UTC</SelectItem>
+                            <SelectItem value="America/New_York">America/New_York (EST)</SelectItem>
+                            <SelectItem value="Europe/London">Europe/London (GMT)</SelectItem>
+                        </SelectContent>
+                    </Select>
+                  </div>
                   <div className="grid w-full items-center gap-1.5">
                     <Label htmlFor="sync-time" className="text-zinc-400">Time (24hr format)</Label>
                     <Input id="sync-time" type="time" value={scheduleTime} onChange={e => setScheduleTime(e.target.value)} className="bg-zinc-800 border-zinc-700" />
@@ -172,3 +185,4 @@ export default function GooglePlacesSync() {
     </Card>
   );
 }
+
