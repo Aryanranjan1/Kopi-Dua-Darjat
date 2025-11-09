@@ -98,8 +98,8 @@ function MultiSelectPopover({ title, options, selected, onChange }: {
     selected: string[];
     onChange: (selected: string[]) => void;
 }) {
-    const [open, setOpen] = useState(false);
-    const [searchQuery, setSearchQuery] = useState('');
+    const [open, setOpen] = React.useState(false);
+    const [searchQuery, setSearchQuery] = React.useState('');
 
     const filteredOptions = options.filter(option => 
         option.label.toLowerCase().includes(searchQuery.toLowerCase())
@@ -311,20 +311,41 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
       updatedAt: serverTimestamp(),
       ...(outlet ? {} : { createdAt: serverTimestamp() }),
     };
+
+    delete (dataToSave as any).menuItemIds;
     
     const batch = writeBatch(firestore);
 
-    allItems.forEach(item => {
-        const itemRef = doc(firestore, 'menuItems', item.id);
-        const shouldBeLinked = values.menuItemIds?.includes(item.id);
-        const isCurrentlyLinked = item.outletIds?.includes(docId);
+    // --- Menu Item Linking Logic ---
+    const newLinkedIds = new Set(values.menuItemIds || []);
+    const oldLinkedIds = new Set(outlet ? allItems.filter(i => i.outletIds?.includes(outlet.id)).map(i => i.id) : []);
 
-        if (shouldBeLinked && !isCurrentlyLinked) {
-            batch.update(itemRef, { outletIds: [...(item.outletIds || []), docId] });
-        } else if (!shouldBeLinked && isCurrentlyLinked) {
-            batch.update(itemRef, { outletIds: item.outletIds?.filter(id => id !== docId) });
+    // 1. Items to UNLINK (was linked, now is not)
+    for (const itemId of oldLinkedIds) {
+        if (!newLinkedIds.has(itemId)) {
+            const itemRef = doc(firestore, 'menuItems', itemId);
+            const currentItem = allItems.find(i => i.id === itemId);
+            const updatedOutletIds = currentItem?.outletIds?.filter(id => id !== docId) || [];
+            batch.update(itemRef, { 
+                outletIds: updatedOutletIds,
+                isGeneral: updatedOutletIds.length === 0,
+            });
         }
-    });
+    }
+
+    // 2. Items to LINK (was not linked, now is)
+    for (const itemId of newLinkedIds) {
+        if (!oldLinkedIds.has(itemId)) {
+            const itemRef = doc(firestore, 'menuItems', itemId);
+            const currentItem = allItems.find(i => i.id === itemId);
+            const updatedOutletIds = [...(currentItem?.outletIds || []), docId];
+             batch.update(itemRef, { 
+                outletIds: updatedOutletIds,
+                isGeneral: false,
+            });
+        }
+    }
+    // --- End Menu Item Logic ---
 
     batch.set(outletRef, dataToSave, { merge: true });
 
@@ -336,6 +357,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
       });
       onSuccess();
     } catch (error) {
+      console.error(error);
       const permissionError = new FirestorePermissionError({
         path: outletRef.path,
         operation: 'write',
@@ -376,7 +398,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
                               <FormLabel>Google Place ID</FormLabel>
                               <div className="flex items-center gap-2">
                                   <FormControl>
-                                      <Input placeholder="ChIJ..." {...field} className={inputStyles}/>
+                                      <Input placeholder="ChIJ..." {...field} value={field.value || ''} className={inputStyles}/>
                                   </FormControl>
                                   <Button type="button" onClick={handleFetchFromGoogle} disabled={isFetching}>
                                       {isFetching ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Fetch'}
@@ -388,53 +410,53 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
                       )}/>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <FormField control={form.control} name="name" render={({ field }) => (
-                              <FormItem><FormLabel>Outlet Name</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                              <FormItem><FormLabel>Outlet Name</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
                           )}/>
                           <FormField control={form.control} name="slug" render={({ field }) => (
-                              <FormItem><FormLabel>Slug (URL Identifier)</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormDescription>Auto-generated from name. Must be unique.</FormDescription><FormMessage/></FormItem>
+                              <FormItem><FormLabel>Slug (URL Identifier)</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormDescription>Auto-generated from name. Must be unique.</FormDescription><FormMessage/></FormItem>
                           )}/>
                       </div>
                       <FormField control={form.control} name="address" render={({ field }) => (
-                          <FormItem><FormLabel>Full Address</FormLabel><FormControl><Textarea {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                          <FormItem><FormLabel>Full Address</FormLabel><FormControl><Textarea {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
                       )}/>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <FormField control={form.control} name="city" render={({ field }) => (
-                              <FormItem><FormLabel>City</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                              <FormItem><FormLabel>City</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
                           )}/>
                           <FormField control={form.control} name="state" render={({ field }) => (
-                              <FormItem><FormLabel>State</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                              <FormItem><FormLabel>State</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
                           )}/>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <FormField control={form.control} name="lat" render={({ field }) => (
-                              <FormItem><FormLabel>Latitude</FormLabel><FormControl><Input type="number" {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                              <FormItem><FormLabel>Latitude</FormLabel><FormControl><Input type="number" {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
                           )}/>
                           <FormField control={form.control} name="lng" render={({ field }) => (
-                              <FormItem><FormLabel>Longitude</FormLabel><FormControl><Input type="number" {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                              <FormItem><FormLabel>Longitude</FormLabel><FormControl><Input type="number" {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
                           )}/>
                       </div>
 
                       <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">Contact & Hours</h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <FormField control={form.control} name="hours" render={({ field }) => (
-                              <FormItem><FormLabel>Operating Hours</FormLabel><FormControl><Input placeholder="e.g. 8 AM - 10 PM" {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                              <FormItem><FormLabel>Operating Hours</FormLabel><FormControl><Input placeholder="e.g. 8 AM - 10 PM" {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
                           )}/>
                           <FormField control={form.control} name="phone" render={({ field }) => (
-                              <FormItem><FormLabel>Phone Number</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                              <FormItem><FormLabel>Phone Number</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
                           )}/>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <FormField control={form.control} name="email" render={({ field }) => (
-                              <FormItem><FormLabel>Email</FormLabel><FormControl><Input type="email" {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                              <FormItem><FormLabel>Email</FormLabel><FormControl><Input type="email" {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
                           )}/>
                           <FormField control={form.control} name="whatsappLink" render={({ field }) => (
-                              <FormItem><FormLabel>WhatsApp Link</FormLabel><FormControl><Input placeholder="https://wa.me/..." {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                              <FormItem><FormLabel>WhatsApp Link</FormLabel><FormControl><Input placeholder="https://wa.me/..." {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
                           )}/>
                       </div>
 
                       <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">Microsite Content</h3>
                       <FormField control={form.control} name="tagline" render={({ field }) => (
-                          <FormItem><FormLabel>Tagline</FormLabel><FormControl><Input placeholder="A catchy tagline for this outlet" {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                          <FormItem><FormLabel>Tagline</FormLabel><FormControl><Input placeholder="A catchy tagline for this outlet" {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
                       )}/>
                       <div className="space-y-4">
                           <FormField
@@ -477,7 +499,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
                                       )}
                                   />
                               </div>
-                              <FormControl><Textarea placeholder="<script>...</script>" {...field} className={`${inputStyles} font-mono`} /></FormControl>
+                              <FormControl><Textarea placeholder="<script>...</script>" {...field} value={field.value || ''} className={`${inputStyles} font-mono`} /></FormControl>
                               <FormDescription>Paste the full embed code for a chatbot if applicable.</FormDescription>
                               <FormMessage/>
                           </FormItem>
@@ -526,7 +548,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
                                 selected={field.value || []}
                                 onChange={field.onChange}
                               />
-                              <FormDescription>Select which menu items are available at this outlet.</FormDescription>
+                              <FormDescription>Select which menu items are available at this outlet. Leave empty for it to be available everywhere.</FormDescription>
                               <FormMessage />
                             </FormItem>
                           )}
