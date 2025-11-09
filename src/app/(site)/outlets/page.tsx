@@ -6,9 +6,8 @@ import FooterCta from '@/components/outlets/FooterCta';
 import OutletShowcase from '@/components/outlets/OutletShowcase';
 import { Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
-import InteractiveMap from '@/components/home/InteractiveMap';
-import { Card } from '@/components/ui/card';
 import LatestStories from '@/components/home/LatestStories';
+import Testimonials from '@/app/(site)/franchise/Testimonials';
 
 export const metadata: Metadata = {
   title: 'Outlets',
@@ -38,10 +37,8 @@ export default function OutletsPage() {
         {/* Our Presence Section */}
         <OutletShowcase />
 
-        {/* Interactive Map Section */}
-        <section className="w-full h-[60vh]">
-          <InteractiveMap />
-        </section>
+        {/* Testimonials Section */}
+        <Testimonials />
         
         {/* Franchise CTA */}
         <FranchiseCta />
