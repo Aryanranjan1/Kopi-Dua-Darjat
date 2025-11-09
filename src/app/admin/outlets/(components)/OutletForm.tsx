@@ -18,7 +18,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
-import { useFirestore } from '@/firebase';
+import { useFirestore, errorEmitter, FirestorePermissionError } from '@/firebase';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import type { Outlet } from '@/lib/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -159,36 +159,41 @@ export default function OutletForm({ outlet, onSuccess }: OutletFormProps) {
 
   const onSubmit = async (values: FormValues) => {
     if (!firestore) return;
-    try {
-      const docId = values.slug;
-      const outletRef = doc(firestore, 'outlets', docId);
-      
-      const dataToSave = {
-        ...values,
-        phone: values.phone || null,
-        email: values.email || null,
-        heroImage: values.heroImage || null,
-        interiorImage: values.interiorImage || null,
-        tagline: values.tagline || null,
-        mapsLink: values.mapsLink || null,
-        whatsappLink: values.whatsappLink || null,
-        chatbotEmbed: values.chatbotEmbed || null,
-        placeId: values.placeId || null,
-        updatedAt: serverTimestamp(),
-        ...(outlet ? {} : { createdAt: serverTimestamp() }),
-      };
+    
+    const docId = values.slug;
+    const outletRef = doc(firestore, 'outlets', docId);
+    
+    const dataToSave = {
+      ...values,
+      phone: values.phone || null,
+      email: values.email || null,
+      heroImage: values.heroImage || null,
+      interiorImage: values.interiorImage || null,
+      tagline: values.tagline || null,
+      mapsLink: values.mapsLink || null,
+      whatsappLink: values.whatsappLink || null,
+      chatbotEmbed: values.chatbotEmbed || null,
+      placeId: values.placeId || null,
+      updatedAt: serverTimestamp(),
+      ...(outlet ? {} : { createdAt: serverTimestamp() }),
+    };
 
-      await setDoc(outletRef, dataToSave, { merge: true });
-
-      toast({
-        title: `Outlet ${outlet ? 'Updated' : 'Created'}`,
-        description: `"${values.name}" has been successfully saved.`,
+    setDoc(outletRef, dataToSave, { merge: true })
+      .then(() => {
+        toast({
+          title: `Outlet ${outlet ? 'Updated' : 'Created'}`,
+          description: `"${values.name}" has been successfully saved.`,
+        });
+        onSuccess();
+      })
+      .catch((error) => {
+        const permissionError = new FirestorePermissionError({
+          path: outletRef.path,
+          operation: 'write',
+          requestResourceData: dataToSave,
+        });
+        errorEmitter.emit('permission-error', permissionError);
       });
-      onSuccess();
-    } catch (error: any) {
-      console.error('Error saving outlet:', error);
-      toast({ variant: 'destructive', title: 'Error', description: error.message });
-    }
   };
 
   const inputStyles = "bg-zinc-800 border-zinc-700 text-white focus-visible:ring-primary";
