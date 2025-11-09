@@ -5,7 +5,7 @@ import { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, RefreshCw, AlertTriangle, MapPin, Calendar as CalendarIcon } from 'lucide-react';
+import { Loader2, RefreshCw, AlertTriangle, MapPin } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,8 +18,8 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, query, where } from 'firebase/firestore';
-import type { Outlet } from '@/lib/types';
+import { collection, query, where, doc, writeBatch } from 'firebase/firestore';
+import type { Outlet, Review, ReviewDocument } from '@/lib/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -40,40 +40,84 @@ export default function GooglePlacesSync() {
   );
   const { data: outlets, isLoading: isLoadingOutlets } = useCollection<Outlet>(outletsWithPlaceIdQuery);
 
-  const handleManualSync = async () => {
+  const triggerSync = async () => {
+    if (!firestore || !outlets || outlets.length === 0) {
+      toast({
+        variant: 'destructive',
+        title: 'Sync Failed',
+        description: 'No outlets with a Place ID found to sync.',
+      });
+      return;
+    }
+    
     setIsLoading(true);
     toast({
       title: 'Sync Initiated',
-      description: 'Fetching latest reviews for all outlets with a Place ID. This may take a few minutes.',
+      description: `Fetching latest reviews for ${outlets.length} outlets. This may take a moment.`,
     });
 
-    // In a real implementation, this would call a backend Cloud Function.
-    // For now, we simulate a delay.
-    await new Promise(resolve => setTimeout(resolve, 5000));
+    let successCount = 0;
+    let errorCount = 0;
+
+    for (const outlet of outlets) {
+      if (!outlet.placeId) continue;
+      
+      try {
+        const response = await fetch('/api/fetch-google-place-details', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ placeId: outlet.placeId }),
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || 'Failed to fetch from Google');
+        
+        // Prepare batch write for this outlet
+        const batch = writeBatch(firestore);
+        
+        // 1. Update the outlet document itself
+        const outletRef = doc(firestore, 'outlets', outlet.id);
+        batch.update(outletRef, {
+          rating: data.rating,
+          reviewCount: data.reviewCount,
+          lastFetched: new Date(),
+        });
+
+        // 2. Update the reviews document
+        const reviewDocRef = doc(firestore, 'reviews', outlet.id);
+        const reviewData: ReviewDocument = {
+          outletId: outlet.id,
+          aggregate: {
+            ratingValue: data.rating,
+            reviewCount: data.reviewCount,
+          },
+          reviews: data.reviews.map((r: any): Review => ({
+              source: 'google',
+              author_name: r.author_name,
+              rating: r.rating,
+              text: r.text,
+              time: r.time,
+              profile_photo_url: r.profile_photo_url,
+              relative_time_description: r.relative_time_description,
+          })),
+        };
+        batch.set(reviewDocRef, reviewData, { merge: true }); // Merge to keep manual reviews if any
+
+        await batch.commit();
+        successCount++;
+
+      } catch (error: any) {
+        console.error(`Failed to sync outlet ${outlet.name}:`, error);
+        errorCount++;
+      }
+    }
 
     setIsLoading(false);
     toast({
-      title: 'Manual Sync Complete!',
-      description: `Outlet reviews and ratings have been updated.`,
+      title: 'Sync Complete!',
+      description: `${successCount} outlets synced successfully. ${errorCount} failed.`,
     });
   };
-  
-  const handleSetSchedule = () => {
-    if (!scheduleDay || !scheduleTime) {
-        toast({
-            variant: 'destructive',
-            title: 'Invalid Schedule',
-            description: 'Please select a day and time for the sync.',
-        });
-        return;
-    }
-    
-    // Simulate scheduling a backend job (e.g., a cron job)
-    toast({
-        title: 'Recurring Sync Scheduled',
-        description: `Automated sync will now run every ${scheduleDay.charAt(0).toUpperCase() + scheduleDay.slice(1)} at ${scheduleTime} (${scheduleTimezone}).`
-    });
-  }
 
   return (
     <Card className="bg-zinc-900 border-zinc-800 text-white">
@@ -87,9 +131,9 @@ export default function GooglePlacesSync() {
           <div className="flex items-start gap-4 rounded-lg border border-blue-500/50 bg-blue-500/10 p-4">
               <AlertTriangle className="h-6 w-6 text-blue-400 mt-1" />
               <div>
-                  <h3 className="font-semibold text-blue-300">Note on Automated Sync</h3>
+                  <h3 className="font-semibold text-blue-300">How Syncing Works</h3>
                   <p className="text-sm text-blue-400/80">
-                  You can trigger an immediate sync below or set a recurring schedule for automated background updates.
+                  This tool fetches the latest ratings and reviews directly from Google and updates your Firestore database. This ensures your microsites always show fresh, authentic customer feedback.
                   </p>
               </div>
           </div>
@@ -136,14 +180,14 @@ export default function GooglePlacesSync() {
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                   <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
-                  <AlertDialogAction className="bg-blue-600 hover:bg-blue-700" onClick={handleManualSync}>Yes, sync now</AlertDialogAction>
+                  <AlertDialogAction className="bg-blue-600 hover:bg-blue-700" onClick={triggerSync}>Yes, sync now</AlertDialogAction>
                   </AlertDialogFooter>
               </AlertDialogContent>
           </AlertDialog>
           
           <div className="border-t border-zinc-800 pt-6">
-              <h4 className="font-medium text-zinc-300">Automated Sync Schedule (UI Only)</h4>
-              <p className="text-sm text-zinc-500 mb-4">Set a recurring time for automatic background syncing. This requires backend implementation.</p>
+              <h4 className="font-medium text-zinc-300">Automated Sync Schedule (Simulation)</h4>
+              <p className="text-sm text-zinc-500 mb-4">Set a recurring time for automatic background syncing. In this prototype, this button will trigger an immediate manual sync.</p>
               <div className="flex flex-col sm:flex-row items-end gap-4">
                   <div className="grid w-full items-center gap-1.5">
                     <Label htmlFor="sync-day" className="text-zinc-400">Day of the Week</Label>
@@ -177,7 +221,29 @@ export default function GooglePlacesSync() {
                     <Input id="sync-time" type="time" value={scheduleTime} onChange={e => setScheduleTime(e.target.value)} className="bg-zinc-800 border-zinc-700" />
                   </div>
                   <div className="w-full sm:w-auto">
-                     <Button onClick={handleSetSchedule} className="w-full sm:w-auto">Set Schedule</Button>
+                     <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button disabled={isLoading} className="w-full sm:w-auto">Set Schedule & Sync</Button>
+                        </AlertDialogTrigger>
+                         <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
+                          <AlertDialogHeader>
+                              <AlertDialogTitle>Schedule & Sync Now?</AlertDialogTitle>
+                              <AlertDialogDescription className="text-zinc-400">
+                                  This will simulate setting the schedule and will also trigger an immediate sync for all outlets.
+                              </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                          <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
+                          <AlertDialogAction className="bg-primary/90 hover:bg-primary/80" onClick={() => {
+                              toast({
+                                  title: 'Recurring Sync Scheduled',
+                                  description: `Automated sync will now run every ${scheduleDay.charAt(0).toUpperCase() + scheduleDay.slice(1)} at ${scheduleTime} (${scheduleTimezone}). Starting initial sync now...`
+                              });
+                              triggerSync();
+                          }}>Yes, Set & Sync</AlertDialogAction>
+                          </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </div>
               </div>
           </div>
@@ -185,4 +251,3 @@ export default function GooglePlacesSync() {
     </Card>
   );
 }
-
