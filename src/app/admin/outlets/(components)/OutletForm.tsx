@@ -167,7 +167,7 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
     resolver: zodResolver(formSchema),
     defaultValues: outlet ? {
       ...outlet,
-      menuItemIds: allItems?.filter(item => item.outletIds?.includes(outlet.id)).map(item => item.id) || [],
+      menuItemIds: allItems ? allItems.filter(item => item.outletIds?.includes(outlet.id)).map(item => item.id) : [],
     } : {
       name: '',
       slug: '',
