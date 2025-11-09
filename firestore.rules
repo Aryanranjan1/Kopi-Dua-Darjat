@@ -24,7 +24,7 @@ service cloud.firestore {
 
     // CMS Collections (Public Read + Admin Write)
     match /{collectionName}/{docId} where
-      collectionName in ['menuGroups', 'menuCategories', 'menuItems', 'promotions', 'dailySpecials', 'outlets', 'blogs', 'media', 'testimonials', 'faq'] {
+      collectionName in ['menuGroups', 'menuCategories', 'menuItems', 'promotions', 'dailySpecials', 'outlets', 'blogs', 'media', 'testimonials', 'faq', 'specials'] {
       allow read: if true;
       allow write: if isAdmin();
     }
