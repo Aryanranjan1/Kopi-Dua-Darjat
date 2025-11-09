@@ -17,10 +17,10 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+import { Loader2, ChevronsUpDown } from 'lucide-react';
 import { useFirestore, errorEmitter, FirestorePermissionError } from '@/firebase';
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
-import type { Outlet } from '@/lib/types';
+import { doc, setDoc, serverTimestamp, collection, query } from 'firebase/firestore';
+import type { Outlet, Testimonial, Promotion, MenuItem } from '@/lib/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Select,
@@ -31,12 +31,17 @@ import {
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import slugify from 'slugify';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import ImageUpload from '@/components/shared/ImageUpload';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Checkbox } from '@/components/ui/checkbox';
+import { useCollection, useMemoFirebase } from '@/firebase';
+
 
 interface OutletFormProps {
   outlet?: Outlet;
+  allItems: MenuItem[];
   onSuccess: () => void;
 }
 
@@ -60,18 +65,110 @@ const formSchema = z.object({
   chatbotEmbed: z.string().optional(),
   isChatbotEnabled: z.boolean().default(false),
   placeId: z.string().optional(),
+  menuItemIds: z.array(z.string()).optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-export default function OutletForm({ outlet, onSuccess }: OutletFormProps) {
+function MultiSelectPopover({ title, options, selected, onChange }: {
+    title: string;
+    options: { value: string; label: string }[];
+    selected: string[];
+    onChange: (selected: string[]) => void;
+}) {
+    const [open, setOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const filteredOptions = options.filter(option => 
+        option.label.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    return (
+        <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+                <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={open}
+                    className="w-full justify-between bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700"
+                >
+                    <span className="truncate">
+                    {selected.length === 0
+                        ? `Select ${title}...`
+                        : selected.length === options.length
+                        ? `All ${title}`
+                        : `${selected.length} of ${options.length} selected`}
+                    </span>
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 z-[60]" align="start">
+                <div className="bg-zinc-900 text-white border border-zinc-800 rounded-md">
+                    <div className="p-2 border-b border-zinc-800">
+                        <Input 
+                            placeholder={`Search ${title.toLowerCase()}...`}
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="bg-zinc-800 border-zinc-700"
+                            autoFocus
+                        />
+                    </div>
+                    <ScrollArea className="h-48">
+                        <div className="p-2 space-y-1">
+                        {filteredOptions.length > 0 ? filteredOptions.map((option) => {
+                            const isSelected = selected.includes(option.value);
+                            return (
+                                <div
+                                    key={option.value}
+                                    className="flex items-center space-x-2 p-2 rounded-md hover:bg-zinc-800 cursor-pointer"
+                                    onClick={() => {
+                                        const newSelected = isSelected
+                                            ? selected.filter((v) => v !== option.value)
+                                            : [...selected, option.value];
+                                        onChange(newSelected);
+                                    }}
+                                >
+                                    <Checkbox
+                                        id={`check-${option.value}`}
+                                        checked={isSelected}
+                                        readOnly
+                                    />
+                                    <label htmlFor={`check-${option.value}`} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer">
+                                        {option.label}
+                                    </label>
+                                </div>
+                            )
+                        }) : (
+                            <p className="p-2 text-sm text-center text-zinc-500">No {title.toLowerCase()} found.</p>
+                        )}
+                        </div>
+                    </ScrollArea>
+                </div>
+            </PopoverContent>
+        </Popover>
+    );
+}
+
+
+export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormProps) {
   const { toast } = useToast();
   const firestore = useFirestore();
   const [isFetching, setIsFetching] = useState(false);
 
+  const { data: promotions } = useCollection<Promotion>(
+    useMemoFirebase(() => firestore ? query(collection(firestore, 'promotions')) : null, [firestore])
+  );
+  
+  const { data: testimonials } = useCollection<Testimonial>(
+    useMemoFirebase(() => firestore ? query(collection(firestore, 'testimonials')) : null, [firestore])
+  );
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: outlet || {
+    defaultValues: outlet ? {
+      ...outlet,
+      menuItemIds: allItems.filter(item => item.outletIds?.includes(outlet.id)).map(item => item.id),
+    } : {
       name: '',
       slug: '',
       address: '',
@@ -91,6 +188,7 @@ export default function OutletForm({ outlet, onSuccess }: OutletFormProps) {
       chatbotEmbed: '',
       isChatbotEnabled: false,
       placeId: '',
+      menuItemIds: [],
     },
   });
 
@@ -182,6 +280,20 @@ export default function OutletForm({ outlet, onSuccess }: OutletFormProps) {
       updatedAt: serverTimestamp(),
       ...(outlet ? {} : { createdAt: serverTimestamp() }),
     };
+    
+    // This is a simplified approach. A more robust solution would use batch writes.
+    for (const item of allItems) {
+        const itemRef = doc(firestore, 'menuItems', item.id);
+        const shouldBeLinked = values.menuItemIds?.includes(item.id);
+        const isCurrentlyLinked = item.outletIds?.includes(docId);
+
+        if (shouldBeLinked && !isCurrentlyLinked) {
+            await setDoc(itemRef, { outletIds: [...(item.outletIds || []), docId] }, { merge: true });
+        } else if (!shouldBeLinked && isCurrentlyLinked) {
+            await setDoc(itemRef, { outletIds: item.outletIds?.filter(id => id !== docId) }, { merge: true });
+        }
+    }
+
 
     setDoc(outletRef, dataToSave, { merge: true })
       .then(() => {
@@ -206,155 +318,172 @@ export default function OutletForm({ outlet, onSuccess }: OutletFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="h-full flex flex-col">
-        <Tabs defaultValue="general" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 bg-zinc-800">
-              <TabsTrigger value="general">General</TabsTrigger>
-              <TabsTrigger value="menu">Menu</TabsTrigger>
-              <TabsTrigger value="promotions">Promotions</TabsTrigger>
-              <TabsTrigger value="testimonials">Testimonials</TabsTrigger>
-            </TabsList>
-            <div className="mt-4">
-              <TabsContent value="general">
-                  <div className="space-y-6">
-                    <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2">Core Information</h3>
-                    <FormField control={form.control} name="placeId" render={({ field }) => (
+        <ScrollArea className="flex-grow pr-4">
+          <Tabs defaultValue="general" className="w-full">
+              <TabsList className="grid w-full grid-cols-4 bg-zinc-800">
+                <TabsTrigger value="general">General</TabsTrigger>
+                <TabsTrigger value="menu">Menu</TabsTrigger>
+                <TabsTrigger value="promotions">Promotions</TabsTrigger>
+                <TabsTrigger value="testimonials">Testimonials</TabsTrigger>
+              </TabsList>
+              <div className="mt-4">
+                <TabsContent value="general">
+                    <div className="space-y-6">
+                      <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2">Core Information</h3>
+                      <FormField control={form.control} name="placeId" render={({ field }) => (
+                          <FormItem>
+                              <FormLabel>Google Place ID</FormLabel>
+                              <div className="flex items-center gap-2">
+                                  <FormControl>
+                                      <Input placeholder="ChIJ..." {...field} className={inputStyles}/>
+                                  </FormControl>
+                                  <Button type="button" onClick={handleFetchFromGoogle} disabled={isFetching}>
+                                      {isFetching ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Fetch'}
+                                  </Button>
+                              </div>
+                              <FormDescription>Enter a Place ID and click 'Fetch' to auto-populate data.</FormDescription>
+                              <FormMessage/>
+                          </FormItem>
+                      )}/>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <FormField control={form.control} name="name" render={({ field }) => (
+                              <FormItem><FormLabel>Outlet Name</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                          )}/>
+                          <FormField control={form.control} name="slug" render={({ field }) => (
+                              <FormItem><FormLabel>Slug (URL Identifier)</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormDescription>Auto-generated from name. Must be unique.</FormDescription><FormMessage/></FormItem>
+                          )}/>
+                      </div>
+                      <FormField control={form.control} name="address" render={({ field }) => (
+                          <FormItem><FormLabel>Full Address</FormLabel><FormControl><Textarea {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                      )}/>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <FormField control={form.control} name="city" render={({ field }) => (
+                              <FormItem><FormLabel>City</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                          )}/>
+                          <FormField control={form.control} name="state" render={({ field }) => (
+                              <FormItem><FormLabel>State</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                          )}/>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <FormField control={form.control} name="lat" render={({ field }) => (
+                              <FormItem><FormLabel>Latitude</FormLabel><FormControl><Input type="number" {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                          )}/>
+                          <FormField control={form.control} name="lng" render={({ field }) => (
+                              <FormItem><FormLabel>Longitude</FormLabel><FormControl><Input type="number" {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                          )}/>
+                      </div>
+
+                      <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">Contact & Hours</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <FormField control={form.control} name="hours" render={({ field }) => (
+                              <FormItem><FormLabel>Operating Hours</FormLabel><FormControl><Input placeholder="e.g. 8 AM - 10 PM" {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                          )}/>
+                          <FormField control={form.control} name="phone" render={({ field }) => (
+                              <FormItem><FormLabel>Phone Number</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                          )}/>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <FormField control={form.control} name="email" render={({ field }) => (
+                              <FormItem><FormLabel>Email</FormLabel><FormControl><Input type="email" {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                          )}/>
+                          <FormField control={form.control} name="whatsappLink" render={({ field }) => (
+                              <FormItem><FormLabel>WhatsApp Link</FormLabel><FormControl><Input placeholder="https://wa.me/..." {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                          )}/>
+                      </div>
+
+                      <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">Microsite Content</h3>
+                      <FormField control={form.control} name="tagline" render={({ field }) => (
+                          <FormItem><FormLabel>Tagline</FormLabel><FormControl><Input placeholder="A catchy tagline for this outlet" {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                      )}/>
+                      <div className="space-y-4">
+                          <FormField
+                              control={form.control}
+                              name="heroImage"
+                              render={({ field }) => (
+                                  <ImageUpload
+                                      label="Hero Image"
+                                      value={field.value || ''}
+                                      onChange={field.onChange}
+                                      folderName={`outlets/${outlet?.slug || 'new'}/hero`}
+                                  />
+                              )}
+                          />
+                          <FormField
+                              control={form.control}
+                              name="interiorImage"
+                              render={({ field }) => (
+                                  <ImageUpload
+                                      label="Interior Image"
+                                      value={field.value || ''}
+                                      onChange={field.onChange}
+                                      folderName={`outlets/${outlet?.slug || 'new'}/interior`}
+                                  />
+                              )}
+                          />
+                      </div>
+                      <FormField control={form.control} name="chatbotEmbed" render={({ field }) => (
+                          <FormItem>
+                              <div className="flex items-center justify-between">
+                                  <FormLabel>Chatbot Embed Code</FormLabel>
+                                  <FormField
+                                      control={form.control}
+                                      name="isChatbotEnabled"
+                                      render={({ field }) => (
+                                          <FormItem className="flex items-center gap-2 space-y-0">
+                                              <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                                              <FormLabel className="text-sm !mt-0">{field.value ? "Enabled" : "Disabled"}</FormLabel>
+                                          </FormItem>
+                                      )}
+                                  />
+                              </div>
+                              <FormControl><Textarea placeholder="<script>...</script>" {...field} className={`${inputStyles} font-mono`} /></FormControl>
+                              <FormDescription>Paste the full embed code for a chatbot if applicable.</FormDescription>
+                              <FormMessage/>
+                          </FormItem>
+                      )}/>
+
+                      <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">System</h3>
+                      <FormField control={form.control} name="status" render={({ field }) => (
+                              <FormItem><FormLabel>Status</FormLabel>
+                                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                      <FormControl><SelectTrigger className={inputStyles}><SelectValue /></SelectTrigger></FormControl>
+                                      <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                                          <SelectItem value="active">Active</SelectItem>
+                                          <SelectItem value="inactive">Inactive</SelectItem>
+                                      </SelectContent>
+                                  </Select>
+                              <FormMessage/></FormItem>
+                          )}/>
+                    </div>
+                </TabsContent>
+                <TabsContent value="menu">
+                    <FormField
+                      control={form.control}
+                      name="menuItemIds"
+                      render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Google Place ID</FormLabel>
-                            <div className="flex items-center gap-2">
-                                <FormControl>
-                                    <Input placeholder="ChIJ..." {...field} className={inputStyles}/>
-                                </FormControl>
-                                <Button type="button" onClick={handleFetchFromGoogle} disabled={isFetching}>
-                                    {isFetching ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Fetch'}
-                                </Button>
-                            </div>
-                            <FormDescription>Enter a Place ID and click 'Fetch' to auto-populate data.</FormDescription>
-                            <FormMessage/>
+                          <FormLabel>Linked Menu Items</FormLabel>
+                          <MultiSelectPopover
+                            title="Menu Items"
+                            options={allItems?.map(item => ({ value: item.id, label: item.name })) || []}
+                            selected={field.value || []}
+                            onChange={field.onChange}
+                          />
+                          <FormDescription>Select which menu items are available at this outlet.</FormDescription>
+                          <FormMessage />
                         </FormItem>
-                    )}/>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <FormField control={form.control} name="name" render={({ field }) => (
-                            <FormItem><FormLabel>Outlet Name</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
-                        )}/>
-                        <FormField control={form.control} name="slug" render={({ field }) => (
-                            <FormItem><FormLabel>Slug (URL Identifier)</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormDescription>Auto-generated from name. Must be unique.</FormDescription><FormMessage/></FormItem>
-                        )}/>
-                    </div>
-                    <FormField control={form.control} name="address" render={({ field }) => (
-                        <FormItem><FormLabel>Full Address</FormLabel><FormControl><Textarea {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
-                    )}/>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <FormField control={form.control} name="city" render={({ field }) => (
-                            <FormItem><FormLabel>City</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
-                        )}/>
-                        <FormField control={form.control} name="state" render={({ field }) => (
-                            <FormItem><FormLabel>State</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
-                        )}/>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <FormField control={form.control} name="lat" render={({ field }) => (
-                            <FormItem><FormLabel>Latitude</FormLabel><FormControl><Input type="number" {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
-                        )}/>
-                        <FormField control={form.control} name="lng" render={({ field }) => (
-                            <FormItem><FormLabel>Longitude</FormLabel><FormControl><Input type="number" {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
-                        )}/>
-                    </div>
-
-                    <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">Contact & Hours</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <FormField control={form.control} name="hours" render={({ field }) => (
-                            <FormItem><FormLabel>Operating Hours</FormLabel><FormControl><Input placeholder="e.g. 8 AM - 10 PM" {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
-                        )}/>
-                        <FormField control={form.control} name="phone" render={({ field }) => (
-                            <FormItem><FormLabel>Phone Number</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
-                        )}/>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <FormField control={form.control} name="email" render={({ field }) => (
-                            <FormItem><FormLabel>Email</FormLabel><FormControl><Input type="email" {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
-                        )}/>
-                        <FormField control={form.control} name="whatsappLink" render={({ field }) => (
-                            <FormItem><FormLabel>WhatsApp Link</FormLabel><FormControl><Input placeholder="https://wa.me/..." {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
-                        )}/>
-                    </div>
-
-                    <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">Microsite Content</h3>
-                    <FormField control={form.control} name="tagline" render={({ field }) => (
-                        <FormItem><FormLabel>Tagline</FormLabel><FormControl><Input placeholder="A catchy tagline for this outlet" {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
-                    )}/>
-                    <div className="space-y-4">
-                        <FormField
-                            control={form.control}
-                            name="heroImage"
-                            render={({ field }) => (
-                                <ImageUpload
-                                    label="Hero Image"
-                                    value={field.value || ''}
-                                    onChange={field.onChange}
-                                    folderName={`outlets/${outlet?.slug || 'new'}/hero`}
-                                />
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="interiorImage"
-                            render={({ field }) => (
-                                <ImageUpload
-                                    label="Interior Image"
-                                    value={field.value || ''}
-                                    onChange={field.onChange}
-                                    folderName={`outlets/${outlet?.slug || 'new'}/interior`}
-                                />
-                            )}
-                        />
-                    </div>
-                    <FormField control={form.control} name="chatbotEmbed" render={({ field }) => (
-                        <FormItem>
-                            <div className="flex items-center justify-between">
-                                <FormLabel>Chatbot Embed Code</FormLabel>
-                                <FormField
-                                    control={form.control}
-                                    name="isChatbotEnabled"
-                                    render={({ field }) => (
-                                        <FormItem className="flex items-center gap-2 space-y-0">
-                                            <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
-                                            <FormLabel className="text-sm !mt-0">{field.value ? "Enabled" : "Disabled"}</FormLabel>
-                                        </FormItem>
-                                    )}
-                                />
-                            </div>
-                            <FormControl><Textarea placeholder="<script>...</script>" {...field} className={`${inputStyles} font-mono`} /></FormControl>
-                            <FormDescription>Paste the full embed code for a chatbot if applicable.</FormDescription>
-                            <FormMessage/>
-                        </FormItem>
-                    )}/>
-
-                    <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">System</h3>
-                    <FormField control={form.control} name="status" render={({ field }) => (
-                            <FormItem><FormLabel>Status</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                    <FormControl><SelectTrigger className={inputStyles}><SelectValue /></SelectTrigger></FormControl>
-                                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                                        <SelectItem value="active">Active</SelectItem>
-                                        <SelectItem value="inactive">Inactive</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            <FormMessage/></FormItem>
-                        )}/>
-                  </div>
-              </TabsContent>
-              <TabsContent value="menu">
-                <p className="text-zinc-400">Manage menu items for this outlet here.</p>
-              </TabsContent>
-              <TabsContent value="promotions">
-                <p className="text-zinc-400">Manage promotions for this outlet here.</p>
-              </TabsContent>
-              <TabsContent value="testimonials">
-                <p className="text-zinc-400">Manage testimonials for this outlet here.</p>
-              </TabsContent>
-            </div>
-        </Tabs>
-
+                      )}
+                    />
+                </TabsContent>
+                <TabsContent value="promotions">
+                  <p className="text-zinc-400">Manage promotions for this outlet here.</p>
+                </TabsContent>
+                <TabsContent value="testimonials">
+                  <p className="text-zinc-400">Manage testimonials for this outlet here.</p>
+                </TabsContent>
+              </div>
+          </Tabs>
+        </ScrollArea>
         <div className="flex-shrink-0 pt-6">
             <Button type="submit" disabled={isSubmitting} className="w-full">
             {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

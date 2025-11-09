@@ -2,9 +2,9 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
-import { doc } from 'firebase/firestore';
-import type { Outlet } from '@/lib/types';
+import { useDoc, useFirestore, useMemoFirebase, useCollection } from '@/firebase';
+import { doc, collection, query } from 'firebase/firestore';
+import type { Outlet, MenuItem } from '@/lib/types';
 import OutletForm from '../../(components)/OutletForm';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Loader2 } from 'lucide-react';
@@ -21,18 +21,19 @@ export default function EditOutletPage() {
     () => (firestore && !isNew) ? doc(firestore, 'outlets', id as string) : null,
     [firestore, isNew, id]
   );
-  const { data: outlet, isLoading } = useDoc<Outlet>(outletRef);
+  const { data: outlet, isLoading: isLoadingOutlet } = useDoc<Outlet>(outletRef);
+
+  const { data: menuItems, isLoading: isLoadingItems } = useCollection<MenuItem>(
+      useMemoFirebase(() => firestore ? query(collection(firestore, 'menuItems')) : null, [firestore])
+  );
 
   const handleSuccess = () => {
-    // If it was a new outlet, redirect to its new edit page
-    if (isNew) {
-      // The slug would have been set in the form, need to get it from there.
-      // For now, let's just go back to the list. A more robust solution might
-      // pass the new slug back from the onSuccess callback.
-      router.push('/admin/outlets');
-    }
-    router.refresh(); // Refresh data on the page
+    // If it was a new outlet, redirect to the main outlets list
+    router.push('/admin/outlets');
+    router.refresh();
   };
+  
+  const isLoading = (isLoadingOutlet && !isNew) || isLoadingItems;
 
   return (
     <div className="space-y-6">
@@ -46,12 +47,12 @@ export default function EditOutletPage() {
         {isNew ? 'Create New Outlet' : `Edit: ${outlet?.name || '...'}`}
       </h1>
 
-      {(isLoading && !isNew) ? (
+      {isLoading ? (
         <div className="flex justify-center items-center h-64">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
       ) : (
-        <OutletForm outlet={outlet || undefined} onSuccess={handleSuccess} />
+        <OutletForm outlet={outlet || undefined} allItems={menuItems || []} onSuccess={handleSuccess} />
       )}
     </div>
   );
