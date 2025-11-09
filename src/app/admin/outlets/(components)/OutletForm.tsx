@@ -18,7 +18,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, ChevronsUpDown, Trash2, Edit, PlusCircle, Check, MapPin, Star as StarIcon } from 'lucide-react';
+import { Loader2, ChevronsUpDown, Trash2, Edit, PlusCircle, Check, MapPin, Star as StarIcon, RefreshCw } from 'lucide-react';
 import { useFirestore, errorEmitter, FirestorePermissionError, useCollection, useMemoFirebase, useDoc } from '@/firebase';
 import { doc, setDoc, serverTimestamp, collection, query, where, addDoc, deleteDoc, writeBatch, getDocs, updateDoc, arrayRemove, arrayUnion } from 'firebase/firestore';
 import type { Outlet, Testimonial, Promotion, MenuItem, Review, ReviewDocument } from '@/lib/types';
@@ -54,11 +54,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import TestimonialForm from '../../shared/TestimonialForm';
 
 
 interface OutletFormProps {
   outlet?: Outlet;
   allItems: MenuItem[];
+  allTestimonials: Testimonial[];
   onSuccess: () => void;
 }
 
@@ -183,7 +185,7 @@ function MultiSelectPopover({ title, options, selected, onChange }: {
 }
 
 
-export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormProps) {
+export default function OutletForm({ outlet, allItems, allTestimonials, onSuccess }: OutletFormProps) {
   const { toast } = useToast();
   const firestore = useFirestore();
   const [isFetching, setIsFetching] = useState(false);
@@ -194,9 +196,76 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
   const { data: promotions } = useCollection<Promotion>(
     useMemoFirebase(() => outlet ? query(collection(firestore, 'promotions'), where('outletIds', 'array-contains', outlet.id)) : null, [firestore, outlet])
   );
-
+  
+  const [isTestimonialDialogOpen, setIsTestimonialDialogOpen] = useState(false);
+  const [selectedTestimonial, setSelectedTestimonial] = useState<Review | undefined>(undefined);
+  
   const reviewDocRef = useMemoFirebase(() => (outlet?.id && firestore) ? doc(firestore, 'reviews', outlet.id) : null, [outlet, firestore]);
-  const { data: reviewData } = useDoc<ReviewDocument>(reviewDocRef);
+  const { data: reviewData, isLoading: isLoadingReviews } = useDoc<ReviewDocument>(reviewDocRef);
+
+  const [currentReviews, setCurrentReviews] = useState<Review[]>([]);
+
+  useEffect(() => {
+    if (reviewData?.reviews) {
+      setCurrentReviews(reviewData.reviews);
+    } else {
+      setCurrentReviews([]);
+    }
+  }, [reviewData]);
+
+
+  const handleFetchFromGoogle = async () => {
+      const placeId = form.getValues('placeId');
+      if (!placeId) {
+          toast({ variant: 'destructive', title: 'Missing Place ID', description: 'Please enter a Google Place ID to fetch data.' });
+          return;
+      }
+      setIsFetching(true);
+      try {
+          const response = await fetch('/api/fetch-google-place-details', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ placeId }),
+          });
+          const data = await response.json();
+          if (!response.ok) throw new Error(data.message);
+
+          form.reset({
+            ...form.getValues(),
+            name: data.name || form.getValues('name'),
+            address: data.address || form.getValues('address'),
+            city: data.city || form.getValues('city'),
+            state: data.state || form.getValues('state'),
+            lat: data.lat || form.getValues('lat'),
+            lng: data.lng || form.getValues('lng'),
+            hours: data.hours || form.getValues('hours'),
+            phone: data.phone || form.getValues('phone'),
+            mapsLink: data.mapsLink || form.getValues('mapsLink'),
+          });
+          
+          if (data.reviews && data.reviews.length > 0) {
+            const googleReviews: Review[] = data.reviews.map((r: any) => ({
+                source: 'google',
+                author_name: r.author_name,
+                rating: r.rating,
+                text: r.text,
+                time: r.time,
+                profile_photo_url: r.profile_photo_url,
+                relative_time_description: r.relative_time_description,
+            }));
+            
+            const manualReviews = currentReviews.filter(r => r.source === 'manual');
+            setCurrentReviews([...manualReviews, ...googleReviews]);
+          }
+
+          toast({ title: 'Data Fetched', description: `Successfully updated data for ${data.name}. Review and save.` });
+      } catch (error: any) {
+          toast({ variant: 'destructive', title: 'Fetch Failed', description: error.message });
+      } finally {
+          setIsFetching(false);
+      }
+  };
+
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -255,6 +324,10 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
     const docId = values.slug;
     const outletRef = doc(firestore, 'outlets', docId);
     
+    // Calculate new aggregate rating based on currentReviews
+    const totalRating = currentReviews.reduce((acc, review) => acc + review.rating, 0);
+    const aggregateRating = currentReviews.length > 0 ? totalRating / currentReviews.length : 0;
+
     const dataToSave = {
       ...values,
       phone: values.phone || null,
@@ -272,7 +345,10 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
         keywords: values.seo?.keywords || null,
       },
       updatedAt: serverTimestamp(),
-      ...(outlet ? {} : { createdAt: serverTimestamp(), rating: 0, reviewCount: 0, reviewsPath: `reviews/${docId}` }),
+      rating: aggregateRating,
+      reviewCount: currentReviews.length,
+      reviewsPath: `reviews/${docId}`,
+      ...(outlet ? {} : { createdAt: serverTimestamp() }),
     };
 
     delete (dataToSave as any).menuItemIds;
@@ -309,6 +385,17 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
     }
     // --- End Menu Item Logic ---
 
+    // Save reviews to their own document
+    const reviewDocRef = doc(firestore, 'reviews', docId);
+    batch.set(reviewDocRef, {
+        outletId: docId,
+        aggregate: {
+            ratingValue: aggregateRating,
+            reviewCount: currentReviews.length
+        },
+        reviews: currentReviews,
+    });
+
     batch.set(outletRef, dataToSave, { merge: true });
 
     try {
@@ -335,20 +422,32 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
     toast({ title: "Promotion Deleted" });
   }
 
-  const handleDeleteReview = async (reviewToDelete: Review) => {
-    if (!reviewDocRef) return;
-    
-    const newReviewCount = (reviewData?.aggregate.reviewCount || 1) - 1;
-    let newTotalRating = ((reviewData?.aggregate.ratingValue || 0) * (reviewData?.aggregate.reviewCount || 1)) - reviewToDelete.rating;
-    const newAverageRating = newReviewCount > 0 ? newTotalRating / newReviewCount : 0;
-    
-    await updateDoc(reviewDocRef, {
-        reviews: arrayRemove(reviewToDelete),
-        'aggregate.reviewCount': newReviewCount,
-        'aggregate.ratingValue': newAverageRating
-    });
-    toast({ title: "Review Deleted", description: "The review has been removed from this outlet." });
+  const handleDeleteReview = (reviewToDelete: Review) => {
+    const isGoogleReview = reviewToDelete.source === 'google';
+    const identifier = isGoogleReview ? reviewToDelete.time : reviewToDelete.id;
+
+    setCurrentReviews(prev => prev.filter(r => {
+        const currentIdentifier = r.source === 'google' ? r.time : r.id;
+        return currentIdentifier !== identifier;
+    }));
+    toast({ title: "Review Removed", description: "The review will be permanently deleted when you save." });
+  };
+  
+  const handleSaveTestimonial = (review: Omit<Review, 'source' | 'time'>) => {
+      const newReview: Review = {
+        ...review,
+        source: 'manual',
+        time: serverTimestamp(),
+      };
+      
+      if(selectedTestimonial) { // Editing existing
+          setCurrentReviews(prev => prev.map(r => r.id === newReview.id ? newReview : r));
+      } else { // Adding new
+          setCurrentReviews(prev => [...prev, newReview]);
+      }
+      setIsTestimonialDialogOpen(false);
   }
+
 
   const inputStyles = "bg-zinc-800 border-zinc-700 text-white focus-visible:ring-primary";
 
@@ -363,12 +462,30 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
                 <TabsTrigger value="seo">SEO</TabsTrigger>
                 <TabsTrigger value="menu">Menu</TabsTrigger>
                 <TabsTrigger value="promotions" disabled={!outlet}>Promotions</TabsTrigger>
-                <TabsTrigger value="reviews" disabled={!outlet}>Reviews</TabsTrigger>
+                <TabsTrigger value="reviews">Reviews</TabsTrigger>
               </TabsList>
               <div className="mt-4">
                 <TabsContent value="general">
                     <div className="space-y-6">
-                      <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2">Core Information</h3>
+                      <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2">Google Places Integration</h3>
+                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField control={form.control} name="placeId" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Google Place ID</FormLabel>
+                                <FormControl><Input placeholder="Starts with ChIJ..." {...field} value={field.value || ''} className={inputStyles}/></FormControl>
+                                <FormDescription>Used to fetch ratings and reviews.</FormDescription>
+                                <FormMessage/>
+                            </FormItem>
+                        )}/>
+                        <div className="self-end">
+                            <Button type="button" onClick={handleFetchFromGoogle} disabled={isFetching} className="w-full">
+                                {isFetching && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                Fetch from Google
+                            </Button>
+                        </div>
+                      </div>
+
+                      <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">Core Information</h3>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <FormField control={form.control} name="name" render={({ field }) => (
@@ -585,14 +702,20 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
                 </TabsContent>
                  <TabsContent value="reviews">
                     <div className="space-y-4">
-                        <h3 className="text-lg font-medium text-primary">Reviews for {outlet?.name}</h3>
-                        {!reviewData?.reviews?.length && <p className="text-zinc-500 text-center py-8">No reviews for this outlet yet.</p>}
+                        <div className="flex justify-between items-center">
+                            <h3 className="text-lg font-medium text-primary">Reviews for {outlet?.name}</h3>
+                            <Button type="button" size="sm" onClick={() => { setSelectedTestimonial(undefined); setIsTestimonialDialogOpen(true); }}>
+                                <PlusCircle className="mr-2 h-4 w-4" /> Add Manual Review
+                            </Button>
+                        </div>
+                        {isLoadingReviews && <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin"/></div>}
+                        {!isLoadingReviews && currentReviews.length === 0 && <p className="text-zinc-500 text-center py-8">No reviews for this outlet yet.</p>}
                         <div className="max-h-[400px] overflow-y-auto pr-2 space-y-2">
-                            {reviewData?.reviews?.map((review, index) => (
-                                <div key={index} className="bg-zinc-800 p-3 rounded-lg flex justify-between items-start">
+                            {currentReviews.sort((a,b) => (typeof b.time === 'number' ? b.time : b.time.seconds) - (typeof a.time === 'number' ? a.time : a.time.seconds)).map((review, index) => (
+                                <div key={review.id || index} className="bg-zinc-800 p-3 rounded-lg flex justify-between items-start">
                                     <div>
                                         <div className="flex items-center gap-2">
-                                             <Badge variant={review.source === 'google' ? 'secondary' : 'default'} className={review.source === 'google' ? 'bg-blue-600' : ''}>
+                                             <Badge variant={review.source === 'google' ? 'secondary' : 'default'} className={review.source === 'google' ? 'bg-blue-600' : 'bg-emerald-600'}>
                                                 {review.source}
                                             </Badge>
                                             <p className="font-semibold">{review.author_name}</p>
@@ -604,18 +727,25 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
                                             <span className="text-xs text-zinc-500">{format(fromUnixTime(typeof review.time === 'number' ? review.time : review.time.seconds), 'PPP')}</span>
                                         </div>
                                     </div>
+                                    <div className="flex">
+                                        {review.source === 'manual' && (
+                                            <Button type="button" variant="ghost" size="icon" className="shrink-0" onClick={() => {setSelectedTestimonial(review); setIsTestimonialDialogOpen(true);}}>
+                                                <Edit className="h-4 w-4 text-zinc-400" />
+                                            </Button>
+                                        )}
                                      <AlertDialog>
                                         <AlertDialogTrigger asChild>
                                             <Button type="button" variant="ghost" size="icon" className="shrink-0"><Trash2 className="h-4 w-4 text-red-500" /></Button>
                                         </AlertDialogTrigger>
                                         <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
-                                            <AlertDialogHeader><AlertDialogTitle>Delete Review?</AlertDialogTitle><AlertDialogDescription className="text-zinc-400">This will permanently remove this review from your website.</AlertDialogDescription></AlertDialogHeader>
+                                            <AlertDialogHeader><AlertDialogTitle>Delete Review?</AlertDialogTitle><AlertDialogDescription className="text-zinc-400">This will remove this review from your website.</AlertDialogDescription></AlertDialogHeader>
                                             <AlertDialogFooter>
                                                 <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
                                                 <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleDeleteReview(review)}>Delete</AlertDialogAction>
                                             </AlertDialogFooter>
                                         </AlertDialogContent>
                                     </AlertDialog>
+                                    </div>
                                 </div>
                             ))}
                         </div>
@@ -648,8 +778,19 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
           />
         </DialogContent>
       </Dialog>
+      
+       <Dialog open={isTestimonialDialogOpen} onOpenChange={setIsTestimonialDialogOpen}>
+        <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-lg">
+          <DialogHeader>
+            <DialogTitle>{selectedTestimonial ? 'Edit Manual Review' : 'Add New Manual Review'}</DialogTitle>
+          </DialogHeader>
+          <TestimonialForm 
+            testimonial={selectedTestimonial}
+            onSave={handleSaveTestimonial}
+            onCancel={() => setIsTestimonialDialogOpen(false)}
+          />
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
-
-    
