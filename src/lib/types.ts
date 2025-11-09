@@ -80,7 +80,7 @@ export type DailySpecial = {
 
 
 export type Promotion = {
-  id: string;
+  id:string;
   title: string;
   description?: string;
   discountType: 'percentage' | 'flat' | 'bogo' | 'custom';
@@ -96,6 +96,13 @@ export type Promotion = {
   updatedAt: any; // Firestore Timestamp
 };
 
+export type Review = {
+  author_name: string;
+  rating: number;
+  relative_time_description: string;
+  text: string;
+}
+
 export type Outlet = {
   id: string;
   name: string;
@@ -109,6 +116,10 @@ export type Outlet = {
   phone?: string;
   email?: string;
   status: 'active' | 'inactive';
+  placeId?: string; // Google Place ID
+  rating?: number; // Google Rating
+  reviewCount?: number;
+  reviews?: Review[];
   heroImage?: string;
   interiorImage?: string;
   tagline?: string;

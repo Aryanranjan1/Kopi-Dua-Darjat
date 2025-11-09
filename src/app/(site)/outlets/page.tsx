@@ -7,6 +7,8 @@ import OutletShowcase from '@/components/outlets/OutletShowcase';
 import { Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import LatestStories from '@/components/home/LatestStories';
+import TopRatedOutlets from '@/components/outlets/TopRatedOutlets';
+import Testimonials from '@/components/franchise/Testimonials';
 
 export const metadata: Metadata = {
   title: 'Outlets',
@@ -36,6 +38,8 @@ export default function OutletsPage() {
         {/* Our Presence Section */}
         <OutletShowcase />
         
+        <TopRatedOutlets />
+        
         {/* Franchise CTA */}
         <FranchiseCta />
 
@@ -44,6 +48,7 @@ export default function OutletsPage() {
         
         {/* Latest Stories */}
         <LatestStories />
+
       </div>
 
       <FooterCta />
