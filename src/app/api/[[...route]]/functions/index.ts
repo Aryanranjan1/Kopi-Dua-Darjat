@@ -1,4 +1,3 @@
-'use server';
 
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
@@ -11,23 +10,23 @@ if (admin.apps.length === 0) {
 const googleMapsClient = new Client({});
 
 export const fetchGooglePlaceDetails = functions.https.onCall(async (data, context) => {
-  console.log('[Function] Received request with data:', data);
+  console.log('[Function Start] fetchGooglePlaceDetails invoked with data:', JSON.stringify(data));
 
   const { placeId } = data;
   if (!placeId) {
-    console.error('[Function] Error: Place ID is missing in the request.');
+    console.error('[Function Error] Place ID is missing.');
     throw new functions.https.HttpsError('invalid-argument', 'The function must be called with a "placeId" argument.');
   }
 
   const apiKey = process.env.GOOGLE_MAPS_API_KEY;
   if (!apiKey) {
-    console.error('[Function] FATAL Error: GOOGLE_MAPS_API_KEY is not set in environment variables.');
-    throw new functions.https.HttpsError('internal', 'The server is missing the required API key for Google Maps. Please configure it in your environment.');
+    console.error('[Function Error] FATAL: GOOGLE_MAPS_API_KEY environment variable is not set.');
+    throw new functions.https.HttpsError('internal', 'The server is missing the required API key for Google Maps. Please contact support.');
   }
-
-  console.log(`[Function] Fetching details for Place ID: ${placeId}`);
+  console.log('[Function Log] GOOGLE_MAPS_API_KEY is present.');
 
   try {
+    console.log(`[Function Log] Attempting to fetch details for Place ID: ${placeId}`);
     const response = await googleMapsClient.placeDetails({
       params: {
         place_id: placeId,
@@ -36,9 +35,11 @@ export const fetchGooglePlaceDetails = functions.https.onCall(async (data, conte
       },
     });
 
+    console.log(`[Function Log] Google Places API response status: ${response.data.status}`);
+
     if (response.data.status !== 'OK') {
-      console.error(`[Function] Google Places API Error: ${response.data.status} - ${response.data.error_message || 'No error message'}`);
-      throw new functions.https.HttpsError('internal', `Google Places API Error: ${response.data.status}. ${response.data.error_message || ''}`);
+      console.error(`[Function Error] Google Places API returned status ${response.data.status} with error message: ${response.data.error_message}`);
+      throw new functions.https.HttpsError('internal', `Google Places API Error: ${response.data.status}. ${response.data.error_message || 'Check your API key and ensure the Places API is enabled.'}`);
     }
 
     const result = response.data.result;
@@ -61,14 +62,15 @@ export const fetchGooglePlaceDetails = functions.https.onCall(async (data, conte
       mapsLink: result.url || '',
     };
 
-    console.log(`[Function] Successfully fetched and processed data for ${result.name}.`);
+    console.log(`[Function Success] Successfully processed data for ${result.name}.`);
     return output;
 
   } catch (error: any) {
-    console.error('[Function] An unexpected error occurred while calling Google Maps API:', error);
+    console.error('[Function CRITICAL] An unexpected error occurred:', error);
     if (error.isHttpsError) {
-      throw error;
+      throw error; // Re-throw HttpsError directly
     }
+    // For other types of errors, wrap them in a generic HttpsError
     throw new functions.https.HttpsError('internal', `An unexpected server error occurred: ${error.message}`);
   }
 });
