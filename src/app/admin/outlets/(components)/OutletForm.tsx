@@ -85,7 +85,6 @@ const formSchema = z.object({
   isChatbotEnabled: z.boolean().default(false),
   placeId: z.string().optional(),
   menuItemIds: z.array(z.string()).optional(),
-  reviews: z.array(z.any()).optional(), // To hold Google reviews
   seo: z.object({
     title: z.string().optional(),
     description: z.string().optional(),
@@ -206,7 +205,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
     defaultValues: {
       name: '', slug: '', address: '', city: '', state: '', lat: 0, lng: 0, hours: '', phone: '', email: '',
       status: 'active', heroImage: '', interiorImage: '', tagline: '', mapsLink: '', whatsappLink: '',
-      chatbotEmbed: '', isChatbotEnabled: false, placeId: '', menuItemIds: [], reviews: [],
+      chatbotEmbed: '', isChatbotEnabled: false, placeId: '', menuItemIds: [],
       seo: { title: '', description: '', keywords: '' },
     },
   });
@@ -225,7 +224,6 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
         chatbotEmbed: outlet.chatbotEmbed || '',
         placeId: outlet.placeId || '',
         menuItemIds: allItems.filter(item => item.outletIds?.includes(outlet.id)).map(item => item.id),
-        reviews: outlet.reviews || [],
         seo: {
           title: outlet.seo?.title || '',
           description: outlet.seo?.description || '',
@@ -236,7 +234,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
         form.reset({
             name: '', slug: '', address: '', city: '', state: '', lat: 0, lng: 0, hours: '', phone: '', email: '',
             status: 'active', heroImage: '', interiorImage: '', tagline: '', mapsLink: '', whatsappLink: '',
-            chatbotEmbed: '', isChatbotEnabled: false, placeId: '', menuItemIds: [], reviews: [],
+            chatbotEmbed: '', isChatbotEnabled: false, placeId: '', menuItemIds: [],
             seo: { title: '', description: '', keywords: '' },
         })
     }
@@ -246,76 +244,12 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
   const { isSubmitting, watch, setValue, formState } = form;
   const watchedName = watch('name');
   const watchedMenuItemIds = watch('menuItemIds') || [];
-  const watchedGoogleReviews = watch('reviews') || [];
 
   useEffect(() => {
     if (watchedName && !formState.dirtyFields.slug) {
         setValue('slug', slugify(watchedName, { lower: true, strict: true }));
     }
   }, [watchedName, setValue, formState.dirtyFields.slug]);
-
-  const handleFetchFromGoogle = async () => {
-    const placeId = form.getValues('placeId');
-    if (!placeId) {
-      toast({
-        variant: 'destructive',
-        title: 'Missing Place ID',
-        description: 'Please enter a Google Place ID before fetching.',
-      });
-      return;
-    }
-
-    setIsFetching(true);
-    toast({
-      title: 'Fetching Data...',
-      description: `Fetching details for Place ID: ${placeId}`,
-    });
-
-    try {
-      const response = await fetch('/api/fetch-google-place-details', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ placeId }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || `Request failed with status ${response.status}`);
-      }
-
-      const data = await response.json();
-      
-      form.setValue('name', data.name, { shouldValidate: true });
-      form.setValue('address', data.address, { shouldValidate: true });
-      form.setValue('city', data.city, { shouldValidate: true });
-      form.setValue('state', data.state, { shouldValidate: true });
-      form.setValue('lat', data.lat, { shouldValidate: true });
-      form.setValue('lng', data.lng, { shouldValidate: true });
-      form.setValue('phone', data.phone, { shouldValidate: true });
-      form.setValue('hours', data.hours, { shouldValidate: true });
-      form.setValue('mapsLink', data.mapsLink, { shouldValidate: true });
-      form.setValue('reviews', data.reviews || [], { shouldValidate: true });
-      form.setValue('rating', data.rating || 0, { shouldValidate: true });
-      form.setValue('reviewCount', data.reviewCount || 0, { shouldValidate: true });
-
-
-      toast({
-        title: 'Data Fetched!',
-        description: 'The form has been populated with data from Google. Please review and save.',
-      });
-
-    } catch (error: any) {
-      console.error('Error calling fetch-google-place-details API:', error);
-      toast({
-        variant: 'destructive',
-        title: 'Fetch Failed',
-        description: error.message || 'Could not fetch data from Google Places.',
-        duration: 9000,
-      });
-    } finally {
-      setIsFetching(false);
-    }
-  };
 
   const onSubmit = async (values: FormValues) => {
     if (!firestore) return;
@@ -397,12 +331,6 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
     }
   };
 
-  const handleDeleteReview = async (reviewId: string) => {
-    if(!firestore) return;
-    await deleteDoc(doc(firestore, "testimonials", reviewId));
-    toast({ title: "Review Deleted" });
-  }
-
   const handleDeletePromotion = async (promoId: string) => {
     if(!firestore) return;
     await deleteDoc(doc(firestore, "promotions", promoId));
@@ -410,7 +338,6 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
   }
 
   const inputStyles = "bg-zinc-800 border-zinc-700 text-white focus-visible:ring-primary";
-  const outletReviews = useMemo(() => outlet ? allTestimonials.filter(t => t.outletId === outlet.id) : [], [allTestimonials, outlet]);
 
   return (
     <>
@@ -418,32 +345,17 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
       <form onSubmit={form.handleSubmit(onSubmit)} className="h-full flex flex-col">
         <ScrollArea className="flex-grow pr-4">
           <Tabs defaultValue="general" className="w-full">
-              <TabsList className="grid w-full grid-cols-3 md:grid-cols-5 bg-zinc-800">
+              <TabsList className="grid w-full grid-cols-3 md:grid-cols-4 bg-zinc-800">
                 <TabsTrigger value="general">General</TabsTrigger>
                 <TabsTrigger value="seo">SEO</TabsTrigger>
                 <TabsTrigger value="menu">Menu</TabsTrigger>
                 <TabsTrigger value="promotions" disabled={!outlet}>Promotions</TabsTrigger>
-                <TabsTrigger value="reviews">Reviews</TabsTrigger>
               </TabsList>
               <div className="mt-4">
                 <TabsContent value="general">
                     <div className="space-y-6">
                       <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2">Core Information</h3>
-                      <FormField control={form.control} name="placeId" render={({ field }) => (
-                          <FormItem>
-                              <FormLabel>Google Place ID</FormLabel>
-                              <div className="flex items-center gap-2">
-                                  <FormControl>
-                                      <Input placeholder="ChIJ..." {...field} value={field.value || ''} className={inputStyles}/>
-                                  </FormControl>
-                                  <Button type="button" onClick={handleFetchFromGoogle} disabled={isFetching}>
-                                      {isFetching ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Fetch'}
-                                  </Button>
-                              </div>
-                              <FormDescription>Enter a Place ID and click 'Fetch' to auto-populate data.</FormDescription>
-                              <FormMessage/>
-                          </FormItem>
-                      )}/>
+                      
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <FormField control={form.control} name="name" render={({ field }) => (
                               <FormItem><FormLabel>Outlet Name</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
@@ -657,69 +569,6 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
                      </div>
                   </div>
                 </TabsContent>
-                <TabsContent value="reviews">
-                    <div className="space-y-6">
-                        <div>
-                             <div className="flex justify-between items-center">
-                                <h3 className="text-lg font-medium text-primary">Manual Testimonials</h3>
-                                {outlet && (
-                                    <Button type="button" size="sm" onClick={() => { setSelectedTestimonial(undefined); setIsTestimonialDialogOpen(true); }}>
-                                        <PlusCircle className="mr-2 h-4 w-4" /> New Testimonial
-                                    </Button>
-                                )}
-                            </div>
-                            <div className="space-y-2 mt-4">
-                                {outletReviews.map(review => (
-                                    <div key={review.id} className="bg-zinc-800 rounded-lg p-3 flex items-center justify-between">
-                                      <div>
-                                        <p className="text-sm italic">"{review.quote}"</p>
-                                        <p className="text-xs text-right font-semibold mt-2">- {review.name}, {review.designation}</p>
-                                      </div>
-                                      <div className="flex gap-1">
-                                          <Button type="button" variant="ghost" size="icon" onClick={() => { setSelectedTestimonial(review); setIsTestimonialDialogOpen(true); }}>
-                                            <Edit className="h-4 w-4" />
-                                          </Button>
-                                          <AlertDialog>
-                                              <AlertDialogTrigger asChild>
-                                                  <Button type="button" variant="ghost" size="icon"><Trash2 className="h-4 w-4 text-red-500" /></Button>
-                                              </AlertDialogTrigger>
-                                              <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
-                                                  <AlertDialogHeader><AlertDialogTitle>Are you sure?</AlertDialogTitle><AlertDialogDescription className="text-zinc-400">This will permanently delete this testimonial.</AlertDialogDescription></AlertDialogHeader>
-                                                  <AlertDialogFooter>
-                                                      <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
-                                                      <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleDeleteReview(review.id)}>Delete</AlertDialogAction>
-                                                  </AlertDialogFooter>
-                                              </AlertDialogContent>
-                                          </AlertDialog>
-                                      </div>
-                                    </div>
-                                ))}
-                                {outletReviews.length === 0 && <p className="text-zinc-500 text-center py-4">No manual testimonials linked to this outlet yet.</p>}
-                           </div>
-                        </div>
-                        <div>
-                           <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2">Google Reviews</h3>
-                            <p className="text-sm text-zinc-400 my-2">These reviews are fetched from the Google Places API. They are read-only but will be saved with the outlet.</p>
-                             <div className="space-y-2 mt-4">
-                                {watchedGoogleReviews.map((review, index) => (
-                                    <div key={index} className="bg-zinc-800 rounded-lg p-3">
-                                      <div className="flex items-center gap-2 mb-2">
-                                        <div className="flex items-center gap-0.5">
-                                            {[...Array(5)].map((_, i) => (
-                                                <StarIcon key={i} className={cn("h-4 w-4", i < review.rating ? "text-yellow-400 fill-yellow-400" : "text-zinc-600")} />
-                                            ))}
-                                        </div>
-                                        <p className="font-semibold text-sm">{review.author_name}</p>
-                                        <p className="text-xs text-zinc-500 ml-auto">{review.relative_time_description}</p>
-                                      </div>
-                                      <p className="text-sm italic text-zinc-300">"{review.text}"</p>
-                                    </div>
-                                ))}
-                                {watchedGoogleReviews.length === 0 && <p className="text-zinc-500 text-center py-4">No Google Reviews found or fetched yet.</p>}
-                           </div>
-                        </div>
-                   </div>
-                </TabsContent>
               </div>
           </Tabs>
         </ScrollArea>
@@ -731,22 +580,6 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
         </div>
       </form>
     </Form>
-    
-    <Dialog open={isTestimonialDialogOpen} onOpenChange={setIsTestimonialDialogOpen}>
-        <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-lg">
-          <DialogHeader>
-            <DialogTitle>{selectedTestimonial ? 'Edit Testimonial' : 'Add New Testimonial'}</DialogTitle>
-             <DialogDescription>
-              This testimonial will be linked to {outlet?.name || 'this outlet'}.
-            </DialogDescription>
-          </DialogHeader>
-          <TestimonialForm 
-            testimonial={selectedTestimonial}
-            outletId={outlet?.id}
-            onSuccess={() => setIsTestimonialDialogOpen(false)} 
-          />
-        </DialogContent>
-      </Dialog>
 
      <Dialog open={isPromoDialogOpen} onOpenChange={setIsPromoDialogOpen}>
         <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-2xl">
