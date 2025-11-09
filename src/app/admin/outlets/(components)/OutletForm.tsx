@@ -32,6 +32,7 @@ import {
 import { Switch } from '@/components/ui/switch';
 import slugify from 'slugify';
 import { useEffect, useState } from 'react';
+import { getFunctions, httpsCallable } from 'firebase/functions';
 
 interface OutletFormProps {
   outlet?: Outlet;
@@ -119,20 +120,13 @@ export default function OutletForm({ outlet, onSuccess }: OutletFormProps) {
     });
 
     try {
-      const response = await fetch('/api/fetchGooglePlaceDetails', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ placeId }),
-      });
+      const functions = getFunctions();
+      const fetchGooglePlaceDetails = httpsCallable(functions, 'fetchGooglePlaceDetails');
+      const result = await fetchGooglePlaceDetails({ placeId });
+      const data = result.data as any;
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        // The 'message' property is where Firebase Functions HttpsError places the error message.
-        const errorMessage = data?.message || 'An unknown error occurred on the server.';
-        throw new Error(errorMessage);
+      if (!data) {
+        throw new Error('No data returned from the server.');
       }
       
       // Populate form with fetched data
@@ -152,10 +146,11 @@ export default function OutletForm({ outlet, onSuccess }: OutletFormProps) {
       });
 
     } catch (error: any) {
+      console.error('Error calling fetchGooglePlaceDetails function:', error);
       toast({
         variant: 'destructive',
         title: 'Fetch Failed',
-        description: error.message || 'Could not fetch data. Please check the Place ID and ensure your API key is configured correctly.',
+        description: error.message || 'Could not fetch data. Please check the Place ID and ensure your API key and Cloud Function are configured correctly.',
       });
     } finally {
       setIsFetching(false);

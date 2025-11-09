@@ -1,19 +1,14 @@
 
 import { ai } from '@/ai/genkit';
 import { handleRequest } from '@genkit-ai/next';
-import * as functions from '@/app/api/[[...route]]/functions/instagram-sync';
+import * as adminFunctions from '@/app/api/[[...route]]/functions/instagram-sync';
 
-// All flows and tools are defined in the plugin.
-// This will register all flows and tools with Genkit.
-// See the Genkit docs for more info: https://genkit.dev/docs/flow/define
-
+// All Genkit flows and tools are defined in the plugin.
 const handler = handleRequest({
-  // The tools available to the model.
-  tools: [],
-  // Where to find the flows.
+  // Genkit flows
   flows: [ai],
-  // Pass in your custom functions
-  customFunctions: functions,
+  // Custom Firebase Functions
+  customFunctions: adminFunctions,
 });
 
 export const GET = handler;
