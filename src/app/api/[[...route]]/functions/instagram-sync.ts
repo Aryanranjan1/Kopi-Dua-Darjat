@@ -1,8 +1,10 @@
 
 'use server';
 
-import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
+import * as functions from "firebase-functions";
+import { ai } from '@/ai/genkit';
+import { z } from 'zod';
 import { Client } from "@googlemaps/google-maps-services-js";
 
 if (admin.apps.length === 0) {
@@ -11,14 +13,9 @@ if (admin.apps.length === 0) {
 const db = admin.firestore();
 
 export const syncInstagramPosts = functions.https.onCall(async (data, context) => {
-  try {
-    console.log("Syncing Instagram posts...");
-    // Placeholder for actual sync logic
-    return { success: true, message: "Sync process started." };
-  } catch (error) {
-    console.error("Error syncing Instagram posts:", error);
-    throw new functions.https.HttpsError('internal', 'Failed to sync Instagram posts.');
-  }
+  console.log("Syncing Instagram posts...");
+  // Placeholder for actual sync logic
+  return { success: true, message: "Sync process started." };
 });
 
 
@@ -58,7 +55,7 @@ export const fetchGooglePlaceDetails = functions.https.onCall(async (data, conte
     const addressComponents = result.address_components || [];
     const getAddressComponent = (type: string) => addressComponents.find(c => c.types.includes(type))?.long_name || '';
     
-    const city = getAddressComponent('locality');
+    const city = getAddressComponent('locality') || getAddressComponent('administrative_area_level_3') || getAddressComponent('postal_town');
     const state = getAddressComponent('administrative_area_level_1');
 
     const output = {
