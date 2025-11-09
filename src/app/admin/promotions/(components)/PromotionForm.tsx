@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -32,6 +33,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 
 interface PromotionFormProps {
   promotion?: Promotion;
+  outletId?: string; // If provided, promotion is exclusive to this outlet
   onSuccess: () => void;
 }
 
@@ -70,7 +72,7 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export default function PromotionForm({ promotion, onSuccess }: PromotionFormProps) {
+export default function PromotionForm({ promotion, outletId, onSuccess }: PromotionFormProps) {
   const { toast } = useToast();
   const firestore = useFirestore();
 
@@ -91,7 +93,7 @@ export default function PromotionForm({ promotion, onSuccess }: PromotionFormPro
       discountValue: 10,
       customDiscountDescription: '',
       menuItemIds: [],
-      outletIds: [],
+      outletIds: outletId ? [outletId] : [],
     },
   });
 
@@ -112,6 +114,7 @@ export default function PromotionForm({ promotion, onSuccess }: PromotionFormPro
       const status = getStatus(values.startDate, values.endDate);
       const dataToSave: Partial<Promotion> = {
           ...values,
+          outletIds: outletId ? [outletId] : (values.outletIds || []),
           discountValue: (values.discountType === 'bogo' || values.discountType === 'custom') ? 0 : values.discountValue,
           status, 
           updatedAt: serverTimestamp()
@@ -315,23 +318,25 @@ export default function PromotionForm({ promotion, onSuccess }: PromotionFormPro
           )}
         />
         
-        <FormField
-          control={form.control}
-          name="outletIds"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Linked Outlets</FormLabel>
-               <MultiSelectPopover
-                title="Outlets"
-                options={outlets?.map(outlet => ({ value: outlet.id, label: outlet.name })) || []}
-                selected={field.value || []}
-                onChange={field.onChange}
-              />
-              <FormDescription>Select which outlets this promotion applies to. Leave empty for a global promotion.</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {!outletId && (
+            <FormField
+            control={form.control}
+            name="outletIds"
+            render={({ field }) => (
+                <FormItem>
+                <FormLabel>Linked Outlets</FormLabel>
+                <MultiSelectPopover
+                    title="Outlets"
+                    options={outlets?.map(outlet => ({ value: outlet.id, label: outlet.name })) || []}
+                    selected={field.value || []}
+                    onChange={field.onChange}
+                />
+                <FormDescription>Select which outlets this promotion applies to. Leave empty for a global promotion.</FormDescription>
+                <FormMessage />
+                </FormItem>
+            )}
+            />
+        )}
         </div>
         </ScrollArea>
         <Button type="submit" disabled={isSubmitting} className="w-full mt-6">

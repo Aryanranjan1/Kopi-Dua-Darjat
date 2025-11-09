@@ -2,7 +2,7 @@
 'use client';
 
 import * as React from 'react';
-import { useForm, useFieldArray } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
@@ -206,7 +206,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
   });
   
   useEffect(() => {
-    if (outlet) {
+    if (outlet && allItems) {
       form.reset({
         ...outlet,
         phone: outlet.phone || '',
@@ -218,7 +218,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
         whatsappLink: outlet.whatsappLink || '',
         chatbotEmbed: outlet.chatbotEmbed || '',
         placeId: outlet.placeId || '',
-        menuItemIds: allItems?.filter(item => item.outletIds?.includes(outlet.id)).map(item => item.id) || [],
+        menuItemIds: allItems.filter(item => item.outletIds?.includes(outlet.id)).map(item => item.id),
         seo: {
           title: outlet.seo?.title || '',
           description: outlet.seo?.description || '',
@@ -236,15 +236,15 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
   }, [outlet, allItems, form]);
 
 
-  const { isSubmitting, watch, setValue } = form;
+  const { isSubmitting, watch, setValue, formState } = form;
   const watchedName = watch('name');
-  const watchedMenuItemIds = watch('menuItemIds');
+  const watchedMenuItemIds = watch('menuItemIds') || [];
 
   useEffect(() => {
-    if (watchedName && !form.formState.dirtyFields.slug) {
+    if (watchedName && !formState.dirtyFields.slug) {
         setValue('slug', slugify(watchedName, { lower: true, strict: true }));
     }
-  }, [watchedName, setValue, form.formState.dirtyFields.slug]);
+  }, [watchedName, setValue, formState.dirtyFields.slug]);
 
   const handleFetchFromGoogle = async () => {
     const placeId = form.getValues('placeId');
