@@ -24,7 +24,7 @@ interface PageData {
   allMenuItems: MenuItem[];
   featuredItems: MenuItem[];
   promotions: Promotion[];
-  testimonials: Testimonial[];
+  reviews: Testimonial[];
   siteSettings: SiteSettings;
   latestBlog: Blog | null;
   instaPosts: PublicInstaPost[];
@@ -32,7 +32,7 @@ interface PageData {
 
 // MAIN CLIENT PAGE COMPONENT
 export default function MicrositePageClient(data: PageData) {
-  const { outlet, menuCategories, featuredItems, promotions, testimonials, siteSettings, allMenuItems, latestBlog, instaPosts } = data;
+  const { outlet, menuCategories, featuredItems, promotions, reviews, siteSettings, allMenuItems, latestBlog, instaPosts } = data;
 
   if (!outlet) {
     // This case should ideally be handled by the server component, but as a fallback:
@@ -47,7 +47,7 @@ export default function MicrositePageClient(data: PageData) {
         <MenuShowcaseSection items={allMenuItems} categories={menuCategories} />
         {siteSettings && <BrandStorySection settings={siteSettings} />}
         <OutletLocatorSection currentOutlet={outlet} />
-        {testimonials && testimonials.length > 0 && <FranchiseTestimonials />}
+        {reviews && reviews.length > 0 && <FranchiseTestimonials testimonials={reviews} />}
         <InstaExploreGrid />
         <Community />
         <LatestStories />

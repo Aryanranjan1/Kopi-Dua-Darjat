@@ -130,6 +130,11 @@ export type Outlet = {
   isChatbotEnabled?: boolean;
   createdAt?: any;
   updatedAt?: any;
+  seo?: {
+    title?: string;
+    description?: string;
+    keywords?: string;
+  };
 };
 
 // --- BLOG ---

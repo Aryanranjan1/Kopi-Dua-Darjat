@@ -5,7 +5,7 @@ import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, doc, deleteDoc, orderBy, query } from 'firebase/firestore';
-import type { Outlet, MenuItem } from '@/lib/types';
+import type { Outlet, MenuItem, Testimonial } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -47,8 +47,7 @@ const OUTLETS_PER_PAGE = 8;
 export default function OutletsManager() {
   const firestore = useFirestore();
   const { toast } = useToast();
-  const router = useRouter();
-
+  
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedOutlet, setSelectedOutlet] = useState<Outlet | undefined>(undefined);
   
@@ -61,6 +60,11 @@ export default function OutletsManager() {
   const { data: menuItems, isLoading: isLoadingItems } = useCollection<MenuItem>(
     useMemoFirebase(() => firestore ? query(collection(firestore, 'menuItems')) : null, [firestore])
   );
+  
+  const { data: testimonials, isLoading: isLoadingTestimonials } = useCollection<Testimonial>(
+    useMemoFirebase(() => firestore ? query(collection(firestore, 'testimonials')) : null, [firestore])
+  );
+
 
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -100,6 +104,8 @@ export default function OutletsManager() {
       toast({ variant: 'destructive', title: 'Error', description: `Could not delete outlet: ${error.message}` });
     }
   };
+  
+  const isDataLoading = isLoading || isLoadingItems || isLoadingTestimonials;
 
   return (
     <>
@@ -130,8 +136,8 @@ export default function OutletsManager() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {isLoading && <TableRow><TableCell colSpan={5} className="text-center"><Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" /></TableCell></TableRow>}
-            {!isLoading && paginatedOutlets.length === 0 && <TableRow><TableCell colSpan={5} className="text-center text-zinc-400 py-8">No outlets found.</TableCell></TableRow>}
+            {isDataLoading && <TableRow><TableCell colSpan={5} className="text-center"><Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" /></TableCell></TableRow>}
+            {!isDataLoading && paginatedOutlets.length === 0 && <TableRow><TableCell colSpan={5} className="text-center text-zinc-400 py-8">No outlets found.</TableCell></TableRow>}
             {paginatedOutlets?.map(outlet => (
               <TableRow key={outlet.id} className="border-zinc-700 hover:bg-zinc-800/80">
                 <TableCell className="font-medium">{outlet.name}</TableCell>
@@ -188,7 +194,7 @@ export default function OutletsManager() {
                     </DialogDescription>
                 </DialogHeader>
                 <div className="flex-grow overflow-hidden">
-                    {isLoadingItems ? (
+                    {isDataLoading ? (
                         <div className="flex items-center justify-center h-full">
                             <Loader2 className="h-8 w-8 animate-spin text-primary" />
                         </div>
@@ -196,6 +202,7 @@ export default function OutletsManager() {
                         <OutletForm 
                             outlet={selectedOutlet} 
                             allItems={menuItems || []} 
+                            allTestimonials={testimonials || []}
                             onSuccess={() => setIsDialogOpen(false)} 
                         />
                     )}

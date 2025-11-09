@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import MicrositePageClient from './MicrositePageClient';
 import type { Outlet, MenuItem, Promotion, MenuCategory, SiteSettings, Testimonial, Blog, PublicInstaPost } from '@/lib/types';
 import { initializeServerSideFirebase } from '@/firebase/server-init';
-import { collection, getDocs, query, Timestamp, doc, getDoc, limit, orderBy } from 'firebase/firestore';
+import { collection, getDocs, query, Timestamp, doc, getDoc, limit, orderBy, where } from 'firebase/firestore';
 
 
 // This remains a Server Component.
@@ -50,7 +50,7 @@ async function getMicrositeData(slug: string) {
     allMenuItems, 
     allMenuCategories,
     allPromotions,
-    allTestimonials,
+    outletReviews,
     mainSettings,
     latestBlogs,
     instaFeed
@@ -58,7 +58,7 @@ async function getMicrositeData(slug: string) {
     fetchCollection<MenuItem>(firestore, 'menuItems'),
     fetchCollection<MenuCategory>(firestore, 'menuCategories'),
     fetchCollection<Promotion>(firestore, 'promotions'),
-    fetchCollection<Testimonial>(firestore, 'testimonials'),
+    fetchCollection<Testimonial>(firestore, 'testimonials', query(collection(firestore, 'testimonials'), where('outletId', '==', outlet.id))),
     getDoc(doc(firestore, 'settings', 'main')).then(d => d.data() as SiteSettings),
     fetchCollection<Blog>(firestore, 'blogs', query(collection(firestore, 'blogs'), orderBy('publishedAt', 'desc'), limit(1))),
     fetchCollection<PublicInstaPost>(firestore, 'public_insta_feed', query(collection(firestore, 'public_insta_feed'), orderBy('rank', 'asc'), limit(2)))
@@ -85,7 +85,7 @@ async function getMicrositeData(slug: string) {
     allMenuItems: outletMenuItems,
     featuredItems: outletFeaturedItems,
     promotions: outletPromotions,
-    testimonials: allTestimonials,
+    reviews: outletReviews,
     siteSettings: mainSettings,
     latestBlog: latestBlogs.length > 0 ? latestBlogs[0] : null,
     instaPosts: instaFeed,
@@ -102,16 +102,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: 'Outlet Not Found' };
   }
   
-  const outlet = outletDoc.data() as Outlet;
+  const outlet = outletDoc.data() as Outlet & { seo?: { title?: string, description?: string, keywords?: string } };
+  
+  const metaTitle = outlet.seo?.title || `${outlet.name} | Kopi Dua Darjat`;
+  const metaDescription = outlet.seo?.description || `Visit ${outlet.name} in ${outlet.city || ''} — serving Kopi Dua Darjat from ${outlet.hours || ''}.`;
+  const metaKeywords = outlet.seo?.keywords || `${outlet.name}, Kopi Dua Darjat, coffee in ${outlet.city}`;
 
-  const description = `Visit ${outlet.name} in ${outlet.city || ''} — serving Kopi Dua Darjat from ${outlet.hours || ''}.`;
 
   return {
-    title: `${outlet.name} | Kopi Dua Darjat`,
-    description,
+    title: metaTitle,
+    description: metaDescription,
+    keywords: metaKeywords,
     openGraph: {
-      title: `${outlet.name} | Kopi Dua Darjat`,
-      description,
+      title: metaTitle,
+      description: metaDescription,
       images: [],
       url: `https://kopiduadarjat.com/${outlet.slug}`,
     },

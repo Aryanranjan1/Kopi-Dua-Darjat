@@ -17,9 +17,9 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, ChevronsUpDown } from 'lucide-react';
+import { Loader2, ChevronsUpDown, Trash2, Edit, PlusCircle, Check } from 'lucide-react';
 import { useFirestore, errorEmitter, FirestorePermissionError } from '@/firebase';
-import { doc, setDoc, serverTimestamp, collection, query } from 'firebase/firestore';
+import { doc, setDoc, serverTimestamp, collection, query, where, addDoc, deleteDoc, writeBatch } from 'firebase/firestore';
 import type { Outlet, Testimonial, Promotion, MenuItem } from '@/lib/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
@@ -37,11 +37,29 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useCollection, useMemoFirebase } from '@/firebase';
+import Image from 'next/image';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import PromotionForm from '../../promotions/(components)/PromotionForm';
+import { Badge } from '@/components/ui/badge';
+import { cn, getDiscountDisplay } from '@/lib/utils';
+import { format } from 'date-fns';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 
 interface OutletFormProps {
   outlet?: Outlet;
   allItems: MenuItem[];
+  allTestimonials: Testimonial[];
   onSuccess: () => void;
 }
 
@@ -66,6 +84,11 @@ const formSchema = z.object({
   isChatbotEnabled: z.boolean().default(false),
   placeId: z.string().optional(),
   menuItemIds: z.array(z.string()).optional(),
+  seo: z.object({
+    title: z.string().optional(),
+    description: z.string().optional(),
+    keywords: z.string().optional(),
+  }).optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -150,24 +173,22 @@ function MultiSelectPopover({ title, options, selected, onChange }: {
 }
 
 
-export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormProps) {
+export default function OutletForm({ outlet, allItems, allTestimonials, onSuccess }: OutletFormProps) {
   const { toast } = useToast();
   const firestore = useFirestore();
   const [isFetching, setIsFetching] = useState(false);
+  const [isPromoDialogOpen, setIsPromoDialogOpen] = useState(false);
+  const [selectedPromo, setSelectedPromo] = useState<Promotion | undefined>(undefined);
 
   const { data: promotions } = useCollection<Promotion>(
-    useMemoFirebase(() => firestore ? query(collection(firestore, 'promotions')) : null, [firestore])
+    useMemoFirebase(() => outlet ? query(collection(firestore, 'promotions'), where('outletIds', 'array-contains', outlet.id)) : null, [firestore, outlet])
   );
   
-  const { data: testimonials } = useCollection<Testimonial>(
-    useMemoFirebase(() => firestore ? query(collection(firestore, 'testimonials')) : null, [firestore])
-  );
-
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: outlet ? {
-      ...outlet,
-      menuItemIds: allItems ? allItems.filter(item => item.outletIds?.includes(outlet.id)).map(item => item.id) : [],
+        ...outlet,
+        menuItemIds: allItems?.filter(item => item.outletIds?.includes(outlet.id)).map(item => item.id) || [],
     } : {
       name: '',
       slug: '',
@@ -281,50 +302,60 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
       ...(outlet ? {} : { createdAt: serverTimestamp() }),
     };
     
-    // This is a simplified approach. A more robust solution would use batch writes.
-    for (const item of allItems) {
+    const batch = writeBatch(firestore);
+
+    allItems.forEach(item => {
         const itemRef = doc(firestore, 'menuItems', item.id);
         const shouldBeLinked = values.menuItemIds?.includes(item.id);
         const isCurrentlyLinked = item.outletIds?.includes(docId);
 
         if (shouldBeLinked && !isCurrentlyLinked) {
-            await setDoc(itemRef, { outletIds: [...(item.outletIds || []), docId] }, { merge: true });
+            batch.update(itemRef, { outletIds: [...(item.outletIds || []), docId] });
         } else if (!shouldBeLinked && isCurrentlyLinked) {
-            await setDoc(itemRef, { outletIds: item.outletIds?.filter(id => id !== docId) }, { merge: true });
+            batch.update(itemRef, { outletIds: item.outletIds?.filter(id => id !== docId) });
         }
-    }
+    });
 
+    batch.set(outletRef, dataToSave, { merge: true });
 
-    setDoc(outletRef, dataToSave, { merge: true })
-      .then(() => {
-        toast({
-          title: `Outlet ${outlet ? 'Updated' : 'Created'}`,
-          description: `"${values.name}" has been successfully saved.`,
-        });
-        onSuccess();
-      })
-      .catch((error) => {
-        const permissionError = new FirestorePermissionError({
-          path: outletRef.path,
-          operation: 'write',
-          requestResourceData: dataToSave,
-        });
-        errorEmitter.emit('permission-error', permissionError);
+    try {
+      await batch.commit();
+      toast({
+        title: `Outlet ${outlet ? 'Updated' : 'Created'}`,
+        description: `"${values.name}" has been successfully saved.`,
       });
+      onSuccess();
+    } catch (error) {
+      const permissionError = new FirestorePermissionError({
+        path: outletRef.path,
+        operation: 'write',
+        requestResourceData: dataToSave,
+      });
+      errorEmitter.emit('permission-error', permissionError);
+    }
   };
 
+  const handleDeletePromotion = async (promoId: string) => {
+    if(!firestore) return;
+    await deleteDoc(doc(firestore, "promotions", promoId));
+    toast({ title: "Promotion Deleted" });
+  }
+
   const inputStyles = "bg-zinc-800 border-zinc-700 text-white focus-visible:ring-primary";
+  const outletReviews = useMemo(() => allTestimonials.filter(t => t.outletId === outlet?.id), [allTestimonials, outlet]);
 
   return (
+    <>
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="h-full flex flex-col">
         <ScrollArea className="flex-grow pr-4">
           <Tabs defaultValue="general" className="w-full">
-              <TabsList className="grid w-full grid-cols-4 bg-zinc-800">
+              <TabsList className="grid w-full grid-cols-5 bg-zinc-800">
                 <TabsTrigger value="general">General</TabsTrigger>
+                <TabsTrigger value="seo">SEO</TabsTrigger>
                 <TabsTrigger value="menu">Menu</TabsTrigger>
                 <TabsTrigger value="promotions">Promotions</TabsTrigger>
-                <TabsTrigger value="testimonials">Testimonials</TabsTrigger>
+                <TabsTrigger value="reviews">Reviews</TabsTrigger>
               </TabsList>
               <div className="mt-4">
                 <TabsContent value="general">
@@ -456,30 +487,119 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
                           )}/>
                     </div>
                 </TabsContent>
+                <TabsContent value="seo">
+                  <div className="space-y-6">
+                    <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2">Search Engine Optimization</h3>
+                     <FormField control={form.control} name="seo.title" render={({ field }) => (
+                        <FormItem><FormLabel>Meta Title</FormLabel><FormControl><Input placeholder="Custom title for this outlet's page" {...field} className={inputStyles} /></FormControl><FormDescription>If empty, the outlet name will be used.</FormDescription><FormMessage /></FormItem>
+                    )} />
+                    <FormField control={form.control} name="seo.description" render={({ field }) => (
+                        <FormItem><FormLabel>Meta Description</FormLabel><FormControl><Textarea placeholder="A short, compelling description for search results." {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                    )} />
+                    <FormField control={form.control} name="seo.keywords" render={({ field }) => (
+                        <FormItem><FormLabel>Keywords</FormLabel><FormControl><Input placeholder="e.g., kopi kajang, best coffee in bangi" {...field} className={inputStyles} /></FormControl><FormDescription>Comma-separated keywords relevant to this outlet.</FormDescription><FormMessage /></FormItem>
+                    )} />
+                  </div>
+                </TabsContent>
                 <TabsContent value="menu">
-                    <FormField
-                      control={form.control}
-                      name="menuItemIds"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Linked Menu Items</FormLabel>
-                          <MultiSelectPopover
-                            title="Menu Items"
-                            options={allItems?.map(item => ({ value: item.id, label: item.name })) || []}
-                            selected={field.value || []}
-                            onChange={field.onChange}
-                          />
-                          <FormDescription>Select which menu items are available at this outlet.</FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2">Menu Management</h3>
+                         <FormField
+                          control={form.control}
+                          name="menuItemIds"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Link Menu Items</FormLabel>
+                              <MultiSelectPopover
+                                title="Menu Items"
+                                options={allItems?.map(item => ({ value: item.id, label: item.name })) || []}
+                                selected={field.value || []}
+                                onChange={field.onChange}
+                              />
+                              <FormDescription>Select which menu items are available at this outlet.</FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {form.getValues('menuItemIds')?.map(itemId => {
+                                const item = allItems.find(i => i.id === itemId);
+                                if (!item) return null;
+                                return (
+                                    <div key={item.id} className="bg-zinc-800 rounded-lg p-3 flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                            <Image src={item.imageUrl} alt={item.name} width={40} height={40} className="rounded-md object-contain p-1 bg-zinc-700"/>
+                                            <div>
+                                                <p className="font-semibold">{item.name}</p>
+                                                <p className="text-sm text-zinc-400">RM{item.price.toFixed(2)}</p>
+                                            </div>
+                                        </div>
+                                        <Button variant="ghost" size="icon" onClick={() => setValue('menuItemIds', form.getValues('menuItemIds')?.filter(id => id !== itemId))}>
+                                            <Trash2 className="h-4 w-4 text-red-500" />
+                                        </Button>
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    </div>
                 </TabsContent>
                 <TabsContent value="promotions">
-                  <p className="text-zinc-400">Manage promotions for this outlet here.</p>
+                  <div className="space-y-4">
+                     <div className="flex justify-between items-center">
+                        <h3 className="text-lg font-medium text-primary">Outlet Promotions</h3>
+                        <Button type="button" size="sm" onClick={() => { setSelectedPromo(undefined); setIsPromoDialogOpen(true); }}>
+                            <PlusCircle className="mr-2 h-4 w-4" /> New Promotion
+                        </Button>
+                     </div>
+                     {promotions?.length === 0 && <p className="text-zinc-500 text-center py-8">No promotions for this outlet yet.</p>}
+                     <div className="space-y-2">
+                        {promotions?.map(promo => {
+                            const status = promo.status;
+                            return (
+                            <div key={promo.id} className="bg-zinc-800 rounded-lg p-3 flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                <Badge variant={status === 'active' ? 'default' : status === 'expired' ? 'destructive' : 'secondary'} className={cn( status === 'active' && 'bg-green-600', status === 'expired' && 'bg-red-700', status === 'scheduled' && 'bg-blue-600' )}>
+                                    {status}
+                                </Badge>
+                                <div>
+                                    <p className="font-semibold">{promo.title}</p>
+                                    <p className="text-sm text-zinc-400">{getDiscountDisplay(promo)} | Expires: {format(promo.endDate.toDate(), 'PPP')}</p>
+                                </div>
+                                </div>
+                                <div className="flex gap-1">
+                                    <Button type="button" variant="ghost" size="icon" onClick={() => { setSelectedPromo(promo); setIsPromoDialogOpen(true); }}>
+                                        <Edit className="h-4 w-4" />
+                                    </Button>
+                                    <AlertDialog>
+                                        <AlertDialogTrigger asChild>
+                                            <Button type="button" variant="ghost" size="icon"><Trash2 className="h-4 w-4 text-red-500" /></Button>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
+                                            <AlertDialogHeader><AlertDialogTitle>Are you sure?</AlertDialogTitle><AlertDialogDescription className="text-zinc-400">This will permanently delete "{promo.title}".</AlertDialogDescription></AlertDialogHeader>
+                                            <AlertDialogFooter>
+                                                <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
+                                                <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleDeletePromotion(promo.id)}>Delete</AlertDialogAction>
+                                            </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                    </AlertDialog>
+                                </div>
+                            </div>
+                            )
+                        })}
+                     </div>
+                  </div>
                 </TabsContent>
-                <TabsContent value="testimonials">
-                  <p className="text-zinc-400">Manage testimonials for this outlet here.</p>
+                <TabsContent value="reviews">
+                  <p className="text-zinc-400">Manage reviews for this outlet here. You can hide reviews that are not suitable.</p>
+                   <div className="space-y-2 mt-4">
+                        {outletReviews.map(review => (
+                            <div key={review.id} className="bg-zinc-800 rounded-lg p-3">
+                                <p className="text-sm italic">"{review.quote}"</p>
+                                <p className="text-xs text-right font-semibold mt-2">- {review.name}, {review.designation}</p>
+                            </div>
+                        ))}
+                        {outletReviews.length === 0 && <p className="text-zinc-500 text-center py-8">No reviews linked to this outlet yet.</p>}
+                   </div>
                 </TabsContent>
               </div>
           </Tabs>
@@ -492,5 +612,21 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
         </div>
       </form>
     </Form>
+     <Dialog open={isPromoDialogOpen} onOpenChange={setIsPromoDialogOpen}>
+        <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>{selectedPromo ? 'Edit Promotion' : 'Create New Promotion'}</DialogTitle>
+            <DialogDescription>
+              This promotion will be exclusive to {outlet?.name || 'this outlet'}.
+            </DialogDescription>
+          </DialogHeader>
+          <PromotionForm 
+            promotion={selectedPromo}
+            outletId={outlet?.id}
+            onSuccess={() => setIsPromoDialogOpen(false)} 
+          />
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

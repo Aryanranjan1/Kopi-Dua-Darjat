@@ -435,3 +435,12 @@ export const blogSeedData: Omit<Blog, 'createdAt' | 'updatedAt' | 'views' | 'lik
       publishedAt: Timestamp.fromDate(new Date('2024-05-20T10:00:00Z'))
     }
 ];
+
+export const testimonialSeedData = [
+  { outletId: "kajang-prima", quote: "My daily morning stop! The Darjat Borneo is consistently amazing.", name: "Sarah L.", designation: "Teacher, Kajang", image: "testimonial-2", company: "KDD Fan" },
+  { outletId: "bangi", quote: "Fast service and the best local coffee in Bangi. The baristas are always friendly.", name: "Aiman H.", designation: "Student, UKM", image: "testimonial-3", company: "KDD Fan" },
+  { outletId: "shah-alam", quote: "I organized a bulk order for my office, and the process was so smooth. Everyone loved the coffee!", name: "Priya K.", designation: "HR Executive, Shah Alam", image: "testimonial-1", company: "KDD Fan" },
+  { outletId: "jb-city-square", quote: "A must-visit when I cross the border. It's the authentic Malaysian taste I miss.", name: "David Chen", designation: "Visitor, Singapore", image: "testimonial-3", company: "KDD Fan" },
+  { outletId: "georgetown", quote: "Perfect companion for a walk around historical Georgetown. The Coklat Artisan is my kid's favorite.", name: "Emily T.", designation: "Tourist, Australia", image: "testimonial-2", company: "KDD Fan" },
+  { outletId: "kota-kinabalu", quote: "The view is great, but the coffee is even better. Love this place!", name: "Jackson R.", designation: "Local Resident, KK", image: "testimonial-1", company: "KDD Fan" }
+]
