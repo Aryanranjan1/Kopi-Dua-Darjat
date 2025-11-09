@@ -23,53 +23,15 @@ import type { Outlet } from '@/lib/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar } from '@/components/ui/calendar';
-import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
-
-const DateTimePicker = ({ label, date, setDate }: { label: string; date: Date | undefined; setDate: (date: Date | undefined) => void; }) => {
-    const inputStyles = "bg-zinc-800 border-zinc-700 text-white focus-visible:ring-primary";
-
-    return (
-        <div className="grid w-full items-center gap-1.5">
-            <Label htmlFor={label.toLowerCase().replace(' ', '-')} className="text-zinc-400">{label}</Label>
-             <Popover>
-                  <PopoverTrigger asChild>
-                      <Button variant="outline" className={cn("w-full justify-start text-left font-normal", !date && "text-muted-foreground", inputStyles)}>
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {date ? format(date, "PPP HH:mm") : <span>Pick a date</span>}
-                      </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0 z-50 bg-zinc-900 border-zinc-800" align="start">
-                    <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
-                    <div className="p-2 border-t border-zinc-800">
-                        <Input 
-                            type="time"
-                            value={date ? format(date, 'HH:mm') : ''}
-                            onChange={(e) => {
-                                const newTime = e.target.value;
-                                const [hours, minutes] = newTime.split(':').map(Number);
-                                const newDate = date ? new Date(date) : new Date();
-                                newDate.setHours(hours, minutes);
-                                setDate(newDate);
-                            }}
-                            className={inputStyles}
-                        />
-                    </div>
-                  </PopoverContent>
-                </Popover>
-        </div>
-    );
-};
-
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function GooglePlacesSync() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const firestore = useFirestore();
-  const [startDate, setStartDate] = useState<Date | undefined>();
-  const [endDate, setEndDate] = useState<Date | undefined>();
+  const [scheduleDay, setScheduleDay] = useState('monday');
+  const [scheduleTime, setScheduleTime] = useState('03:00');
+
 
   const outletsWithPlaceIdQuery = useMemoFirebase(
     () => firestore ? query(collection(firestore, 'outlets'), where('placeId', '!=', null)) : null,
@@ -95,28 +57,20 @@ export default function GooglePlacesSync() {
     });
   };
   
-  const handleScheduleSync = () => {
-    if (!startDate || !endDate) {
+  const handleSetSchedule = () => {
+    if (!scheduleDay || !scheduleTime) {
         toast({
             variant: 'destructive',
-            title: 'Invalid Dates',
-            description: 'Please select both a start and end date for the sync schedule.',
-        });
-        return;
-    }
-    if (endDate <= startDate) {
-        toast({
-            variant: 'destructive',
-            title: 'Invalid Date Range',
-            description: 'The end date must be after the start date.',
+            title: 'Invalid Schedule',
+            description: 'Please select a day and time for the sync.',
         });
         return;
     }
     
-    // Simulate scheduling a backend job
+    // Simulate scheduling a backend job (e.g., a cron job)
     toast({
-        title: 'Sync Scheduled',
-        description: `Automated sync will run between ${format(startDate, 'PPP HH:mm')} and ${format(endDate, 'PPP HH:mm')}.`
+        title: 'Recurring Sync Scheduled',
+        description: `Automated sync will now run every ${scheduleDay.charAt(0).toUpperCase() + scheduleDay.slice(1)} at ${scheduleTime}.`
     });
   }
 
@@ -134,7 +88,7 @@ export default function GooglePlacesSync() {
               <div>
                   <h3 className="font-semibold text-blue-300">Note on Automated Sync</h3>
                   <p className="text-sm text-blue-400/80">
-                  This manual trigger is for immediate updates. Automated syncs can be configured with your backend.
+                  You can trigger an immediate sync below or set a recurring schedule for automated background updates.
                   </p>
               </div>
           </div>
@@ -187,13 +141,30 @@ export default function GooglePlacesSync() {
           </AlertDialog>
           
           <div className="border-t border-zinc-800 pt-6">
-              <h4 className="font-medium text-zinc-300">Automated Sync Schedule</h4>
-              <p className="text-sm text-zinc-500 mb-4">Set a date range for automatic background syncing. This is a UI prototype.</p>
-              <div className="flex flex-col sm:flex-row items-center gap-4">
-                  <DateTimePicker label="Sync Start" date={startDate} setDate={setStartDate} />
-                  <DateTimePicker label="Sync End" date={endDate} setDate={setEndDate} />
-                  <div className="w-full sm:w-auto self-end">
-                     <Button onClick={handleScheduleSync} className="w-full sm:w-auto mt-4 sm:mt-0">Schedule Sync</Button>
+              <h4 className="font-medium text-zinc-300">Automated Sync Schedule (UI Only)</h4>
+              <p className="text-sm text-zinc-500 mb-4">Set a recurring time for automatic background syncing. This requires backend implementation.</p>
+              <div className="flex flex-col sm:flex-row items-end gap-4">
+                  <div className="grid w-full items-center gap-1.5">
+                    <Label htmlFor="sync-day" className="text-zinc-400">Day of the Week</Label>
+                    <Select value={scheduleDay} onValueChange={setScheduleDay}>
+                        <SelectTrigger id="sync-day" className="bg-zinc-800 border-zinc-700"><SelectValue /></SelectTrigger>
+                        <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                            <SelectItem value="monday">Monday</SelectItem>
+                            <SelectItem value="tuesday">Tuesday</SelectItem>
+                            <SelectItem value="wednesday">Wednesday</SelectItem>
+                            <SelectItem value="thursday">Thursday</SelectItem>
+                            <SelectItem value="friday">Friday</SelectItem>
+                            <SelectItem value="saturday">Saturday</SelectItem>
+                            <SelectItem value="sunday">Sunday</SelectItem>
+                        </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid w-full items-center gap-1.5">
+                    <Label htmlFor="sync-time" className="text-zinc-400">Time (24hr format)</Label>
+                    <Input id="sync-time" type="time" value={scheduleTime} onChange={e => setScheduleTime(e.target.value)} className="bg-zinc-800 border-zinc-700" />
+                  </div>
+                  <div className="w-full sm:w-auto">
+                     <Button onClick={handleSetSchedule} className="w-full sm:w-auto">Set Schedule</Button>
                   </div>
               </div>
           </div>
