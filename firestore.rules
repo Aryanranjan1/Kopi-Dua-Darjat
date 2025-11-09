@@ -26,7 +26,7 @@ service cloud.firestore {
     match /{collectionName}/{docId} where
       collectionName in ['menuGroups', 'menuCategories', 'menuItems', 'promotions', 'dailySpecials', 'outlets', 'blogs', 'media', 'testimonials', 'faq', 'specials'] {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write, delete: if isAdmin();
     }
 
     // User-Submitted Collections
