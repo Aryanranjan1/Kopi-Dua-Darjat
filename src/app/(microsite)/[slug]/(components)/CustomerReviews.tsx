@@ -1,14 +1,16 @@
+
 'use client';
 
 import { useState } from 'react';
 import type { Review, ReviewDocument } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
-import { Star, MessageSquare } from 'lucide-react';
+import { Star } from 'lucide-react';
 import { format, fromUnixTime } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Timestamp } from 'firebase/firestore';
 
 interface CustomerReviewsProps {
     reviewData: ReviewDocument | null;
@@ -17,8 +19,15 @@ interface CustomerReviewsProps {
 
 const ReviewCard = ({ review }: { review: Review }) => {
     const isGoogleReview = review.source === 'google';
-    const reviewDate = typeof review.time === 'number' ? fromUnixTime(review.time) : review.time.toDate();
-    
+
+    // Handle both Firestore Timestamp object and raw seconds number
+    const reviewDate = review.time instanceof Timestamp
+      ? review.time.toDate()
+      : typeof review.time === 'number'
+      ? fromUnixTime(review.time)
+      : new Date(); // Fallback to now if format is unexpected
+
+
     return (
         <Card className="bg-background/50 border-border rounded-xl h-full flex flex-col">
             <CardContent className="p-6 flex flex-col flex-grow">
@@ -69,15 +78,17 @@ export default function CustomerReviews({ reviewData, isLoading }: CustomerRevie
         )
     }
 
-    if (!reviewData || reviewData.reviews.length === 0) {
+    if (!reviewData || !reviewData.reviews || reviewData.reviews.length === 0) {
         return null; // Don't render the section if there are no reviews
     }
 
     const { aggregate, reviews } = reviewData;
+
+    // Sort all reviews (manual and Google) by time, newest first
     const sortedReviews = [...reviews].sort((a, b) => {
-      const timeA = typeof a.time === 'number' ? a.time : a.time.seconds;
-      const timeB = typeof b.time === 'number' ? b.time : b.time.seconds;
-      return timeB - timeA;
+        const timeA = a.time instanceof Timestamp ? a.time.seconds : typeof a.time === 'number' ? a.time : 0;
+        const timeB = b.time instanceof Timestamp ? b.time.seconds : typeof b.time === 'number' ? b.time : 0;
+        return timeB - timeA;
     });
 
     const visibleReviews = showAll ? sortedReviews : sortedReviews.slice(0, 3);
@@ -89,27 +100,29 @@ export default function CustomerReviews({ reviewData, isLoading }: CustomerRevie
                     <h2 className="text-4xl md:text-5xl font-headline font-bold text-foreground">
                         What Our Customers Say
                     </h2>
-                    <div className="flex items-center gap-4 mt-4">
-                        <div className="flex items-center gap-1">
-                            {[...Array(5)].map((_, i) => (
-                                <Star
-                                key={i}
-                                className={cn(
-                                    "w-6 h-6",
-                                    i < Math.round(aggregate.ratingValue) ? "text-yellow-400 fill-yellow-400" : "text-muted-foreground/30"
-                                )}
-                                />
-                            ))}
+                    {aggregate && (
+                        <div className="flex items-center gap-4 mt-4">
+                            <div className="flex items-center gap-1">
+                                {[...Array(5)].map((_, i) => (
+                                    <Star
+                                    key={i}
+                                    className={cn(
+                                        "w-6 h-6",
+                                        i < Math.round(aggregate.ratingValue) ? "text-yellow-400 fill-yellow-400" : "text-muted-foreground/30"
+                                    )}
+                                    />
+                                ))}
+                            </div>
+                            <p className="text-lg text-muted-foreground">
+                                <strong>{aggregate.ratingValue.toFixed(1)}</strong> average rating from <strong>{aggregate.reviewCount}</strong> reviews.
+                            </p>
                         </div>
-                        <p className="text-lg text-muted-foreground">
-                            <strong>{aggregate.ratingValue.toFixed(1)}</strong> average rating from <strong>{aggregate.reviewCount}</strong> reviews.
-                        </p>
-                    </div>
+                    )}
                 </AnimateOnScroll>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {visibleReviews.map((review, index) => (
-                        <AnimateOnScroll key={index} animationType="fadeIn" delay={index * 0.1}>
+                        <AnimateOnScroll key={`${review.author_name}-${index}`} animationType="fadeIn" delay={index * 0.1}>
                            <ReviewCard review={review} />
                         </AnimateOnScroll>
                     ))}
@@ -118,7 +131,7 @@ export default function CustomerReviews({ reviewData, isLoading }: CustomerRevie
                 {sortedReviews.length > 3 && (
                     <div className="mt-12 text-center">
                         <Button onClick={() => setShowAll(!showAll)} variant="outline">
-                            {showAll ? 'Show Less' : 'Show All Reviews'}
+                            {showAll ? 'Show Less' : `Show All ${sortedReviews.length} Reviews`}
                         </Button>
                     </div>
                 )}

@@ -17,7 +17,8 @@ async function fetchCollection<T>(firestore: any, collectionName: string, q?: an
 
 const serializeTimestamps = (obj: any): any => {
     if (obj instanceof Timestamp) {
-        return obj.toDate().toISOString();
+        // Return the whole Timestamp object for client-side date-fns formatting
+        return { seconds: obj.seconds, nanoseconds: obj.nanoseconds };
     }
     if (Array.isArray(obj)) {
         return obj.map(serializeTimestamps);
@@ -34,16 +35,12 @@ const serializeTimestamps = (obj: any): any => {
 
 // --- SERVER-SIDE DATA FETCHING ---
 async function getMicrositeData(slug: string) {
-  // The try/catch block is removed to allow detailed Firestore permission errors to be displayed in development.
-  // This helps identify the exact query that is failing.
   const { firestore } = initializeServerSideFirebase();
   
   const outletDocRef = doc(firestore, 'outlets', slug);
   const outletDoc = await getDoc(outletDocRef);
   
   if (!outletDoc.exists()) {
-    // Return null to trigger a 404 if the outlet document itself doesn't exist.
-    // This is a specific check that is safe to keep.
     return { outlet: null };
   }
 
@@ -110,7 +107,7 @@ function generateJsonLd(outlet: Outlet, reviewData: ReviewDocument | null) {
     },
     "aggregateRating": {
       "@type": "AggregateRating",
-      "ratingValue": String(reviewData.aggregate.ratingValue),
+      "ratingValue": String(reviewData.aggregate.ratingValue.toFixed(1)),
       "reviewCount": String(reviewData.aggregate.reviewCount)
     },
     "review": reviewData.reviews.map((review: Review) => ({
@@ -121,7 +118,7 @@ function generateJsonLd(outlet: Outlet, reviewData: ReviewDocument | null) {
         "ratingValue": String(review.rating)
       },
       "reviewBody": review.text,
-      "publisher": { "@type": "Organization", "name": review.attribution || "Kopi Dua Darjat" }
+      "publisher": { "@type": "Organization", "name": review.attribution || (review.source === 'google' ? 'Google' : 'Kopi Dua Darjat') }
     }))
   };
 
