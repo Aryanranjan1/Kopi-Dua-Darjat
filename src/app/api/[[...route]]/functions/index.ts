@@ -3,12 +3,17 @@ import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import { Client } from "@googlemaps/google-maps-services-js";
 
+// Initialize Firebase Admin SDK if it hasn't been already.
 if (admin.apps.length === 0) {
   admin.initializeApp();
 }
 
 const googleMapsClient = new Client({});
+const db = admin.firestore();
 
+/**
+ * A callable Cloud Function that fetches place details from the Google Places API.
+ */
 export const fetchGooglePlaceDetails = functions.https.onCall(async (data, context) => {
   console.log('[Function Start] fetchGooglePlaceDetails invoked.');
 
@@ -77,3 +82,33 @@ export const fetchGooglePlaceDetails = functions.https.onCall(async (data, conte
     throw new functions.https.HttpsError('internal', `An unexpected server error occurred: ${error.message}`);
   }
 });
+
+
+/**
+ * A placeholder callable Cloud Function for Instagram sync.
+ */
+export const syncInstagramPosts = functions.https.onCall(async (data, context) => {
+  console.log("Syncing Instagram posts...");
+  // In a real implementation, you would use a library like 'insta-fetcher'
+  // or call the Instagram Graph API to get recent posts for a specific hashtag.
+  // For this placeholder, we'll just log a success message.
+
+  try {
+    // Example: Log to Firestore
+    await db.collection('sync_logs').add({
+        tag: '#kopiduadarjat',
+        timestamp: admin.firestore.FieldValue.serverTimestamp(),
+        post_count: 0,
+        origin: 'manual_trigger',
+        status: 'success',
+        message: 'Placeholder sync completed successfully. No posts were fetched.'
+    });
+
+    return { success: true, message: "Placeholder sync process completed." };
+
+  } catch (error) {
+    console.error("Error during placeholder Instagram sync:", error);
+    return { success: false, message: "An error occurred during the sync process." };
+  }
+});
+
