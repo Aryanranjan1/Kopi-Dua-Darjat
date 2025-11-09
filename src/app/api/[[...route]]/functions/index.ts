@@ -3,12 +3,14 @@ import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import { Client } from "@googlemaps/google-maps-services-js";
 
+// Initialize Firebase Admin SDK if not already done
 if (admin.apps.length === 0) {
   admin.initializeApp();
 }
 
 const googleMapsClient = new Client({});
 
+// This is a callable cloud function, not a Genkit flow.
 export const fetchGooglePlaceDetails = functions.https.onCall(async (data, context) => {
   console.log('[Function Start] fetchGooglePlaceDetails invoked with data:', JSON.stringify(data));
 
@@ -18,12 +20,16 @@ export const fetchGooglePlaceDetails = functions.https.onCall(async (data, conte
     throw new functions.https.HttpsError('invalid-argument', 'The function must be called with a "placeId" argument.');
   }
 
+  // IMPORTANT: Access environment variables correctly in Firebase Functions
   const apiKey = process.env.GOOGLE_MAPS_API_KEY;
+
   if (!apiKey) {
     console.error('[Function Error] FATAL: GOOGLE_MAPS_API_KEY environment variable is not set.');
+    // This is a critical server misconfiguration.
     throw new functions.https.HttpsError('internal', 'The server is missing the required API key for Google Maps. Please contact support.');
   }
   console.log('[Function Log] GOOGLE_MAPS_API_KEY is present.');
+
 
   try {
     console.log(`[Function Log] Attempting to fetch details for Place ID: ${placeId}`);
@@ -44,6 +50,7 @@ export const fetchGooglePlaceDetails = functions.https.onCall(async (data, conte
 
     const result = response.data.result;
     
+    // Helper to safely extract address components
     const addressComponents = result.address_components || [];
     const getAddressComponent = (type: string) => addressComponents.find(c => c.types.includes(type))?.long_name || '';
     
@@ -58,7 +65,7 @@ export const fetchGooglePlaceDetails = functions.https.onCall(async (data, conte
       lat: result.geometry?.location.lat || 0,
       lng: result.geometry?.location.lng || 0,
       phone: result.international_phone_number || '',
-      hours: result.opening_hours?.weekday_text?.join('\\n') || 'Not available',
+      hours: result.opening_hours?.weekday_text?.join('\n') || 'Not available', // Use newline character
       mapsLink: result.url || '',
     };
 
