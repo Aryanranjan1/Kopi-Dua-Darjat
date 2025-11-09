@@ -1,8 +1,9 @@
 
+
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import MicrositePageClient from './MicrositePageClient';
-import type { Outlet, MenuItem, Promotion, MenuCategory, SiteSettings, Testimonial, Blog, PublicInstaPost } from '@/lib/types';
+import type { Outlet, MenuItem, Promotion, MenuCategory, SiteSettings, Blog, PublicInstaPost, ReviewDocument, Review } from '@/lib/types';
 import { initializeServerSideFirebase } from '@/firebase/server-init';
 import { collection, getDocs, query, Timestamp, doc, getDoc, limit, orderBy, where } from 'firebase/firestore';
 
@@ -36,7 +37,6 @@ const serializeTimestamps = (obj: any): any => {
 async function getMicrositeData(slug: string) {
   const { firestore } = initializeServerSideFirebase();
   
-  // Fetch the outlet directly from Firestore using the slug as the document ID
   const outletDocRef = doc(firestore, 'outlets', slug);
   const outletDoc = await getDoc(outletDocRef);
   
@@ -50,7 +50,7 @@ async function getMicrositeData(slug: string) {
     allMenuItems, 
     allMenuCategories,
     allPromotions,
-    outletReviews,
+    reviewDoc,
     mainSettings,
     latestBlogs,
     instaFeed
@@ -58,25 +58,21 @@ async function getMicrositeData(slug: string) {
     fetchCollection<MenuItem>(firestore, 'menuItems'),
     fetchCollection<MenuCategory>(firestore, 'menuCategories'),
     fetchCollection<Promotion>(firestore, 'promotions'),
-    fetchCollection<Testimonial>(firestore, 'testimonials', query(collection(firestore, 'testimonials'), where('outletId', '==', outlet.id))),
+    getDoc(doc(firestore, 'reviews', outlet.id)).then(d => d.exists() ? d.data() as ReviewDocument : null),
     getDoc(doc(firestore, 'settings', 'main')).then(d => d.data() as SiteSettings),
     fetchCollection<Blog>(firestore, 'blogs', query(collection(firestore, 'blogs'), orderBy('publishedAt', 'desc'), limit(1))),
     fetchCollection<PublicInstaPost>(firestore, 'public_insta_feed', query(collection(firestore, 'public_insta_feed'), orderBy('rank', 'asc'), limit(2)))
   ]);
   
-  // Filter items relevant to this outlet (or general items)
   const outletMenuItems = allMenuItems.filter(item => 
     item.isGeneral || !item.outletIds || item.outletIds.length === 0 || item.outletIds.includes(outlet.id)
   );
 
-  // Filter categories that have items for this outlet
   const relevantCategoryIds = new Set(outletMenuItems.map(item => item.categoryId));
   const outletMenuCategories = allMenuCategories.filter(cat => relevantCategoryIds.has(cat.id));
 
-  // Get featured items for this outlet (popular items from the outlet's menu)
   const outletFeaturedItems = outletMenuItems.filter(item => item.isPopular);
   
-  // Filter promotions relevant to this outlet (or global promotions)
   const outletPromotions = allPromotions.filter(p => !p.outletIds || p.outletIds.length === 0 || p.outletIds.includes(outlet.id));
 
   return serializeTimestamps({ 
@@ -85,12 +81,50 @@ async function getMicrositeData(slug: string) {
     allMenuItems: outletMenuItems,
     featuredItems: outletFeaturedItems,
     promotions: outletPromotions,
-    reviews: outletReviews,
+    reviewData: reviewDoc,
     siteSettings: mainSettings,
     latestBlog: latestBlogs.length > 0 ? latestBlogs[0] : null,
     instaPosts: instaFeed,
   });
 }
+
+function generateJsonLd(outlet: Outlet, reviewData: ReviewDocument | null) {
+  if (!reviewData || !reviewData.aggregate || reviewData.reviews.length === 0) {
+    return null;
+  }
+
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "CafeOrCoffeeShop",
+    "name": outlet.name,
+    "image": outlet.heroImage || "",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": outlet.address,
+      "addressLocality": outlet.city,
+      "addressRegion": outlet.state,
+      "addressCountry": "MY"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": String(reviewData.aggregate.ratingValue),
+      "reviewCount": String(reviewData.aggregate.reviewCount)
+    },
+    "review": reviewData.reviews.map((review: Review) => ({
+      "@type": "Review",
+      "author": { "@type": "Person", "name": review.author_name },
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": String(review.rating)
+      },
+      "reviewBody": review.text,
+      "publisher": { "@type": "Organization", "name": review.attribution || "Kopi Dua Darjat" }
+    }))
+  };
+
+  return JSON.stringify(schema);
+}
+
 
 // DYNAMIC METADATA GENERATION
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -116,7 +150,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: metaTitle,
       description: metaDescription,
-      images: [],
+      images: outlet.heroImage ? [outlet.heroImage] : [],
       url: `https://kopiduadarjat.com/${outlet.slug}`,
     },
   };
@@ -135,6 +169,18 @@ export default async function OutletMicrositePage({ params }: Props) {
     notFound();
   }
 
-  // @ts-ignore
-  return <MicrositePageClient {...data} />;
+  const jsonLd = generateJsonLd(data.outlet, data.reviewData);
+
+  return (
+    <>
+        {jsonLd && (
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: jsonLd }}
+            />
+        )}
+        <MicrositePageClient {...data} />
+    </>
+  );
 }
+

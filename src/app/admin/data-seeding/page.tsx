@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useFirestore } from '@/firebase';
 import { collection, writeBatch, getDocs, doc, setDoc, Timestamp } from 'firebase/firestore';
-import { blogSeedData, outlets as outletSeedData, menuGroups, menuCategories, menuItems, promotions } from '@/lib/data';
+import { blogSeedData, outlets as outletSeedData, menuGroups, menuCategories, menuItems, promotions, testimonialSeedData } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, BookOpen, AlertTriangle, Instagram, Database } from 'lucide-react';
 import {
@@ -20,6 +20,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import type { Review, Testimonial } from '@/lib/types';
+
 
 export default function DataSeedingPage() {
   const [isBlogLoading, setIsBlogLoading] = useState(false);
@@ -38,26 +40,69 @@ export default function DataSeedingPage() {
     toast({ title: 'Master Sync Initiated', description: 'This may take a moment...' });
 
     try {
-      const collectionsToDelete = ['menuGroups', 'menuCategories', 'menuItems', 'outlets', 'promotions'];
-      const batch = writeBatch(firestore);
+      const collectionsToDelete = ['menuGroups', 'menuCategories', 'menuItems', 'outlets', 'promotions', 'reviews', 'testimonials'];
+      const deleteBatch = writeBatch(firestore);
 
       for (const collectionName of collectionsToDelete) {
         const collectionRef = collection(firestore, collectionName);
         const snapshot = await getDocs(collectionRef);
-        snapshot.forEach(document => batch.delete(document.ref));
+        snapshot.forEach(document => deleteBatch.delete(document.ref));
       }
-      await batch.commit();
-      toast({ title: 'Phase 1/2: Collections Cleared', description: 'Existing data has been removed.' });
+      await deleteBatch.commit();
+      toast({ title: 'Phase 1/3: Collections Cleared', description: 'Existing data has been removed.' });
       
-      const newBatch = writeBatch(firestore);
+      const seedBatch = writeBatch(firestore);
       
-      menuGroups.forEach(group => newBatch.set(doc(collection(firestore, 'menuGroups'), group.id), group));
-      menuCategories.forEach(category => newBatch.set(doc(collection(firestore, 'menuCategories'), category.id), category));
-      menuItems.forEach(item => newBatch.set(doc(collection(firestore, 'menuItems'), item.id), item));
-      outletSeedData.slice(0, 20).forEach(outlet => newBatch.set(doc(collection(firestore, 'outlets'), outlet.slug), outlet));
-      promotions.forEach(promo => newBatch.set(doc(collection(firestore, 'promotions')), promo));
+      menuGroups.forEach(group => seedBatch.set(doc(collection(firestore, 'menuGroups'), group.id), group));
+      menuCategories.forEach(category => seedBatch.set(doc(collection(firestore, 'menuCategories'), category.id), category));
+      menuItems.forEach(item => seedBatch.set(doc(collection(firestore, 'menuItems'), item.id), item));
+      promotions.forEach(promo => seedBatch.set(doc(collection(firestore, 'promotions')), promo));
       
-      await newBatch.commit();
+      const outletsToSeed = outletSeedData.slice(0, 20);
+      toast({ title: 'Phase 2/3: Seeding Core Data', description: 'Seeding menus, promotions, and outlets...' });
+
+      for (const outlet of outletsToSeed) {
+        const outletRef = doc(firestore, 'outlets', outlet.slug);
+        
+        const manualReviewsForOutlet: Testimonial[] = testimonialSeedData.filter(t => t.outletId === outlet.slug);
+        const reviewCount = (outlet.reviewCount || 0) + manualReviewsForOutlet.length;
+        
+        // Let's create a simple average for seed data
+        const totalManualRating = manualReviewsForOutlet.reduce((acc, review) => acc + (review.rating || 4), 0);
+        const newRating = reviewCount > 0 
+            ? (((outlet.rating || 0) * (outlet.reviewCount || 0)) + totalManualRating) / reviewCount
+            : 0;
+
+        const outletData = {
+          ...outlet,
+          rating: parseFloat(newRating.toFixed(1)),
+          reviewCount: reviewCount,
+          reviewsPath: `reviews/${outlet.slug}`,
+          lastFetched: Timestamp.now(),
+        };
+        seedBatch.set(outletRef, outletData);
+
+        const reviewDocRef = doc(firestore, 'reviews', outlet.slug);
+        const reviews: Review[] = manualReviewsForOutlet.map(t => ({
+            source: 'manual',
+            author_name: t.name,
+            rating: t.rating || 4,
+            text: t.quote,
+            time: Timestamp.now().seconds,
+            attribution: 'Kopi Dua Darjat Website'
+        }));
+        
+        seedBatch.set(reviewDocRef, {
+            outletId: outlet.slug,
+            aggregate: {
+                ratingValue: parseFloat(newRating.toFixed(1)),
+                reviewCount: reviewCount
+            },
+            reviews: reviews
+        });
+      }
+      
+      await seedBatch.commit();
 
       toast({
         title: 'Master Sync Complete!',
@@ -178,7 +223,7 @@ export default function DataSeedingPage() {
             <CardHeader>
                 <CardTitle className="flex items-center gap-2"><Database /> Master CMS Reset</CardTitle>
                 <CardDescription className="text-zinc-400">
-                This tool will delete all data from `outlets`, `menuGroups`, `menuCategories`, `menuItems`, and `promotions`, then re-seed them with fresh, interconnected sample data.
+                This tool will delete all data from `outlets`, `menuGroups`, `menuCategories`, `menuItems`, `promotions`, and `reviews`, then re-seed them with fresh, interconnected sample data.
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -207,7 +252,7 @@ export default function DataSeedingPage() {
                         <AlertDialogHeader>
                             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                             <AlertDialogDescription className="text-zinc-400">
-                                This will delete all existing outlets, menus, and promotions and replace them. Any custom changes will be lost.
+                                This will delete all existing outlets, menus, promotions, and reviews and replace them. Any custom changes will be lost.
                             </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>

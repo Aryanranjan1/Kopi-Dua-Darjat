@@ -1,4 +1,5 @@
 
+
 import { Timestamp } from "firebase/firestore";
 
 export type NavItem = {
@@ -97,11 +98,28 @@ export type Promotion = {
 };
 
 export type Review = {
+  source: 'google' | 'manual';
   author_name: string;
   rating: number;
-  relative_time_description: string;
   text: string;
+  time: number | Timestamp;
+  attribution?: string;
+  // Google specific fields
+  profile_photo_url?: string;
+  relative_time_description?: string;
+  // Manual specific fields
+  id?: string; // for managing manual reviews
 }
+
+export type ReviewDocument = {
+  outletId: string;
+  aggregate: {
+    ratingValue: number;
+    reviewCount: number;
+  };
+  reviews: Review[];
+}
+
 
 export type Outlet = {
   id: string;
@@ -119,7 +137,6 @@ export type Outlet = {
   placeId?: string; // Google Place ID
   rating?: number; // Google Rating
   reviewCount?: number;
-  reviews?: Review[];
   heroImage?: string;
   interiorImage?: string;
   tagline?: string;
@@ -130,6 +147,9 @@ export type Outlet = {
   isChatbotEnabled?: boolean;
   createdAt?: any;
   updatedAt?: any;
+  // New review structure
+  reviewsPath?: string;
+  lastFetched?: any; // Firestore Timestamp
   seo?: {
     title?: string;
     description?: string;
@@ -199,6 +219,7 @@ export type Testimonial = {
   image: string;
   company?: string;
   outletId?: string;
+  rating?: number;
   createdAt?: any; // Firestore Timestamp
 };
 
