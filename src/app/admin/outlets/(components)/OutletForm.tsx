@@ -205,7 +205,7 @@ export default function OutletForm({ outlet, onSuccess }: OutletFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="h-full flex flex-col">
-        <ScrollArea className="flex-grow pr-6">
+        <ScrollArea className="flex-grow pr-6 -mr-6 max-h-[calc(80vh-150px)]">
           <div className="space-y-6">
             <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2">Core Information</h3>
              <FormField control={form.control} name="placeId" render={({ field }) => (

@@ -16,13 +16,6 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from '@/components/ui/dialog';
-import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -38,7 +31,6 @@ import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
-import OutletForm from './OutletForm';
 import { Pagination } from '@/components/shared/Pagination';
 
 const OUTLETS_PER_PAGE = 8;
@@ -53,8 +45,6 @@ export default function OutletsManager() {
   );
   const { data: outlets, isLoading } = useCollection<Outlet>(outletsQuery);
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedOutlet, setSelectedOutlet] = useState<Outlet | undefined>(undefined);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -73,16 +63,6 @@ export default function OutletsManager() {
     (currentPage - 1) * OUTLETS_PER_PAGE,
     currentPage * OUTLETS_PER_PAGE
   );
-
-  const handleAddNew = () => {
-    setSelectedOutlet(undefined);
-    setIsDialogOpen(true);
-  };
-
-  const handleEdit = (outlet: Outlet) => {
-    setSelectedOutlet(outlet);
-    setIsDialogOpen(true);
-  };
 
   const handleDelete = async (id: string) => {
     if (!firestore) return;
@@ -106,9 +86,11 @@ export default function OutletsManager() {
             className="pl-9 bg-zinc-800 border-zinc-700 w-full"
           />
         </div>
-        <Button onClick={handleAddNew} className="w-full sm:w-auto flex-shrink-0">
-          <PlusCircle className="mr-2 h-4 w-4" />
-          New Outlet
+        <Button asChild className="w-full sm:w-auto flex-shrink-0">
+          <Link href="/admin/outlets/edit/new">
+            <PlusCircle className="mr-2 h-4 w-4" />
+            New Outlet
+          </Link>
         </Button>
       </div>
       <div className="overflow-y-auto">
@@ -141,8 +123,8 @@ export default function OutletsManager() {
                   <Button asChild variant="ghost" size="icon" disabled={outlet.status === 'inactive'}>
                     <Link href={`/${outlet.slug}`} target="_blank"><ExternalLink className="h-4 w-4" /></Link>
                   </Button>
-                  <Button variant="ghost" size="icon" onClick={() => handleEdit(outlet)}>
-                    <Edit className="h-4 w-4" />
+                  <Button asChild variant="ghost" size="icon">
+                    <Link href={`/admin/outlets/edit/${outlet.id}`}><Edit className="h-4 w-4" /></Link>
                   </Button>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
@@ -173,18 +155,6 @@ export default function OutletsManager() {
             onPageChange={setCurrentPage}
           />
        </div>
-
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-4xl h-[90vh] flex flex-col">
-          <DialogHeader>
-            <DialogTitle>{selectedOutlet ? 'Edit Outlet' : 'Create New Outlet'}</DialogTitle>
-            <DialogDescription className="text-zinc-400">
-              {selectedOutlet ? `Editing details for ${selectedOutlet.name}` : 'Add a new outlet to the system.'}
-            </DialogDescription>
-          </DialogHeader>
-          <OutletForm outlet={selectedOutlet} onSuccess={() => setIsDialogOpen(false)} />
-        </DialogContent>
-      </Dialog>
     </>
   );
 }
