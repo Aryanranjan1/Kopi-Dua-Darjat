@@ -18,10 +18,10 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, ChevronsUpDown, Trash2, Edit, PlusCircle, Check, MapPin } from 'lucide-react';
+import { Loader2, ChevronsUpDown, Trash2, Edit, PlusCircle, Check, MapPin, Star as StarIcon } from 'lucide-react';
 import { useFirestore, errorEmitter, FirestorePermissionError, useCollection, useMemoFirebase } from '@/firebase';
 import { doc, setDoc, serverTimestamp, collection, query, where, addDoc, deleteDoc, writeBatch, getDocs } from 'firebase/firestore';
-import type { Outlet, Testimonial, Promotion, MenuItem } from '@/lib/types';
+import type { Outlet, Testimonial, Promotion, MenuItem, Review } from '@/lib/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Select,
@@ -84,6 +84,7 @@ const formSchema = z.object({
   isChatbotEnabled: z.boolean().default(false),
   placeId: z.string().optional(),
   menuItemIds: z.array(z.string()).optional(),
+  reviews: z.array(z.any()).optional(), // To hold Google reviews
   seo: z.object({
     title: z.string().optional(),
     description: z.string().optional(),
@@ -200,7 +201,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
     defaultValues: {
       name: '', slug: '', address: '', city: '', state: '', lat: 0, lng: 0, hours: '', phone: '', email: '',
       status: 'active', heroImage: '', interiorImage: '', tagline: '', mapsLink: '', whatsappLink: '',
-      chatbotEmbed: '', isChatbotEnabled: false, placeId: '', menuItemIds: [],
+      chatbotEmbed: '', isChatbotEnabled: false, placeId: '', menuItemIds: [], reviews: [],
       seo: { title: '', description: '', keywords: '' },
     },
   });
@@ -219,6 +220,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
         chatbotEmbed: outlet.chatbotEmbed || '',
         placeId: outlet.placeId || '',
         menuItemIds: allItems.filter(item => item.outletIds?.includes(outlet.id)).map(item => item.id),
+        reviews: outlet.reviews || [],
         seo: {
           title: outlet.seo?.title || '',
           description: outlet.seo?.description || '',
@@ -229,7 +231,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
         form.reset({
             name: '', slug: '', address: '', city: '', state: '', lat: 0, lng: 0, hours: '', phone: '', email: '',
             status: 'active', heroImage: '', interiorImage: '', tagline: '', mapsLink: '', whatsappLink: '',
-            chatbotEmbed: '', isChatbotEnabled: false, placeId: '', menuItemIds: [],
+            chatbotEmbed: '', isChatbotEnabled: false, placeId: '', menuItemIds: [], reviews: [],
             seo: { title: '', description: '', keywords: '' },
         })
     }
@@ -239,6 +241,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
   const { isSubmitting, watch, setValue, formState } = form;
   const watchedName = watch('name');
   const watchedMenuItemIds = watch('menuItemIds') || [];
+  const watchedGoogleReviews = watch('reviews') || [];
 
   useEffect(() => {
     if (watchedName && !formState.dirtyFields.slug) {
@@ -286,6 +289,10 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
       form.setValue('phone', data.phone, { shouldValidate: true });
       form.setValue('hours', data.hours, { shouldValidate: true });
       form.setValue('mapsLink', data.mapsLink, { shouldValidate: true });
+      form.setValue('reviews', data.reviews || [], { shouldValidate: true });
+      form.setValue('rating', data.rating || 0, { shouldValidate: true });
+      form.setValue('reviewCount', data.reviewCount || 0, { shouldValidate: true });
+
 
       toast({
         title: 'Data Fetched!',
@@ -410,8 +417,8 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
                 <TabsTrigger value="general">General</TabsTrigger>
                 <TabsTrigger value="seo">SEO</TabsTrigger>
                 <TabsTrigger value="menu">Menu</TabsTrigger>
-                {outlet && <TabsTrigger value="promotions">Promotions</TabsTrigger>}
-                {outlet && <TabsTrigger value="reviews">Reviews</TabsTrigger>}
+                <TabsTrigger value="promotions" disabled={!outlet}>Promotions</TabsTrigger>
+                <TabsTrigger value="reviews">Reviews</TabsTrigger>
               </TabsList>
               <div className="mt-4">
                 <TabsContent value="general">
@@ -599,7 +606,6 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
                         </div>
                     </div>
                 </TabsContent>
-                {outlet && (
                 <TabsContent value="promotions">
                   <div className="space-y-4">
                      <div className="flex justify-between items-center">
@@ -646,34 +652,57 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
                      </div>
                   </div>
                 </TabsContent>
-                )}
-                {outlet && (
                 <TabsContent value="reviews">
-                   <div className="space-y-2 mt-4">
-                        {outletReviews.map(review => (
-                            <div key={review.id} className="bg-zinc-800 rounded-lg p-3 flex items-center justify-between">
-                              <div>
-                                <p className="text-sm italic">"{review.quote}"</p>
-                                <p className="text-xs text-right font-semibold mt-2">- {review.name}, {review.designation}</p>
-                              </div>
-                              <AlertDialog>
-                                  <AlertDialogTrigger asChild>
-                                      <Button type="button" variant="ghost" size="icon"><Trash2 className="h-4 w-4 text-red-500" /></Button>
-                                  </AlertDialogTrigger>
-                                  <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
-                                      <AlertDialogHeader><AlertDialogTitle>Are you sure?</AlertDialogTitle><AlertDialogDescription className="text-zinc-400">This will permanently delete this review.</AlertDialogDescription></AlertDialogHeader>
-                                      <AlertDialogFooter>
-                                          <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
-                                          <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleDeleteReview(review.id)}>Delete</AlertDialogAction>
-                                      </AlertDialogFooter>
-                                  </AlertDialogContent>
-                              </AlertDialog>
-                            </div>
-                        ))}
-                        {outletReviews.length === 0 && <p className="text-zinc-500 text-center py-8">No reviews linked to this outlet yet.</p>}
+                    <div className="space-y-6">
+                        <div>
+                            <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2">Manual Testimonials</h3>
+                            <div className="space-y-2 mt-4">
+                                {outletReviews.map(review => (
+                                    <div key={review.id} className="bg-zinc-800 rounded-lg p-3 flex items-center justify-between">
+                                      <div>
+                                        <p className="text-sm italic">"{review.quote}"</p>
+                                        <p className="text-xs text-right font-semibold mt-2">- {review.name}, {review.designation}</p>
+                                      </div>
+                                      <AlertDialog>
+                                          <AlertDialogTrigger asChild>
+                                              <Button type="button" variant="ghost" size="icon"><Trash2 className="h-4 w-4 text-red-500" /></Button>
+                                          </AlertDialogTrigger>
+                                          <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
+                                              <AlertDialogHeader><AlertDialogTitle>Are you sure?</AlertDialogTitle><AlertDialogDescription className="text-zinc-400">This will permanently delete this testimonial.</AlertDialogDescription></AlertDialogHeader>
+                                              <AlertDialogFooter>
+                                                  <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
+                                                  <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleDeleteReview(review.id)}>Delete</AlertDialogAction>
+                                              </AlertDialogFooter>
+                                          </AlertDialogContent>
+                                      </AlertDialog>
+                                    </div>
+                                ))}
+                                {outletReviews.length === 0 && <p className="text-zinc-500 text-center py-4">No manual testimonials linked to this outlet yet.</p>}
+                           </div>
+                        </div>
+                        <div>
+                           <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2">Google Reviews</h3>
+                            <p className="text-sm text-zinc-400 my-2">These reviews are fetched from the Google Places API. They are read-only but will be saved with the outlet.</p>
+                             <div className="space-y-2 mt-4">
+                                {watchedGoogleReviews.map((review, index) => (
+                                    <div key={index} className="bg-zinc-800 rounded-lg p-3">
+                                      <div className="flex items-center gap-2 mb-2">
+                                        <div className="flex items-center gap-0.5">
+                                            {[...Array(5)].map((_, i) => (
+                                                <StarIcon key={i} className={cn("h-4 w-4", i < review.rating ? "text-yellow-400 fill-yellow-400" : "text-zinc-600")} />
+                                            ))}
+                                        </div>
+                                        <p className="font-semibold text-sm">{review.author_name}</p>
+                                        <p className="text-xs text-zinc-500 ml-auto">{review.relative_time_description}</p>
+                                      </div>
+                                      <p className="text-sm italic text-zinc-300">"{review.text}"</p>
+                                    </div>
+                                ))}
+                                {watchedGoogleReviews.length === 0 && <p className="text-zinc-500 text-center py-4">No Google Reviews found or fetched yet.</p>}
+                           </div>
+                        </div>
                    </div>
                 </TabsContent>
-                )}
               </div>
           </Tabs>
         </ScrollArea>

@@ -122,6 +122,75 @@ export const outlets: Omit<Outlet, 'id' | 'createdAt' | 'updatedAt'>[] = [
     { name: 'Sibu', slug: 'sibu', address: 'Jalan Channel, Sibu', city: 'Sibu', state: 'Sarawak', lat: 2.29, lng: 111.82, hours: '8 AM - 9 PM', phone: '012-345-6789', email: 'sibu@kopi.com', status: 'inactive', rating: 4.3, reviewCount: 75 },
 ];
 
+export const blogSeedData: Omit<Blog, 'createdAt' | 'updatedAt'>[] = [
+    {
+        id: 'kopi-dua-darjat-story',
+        title: "The Kopi Dua Darjat Story: From a Cart to a Community",
+        slug: "kopi-dua-darjat-story",
+        excerpt: "Discover the journey of Kopi Dua Darjat, from a humble street cart to a beloved national brand with over 50 outlets.",
+        coverImage: { url: "https://cdn.pixabay.com/photo/2020/03/20/20/48/coffe-4951982_1280.jpg", alt: "A cup of Kopi Dua Darjat coffee" },
+        author: { name: "Hadi & Azad", photo: "https://placehold.co/100x100" },
+        category: "Brand Story",
+        status: "published",
+        isFeatured: true,
+        content: "<h2>Our Humble Beginnings</h2><p>It all started with a dream and a single cart on the streets of Kuala Lumpur...</p>",
+        publishedAt: Timestamp.fromDate(new Date('2024-05-10T12:00:00Z')),
+        tags: ['brand', 'heritage', 'our story']
+    },
+    {
+        id: 'art-of-kopi-kampung',
+        title: "The Art of Kopi Kampung: More Than Just Coffee",
+        slug: "art-of-kopi-kampung",
+        excerpt: "We dive deep into the traditional methods and cultural significance of Malaysian Kopi Kampung, the heart of our brand.",
+        coverImage: { url: "https://cdn.pixabay.com/photo/2020/03/20/20/48/coffe-4951982_1280.jpg", alt: "Traditional coffee brewing" },
+        author: { name: "KDD Team" },
+        category: "Coffee 101",
+        status: "published",
+        content: "<h3>The Perfect Brew</h3><p>Kopi Kampung is a unique brewing style that involves a 'sock' filter, giving it a distinctive robust flavor...</p>",
+        publishedAt: Timestamp.fromDate(new Date('2024-05-15T12:00:00Z')),
+        tags: ['kopi', 'culture', 'brewing']
+    },
+    {
+        id: 'introducing-darjat-series',
+        title: "Introducing the Darjat Series: Our Signature Creations",
+        slug: "introducing-darjat-series",
+        excerpt: "Meet our best-selling Darjat series, a perfect fusion of traditional flavors and modern artisan techniques.",
+        coverImage: { url: "https://cdn.pixabay.com/photo/2020/03/20/20/48/coffe-4951982_1280.jpg", alt: "A lineup of Darjat Series drinks" },
+        author: { name: "KDD Team" },
+        category: "Product",
+        status: "published",
+        content: "<h4>Darjat Caramel</h4><p>Our most popular drink combines rich espresso with luscious caramel sauce...</p>",
+        publishedAt: Timestamp.fromDate(new Date('2024-05-20T12:00:00Z')),
+        tags: ['menu', 'signature', 'darjat series']
+    },
+    {
+        id: 'franchise-success-story-ahmad',
+        title: "Franchise Success: How Ahmad Grew His Outlet in Shah Alam",
+        slug: "franchise-success-story-ahmad",
+        excerpt: "Ahmad Faizal shares his journey from a new franchisee to a successful business owner in just a few months.",
+        coverImage: { url: "https://cdn.pixabay.com/photo/2020/03/20/20/48/coffe-4951982_1280.jpg", alt: "Ahmad Faizal at his Kopi Dua Darjat stall" },
+        author: { name: "Ahmad Faizal" },
+        category: "Franchise",
+        status: "published",
+        content: "<p>\"I was nervous at first, but the support from the KDD team was amazing. The training gave me all the skills I needed...\"</p>",
+        publishedAt: Timestamp.fromDate(new Date('2024-05-25T12:00:00Z')),
+        tags: ['franchise', 'success story', 'entrepreneurship']
+    },
+     {
+        id: 'behind-the-beans',
+        title: "Behind the Beans: Our Commitment to Quality Sourcing",
+        slug: "behind-the-beans",
+        excerpt: "Learn about how we select our coffee beans and our commitment to ethical and sustainable sourcing practices.",
+        coverImage: { url: "https://cdn.pixabay.com/photo/2020/03/20/20/48/coffe-4951982_1280.jpg", alt: "Hands holding fresh coffee beans" },
+        author: { name: "Hadi", photo: "https://placehold.co/100x100" },
+        category: "Coffee 101",
+        status: "draft",
+        content: "<p>Quality starts at the source. That's why we partner directly with local farmers...</p>",
+        publishedAt: Timestamp.fromDate(new Date('2024-06-01T12:00:00Z')),
+        tags: ['sourcing', 'quality', 'sustainability']
+    }
+];
+
 export const testimonialSeedData: Omit<Testimonial, 'id' | 'createdAt'>[] = [
   { outletId: "kajang-prima", quote: "The brand recognition is incredible. Customers love the coffee, and my outlet has been profitable since month one.", name: "Siti Nurhaliza", designation: "Franchisee, Kajang", image: "testimonial-2" },
   { outletId: "putrajaya-ayer8", quote: "I always wanted to own a café. Kopi Dua Darjat made that dream a reality with a low-cost, high-return model.", name: "Ravi Chandran", designation: "Franchisee, Putrajaya", image: "testimonial-3" },

@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
       params: {
         place_id: placeId,
         key: apiKey,
-        fields: ["name", "formatted_address", "geometry", "international_phone_number", "opening_hours", "url", "address_components"]
+        fields: ["name", "formatted_address", "geometry", "international_phone_number", "opening_hours", "url", "address_components", "rating", "user_ratings_total", "reviews"]
       },
     });
 
@@ -56,6 +56,9 @@ export async function POST(req: NextRequest) {
       phone: result.international_phone_number || '',
       hours: result.opening_hours?.weekday_text?.join('\n') || 'Not available',
       mapsLink: result.url || '',
+      rating: result.rating || 0,
+      reviewCount: result.user_ratings_total || 0,
+      reviews: result.reviews || [],
     };
 
     console.log(`[API Route Success] Successfully processed data for ${result.name}.`);
