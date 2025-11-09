@@ -360,6 +360,14 @@ function MultiSelectPopover({ title, options, selected, onChange }: {
     const filteredOptions = options.filter(option => 
         option.label.toLowerCase().includes(searchQuery.toLowerCase())
     );
+    
+    const handleSelectAll = () => {
+        onChange(options.map(opt => opt.value));
+    }
+    const handleDeselectAll = () => {
+        onChange([]);
+    }
+
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
@@ -390,6 +398,10 @@ function MultiSelectPopover({ title, options, selected, onChange }: {
                             className="bg-zinc-800 border-zinc-700"
                             autoFocus
                         />
+                    </div>
+                     <div className="p-2 border-b border-zinc-800 flex gap-2">
+                        <Button size="sm" variant="ghost" onClick={handleSelectAll} className="flex-1">Select All</Button>
+                        <Button size="sm" variant="ghost" onClick={handleDeselectAll} className="flex-1">Deselect All</Button>
                     </div>
                     <ScrollArea className="h-48">
                         <div className="p-2 space-y-1">
