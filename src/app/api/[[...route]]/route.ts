@@ -1,7 +1,7 @@
 
 import { ai } from '@/ai/genkit';
 import { handleRequest } from '@genkit-ai/next';
-import * as adminFunctions from '@/app/api/[[...route]]/functions/instagram-sync';
+import * as adminFunctions from '@/app/api/[[...route]]/functions';
 
 // All Genkit flows and tools are defined in the plugin.
 const handler = handleRequest({
