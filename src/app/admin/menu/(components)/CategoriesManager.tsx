@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo, Fragment } from 'react';
@@ -121,25 +122,29 @@ export default function CategoriesManager() {
   };
 
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (categoryId: string) => {
     if (!firestore) return;
 
-    const itemsInCatQuery = query(collection(firestore, 'menuItems'), where('categoryId', '==', id));
-    const itemsSnapshot = await getDocs(itemsInCatQuery);
-
-    if (!itemsSnapshot.empty) {
-        toast({
-            variant: 'destructive',
-            title: 'Deletion Failed',
-            description: `Cannot delete category. It is currently used by ${itemsSnapshot.size} menu item(s).`,
-        });
-        return;
-    }
-
     try {
-      await deleteDoc(doc(firestore, 'menuCategories', id));
-      toast({ title: 'Success', description: 'Category deleted successfully.' });
+        const batch = writeBatch(firestore);
+        const categoryRef = doc(firestore, 'menuCategories', categoryId);
+
+        // Find all items in the category
+        const itemsInCatQuery = query(collection(firestore, 'menuItems'), where('categoryId', '==', categoryId));
+        const itemsSnapshot = await getDocs(itemsInCatQuery);
+        
+        // Delete all items in the category
+        itemsSnapshot.forEach(itemDoc => {
+            batch.delete(itemDoc.ref);
+        });
+
+        // Delete the category itself
+        batch.delete(categoryRef);
+
+        await batch.commit();
+        toast({ title: 'Success', description: 'Category and all its items deleted successfully.' });
     } catch (error: any) {
+      console.error("Error deleting category: ", error);
       toast({ variant: 'destructive', title: 'Error', description: `Could not delete category: ${error.message}` });
     }
   };
@@ -209,7 +214,7 @@ export default function CategoriesManager() {
                       <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
                         <AlertDialogHeader>
                             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                            <AlertDialogDescription className="text-zinc-400">This will permanently delete the "{cat.name}" category.</AlertDialogDescription>
+                            <AlertDialogDescription className="text-zinc-400">This will permanently delete the "{cat.name}" category and all menu items within it.</AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>

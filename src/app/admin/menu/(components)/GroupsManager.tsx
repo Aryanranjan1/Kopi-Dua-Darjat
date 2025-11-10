@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo } from 'react';
@@ -104,25 +105,36 @@ export default function GroupsManager() {
     }
   }
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (groupId: string) => {
     if (!firestore) return;
 
-    const categoriesInGroupQuery = query(collection(firestore, 'menuCategories'), where('groupId', '==', id));
-    const categoriesSnapshot = await getDocs(categoriesInGroupQuery);
-
-    if (!categoriesSnapshot.empty) {
-        toast({
-            variant: 'destructive',
-            title: 'Deletion Failed',
-            description: `Cannot delete group. It is currently used by ${categoriesSnapshot.size} categor(y/ies).`,
-        });
-        return;
-    }
-
     try {
-      await deleteDoc(doc(firestore, 'menuGroups', id));
-      toast({ title: 'Success', description: 'Group deleted successfully.' });
+      const batch = writeBatch(firestore);
+      const groupRef = doc(firestore, 'menuGroups', groupId);
+
+      // Find categories in the group
+      const categoriesQuery = query(collection(firestore, 'menuCategories'), where('groupId', '==', groupId));
+      const categoriesSnapshot = await getDocs(categoriesQuery);
+      
+      const categoryIds = categoriesSnapshot.docs.map(d => d.id);
+
+      // Delete items within each category
+      if (categoryIds.length > 0) {
+        const itemsQuery = query(collection(firestore, 'menuItems'), where('categoryId', 'in', categoryIds));
+        const itemsSnapshot = await getDocs(itemsQuery);
+        itemsSnapshot.forEach(itemDoc => batch.delete(itemDoc.ref));
+      }
+      
+      // Delete categories
+      categoriesSnapshot.forEach(categoryDoc => batch.delete(categoryDoc.ref));
+      
+      // Delete the group itself
+      batch.delete(groupRef);
+
+      await batch.commit();
+      toast({ title: 'Success', description: 'Group and all its contents deleted successfully.' });
     } catch (error: any) {
+      console.error("Error deleting group and its contents: ", error);
       toast({ variant: 'destructive', title: 'Error', description: `Could not delete group: ${error.message}` });
     }
   };
@@ -183,7 +195,7 @@ export default function GroupsManager() {
                   <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
                     <AlertDialogHeader>
                         <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                        <AlertDialogDescription className="text-zinc-400">This will permanently delete the "{g.name}" group.</AlertDialogDescription>
+                        <AlertDialogDescription className="text-zinc-400">This will permanently delete the "{g.name}" group and all categories and items within it.</AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                       <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
