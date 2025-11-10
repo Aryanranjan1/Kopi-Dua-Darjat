@@ -14,13 +14,13 @@ export default function MenuPage() {
     const firestore = useFirestore();
 
     const groupsQuery = useMemoFirebase(
-      () => firestore ? query(collection(firestore, 'menuGroups'), where('status', '==', 'published'), orderBy('displayOrder')) : null,
+      () => firestore ? query(collection(firestore, 'menuGroups'), where('status', '==', 'published')) : null,
       [firestore]
     );
     const { data: menuGroups, isLoading: isLoadingGroups } = useCollection<MenuGroup>(groupsQuery);
 
     const categoriesQuery = useMemoFirebase(
-      () => firestore ? query(collection(firestore, 'menuCategories'), where('status', '==', 'published'), orderBy('displayOrder')) : null,
+      () => firestore ? query(collection(firestore, 'menuCategories'), where('status', '==', 'published')) : null,
       [firestore]
     );
     const { data: categories, isLoading: isLoadingCategories } = useCollection<MenuCategory>(categoriesQuery);
@@ -33,6 +33,10 @@ export default function MenuPage() {
 
     const [promotions, setPromotions] = useState<Promotion[]>([]);
     const [dailySpecials, setDailySpecials] = useState<DailySpecial[]>([]);
+    
+    const sortedMenuGroups = useMemo(() => menuGroups?.sort((a, b) => a.displayOrder - b.displayOrder), [menuGroups]);
+    const sortedCategories = useMemo(() => categories?.sort((a, b) => a.displayOrder - b.displayOrder), [categories]);
+
 
     useEffect(() => {
         if (!firestore) return;
@@ -54,8 +58,8 @@ export default function MenuPage() {
     };
 
     const getCategoriesByGroupId = (groupId: string) => {
-        if (!categories) return [];
-        return categories.filter(cat => cat.groupId === groupId);
+        if (!sortedCategories) return [];
+        return sortedCategories.filter(cat => cat.groupId === groupId);
     }
 
     const isLoading = isLoadingGroups || isLoadingCategories || isLoadingItems;
@@ -114,7 +118,7 @@ export default function MenuPage() {
                         </div>
                     ) : (
                     <>
-                        {menuGroups?.map((group, index) => {
+                        {sortedMenuGroups?.map((group, index) => {
                             const groupCategories = getCategoriesByGroupId(group.id);
                             if (groupCategories.length === 0) return null; // Don't render group if it has no visible categories
                             return (
