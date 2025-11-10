@@ -105,9 +105,9 @@ export default function InstaExploreGrid() {
             )}
             {visiblePosts && visiblePosts.length > 0 && (
                 <div className="mt-12 text-center">
-                    <Button asChild variant="outline" className="rounded-full border-white/50 text-white hover:bg-white hover:text-black">
+                    <Button asChild variant="outline" className="rounded-full border-white/50 bg-white text-black hover:bg-white/80 hover:text-black">
                         <a href="https://www.instagram.com/explore/tags/kopiduadarjat/" target="_blank" rel="noopener noreferrer">
-                            Follow on Instagram
+                            explore more
                         </a>
                     </Button>
                 </div>
