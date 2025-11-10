@@ -1,115 +1,108 @@
-
 'use client';
 
-import * as React from 'react';
+import React, { useState, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ImageIcon, Search, Check, Copy, Link as LinkIcon, Loader2 } from 'lucide-react';
-import { useMedia, updateMediaUrl } from '@/lib/media';
-import Image from 'next/image';
+import { ImageIcon, RefreshCw, Loader2, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useFirestore } from '@/firebase';
-import type { Media } from '@/lib/types';
-import { Skeleton } from '@/components/ui/skeleton';
+import { doc, getDoc } from 'firebase/firestore';
 
-function MediaItemCard({ item }: { item: Media }) {
-  const [newUrl, setNewUrl] = React.useState('');
-  const [isUpdating, setIsUpdating] = React.useState(false);
-  const { toast } = useToast();
-  const firestore = useFirestore();
+// Assuming your JSON structure and content types are consistent
+import placeholderImagesData from '@/lib/placeholder-images.json';
+import { siteContentData } from '@/lib/site-content';
+import MediaGrid from './(components)/MediaGrid';
 
-  const handleUpdate = async () => {
-    if (!newUrl || !newUrl.startsWith('http')) {
-        toast({
-            variant: 'destructive',
-            title: 'Invalid URL',
-            description: 'Please enter a valid, full URL starting with http.',
-        });
-        return;
+type MediaAsset = {
+  id: string;
+  url: string;
+  type: 'image' | 'video';
+  source: 'json' | 'firestore';
+  path: string; // e.g., 'home.hero.image' or 'placeholderImages[0].imageUrl'
+};
+
+const extractMediaFromObject = (obj: any, path: string = '', source: 'json' | 'firestore'): MediaAsset[] => {
+  let assets: MediaAsset[] = [];
+  for (const key in obj) {
+    if (typeof obj[key] === 'object' && obj[key] !== null) {
+      assets = assets.concat(extractMediaFromObject(obj[key], path ? `${path}.${key}` : key, source));
+    } else if (typeof obj[key] === 'string') {
+      const value = obj[key] as string;
+      const isImage = /\.(jpg|jpeg|png|svg|gif|webp)$/i.test(value);
+      const isVideo = /\.(mp4|webm|mov)$/i.test(value);
+      if (isImage || isVideo) {
+        const id = path ? `${path}.${key}` : key;
+        // Exclude menu item images
+        if (!id.startsWith('menu.items')) {
+            assets.push({
+                id,
+                url: value,
+                type: isVideo ? 'video' : 'image',
+                source,
+                path: id
+            });
+        }
+      }
     }
-    setIsUpdating(true);
-    const result = await updateMediaUrl(firestore, item.id, newUrl);
-    setIsUpdating(false);
-
-    if (result.success) {
-        toast({
-            title: 'Update Successful',
-            description: `The URL for "${item.id}" has been updated. The live site will now reflect this change.`,
-        });
-        setNewUrl(''); // Clear input on success
-    } else {
-        toast({
-            variant: 'destructive',
-            title: 'Update Failed',
-            description: result.error || 'Could not update the image URL.',
-        });
-    }
-  };
-
-  const copyToClipboard = (text: string, label: string) => {
-    navigator.clipboard.writeText(text);
-    toast({ title: 'Copied to Clipboard', description: `${label}: ${text}`});
   }
-
-  return (
-    <Card className="bg-zinc-900/50 border-zinc-800 text-white flex flex-col">
-        <CardHeader className="pb-4">
-            <CardTitle className="text-base font-semibold flex items-center justify-between">
-                <span className="truncate">{item.id}</span>
-                <Button size="icon" variant="ghost" onClick={() => copyToClipboard(item.id, 'ID')}>
-                    <Copy className="w-4 h-4" />
-                </Button>
-            </CardTitle>
-            <CardDescription className="text-zinc-400 text-xs truncate h-4">{item.description}</CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-col flex-grow">
-            <div className="relative aspect-video rounded-md overflow-hidden bg-zinc-800">
-                <Image src={item.imageUrl} alt={item.description} fill className="object-cover"/>
-            </div>
-            <div className="mt-4">
-                <div className="flex items-center gap-2">
-                    <LinkIcon className="w-4 h-4 text-zinc-500"/>
-                    <p className="text-xs text-zinc-400 truncate">
-                        Current URL: {item.imageUrl}
-                    </p>
-                    <Button size="icon" variant="ghost" onClick={() => copyToClipboard(item.imageUrl, 'URL')}>
-                        <Copy className="w-4 h-4" />
-                    </Button>
-                </div>
-            </div>
-            <div className="mt-auto pt-4">
-                <p className="text-sm font-medium mb-2">Replace Image URL</p>
-                <div className="flex gap-2">
-                    <Input 
-                        placeholder="Paste new image URL..."
-                        className="bg-zinc-800 border-zinc-700"
-                        value={newUrl}
-                        onChange={(e) => setNewUrl(e.target.value)}
-                    />
-                    <Button onClick={handleUpdate} disabled={isUpdating} className="bg-emerald-600 hover:bg-emerald-700">
-                        {isUpdating ? <Loader2 className="w-4 h-4 animate-spin"/> : <Check className="w-4 h-4"/>}
-                    </Button>
-                </div>
-            </div>
-        </CardContent>
-    </Card>
-  )
-}
+  return assets;
+};
 
 
 export default function MediaPage() {
-  const [searchQuery, setSearchQuery] = React.useState('');
-  const { data: media, isLoading } = useMedia();
+  const [allMedia, setAllMedia] = useState<MediaAsset[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
+  const firestore = useFirestore();
+
+  const scanForMedia = useCallback(async () => {
+    setIsLoading(true);
+    toast({ title: 'Scanning for media...', description: 'Searching your content files and database.' });
+
+    let foundAssets: MediaAsset[] = [];
+
+    // 1. Scan hardcoded JSON
+    foundAssets = foundAssets.concat(extractMediaFromObject(placeholderImagesData, 'placeholderImages', 'json'));
+    foundAssets = foundAssets.concat(extractMediaFromObject(siteContentData, 'siteContent', 'json'));
+
+
+    // 2. Scan Firestore database
+    if (firestore) {
+      try {
+        const docRef = doc(firestore, 'website_content', 'main');
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          foundAssets = foundAssets.concat(extractMediaFromObject(docSnap.data(), 'website_content', 'firestore'));
+        }
+      } catch (error) {
+        console.error("Error fetching Firestore media:", error);
+        toast({ variant: 'destructive', title: 'Firestore Error', description: 'Could not scan database for media.' });
+      }
+    }
+    
+    // Remove duplicates based on a unique key (e.g., path)
+    const uniqueAssets = Array.from(new Map(foundAssets.map(item => [item.path, item])).values());
+
+
+    setAllMedia(uniqueAssets);
+    setIsLoading(false);
+    toast({ title: 'Scan Complete!', description: `Found ${uniqueAssets.length} media assets.` });
+  }, [firestore, toast]);
+
+  // Initial scan on component mount
+  React.useEffect(() => {
+    scanForMedia();
+  }, [scanForMedia]);
 
   const filteredMedia = React.useMemo(() => {
-    if (!media) return [];
-    if (!searchQuery) return media;
-    return media.filter(item => 
+    if (!searchQuery) return allMedia;
+    return allMedia.filter(item => 
       item.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchQuery.toLowerCase())
+      item.url.toLowerCase().includes(searchQuery.toLowerCase())
     );
-  }, [media, searchQuery]);
+  }, [allMedia, searchQuery]);
 
   return (
     <div className="space-y-8">
@@ -119,34 +112,41 @@ export default function MediaPage() {
               <ImageIcon /> Media Library
             </h1>
             <p className="text-zinc-400 mt-1">
-                View and manage all visual assets used across the website. Changes here will reflect live on the site.
+                Scan, view, and manage all visual assets used across your website.
             </p>
         </div>
-        <div className="relative max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
-            <Input 
-                placeholder="Search by ID or description..."
-                className="pl-9 bg-zinc-800 border-zinc-700"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-            />
+         <div className="flex items-center gap-2">
+            <div className="relative flex-grow">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+                <Input 
+                    placeholder="Search by ID or URL..."
+                    className="pl-9 bg-zinc-800 border-zinc-700"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                />
+            </div>
+            <Button onClick={scanForMedia} disabled={isLoading} variant="outline" className="bg-zinc-800 border-zinc-700">
+                {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <RefreshCw className="mr-2 h-4 w-4" />}
+                Refresh
+            </Button>
         </div>
       </div>
       
-      {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {[...Array(8)].map((_, i) => <Skeleton key={i} className="h-96 bg-zinc-800" />)}
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredMedia.map(item => (
-              <MediaItemCard key={item.id} item={item} />
-          ))}
-          {filteredMedia.length === 0 && (
-              <p className="text-zinc-500 col-span-full text-center py-16">No media assets found for your search.</p>
-          )}
-        </div>
-      )}
+      <Card className="bg-zinc-900 border-zinc-800 text-white">
+        <CardHeader>
+          <CardTitle>Found Media</CardTitle>
+          <CardDescription>{isLoading ? "Scanning..." : `${filteredMedia.length} assets found.`}</CardDescription>
+        </CardHeader>
+        <CardContent>
+            {isLoading ? (
+                <div className="flex justify-center items-center h-64">
+                    <Loader2 className="h-12 w-12 animate-spin text-primary" />
+                </div>
+            ) : (
+                <MediaGrid assets={filteredMedia} onUpdate={scanForMedia} />
+            )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

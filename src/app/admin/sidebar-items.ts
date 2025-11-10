@@ -1,3 +1,5 @@
+'use client';
+
 import {
     LayoutDashboard,
     Mail,
@@ -12,10 +14,12 @@ import {
     MessageSquareQuote,
     Database,
     Instagram,
+    FileText,
 } from 'lucide-react';
 
 export const navItems = [
   { href: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+  { href: '/admin/content', icon: FileText, label: 'Website Content' },
   { href: '/admin/messages', icon: Mail, label: 'Messages' },
   { href: '/admin/leads', icon: Users, label: 'Leads' },
   { href: '/admin/menu', icon: Coffee, label: 'Menu' },
