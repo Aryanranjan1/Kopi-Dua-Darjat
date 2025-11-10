@@ -8,6 +8,7 @@ import { Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import LatestStories from '@/components/home/LatestStories';
 import TopRatedOutlets from '@/components/outlets/TopRatedOutlets';
+import Community from '@/components/home/Community';
 
 export const metadata: Metadata = {
   title: 'Outlets',
@@ -44,6 +45,8 @@ export default function OutletsPage() {
 
         {/* Social Proof */}
         <InstaExploreGrid />
+        
+        <Community />
         
         {/* Latest Stories */}
         <LatestStories />
