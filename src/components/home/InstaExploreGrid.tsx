@@ -10,16 +10,15 @@ import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
-const PostItem = ({ post, isBig }: { post: PublicInstaPost; isBig: boolean }) => {
+const PostItem = ({ post, className }: { post: PublicInstaPost; className: string }) => {
   const isReel = post.mediaType === 'VIDEO';
-  const span = isBig ? 'col-span-2 row-span-2' : isReel ? 'row-span-2' : '';
-
+  
   return (
     <a
       href={post.permalink}
       target="_blank"
       rel="noopener noreferrer"
-      className={cn('relative group overflow-hidden', span)}
+      className={cn('relative group overflow-hidden', className)}
     >
       {isReel ? (
         <video
@@ -56,7 +55,7 @@ export default function InstaExploreGrid() {
         ? query(
             collection(firestore, 'public_insta_feed'),
             orderBy('rank', 'asc'),
-            limit(20)
+            limit(21)
           )
         : null,
     [firestore]
@@ -83,7 +82,9 @@ export default function InstaExploreGrid() {
                     <div className="grid grid-cols-3 gap-[3px] sm:gap-[4px] grid-flow-dense">
                         {visiblePosts.map((post, i) => {
                             const isBig = i % 10 === 0;
-                            return <PostItem key={post.id} post={post} isBig={isBig} />;
+                            const isReel = post.mediaType === 'VIDEO';
+                            const spanClasses = isBig ? 'col-span-2 row-span-2' : isReel ? 'row-span-2' : '';
+                            return <PostItem key={post.id} post={post} className={spanClasses} />;
                         })}
                     </div>
                 </div>
@@ -93,11 +94,6 @@ export default function InstaExploreGrid() {
                     #KopiDua<span className="text-primary">Darjat</span> on Instagram
                     </h2>
                     <p className="text-gray-400 mt-4 mb-4">No posts available right now.</p>
-                    <Button asChild>
-                        <Link href="/admin/data-seeding">
-                            Seed Sample Posts
-                        </Link>
-                    </Button>
                 </div>
             )}
             {visiblePosts && visiblePosts.length > 0 && (
