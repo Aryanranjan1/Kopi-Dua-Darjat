@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useCallback } from 'react';
@@ -8,41 +7,56 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useFirestore } from '@/firebase';
-import { doc, getDoc } from 'firebase/firestore';
-
-// Assuming your JSON structure and content types are consistent
-import placeholderImagesData from '@/lib/placeholder-images.json';
+import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
 import MediaGrid from './(components)/MediaGrid';
+
+// Data from JSON files
+import placeholderImagesData from '@/lib/placeholder-images.json';
+import { outlets as hardcodedOutlets } from '@/lib/data';
+
 
 type MediaAsset = {
   id: string;
   url: string;
-  type: 'image' | 'video';
+  type: 'image' | 'video' | 'icon';
   source: 'json' | 'firestore';
-  path: string; // e.g., 'home.hero.image' or 'placeholderImages[0].imageUrl'
+  path: string;
 };
+
+// Field names that are likely to contain image URLs
+const imageKeys = ['imageUrl', 'coverImage', 'heroImage', 'interiorImage', 'logoLight', 'logoDark', 'favicon', 'image', 'photo', 'profile_photo_url', 'bannerImage', 'defaultImage'];
 
 const extractMediaFromObject = (obj: any, path: string = '', source: 'json' | 'firestore'): MediaAsset[] => {
   let assets: MediaAsset[] = [];
+  if (!obj) return assets;
+
   for (const key in obj) {
-    if (typeof obj[key] === 'object' && obj[key] !== null) {
-      assets = assets.concat(extractMediaFromObject(obj[key], path ? `${path}.${key}` : key, source));
-    } else if (typeof obj[key] === 'string') {
-      const value = obj[key] as string;
-      const isImage = /\.(jpg|jpeg|png|svg|gif|webp)$/i.test(value);
-      const isVideo = /\.(mp4|webm|mov)$/i.test(value);
-      if (isImage || isVideo) {
-        const id = path ? `${path}.${key}` : key;
-        // Exclude menu item images
-        if (!id.startsWith('menu.items')) {
-            assets.push({
-                id,
-                url: value,
-                type: isVideo ? 'video' : 'image',
-                source,
-                path: id
-            });
-        }
+    if (!obj.hasOwnProperty(key)) continue;
+
+    const currentPath = path ? `${path}.${key}` : key;
+    const value = obj[key];
+
+    if (typeof value === 'object' && value !== null) {
+      assets = assets.concat(extractMediaFromObject(value, currentPath, source));
+    } else if (typeof value === 'string' && value.startsWith('http')) {
+      const isImageExtension = /\.(jpg|jpeg|png|svg|gif|webp)$/i.test(value);
+      const isVideoExtension = /\.(mp4|webm|mov)$/i.test(value);
+      const isIconExtension = /\.(ico)$/i.test(value);
+
+      if (imageKeys.includes(key) || isImageExtension || isVideoExtension || isIconExtension) {
+        if (currentPath.includes('menuItems')) continue; // Skip menu item images as requested
+
+        let type: MediaAsset['type'] = 'image';
+        if (isVideoExtension) type = 'video';
+        if (isIconExtension) type = 'icon';
+
+        assets.push({
+          id: currentPath,
+          url: value,
+          type: type,
+          source,
+          path: currentPath,
+        });
       }
     }
   }
@@ -63,17 +77,19 @@ export default function MediaPage() {
 
     let foundAssets: MediaAsset[] = [];
 
-    // 1. Scan hardcoded JSON
-    foundAssets = foundAssets.concat(extractMediaFromObject(placeholderImagesData, 'placeholderImages', 'json'));
+    // 1. Scan hardcoded JSON files
+    foundAssets = foundAssets.concat(extractMediaFromObject(placeholderImagesData, 'placeholderImages.json', 'json'));
+    foundAssets = foundAssets.concat(extractMediaFromObject({hardcodedOutlets}, 'data.ts', 'json'));
 
-
-    // 2. Scan Firestore database
+    // 2. Scan Firestore database collections
     if (firestore) {
+      const collectionsToScan = ['blogs', 'outlets', 'menuCategories', 'promotions', 'settings', 'testimonials'];
       try {
-        const docRef = doc(firestore, 'website_content', 'main');
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          foundAssets = foundAssets.concat(extractMediaFromObject(docSnap.data(), 'website_content', 'firestore'));
+        for (const collectionName of collectionsToScan) {
+          const snapshot = await getDocs(collection(firestore, collectionName));
+          snapshot.forEach(document => {
+            foundAssets = foundAssets.concat(extractMediaFromObject(document.data(), `${collectionName}.${document.id}`, 'firestore'));
+          });
         }
       } catch (error) {
         console.error("Error fetching Firestore media:", error);
@@ -81,9 +97,8 @@ export default function MediaPage() {
       }
     }
     
-    // Remove duplicates based on a unique key (e.g., path)
+    // Remove duplicates based on a unique key (path)
     const uniqueAssets = Array.from(new Map(foundAssets.map(item => [item.path, item])).values());
-
 
     setAllMedia(uniqueAssets);
     setIsLoading(false);
@@ -92,8 +107,10 @@ export default function MediaPage() {
 
   // Initial scan on component mount
   React.useEffect(() => {
-    scanForMedia();
-  }, [scanForMedia]);
+    if(firestore) {
+      scanForMedia();
+    }
+  }, [firestore, scanForMedia]);
 
   const filteredMedia = React.useMemo(() => {
     if (!searchQuery) return allMedia;
