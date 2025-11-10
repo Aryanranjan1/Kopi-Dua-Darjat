@@ -14,13 +14,13 @@ export default function MenuPage() {
     const firestore = useFirestore();
 
     const groupsQuery = useMemoFirebase(
-      () => firestore ? query(collection(firestore, 'menuGroups'), orderBy('displayOrder')) : null,
+      () => firestore ? query(collection(firestore, 'menuGroups'), where('status', '==', 'published'), orderBy('displayOrder')) : null,
       [firestore]
     );
     const { data: menuGroups, isLoading: isLoadingGroups } = useCollection<MenuGroup>(groupsQuery);
 
     const categoriesQuery = useMemoFirebase(
-      () => firestore ? query(collection(firestore, 'menuCategories'), orderBy('displayOrder')) : null,
+      () => firestore ? query(collection(firestore, 'menuCategories'), where('status', '==', 'published'), orderBy('displayOrder')) : null,
       [firestore]
     );
     const { data: categories, isLoading: isLoadingCategories } = useCollection<MenuCategory>(categoriesQuery);
@@ -116,6 +116,7 @@ export default function MenuPage() {
                     <>
                         {menuGroups?.map((group, index) => {
                             const groupCategories = getCategoriesByGroupId(group.id);
+                            if (groupCategories.length === 0) return null; // Don't render group if it has no visible categories
                             return (
                             <div key={group.id}>
                                 <section className="container mx-auto px-4">
@@ -123,15 +124,19 @@ export default function MenuPage() {
                                         {group.name}
                                     </h2>
                                     <div className="space-y-12">
-                                        {groupCategories.map(cat => (
-                                            <MenuCarousel 
-                                                key={cat.id}
-                                                title={cat.name}
-                                                items={getItemsByCategoryId(cat.id)}
-                                                promotions={promotions}
-                                                dailySpecials={dailySpecials}
-                                            />
-                                        ))}
+                                        {groupCategories.map(cat => {
+                                            const categoryItems = getItemsByCategoryId(cat.id);
+                                            if (categoryItems.length === 0) return null; // Don't render category if it has no items
+                                            return (
+                                                <MenuCarousel 
+                                                    key={cat.id}
+                                                    title={cat.name}
+                                                    items={categoryItems}
+                                                    promotions={promotions}
+                                                    dailySpecials={dailySpecials}
+                                                />
+                                            )
+                                        })}
                                     </div>
                                 </section>
                                 {index === 0 && <AddonsSection />}
