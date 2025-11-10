@@ -3,7 +3,7 @@
 
 import React, { useMemo } from 'react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, query, where, orderBy, limit } from 'firebase/firestore';
+import { collection, query, orderBy, limit } from 'firebase/firestore';
 import { Loader2, Instagram as InstagramIcon } from 'lucide-react';
 import type { PublicInstaPost } from '@/lib/types';
 import { Button } from '../ui/button';
@@ -55,7 +55,6 @@ export default function InstaExploreGrid() {
       firestore
         ? query(
             collection(firestore, 'public_insta_feed'),
-            where('visible', '==', true),
             orderBy('rank', 'asc'),
             limit(20)
           )
@@ -63,6 +62,11 @@ export default function InstaExploreGrid() {
     [firestore]
   );
   const { data: posts, isLoading } = useCollection<PublicInstaPost>(instaQuery);
+
+  const visiblePosts = useMemo(() => {
+    if (!posts) return [];
+    return posts.filter(post => post.visible);
+  }, [posts]);
 
   return (
     <section className="bg-black py-24 sm:py-32">
@@ -74,10 +78,10 @@ export default function InstaExploreGrid() {
                 <div className="flex justify-center items-center h-64">
                     <Loader2 className="w-12 h-12 text-primary animate-spin" />
                 </div>
-                ) : posts && posts.length > 0 ? (
+                ) : visiblePosts && visiblePosts.length > 0 ? (
                 <div className="bg-neutral-950/80 p-1 md:p-2 rounded-[2rem] overflow-hidden shadow-inner border border-neutral-800">
                     <div className="grid grid-cols-3 gap-[3px] sm:gap-[4px] grid-flow-dense">
-                        {posts.map((post, i) => {
+                        {visiblePosts.map((post, i) => {
                             const isBig = i % 10 === 0;
                             return <PostItem key={post.id} post={post} isBig={isBig} />;
                         })}
@@ -96,7 +100,7 @@ export default function InstaExploreGrid() {
                     </Button>
                 </div>
             )}
-            {posts && posts.length > 0 && (
+            {visiblePosts && visiblePosts.length > 0 && (
                 <div className="mt-12 text-center">
                     <Button asChild variant="outline" className="rounded-full border-white/50 text-white hover:bg-white hover:text-black">
                         <a href="https://www.instagram.com/explore/tags/kopiduadarjat/" target="_blank" rel="noopener noreferrer">
