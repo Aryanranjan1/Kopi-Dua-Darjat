@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useCallback } from 'react';
@@ -11,7 +12,6 @@ import { doc, getDoc } from 'firebase/firestore';
 
 // Assuming your JSON structure and content types are consistent
 import placeholderImagesData from '@/lib/placeholder-images.json';
-import { siteContentData } from '@/lib/site-content';
 import MediaGrid from './(components)/MediaGrid';
 
 type MediaAsset = {
@@ -65,7 +65,6 @@ export default function MediaPage() {
 
     // 1. Scan hardcoded JSON
     foundAssets = foundAssets.concat(extractMediaFromObject(placeholderImagesData, 'placeholderImages', 'json'));
-    foundAssets = foundAssets.concat(extractMediaFromObject(siteContentData, 'siteContent', 'json'));
 
 
     // 2. Scan Firestore database

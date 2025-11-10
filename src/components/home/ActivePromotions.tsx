@@ -72,8 +72,8 @@ export default function ActivePromotions() {
             {/* Card 3: Stay Informed */}
             <AnimateOnScroll animationType="slideInFromRight" amount={0.5} delay={0.2}>
               <Card className="bg-zinc-900 shadow-lg rounded-3xl p-6 sm:p-8 flex flex-col justify-between min-h-[220px] sm:min-h-[210px] relative overflow-hidden">
-                  {isLoadingCommunity ? <Skeleton className="absolute bottom-0 right-0 h-3/4 w-1/2"/> : communityImage && (
-                      <div className="absolute bottom-0 right-0 h-full w-1/2 sm:h-3/4 sm:w-1/2">
+                  {isLoadingCommunity ? <Skeleton className="absolute bottom-0 right-0 h-full w-1/2"/> : communityImage && (
+                      <div className="absolute bottom-0 right-0 h-full w-1/2">
                           <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900 to-transparent"></div>
                           <Image
                               src={communityImage.imageUrl}
