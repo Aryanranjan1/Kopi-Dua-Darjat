@@ -4,54 +4,47 @@
 import React, { useMemo } from 'react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, where, orderBy, limit } from 'firebase/firestore';
-import { Loader2, Instagram as InstagramIcon, ArrowDown } from 'lucide-react';
+import { Loader2, Instagram as InstagramIcon } from 'lucide-react';
 import type { PublicInstaPost } from '@/lib/types';
 import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
-const PostItem = ({ post }: { post: PublicInstaPost }) => {
-  const isVideo = post.mediaType === 'VIDEO';
+const PostItem = ({ post, isBig }: { post: PublicInstaPost; isBig: boolean }) => {
+  const isReel = post.mediaType === 'VIDEO';
+  const span = isBig ? 'col-span-2 row-span-2' : isReel ? 'row-span-2' : '';
 
   return (
-    <div
-      className={cn(
-        'group relative overflow-hidden rounded-lg',
-        isVideo ? 'sm:row-span-2' : ''
-      )}
+    <a
+      href={post.permalink}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={cn('relative group overflow-hidden', span)}
     >
-      <a
-        href={post.permalink}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="block h-full w-full"
-      >
-        {isVideo ? (
-          <video
-            src={post.mediaUrl}
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-          />
-        ) : (
-          <img
-            src={post.mediaUrl}
-            alt={post.caption || `Instagram post by ${post.username}`}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-          />
-        )}
-        <div className="absolute inset-0 bg-black/0 transition-all duration-300 group-hover:bg-black/50"></div>
-        <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-          <InstagramIcon className="mb-2 h-8 w-8" />
-          <span className="text-sm font-bold">@{post.username}</span>
-          <p className="mt-1 line-clamp-2 text-xs text-white/80">
-            {post.caption}
-          </p>
+      {isReel ? (
+        <video
+          src={post.mediaUrl}
+          muted
+          loop
+          playsInline
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          onMouseEnter={(e) => e.currentTarget.play()}
+          onMouseLeave={(e) => e.currentTarget.pause()}
+        />
+      ) : (
+        <img
+          src={post.mediaUrl}
+          alt={post.caption || `Instagram post by ${post.username}`}
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+        />
+      )}
+      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition flex items-end p-3">
+        <div className="opacity-0 group-hover:opacity-100 transition text-white text-xs">
+          <p className="font-semibold">@{post.username}</p>
+          <p className="line-clamp-2">{post.caption}</p>
         </div>
-      </a>
-    </div>
+      </div>
+    </a>
   );
 };
 
@@ -62,6 +55,8 @@ export default function InstaExploreGrid() {
       firestore
         ? query(
             collection(firestore, 'public_insta_feed'),
+            where('visible', '==', true),
+            orderBy('pinned', 'desc'),
             orderBy('rank', 'asc'),
             limit(20)
           )
@@ -70,51 +65,49 @@ export default function InstaExploreGrid() {
   );
   const { data: posts, isLoading } = useCollection<PublicInstaPost>(instaQuery);
 
-  const visiblePosts = useMemo(() => {
-    if (!posts) return [];
-    return posts.filter(post => post.visible);
-  }, [posts]);
-
   return (
-    <section style={{ backgroundColor: '#fde047' }} className="px-4 sm:px-6 py-24 sm:py-32">
-      <div className="container mx-auto">
-        <h2 className="text-center font-headline text-4xl font-bold text-foreground md:text-5xl uppercase underline decoration-black decoration-4 underline-offset-8 mb-20 sm:mb-16">
-            #KOPIDUADARJAT
-        </h2>
-        {isLoading ? (
-          <div className="flex justify-center items-center h-64">
-            <Loader2 className="w-12 h-12 text-primary animate-spin" />
-          </div>
-        ) : visiblePosts && visiblePosts.length > 0 ? (
-           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 auto-rows-[250px] grid-flow-row-dense">
-            {visiblePosts.map((post) => (
-              <PostItem key={post.id} post={post} />
-            ))}
-          </div>
-        ) : (
-          <div className="flex flex-col items-center py-10 text-center">
-            <h2 className="text-center font-headline text-3xl font-bold text-foreground md:text-4xl">
-              #KopiDua<span className="text-primary">Darjat</span> on Instagram
+    <section className="bg-black py-24 sm:py-32">
+        <div className="container mx-auto">
+            <h2 className="text-center font-headline text-4xl font-bold text-primary md:text-5xl uppercase underline decoration-white decoration-4 underline-offset-8 mb-12">
+                #KOPIDUADARJAT
             </h2>
-            <p className="text-gray-500 mt-4 mb-4">No posts available right now.</p>
-             <Button asChild>
-                <Link href="/admin/data-seeding">
-                    Seed Sample Posts
-                </Link>
-            </Button>
-          </div>
-        )}
-        {visiblePosts && visiblePosts.length > 0 && (
-            <div className="mt-12 text-center">
-                <Button asChild variant="outline" className="rounded-full border-foreground/50 text-foreground hover:bg-foreground hover:text-background">
-                    <a href="https://www.instagram.com/explore/tags/kopiduadarjat/" target="_blank" rel="noopener noreferrer">
-                        Show More on Instagram
-                         <ArrowDown className="ml-2 h-4 w-4" />
-                    </a>
-                </Button>
-            </div>
-        )}
-      </div>
+             {isLoading ? (
+                <div className="flex justify-center items-center h-64">
+                    <Loader2 className="w-12 h-12 text-primary animate-spin" />
+                </div>
+                ) : posts && posts.length > 0 ? (
+                <div className="bg-neutral-950/80 p-1 md:p-2 rounded-[2rem] overflow-hidden shadow-inner border border-neutral-800">
+                    <div className="grid grid-cols-3 gap-[3px] sm:gap-[4px] grid-flow-dense">
+                        {posts.map((post, i) => {
+                            const isBig = i % 10 === 0;
+                            return <PostItem key={post.id} post={post} isBig={isBig} />;
+                        })}
+                    </div>
+                </div>
+                ) : (
+                <div className="flex flex-col items-center py-10 text-center text-white">
+                    <h2 className="text-center font-headline text-3xl font-bold md:text-4xl">
+                    #KopiDua<span className="text-primary">Darjat</span> on Instagram
+                    </h2>
+                    <p className="text-gray-400 mt-4 mb-4">No posts available right now.</p>
+                    <Button asChild>
+                        <Link href="/admin/data-seeding">
+                            Seed Sample Posts
+                        </Link>
+                    </Button>
+                </div>
+            )}
+            {posts && posts.length > 0 && (
+                <div className="mt-12 text-center">
+                    <Button asChild variant="outline" className="rounded-full border-white/50 text-white hover:bg-white hover:text-black">
+                        <a href="https://www.instagram.com/explore/tags/kopiduadarjat/" target="_blank" rel="noopener noreferrer">
+                            Follow on Instagram
+                        </a>
+                    </Button>
+                </div>
+            )}
+        </div>
     </section>
   );
 }
+
