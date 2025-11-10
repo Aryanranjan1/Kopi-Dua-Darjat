@@ -81,9 +81,16 @@ export default function InstaExploreGrid() {
                 <div className="bg-neutral-950/80 p-1 md:p-2 rounded-[2rem] overflow-hidden shadow-inner border border-neutral-800">
                     <div className="grid grid-cols-3 gap-[3px] sm:gap-[4px] grid-flow-dense">
                         {visiblePosts.map((post, i) => {
-                            const isBig = i % 10 === 0;
-                            const isReel = post.mediaType === 'VIDEO';
-                            const spanClasses = isBig ? 'col-span-2 row-span-2' : isReel ? 'row-span-2' : '';
+                           // This new logic distributes larger items more evenly to help the dense packing algorithm.
+                           const isReel = post.mediaType === 'VIDEO';
+                           // Every 7th item is big, which is a better pattern for a 3-column grid.
+                           const isBig = i % 7 === 0;
+
+                           const spanClasses = isBig
+                            ? 'col-span-2 row-span-2'
+                            : isReel
+                            ? 'row-span-2'
+                            : '';
                             return <PostItem key={post.id} post={post} className={spanClasses} />;
                         })}
                     </div>
