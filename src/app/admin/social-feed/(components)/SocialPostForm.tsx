@@ -24,6 +24,7 @@ import { useFirestore } from '@/firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import type { PublicInstaPost } from '@/lib/types';
 import { useEffect } from 'react';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface SocialPostFormProps {
   post?: PublicInstaPost;
@@ -104,93 +105,97 @@ export default function SocialPostForm({ post, onSuccess }: SocialPostFormProps)
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="id"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Post ID</FormLabel>
-              <FormControl><Input {...field} className={inputStyles} readOnly={!!post} /></FormControl>
-              <FormDescription>A unique ID for the post. Cannot be changed after creation.</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="mediaUrl"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Media URL</FormLabel>
-              <FormControl><Input type="url" placeholder="https://..." {...field} className={inputStyles} /></FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="mediaType"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Media Type</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl><SelectTrigger className={inputStyles}><SelectValue /></SelectTrigger></FormControl>
-                <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                  <SelectItem value="IMAGE">Image</SelectItem>
-                  <SelectItem value="VIDEO">Video</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-         <FormField
-          control={form.control}
-          name="permalink"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Instagram Post URL (Permalink)</FormLabel>
-              <FormControl><Input type="url" placeholder="https://www.instagram.com/p/..." {...field} className={inputStyles} /></FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl><Input placeholder="@username" {...field} className={inputStyles} /></FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="caption"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Caption</FormLabel>
-              <FormControl><Textarea placeholder="Post caption text..." {...field} className={inputStyles} /></FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="flex items-center gap-8">
-            <FormField control={form.control} name="visible" render={({ field }) => (
-                <FormItem className="flex items-center gap-2 space-y-0">
-                    <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
-                    <FormLabel>Visible</FormLabel>
+        <ScrollArea className="h-[60vh] pr-6">
+          <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Post ID</FormLabel>
+                  <FormControl><Input {...field} className={inputStyles} readOnly={!!post} /></FormControl>
+                  <FormDescription>A unique ID for the post. Cannot be changed after creation.</FormDescription>
+                  <FormMessage />
                 </FormItem>
-            )} />
-             <FormField control={form.control} name="pinned" render={({ field }) => (
-                <FormItem className="flex items-center gap-2 space-y-0">
-                    <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
-                    <FormLabel>Pinned</FormLabel>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="mediaUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Media URL</FormLabel>
+                  <FormControl><Input type="url" placeholder="https://..." {...field} className={inputStyles} /></FormControl>
+                  <FormMessage />
                 </FormItem>
-            )} />
-        </div>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="mediaType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Media Type</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl><SelectTrigger className={inputStyles}><SelectValue /></SelectTrigger></FormControl>
+                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                      <SelectItem value="IMAGE">Image</SelectItem>
+                      <SelectItem value="VIDEO">Video</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="permalink"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Instagram Post URL (Permalink)</FormLabel>
+                  <FormControl><Input type="url" placeholder="https://www.instagram.com/p/..." {...field} className={inputStyles} /></FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl><Input placeholder="@username" {...field} className={inputStyles} /></FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="caption"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Caption</FormLabel>
+                  <FormControl><Textarea placeholder="Post caption text..." {...field} className={inputStyles} /></FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="flex items-center gap-8">
+                <FormField control={form.control} name="visible" render={({ field }) => (
+                    <FormItem className="flex items-center gap-2 space-y-0">
+                        <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                        <FormLabel>Visible</FormLabel>
+                    </FormItem>
+                )} />
+                <FormField control={form.control} name="pinned" render={({ field }) => (
+                    <FormItem className="flex items-center gap-2 space-y-0">
+                        <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                        <FormLabel>Pinned</FormLabel>
+                    </FormItem>
+                )} />
+            </div>
+          </div>
+        </ScrollArea>
 
 
         <Button type="submit" disabled={isSubmitting} className="w-full">
