@@ -8,7 +8,7 @@ import type { PublicInstaPost } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Search, Trash, Pin, PinOff, Eye, EyeOff, PlusCircle } from 'lucide-react';
+import { Loader2, Search, Trash, Pin, PinOff, Eye, EyeOff, PlusCircle, Database } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -63,6 +63,7 @@ export default function SocialFeedManager() {
     const [searchQuery, setSearchQuery] = useState('');
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [selectedPost, setSelectedPost] = useState<PublicInstaPost | undefined>(undefined);
+    const [isSeeding, setIsSeeding] = useState(false);
     
     const feedQuery = useMemoFirebase(
         () => firestore ? query(collection(firestore, 'public_insta_feed'), orderBy('rank', 'asc')) : null,
@@ -106,6 +107,60 @@ export default function SocialFeedManager() {
         setIsDialogOpen(true);
     };
 
+    const handleSeedPosts = async () => {
+      if (!firestore) {
+        toast({ variant: 'destructive', title: 'Error', description: 'Firestore is not initialized.' });
+        return;
+      }
+      setIsSeeding(true);
+      try {
+        const batch = writeBatch(firestore);
+        const collectionRef = collection(firestore, 'public_insta_feed');
+        const captions = [
+            "Kopi time! ☕ #kopiduadarjat",
+            "That first sip feeling. #kopi",
+            "Mid-day refuel. #coffeebreak",
+            "Heritage in a cup. ✨",
+            "Our favorite way to start the day.",
+        ];
+
+        for (let i = 1; i <= 20; i++) {
+            const id = `post_${String(i).padStart(2, '0')}`;
+            const postRef = doc(collectionRef, id);
+            const mediaType = Math.random() > 0.7 ? 'VIDEO' : 'IMAGE';
+            
+            batch.set(postRef, {
+                id,
+                username: "kopiduadarjat",
+                caption: captions[i % captions.length],
+                mediaUrl: mediaType === 'VIDEO' 
+                    ? `https://storage.googleapis.com/static-assets-2321/kdd-video-${(i%3)+1}.mp4`
+                    : `https://picsum.photos/seed/${id}/600/600`,
+                mediaType: mediaType.toUpperCase(),
+                permalink: "https://www.instagram.com/p/mockPostID/",
+                timestamp: new Date().toISOString(),
+                visible: true,
+                pinned: i % 10 === 1, // Pin the first of every 10
+                rank: i,
+                source: "manual",
+            });
+        }
+        
+        await batch.commit();
+        toast({ title: 'Success', description: '20 mock Instagram posts have been seeded.' });
+
+      } catch (error: any) {
+        console.error("Error seeding test Instagram post: ", error);
+        toast({
+          variant: 'destructive',
+          title: 'Seeding Failed',
+          description: `Could not seed test post: ${error.message}`,
+        });
+      } finally {
+        setIsSeeding(false);
+      }
+    }
+
     return (
         <div>
              <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
@@ -118,10 +173,16 @@ export default function SocialFeedManager() {
                         className="pl-9 bg-zinc-800 border-zinc-700"
                     />
                 </div>
-                <Button onClick={handleAddNew} className="w-full sm:w-auto">
-                    <PlusCircle className="mr-2 h-4 w-4" />
-                    Add New Post
-                </Button>
+                <div className="flex w-full sm:w-auto gap-2">
+                    <Button onClick={handleAddNew} className="w-full sm:w-auto">
+                        <PlusCircle className="mr-2 h-4 w-4" />
+                        Add New Post
+                    </Button>
+                    <Button onClick={handleSeedPosts} disabled={isSeeding} variant="outline" className="w-full sm:w-auto">
+                        {isSeeding ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Database className="mr-2 h-4 w-4" />}
+                        Seed Posts
+                    </Button>
+                </div>
             </div>
             
             {isLoading ? (
@@ -136,7 +197,7 @@ export default function SocialFeedManager() {
                 </div>
             )}
             {filteredPosts.length === 0 && !isLoading && (
-                <p className="text-center text-zinc-500 py-16">No posts found. Click 'Add New Post' to get started.</p>
+                <p className="text-center text-zinc-500 py-16">No posts found. Click 'Seed Posts' to add sample data or 'Add New Post' to create one manually.</p>
             )}
 
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
