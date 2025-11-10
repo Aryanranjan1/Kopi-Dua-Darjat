@@ -56,7 +56,6 @@ export default function InstaExploreGrid() {
         ? query(
             collection(firestore, 'public_insta_feed'),
             where('visible', '==', true),
-            orderBy('pinned', 'desc'),
             orderBy('rank', 'asc'),
             limit(20)
           )
