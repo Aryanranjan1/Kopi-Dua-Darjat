@@ -82,8 +82,15 @@ export default function InstaExploreGrid() {
                     <div className="grid grid-cols-3 gap-[3px] sm:gap-[4px] grid-flow-dense">
                         {visiblePosts.map((post, i) => {
                            const isReel = post.mediaType === 'VIDEO';
-                           // Let's only make videos taller to simplify the layout and ensure no gaps.
-                           const spanClasses = isReel ? 'row-span-2' : '';
+                           // A more robust pattern for placing larger tiles to avoid gaps
+                           const isBig = i === 0 || i === 7;
+
+                           const spanClasses = isBig
+                            ? 'col-span-2 row-span-2'
+                            : isReel
+                            ? 'row-span-2'
+                            : '';
+                            
                            return <PostItem key={post.id} post={post} className={spanClasses} />;
                         })}
                     </div>
