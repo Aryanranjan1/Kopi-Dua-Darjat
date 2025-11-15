@@ -27,9 +27,15 @@ const createSchemaFromObject = (obj: any): z.ZodType<any> => {
     } else if (typeof value === 'boolean') {
       shape[key] = z.boolean().optional();
     } else if (Array.isArray(value)) {
-      if (value.length > 0 && typeof value[0] === 'object') {
-        shape[key] = z.array(createSchemaFromObject(value[0])).optional();
+      if (value.length > 0) {
+        if (typeof value[0] === 'object' && value[0] !== null) {
+          shape[key] = z.array(createSchemaFromObject(value[0])).optional();
+        } else {
+          // Handle array of strings
+          shape[key] = z.array(z.string()).optional();
+        }
       } else {
+        // Default to array of strings if empty
         shape[key] = z.array(z.string()).optional();
       }
     } else if (typeof value === 'object' && value !== null) {
@@ -38,6 +44,7 @@ const createSchemaFromObject = (obj: any): z.ZodType<any> => {
   }
   return z.object(shape);
 };
+
 
 // --- Child Components for Rendering Fields ---
 
@@ -103,19 +110,36 @@ const RenderField = ({ fieldKey, path }: { fieldKey: string, path: string }) => 
     );
 };
 
-const FieldArrayManager = ({ path, objShape }: { path: string, objShape: any }) => {
+const FieldArrayManager = ({ path, objShape, itemShape }: { path: string, objShape: any, itemShape: any }) => {
     const { control } = useFormContext();
     const { fields, append, remove } = useFieldArray({ control, name: path });
 
+    // This is the fix: check if the item is a simple string.
+    const isStringArray = typeof itemShape === 'string';
+    
     return (
         <div className="space-y-4">
             {fields.map((field, index) => (
                 <div key={field.id} className="border border-zinc-700 p-4 rounded-lg space-y-4 relative">
                     <Button type="button" variant="destructive" size="icon" onClick={() => remove(index)} className="absolute top-2 right-2 h-7 w-7"><Trash2 className="h-4 w-4" /></Button>
-                    <RenderObjectFields obj={objShape} pathPrefix={`${path}[${index}]`} />
+                    {isStringArray ? (
+                        <FormField
+                            control={control}
+                            name={`${path}[${index}]`}
+                            render={({ field: stringField }) => (
+                                <FormItem>
+                                    <FormLabel>Item {index + 1}</FormLabel>
+                                    <FormControl><Input {...stringField} className="bg-zinc-800 border-zinc-700 text-white focus-visible:ring-primary" /></FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    ) : (
+                        <RenderObjectFields obj={itemShape} pathPrefix={`${path}[${index}]`} />
+                    )}
                 </div>
             ))}
-            <Button type="button" variant="outline" onClick={() => append(objShape)}><PlusCircle className="mr-2 h-4 w-4" /> Add Item</Button>
+            <Button type="button" variant="outline" onClick={() => append(isStringArray ? '' : itemShape)}><PlusCircle className="mr-2 h-4 w-4" /> Add Item</Button>
         </div>
     );
 };
@@ -128,7 +152,8 @@ const RenderObjectFields = ({ obj, pathPrefix = '' }: { obj: any, pathPrefix?: s
                 const value = obj[key];
 
                 if (Array.isArray(value)) {
-                    return <FieldArrayManager key={currentPath} path={currentPath} objShape={value[0] || {}} />;
+                    // Pass the shape of the array item (e.g., a string or an object)
+                    return <FieldArrayManager key={currentPath} path={currentPath} objShape={value} itemShape={value[0]} />;
                 }
                 
                 if (typeof value === 'object' && value !== null) {
@@ -185,4 +210,3 @@ export default function ContentForm({ initialData, onFormSubmit }: ContentFormPr
     </FormProvider>
   );
 }
-
