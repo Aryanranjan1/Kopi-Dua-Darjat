@@ -65,7 +65,7 @@ export default function Community() {
               }
               if (item.type === 'quote') {
                 return (
-                  <AnimateOnScroll key={item.id} className={cn('aspect-square rounded-2xl p-6 sm:p-8 flex flex-col justify-between', item.bgColor, item.textColor, item.className)} delay={delay}>
+                  <AnimateOnScroll key={item.id} className={cn('rounded-2xl p-6 sm:p-8 flex flex-col justify-between', item.bgColor, item.textColor, item.className, item.className?.includes('sm:col-span-2') ? 'aspect-[2/1]' : 'aspect-square')} delay={delay}>
                     <div>
                       <p className="text-4xl font-serif">"</p>
                       <p className="text-base md:text-lg font-medium">{item.quote}</p>
