@@ -19,15 +19,18 @@ import { useMediaAsset } from '@/lib/media';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
-  const { asset: image, isLoading } = useMediaAsset(testimonial.image);
+  const { asset: image, isLoading: isLoadingImage } = useMediaAsset(testimonial.image);
+  const { asset: companyLogo, isLoading: isLoadingLogo } = useMediaAsset('logo-symbol');
   
+  const isLoading = isLoadingImage || isLoadingLogo;
+
   return (
     <Card className="bg-white border-zinc-200 rounded-3xl h-full shadow-sm flex flex-col mx-2">
         <CardContent className="p-8 flex flex-col flex-grow">
           <div className="flex justify-between items-start mb-4">
             <div className="flex items-center gap-4">
               <div className="relative w-14 h-14 rounded-full overflow-hidden">
-                  {isLoading ? <Skeleton className="w-full h-full" /> : image && (
+                  {isLoading ? <Skeleton className="w-full h-full rounded-full" /> : image && (
                       <Image
                           src={image.imageUrl}
                           alt={testimonial.name}
@@ -43,7 +46,9 @@ const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
             </div>
              <div className="flex items-center gap-2 border rounded-full px-3 py-1 text-sm">
                <div className="w-12 h-12 relative">
-                <Image src="/image/1.svg" alt="Company Logo" fill className="object-contain p-2 filter grayscale" />
+                {isLoading ? <Skeleton className="w-full h-full rounded-full" /> : companyLogo && (
+                  <Image src={companyLogo.imageUrl} alt="Company Logo" fill className="object-contain p-2 filter grayscale" data-ai-hint={companyLogo.imageHint} />
+                )}
                </div>
                <span className="font-semibold text-zinc-600">{testimonial.company || 'KDD Franchise'}</span>
              </div>

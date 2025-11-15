@@ -344,5 +344,3 @@ export interface InstagramSyncSettings {
     graph_access_token?: string | null;
     graph_account_id?: string | null;
 }
-
-    

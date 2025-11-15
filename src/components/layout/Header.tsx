@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -16,7 +17,8 @@ import {
 } from '@/components/ui/sheet';
 import Image from 'next/image';
 import { useSettings } from './SettingsProvider';
-import { Logo } from './Logo';
+import { useMediaAsset } from '@/lib/media';
+import { Skeleton } from '../ui/skeleton';
 
 const navItems = [
   { title: 'Home', href: '/' },
@@ -29,6 +31,8 @@ const navItems = [
 export default function Header() {
   const pathname = usePathname();
   const { settings } = useSettings();
+  const { asset: logoAsset, isLoading: isLogoLoading } = useMediaAsset('logo-symbol-dark');
+
   const [isScrolled, setIsScrolled] = React.useState(false);
   const [isHidden, setIsHidden] = React.useState(false);
   const lastScrollY = React.useRef(0);
@@ -60,7 +64,9 @@ export default function Header() {
       <div className="container mx-auto px-6 h-20 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="p-0 m-0 h-20 flex items-center">
-             <Image src="/image/1.svg" alt="Kopi Dua Darjat Logo" width={80} height={80} className="object-contain filter brightness-0" />
+            {isLogoLoading ? <Skeleton className="h-16 w-16" /> : logoAsset && (
+              <Image src={logoAsset.imageUrl} alt="Kopi Dua Darjat Logo" width={80} height={80} className="object-contain" data-ai-hint={logoAsset.imageHint}/>
+            )}
         </Link>
 
 
@@ -106,7 +112,9 @@ export default function Header() {
                     </SheetHeader>
                     <div className="flex flex-col h-full p-4">
                         <Link href="/" className="h-20 flex items-center p-0 m-0">
-                           <Logo />
+                           {isLogoLoading ? <Skeleton className="h-16 w-16" /> : logoAsset && (
+                              <Image src={logoAsset.imageUrl} alt="Kopi Dua Darjat Logo" width={80} height={80} data-ai-hint={logoAsset.imageHint}/>
+                            )}
                         </Link>
                         <div className="flex flex-col space-y-4 mt-8">
                             {navItems.map((item) => (

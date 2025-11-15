@@ -1,15 +1,19 @@
 
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { Facebook, Instagram, Twitter, Music2 } from 'lucide-react';
 import InteractiveMap from '../home/InteractiveMap';
 import { Card } from '../ui/card';
 import { useSettings } from './SettingsProvider';
-import { Logo } from './Logo';
+import { useMediaAsset } from '@/lib/media';
+import { Skeleton } from '../ui/skeleton';
 
 export default function SiteFooter() {
   const { settings } = useSettings();
   const currentYear = new Date().getFullYear();
+  const { asset: logoAsset, isLoading: isLogoLoading } = useMediaAsset('logo-symbol');
 
   return (
     <footer className="bg-black text-white">
@@ -56,7 +60,9 @@ export default function SiteFooter() {
           </div>
           <div className="md:col-span-1 flex items-center justify-center">
              <div className="relative w-60 h-60">
-                <Image src="/image/1.svg" alt="Kopi Dua Darjat Logo" fill className="object-contain" />
+                {isLogoLoading ? <Skeleton className="w-full h-full rounded-full" /> : logoAsset && (
+                  <Image src={logoAsset.imageUrl} alt="Kopi Dua Darjat Logo" fill className="object-contain" data-ai-hint={logoAsset.imageHint} />
+                )}
               </div>
           </div>
         </div>

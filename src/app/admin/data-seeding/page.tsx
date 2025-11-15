@@ -8,7 +8,7 @@ import { useFirestore } from '@/firebase';
 import { collection, writeBatch, getDocs, doc, setDoc, Timestamp } from 'firebase/firestore';
 import { blogSeedData, outlets as outletSeedData, menuGroups, menuCategories, menuItems, promotions, testimonialSeedData, communityItemsSeedData } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, BookOpen, AlertTriangle, Instagram, Database, Users } from 'lucide-react';
+import { Loader2, BookOpen, AlertTriangle, Instagram, Database, Users, Image as ImageIcon } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,6 +21,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import type { Review, Testimonial } from '@/lib/types';
+import { seedMediaData } from '@/lib/media';
 
 
 export default function DataSeedingPage() {
@@ -28,6 +29,7 @@ export default function DataSeedingPage() {
   const [isInstaLoading, setIsInstaLoading] = useState(false);
   const [isCommunityLoading, setIsCommunityLoading] = useState(false);
   const [isMasterLoading, setIsMasterLoading] = useState(false);
+  const [isMediaLoading, setIsMediaLoading] = useState(false);
   const firestore = useFirestore();
   const { toast } = useToast();
 
@@ -250,6 +252,29 @@ export default function DataSeedingPage() {
       }
   }
 
+  const handleSeedMedia = async () => {
+    if (!firestore) {
+      toast({ variant: 'destructive', title: 'Error', description: 'Firestore is not initialized.' });
+      return;
+    }
+    setIsMediaLoading(true);
+    toast({ title: 'Seeding media assets...' });
+    
+    const result = await seedMediaData(firestore);
+
+    if (result.success) {
+      if(result.error === 'already_seeded') {
+        toast({ title: 'Media Already Seeded', description: 'No new media assets were added.' });
+      } else {
+        toast({ title: 'Media Seeding Complete!', description: `${result.count} media assets have been added to Firestore.` });
+      }
+    } else {
+      toast({ variant: 'destructive', title: 'Media Seeding Failed', description: result.error });
+    }
+    
+    setIsMediaLoading(false);
+  }
+
   return (
     <div className="space-y-8">
        <h1 className="text-3xl font-headline font-bold text-white">Master Data Seeding Tool</h1>
@@ -299,7 +324,7 @@ export default function DataSeedingPage() {
             </CardContent>
         </Card>
         
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card className="bg-zinc-900 border-zinc-800 text-white">
             <CardHeader>
                 <CardTitle className="flex items-center gap-2"><BookOpen /> Blog Post Seeder</CardTitle>
@@ -372,11 +397,26 @@ export default function DataSeedingPage() {
                 </Button>
             </CardContent>
         </Card>
+        
+        <Card className="bg-zinc-900 border-zinc-800 text-white">
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2"><ImageIcon /> Media Asset Seeder</CardTitle>
+                <CardDescription className="text-zinc-400">
+                Seed all static images into the 'media' collection in Firestore.
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                <Button onClick={handleSeedMedia} className="w-full sm:w-auto" disabled={isMediaLoading}>
+                    {isMediaLoading ? (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                        <ImageIcon className="mr-2 h-4 w-4" />
+                    )}
+                    Seed Media Assets
+                </Button>
+            </CardContent>
+        </Card>
         </div>
     </div>
   );
 }
-
-    
-
-    
