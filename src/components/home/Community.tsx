@@ -1,9 +1,9 @@
-
 'use client';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { Plus } from 'lucide-react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
+import { siteContentData } from '@/lib/site-content';
 
 const communityData = [
   {
@@ -79,15 +79,17 @@ const communityData = [
 ];
 
 export default function Community() {
+  const { title, subtitle } = siteContentData.home.community;
+
   return (
     <section className="py-24 sm:py-32 bg-white">
       <div className="container mx-auto px-4 sm:px-6">
         <AnimateOnScroll className="text-center max-w-3xl mx-auto mb-12 md:mb-16">
           <h2 className="text-4xl md:text-5xl font-bold font-headline text-black">
-            Brewing Community, One Cup at a Time
+            {title}
           </h2>
           <p className="mt-4 text-base sm:text-lg text-gray-600">
-            From our baristas to our customers, we're a family united by a love for authentic Malaysian coffee.
+            {subtitle}
           </p>
         </AnimateOnScroll>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">

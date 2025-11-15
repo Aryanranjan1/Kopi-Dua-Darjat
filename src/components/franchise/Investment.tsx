@@ -1,4 +1,3 @@
-
 'use client';
 
 import Image from 'next/image';
@@ -7,9 +6,11 @@ import { useMediaAsset } from '@/lib/media';
 import { Button } from '@/components/ui/button';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { Skeleton } from '../ui/skeleton';
+import { siteContentData } from '@/lib/site-content';
 
 export default function Investment() {
   const { asset: stallImage, isLoading } = useMediaAsset('franchise-stall');
+  const { title, subtitle, content, buttonText, buttonLink } = siteContentData.franchise.investment;
 
   return (
     <section className="py-24 sm:py-32 bg-background">
@@ -17,17 +18,14 @@ export default function Investment() {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <AnimateOnScroll animationType="slideInFromLeft" className="text-center lg:text-left">
             <h2 className="text-4xl md:text-5xl font-headline text-primary">
-              Affordable Cost, High Potential
+              {title}
             </h2>
-            <p className="mt-4 text-xl text-muted-foreground">
-              Start your own Kopi Dua Darjat stall with an investment as low as{' '}
-              <span className="font-bold text-accent">RM25,000</span>.
-            </p>
+            <p className="mt-4 text-xl text-muted-foreground" dangerouslySetInnerHTML={{ __html: subtitle.replace('RM25,000', '<span class="font-bold text-accent">RM25,000</span>') }} />
             <p className="mt-4 text-muted-foreground">
-              This includes your kiosk, essential equipment, branding kit, initial stock, and comprehensive training for you and your team. We provide a detailed breakdown in our franchise kit to ensure full transparency.
+              {content}
             </p>
             <Button asChild size="lg" className="mt-8 rounded-full">
-              <Link href="#">Request Franchise Kit</Link>
+              <Link href={buttonLink}>{buttonText}</Link>
             </Button>
           </AnimateOnScroll>
 

@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from 'next/link';
@@ -13,6 +12,7 @@ import { format } from 'date-fns';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { BookOpen } from 'lucide-react';
 import { useMemo } from 'react';
+import { siteContentData } from '@/lib/site-content';
 
 export default function LatestStories() {
     const firestore = useFirestore();
@@ -21,6 +21,7 @@ export default function LatestStories() {
       [firestore]
     );
     const { data: blogPosts, isLoading: isLoadingBlogs } = useCollection<Blog>(blogsQuery);
+    const { title, buttonText, buttonLink } = siteContentData.home.latestStories;
 
     const sortedBlogPosts = useMemo(() => {
         if (!blogPosts) return [];
@@ -54,20 +55,7 @@ export default function LatestStories() {
     }
     
     if (!sortedBlogPosts || sortedBlogPosts.length === 0) {
-      return (
-          <section className="py-24 sm:py-40 bg-black">
-              <div className="container mx-auto px-6 sm:px-12">
-                  <h2 className="text-4xl md:text-5xl font-headline text-white inline-block underline decoration-primary decoration-4 underline-offset-8 mb-12">Latest Stories</h2>
-                  <Alert className="bg-zinc-900 border-zinc-800 text-white">
-                      <BookOpen className="h-4 w-4" />
-                      <AlertTitle>No Posts to Display</AlertTitle>
-                      <AlertDescription className="text-zinc-400">
-                          This section is ready! To see your blog posts here, make sure they are in the 'blogs' collection in Firestore and have a status of "published".
-                      </AlertDescription>
-                  </Alert>
-              </div>
-          </section>
-      )
+      return null;
     }
 
     const featuredPost = sortedBlogPosts[0];
@@ -78,9 +66,9 @@ export default function LatestStories() {
             <div className="container mx-auto px-6 sm:px-12">
                 <AnimateOnScroll animationType="slideInFromBottom">
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-12">
-                        <h2 className="text-4xl md:text-5xl font-headline text-white inline-block underline decoration-primary decoration-4 underline-offset-8 mb-6 sm:mb-0">Latest Stories</h2>
+                        <h2 className="text-4xl md:text-5xl font-headline text-white inline-block underline decoration-primary decoration-4 underline-offset-8 mb-6 sm:mb-0">{title}</h2>
                         <Button asChild variant="outline" className="rounded-full bg-transparent text-white border-white/50 hover:border-primary hover:text-primary">
-                            <Link href="/news">Read all articles</Link>
+                            <Link href={buttonLink}>{buttonText}</Link>
                         </Button>
                     </div>
                 </AnimateOnScroll>

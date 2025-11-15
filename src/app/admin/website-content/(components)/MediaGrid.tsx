@@ -1,15 +1,16 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useFirestore } from '@/firebase';
 import { doc, updateDoc } from 'firebase/firestore';
 import ImageUpload from '@/components/shared/ImageUpload';
 import { set } from 'lodash';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Pencil, Trash2, Loader2, RefreshCw, Search } from 'lucide-react';
 import Image from 'next/image';
+import { Input } from '@/components/ui/input';
 
 type MediaAsset = {
   id: string;
@@ -40,9 +41,10 @@ const MediaCard = ({ asset, onEdit }: { asset: MediaAsset; onEdit: (asset: Media
   );
 };
 
-export default function MediaGrid({ assets, onUpdate }: { assets: MediaAsset[], onUpdate: () => void }) {
+export default function MediaGrid({ assets, onUpdate, isLoading }: { assets: MediaAsset[], onUpdate: () => void, isLoading: boolean }) {
   const [selectedAsset, setSelectedAsset] = useState<MediaAsset | null>(null);
   const [newUrl, setNewUrl] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const { toast } = useToast();
   const firestore = useFirestore();
 
@@ -60,8 +62,8 @@ export default function MediaGrid({ assets, onUpdate }: { assets: MediaAsset[], 
         return;
       }
       try {
-        const [collectionName, docId] = selectedAsset.path.split('.');
-        const propertyPath = selectedAsset.path.split('.').slice(2).join('.');
+        const [collectionName, docId, ...rest] = selectedAsset.path.split('.');
+        const propertyPath = rest.join('.');
         
         const docRef = doc(firestore, collectionName, docId);
         
@@ -78,7 +80,7 @@ export default function MediaGrid({ assets, onUpdate }: { assets: MediaAsset[], 
         toast({
             variant: 'destructive',
             title: 'Action Not Supported',
-            description: 'Editing hardcoded JSON files is not supported via this interface. Please update the file directly in your codebase.'
+            description: 'Editing hardcoded JSON files is not supported. Please tell me what to change, and I will update the file for you.'
         });
     }
 
@@ -95,17 +97,50 @@ export default function MediaGrid({ assets, onUpdate }: { assets: MediaAsset[], 
         });
   }
 
+  const filteredMedia = React.useMemo(() => {
+    if (!searchQuery) return assets;
+    return assets.filter(item => 
+      item.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.url.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [assets, searchQuery]);
+
   return (
     <>
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
-        {assets.map((asset) => (
-          <MediaCard key={asset.path} asset={asset} onEdit={handleEditClick} />
-        ))}
+      <div className="flex items-center gap-2 mb-4">
+          <div className="relative flex-grow">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+              <Input 
+                  placeholder="Search media by ID or URL..."
+                  className="pl-9 bg-zinc-800 border-zinc-700"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+              />
+          </div>
+          <Button onClick={onUpdate} disabled={isLoading} variant="outline" className="bg-zinc-800 border-zinc-700">
+              {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <RefreshCw className="mr-2 h-4 w-4" />}
+              Refresh
+          </Button>
       </div>
-      
-      {assets.length === 0 && (
-          <p className="text-center text-zinc-500 py-16">No media assets found.</p>
+
+      {isLoading ? (
+          <div className="flex justify-center items-center h-64">
+              <Loader2 className="h-12 w-12 animate-spin text-primary" />
+          </div>
+      ) : (
+        <>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
+                {filteredMedia.map((asset) => (
+                <MediaCard key={asset.path} asset={asset} onEdit={handleEditClick} />
+                ))}
+            </div>
+            
+            {assets.length === 0 && (
+                <p className="text-center text-zinc-500 py-16">No media assets found.</p>
+            )}
+        </>
       )}
+
 
       <Dialog open={!!selectedAsset} onOpenChange={() => setSelectedAsset(null)}>
         <DialogContent className="bg-zinc-900 border-zinc-800 text-white">
@@ -128,15 +163,15 @@ export default function MediaGrid({ assets, onUpdate }: { assets: MediaAsset[], 
                 folderName={`media_library/${selectedAsset?.id || 'general'}`}
             />
           </div>
-           <div className="flex justify-between">
+           <DialogFooter className="justify-between sm:justify-between">
                 <Button variant="destructive" onClick={handleDelete} disabled={selectedAsset?.source === 'json'}>
-                    <Trash2 className="mr-2 h-4 w-4" /> Delete (Not Implemented)
+                    <Trash2 className="mr-2 h-4 w-4" /> Delete
                 </Button>
                 <div className="flex gap-2">
                     <Button variant="ghost" onClick={() => setSelectedAsset(null)}>Cancel</Button>
                     <Button onClick={handleSave} disabled={selectedAsset?.url === newUrl}>Save Changes</Button>
                 </div>
-            </div>
+            </DialogFooter>
         </DialogContent>
       </Dialog>
     </>

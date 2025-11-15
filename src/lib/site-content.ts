@@ -1,0 +1,163 @@
+export const siteContentData = {
+  home: {
+    hero: {
+      title: "Good Coffee for Great Morning",
+      subtitle: "From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor , a golden mix of comfort, creativity, and caffeine confidence.",
+      buttonText: "Find an Outlet",
+      buttonLink: "/outlets",
+    },
+    brandStory: {
+      title: "Antara Warisan & Artisan",
+      content: "Kopi Dua Darjat was born from a simple vision: to honour the rich legacy of Malaysian Kopi Kampung while embracing the meticulous craft of artisan coffee. We bridge generations, serving nostalgic flavours with a modern touch.",
+      buttonText: "Discover Our Story",
+      buttonLink: "/about",
+    },
+    community: {
+        title: "Brewing Community, One Cup at a Time",
+        subtitle: "From our baristas to our customers, we're a family united by a love for authentic Malaysian coffee.",
+    },
+    latestStories: {
+        title: "Latest Stories",
+        buttonText: "Read all articles",
+        buttonLink: "/news",
+    },
+  },
+  about: {
+    hero: {
+        title: "Our Journey, Our Passion",
+        subtitle: "The story of a local brand that hopes to unite authenticity, heritage, and a love for the perfect cup of coffee.",
+    },
+    whoAreWe: {
+        title: "Who Are We?",
+        subtitle: "We are the bridge between Malaysia's rich coffee heritage and modern artisan craft.",
+        content: "Kopi Dua Darjat ('Two-Class Coffee') was founded on a simple idea: to honour the nostalgic taste of traditional Kopi Kampung while elevating it with the quality and care of artisan brewing. We believe that authentic, high-quality coffee should be accessible to everyone. From our humble beginnings as a small stall, we've grown into a nationwide family, but our mission remains the same: to serve a cup of coffee that feels like home, yet excites the senses.",
+    },
+    stats: [
+        {
+            value: 50,
+            label: 'Outlets Nationwide',
+            suffix: '+',
+        },
+        {
+            value: 30,
+            label: 'Happy Franchisees',
+            suffix: '+',
+        },
+        {
+            value: 150,
+            label: 'Signature Drinks',
+            suffix: '+',
+        },
+    ],
+    milestones: {
+        title: "Our Milestones"
+    },
+    founders: {
+        title: "A Message from Our Founders"
+    },
+    visionMission: {
+        visionTitle: "Our Vision",
+        visionText: "To become the most beloved and accessible artisan coffee brand in Southeast Asia.",
+        missionTitle: "Our Mission",
+        missionItems: [
+            "To serve high-quality, ethically-sourced Malaysian coffee that champions local flavors.",
+            "To foster connection and culture in every community we serve, one cup at a time.",
+            "To preserve and promote the rich heritage of Malaysian coffee for future generations.",
+            "To innovate continuously with our products and experiences, empowering local entrepreneurs along the way."
+        ]
+    }
+  },
+  franchise: {
+    hero: {
+        badge: "50+ stalls & growing since 2020",
+        title: "Own Your Kopi Dua Darjat Stall — Brew Success, One Cup at a Time.",
+        subtitle: "We’re expanding our local kopi culture across Malaysia. Join our growing family and serve the taste everyone’s talking about.",
+        primaryButtonText: "Apply for Franchise",
+        primaryButtonLink: "/franchise/apply",
+        secondaryButtonText: "Download Info Pack",
+        secondaryButtonLink: "#",
+    },
+    valueProposition: {
+        title: "The Winning Choice for Your Entrepreneurial Journey",
+        subtitle: "Kopi Dua Darjat isn’t just another coffee brand. We are a movement built on heritage, quality, and community. We offer a proven, profitable, and accessible franchise model designed for your success.",
+        features: [
+            {
+                title: 'Strong Brand Identity',
+                description: 'Trusted by youth and working professionals across Malaysia.',
+            },
+            {
+                title: 'Low Start-up Cost',
+                description: 'Start small and scale fast with our affordable franchise model.',
+            },
+            {
+                title: 'Full Training Provided',
+                description: 'We make barista and operations skills easy to master.',
+            },
+            {
+                title: 'Marketing Support',
+                description: 'We handle social media and brand awareness to drive customers to you.',
+            },
+            {
+                title: 'High Return Potential',
+                description: 'Benefit from a proven business model with high profitability.',
+            },
+        ]
+    },
+    franchiseModel: {
+        title: "How It Works",
+        subtitle: "Our process is transparent and designed to get you started quickly and efficiently.",
+        steps: [
+            {
+              title: 'Apply',
+              description: 'Fill out the form below to express interest.',
+            },
+            {
+              title: 'Interview',
+              description: 'Our team will reach out to discuss your goals.',
+            },
+            {
+              title: 'Setup',
+              description: 'Choose your stall location and start setup.',
+            },
+            {
+              title: 'Launch',
+              description: 'Grand opening with our support and marketing.',
+            },
+            {
+              title: 'Grow',
+              description: 'Continuous support, seasonal menus, and local collabs.',
+            },
+          ]
+    },
+    investment: {
+        title: "Affordable Cost, High Potential",
+        subtitle: "Start your own Kopi Dua Darjat stall with an investment as low as RM25,000.",
+        content: "This includes your kiosk, essential equipment, branding kit, initial stock, and comprehensive training for you and your team. We provide a detailed breakdown in our franchise kit to ensure full transparency.",
+        buttonText: "Request Franchise Kit",
+        buttonLink: "#",
+    },
+    support: {
+        title: "Full Support, From Setup to Sales",
+        subtitle: "We don’t just give you a logo — we teach you the system, supply chain, and marketing that keep sales brewing and customers happy.",
+        items: [
+            'Comprehensive Barista Training',
+            'Stall Operations & Management',
+            'Supply Chain & Inventory Control',
+            'Local & National Marketing Support',
+            'Ongoing Product Innovation'
+        ],
+        buttonText: "Talk to Our Team",
+        buttonLink: "/franchise/apply",
+    },
+    faq: {
+        title: "Frequently Asked Questions",
+        subtitle: "Have questions? We have answers. Here are some of the most common inquiries from potential franchisees.",
+    },
+    finalCta: {
+        title: "Your Stall. Your Story. Your Success.",
+        subtitle: "Ready to become a part of Malaysia's favourite kopi movement? The next success story could be yours.",
+        buttonText: "Become a Partner Today",
+        buttonLink: "/franchise/apply",
+    }
+  }
+};

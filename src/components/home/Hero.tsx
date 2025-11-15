@@ -1,4 +1,3 @@
-
 'use client';
 
 import * as React from 'react';
@@ -10,10 +9,12 @@ import { Button } from '../ui/button';
 import { ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 import { useMediaQuery } from '@/hooks/use-media-query';
+import { siteContentData } from '@/lib/site-content';
 
 const DesktopHero = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const h1Ref = useFitText<HTMLHeadingElement>(containerRef);
+  const { title, subtitle } = siteContentData.home.hero;
 
   return (
     <>
@@ -28,11 +29,11 @@ const DesktopHero = () => {
                     ref={h1Ref}
                     className="font-headline font-extrabold text-foreground leading-[1.05] text-[clamp(2.5rem,10vw,8rem)]"
                     >
-                    Good Coffee for Great Morning
+                    {title}
                     </h1>
                      <div className="max-w-[40%]">
                         <p className="relative z-10 mt-6 text-base sm:text-lg md:text-xl font-body font-bold text-foreground/90 leading-relaxed">
-                            From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor , a golden mix of comfort, creativity, and caffeine confidence.
+                            {subtitle}
                         </p>
                         <AnimateOnScroll animationType="slideInFromLeft" delay={0.2} className="relative mt-8 w-[128px] h-[128px] pointer-events-auto">
                           {/* Frame Image */}
@@ -89,14 +90,16 @@ const DesktopHero = () => {
 };
 
 const MobileHero = () => {
+  const { title, subtitle } = siteContentData.home.hero;
+
   return (
     <div className="container mx-auto px-6 pt-24 pb-20 text-center">
       <AnimateOnScroll>
         <h1 className="font-headline font-extrabold text-foreground leading-tight text-5xl">
-          Good Coffee for Great Mornings
+          {title}
         </h1>
         <p className="mt-4 text-base font-body font-normal text-foreground/80 max-w-md mx-auto leading-relaxed">
-          From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor.
+          {subtitle}
         </p>
       </AnimateOnScroll>
       <AnimateOnScroll delay={0.2} className="mt-8">

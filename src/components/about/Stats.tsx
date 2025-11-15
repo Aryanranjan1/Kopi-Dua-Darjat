@@ -1,10 +1,10 @@
-
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
 import { useInView } from 'framer-motion';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { TrendingUp, Users, Award, MapPin } from 'lucide-react';
+import { siteContentData } from '@/lib/site-content';
 
 const AnimatedCounter = ({ to, duration = 2 }: { to: number; duration?: number }) => {
   const [count, setCount] = useState(0);
@@ -35,28 +35,13 @@ const AnimatedCounter = ({ to, duration = 2 }: { to: number; duration?: number }
   return <span ref={ref}>{count}</span>;
 };
 
-const stats = [
-    {
-        icon: MapPin,
-        value: 50,
-        label: 'Outlets Nationwide',
-        suffix: '+',
-    },
-    {
-        icon: Award,
-        value: 30,
-        label: 'Happy Franchisees',
-        suffix: '+',
-    },
-    {
-        icon: Users,
-        value: 150,
-        label: 'Signature Drinks',
-        suffix: '+',
-    },
-]
+const iconMap: { [key: string]: React.ElementType } = {
+    'Outlets Nationwide': MapPin,
+    'Happy Franchisees': Award,
+    'Signature Drinks': Users,
+};
 
-const StatItem = ({ icon: Icon, value, label, suffix }: (typeof stats)[0]) => (
+const StatItem = ({ icon: Icon, value, label, suffix }: { icon: React.ElementType, value: number, label: string, suffix?: string }) => (
     <div className="text-center">
         <Icon className="w-12 h-12 text-accent mx-auto mb-4" strokeWidth={1.5} />
         <p className="text-4xl md:text-5xl font-bold font-headline text-white">
@@ -67,13 +52,16 @@ const StatItem = ({ icon: Icon, value, label, suffix }: (typeof stats)[0]) => (
 )
 
 export default function Stats() {
+    const { stats } = siteContentData.about;
+
     return (
         <section className="py-24 bg-black">
             <AnimateOnScroll animationType='fadeIn' className="container mx-auto px-6">
                 <div className="grid grid-cols-3 gap-8">
-                    {stats.map(stat => (
-                        <StatItem key={stat.label} {...stat} />
-                    ))}
+                    {stats.map(stat => {
+                        const Icon = iconMap[stat.label] || TrendingUp;
+                        return <StatItem key={stat.label} icon={Icon} {...stat} />;
+                    })}
                 </div>
             </AnimateOnScroll>
         </section>

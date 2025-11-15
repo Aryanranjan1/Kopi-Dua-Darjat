@@ -1,4 +1,3 @@
-
 'use client';
 
 import Image from 'next/image';
@@ -7,9 +6,11 @@ import { useMediaAsset } from '@/lib/media';
 import { Button } from '@/components/ui/button';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { Skeleton } from '../ui/skeleton';
+import { siteContentData } from '@/lib/site-content';
 
 export default function FinalCta() {
   const { asset: ctaImage, isLoading } = useMediaAsset('franchise-cta');
+  const { title, subtitle, buttonText, buttonLink } = siteContentData.franchise.finalCta;
 
   return (
     <section className="bg-background">
@@ -19,14 +20,14 @@ export default function FinalCta() {
           <div className="flex flex-col justify-center bg-primary text-primary-foreground p-12 lg:p-24 text-center lg:text-left">
             <AnimateOnScroll animationType="slideInFromLeft">
               <h2 className="text-4xl md:text-6xl font-headline font-bold text-foreground leading-tight">
-                Your Stall. Your Story. Your Success.
+                {title}
               </h2>
               <p className="mt-6 text-lg md:text-xl max-w-prose text-muted-foreground mx-auto lg:mx-0">
-                Ready to become a part of Malaysia's favourite kopi movement? The next success story could be yours.
+                {subtitle}
               </p>
               <div className="mt-10">
                 <Button asChild size="lg" className="rounded-full bg-accent hover:bg-accent/90 text-accent-foreground text-lg py-7 px-10">
-                  <Link href="/franchise/apply">Become a Partner Today</Link>
+                  <Link href={buttonLink}>{buttonText}</Link>
                 </Button>
               </div>
             </AnimateOnScroll>

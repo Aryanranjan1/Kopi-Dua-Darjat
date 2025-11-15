@@ -1,4 +1,3 @@
-
 'use client';
 
 import Image from 'next/image';
@@ -8,17 +7,12 @@ import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 import { Skeleton } from '../ui/skeleton';
+import { siteContentData } from '@/lib/site-content';
 
-const supportItems = [
-    'Comprehensive Barista Training',
-    'Stall Operations & Management',
-    'Supply Chain & Inventory Control',
-    'Local & National Marketing Support',
-    'Ongoing Product Innovation'
-]
 
 export default function SupportAndTraining() {
   const { asset: trainingImage, isLoading } = useMediaAsset('franchise-training');
+  const { title, subtitle, items, buttonText, buttonLink } = siteContentData.franchise.support;
 
   return (
     <section className="py-24 sm:py-32 bg-background">
@@ -40,13 +34,13 @@ export default function SupportAndTraining() {
           </AnimateOnScroll>
           <AnimateOnScroll animationType="slideInFromLeft" className="text-center lg:text-left">
             <h2 className="text-4xl md:text-5xl font-headline text-primary">
-              Full Support, From Setup to Sales
+              {title}
             </h2>
             <p className="mt-4 text-lg text-muted-foreground">
-              We don’t just give you a logo — we teach you the system, supply chain, and marketing that keep sales brewing and customers happy.
+              {subtitle}
             </p>
             <ul className="mt-6 space-y-3 text-left">
-                {supportItems.map((item, index) => (
+                {items.map((item, index) => (
                     <li key={index} className="flex items-center">
                         <CheckCircle className="w-5 h-5 text-accent mr-3 flex-shrink-0" />
                         <span className="text-foreground">{item}</span>
@@ -54,7 +48,7 @@ export default function SupportAndTraining() {
                 ))}
             </ul>
              <Button asChild size="lg" className="mt-8 rounded-full">
-                <Link href="/franchise/apply">Talk to Our Team</Link>
+                <Link href={buttonLink}>{buttonText}</Link>
             </Button>
           </AnimateOnScroll>
         </div>
