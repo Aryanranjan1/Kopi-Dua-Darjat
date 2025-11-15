@@ -14,6 +14,7 @@ import { Trash2, PlusCircle, Loader2 } from 'lucide-react';
 import ImageUpload from '@/components/shared/ImageUpload';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 
 // --- Schema Generation ---
 const createSchemaFromObject = (obj: any): z.ZodType<any> => {
