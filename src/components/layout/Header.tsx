@@ -31,7 +31,7 @@ const navItems = [
 export default function Header() {
   const pathname = usePathname();
   const { settings } = useSettings();
-  const { asset: logoAsset, isLoading: isLogoLoading } = useMediaAsset(settings?.brand?.logoDarkId || 'logo-symbol-dark');
+  const { asset: logoAsset, isLoading: isLogoLoading } = useMediaAsset(settings?.brand?.logoDarkId || '');
 
   const [isScrolled, setIsScrolled] = React.useState(false);
   const [isHidden, setIsHidden] = React.useState(false);

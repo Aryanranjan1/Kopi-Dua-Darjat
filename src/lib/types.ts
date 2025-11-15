@@ -273,7 +273,7 @@ export type NewsletterSubscriber = {
 export type Founder = {
   name: string;
   role: string;
-  image: string;
+  imageId: string;
   quote: string;
   contact: string;
 };

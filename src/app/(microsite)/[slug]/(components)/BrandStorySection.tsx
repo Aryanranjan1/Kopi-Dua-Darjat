@@ -6,6 +6,8 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 import type { SiteSettings } from '@/lib/types';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
+import { useMediaAsset } from '@/lib/media';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface BrandStorySectionProps {
   settings: SiteSettings;
@@ -13,6 +15,7 @@ interface BrandStorySectionProps {
 
 export default function BrandStorySection({ settings }: BrandStorySectionProps) {
   const founder1 = settings.founders?.[0];
+  const { asset: founderImage, isLoading } = useMediaAsset(founder1?.imageId || '');
 
   const story = {
       title: "Antara Warisan & Artisan",
@@ -30,14 +33,15 @@ export default function BrandStorySection({ settings }: BrandStorySectionProps) 
           
           <AnimateOnScroll animationType="slideInFromLeft">
             <div className="relative aspect-square rounded-lg overflow-hidden">
-                {founder1?.image && 
+                {isLoading ? <Skeleton className="w-full h-full" /> : (founderImage && 
                     <Image
-                      src={founder1.image}
-                      alt={founder1.name}
+                      src={founderImage.imageUrl}
+                      alt={founder1?.name || 'Founder'}
                       fill
                       className="object-cover"
+                      data-ai-hint={founderImage.imageHint}
                     />
-                }
+                )}
             </div>
           </AnimateOnScroll>
 
