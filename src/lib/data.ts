@@ -8,7 +8,7 @@ import { Timestamp } from 'firebase/firestore';
 export const communityItemsSeedData: Omit<CommunityItem, 'id' | 'displayOrder'>[] = [
     {
       type: "portrait",
-      name: "Marina Mogilko",
+      name: "Siti A.",
       imageUrl: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=500",
       bgColor: "bg-cyan-300",
       className: "sm:col-span-1"
@@ -22,8 +22,8 @@ export const communityItemsSeedData: Omit<CommunityItem, 'id' | 'displayOrder'>[
     {
       type: "quote",
       name: "Aiman Rahman",
-      quote: "Passionfroot makes it incredibly easy for me to secure sponsorship deals with brands that resonate with my audience.",
-      role: "Franchisee",
+      quote: "Kopi Dua Darjat's franchise model made it incredibly easy for me to start my own business. The support is amazing!",
+      role: "Franchisee, Shah Alam",
       bgColor: "bg-yellow-300",
       className: "sm:col-span-2"
     },
@@ -35,7 +35,7 @@ export const communityItemsSeedData: Omit<CommunityItem, 'id' | 'displayOrder'>[
     },
     {
       type: "portrait",
-      name: "Zain Kahn",
+      name: "Zain K.",
       imageUrl: "https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?w=500",
       bgColor: "bg-green-400",
       className: "sm:col-span-1"
@@ -48,7 +48,7 @@ export const communityItemsSeedData: Omit<CommunityItem, 'id' | 'displayOrder'>[
     },
     {
       type: "portrait",
-      name: "Ali Abdaal",
+      name: "Ali A.",
       imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500",
       bgColor: "bg-orange-400",
       className: "sm:col-span-1"
@@ -56,15 +56,15 @@ export const communityItemsSeedData: Omit<CommunityItem, 'id' | 'displayOrder'>[
     {
       type: "quote",
       name: "Nisha A/P Krishnan",
-      quote: "Passionfroot has become a valuable channel for connecting with sponsors. The platform simplifies the process, and payments are always secure.",
-      role: "Franchisee",
+      quote: "The quality of the coffee is top-notch. My customers love the authentic 'kopi kampung' taste and keep coming back for more.",
+      role: "Franchisee, Bangi",
       bgColor: "bg-black",
       textColor: "text-white",
       className: "sm:col-span-2"
     },
     {
       type: "portrait",
-      name: "Bonnie Dilber",
+      name: "Bonnie D.",
       imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500",
       bgColor: "bg-blue-400",
       className: "sm:col-span-1"
@@ -223,5 +223,7 @@ export const testimonialSeedData: Omit<Testimonial, 'id' | 'createdAt'>[] = [
     
 
 
+
+    
 
     

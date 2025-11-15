@@ -172,8 +172,13 @@ export default function DataSeedingPage() {
       const batch = writeBatch(firestore);
       const collectionRef = collection(firestore, 'community_items');
 
+      // Clear existing items
+      const existingSnapshot = await getDocs(collectionRef);
+      existingSnapshot.forEach(doc => batch.delete(doc.ref));
+
+      // Add new items
       communityItemsSeedData.forEach((item, index) => {
-        const docRef = doc(collectionRef, `item-${index}`);
+        const docRef = doc(collectionRef, `item-${String(index).padStart(2, '0')}`);
         batch.set(docRef, {...item, displayOrder: index});
       });
       
@@ -334,7 +339,7 @@ export default function DataSeedingPage() {
             <CardHeader>
                 <CardTitle className="flex items-center gap-2"><Users /> Community Grid Seeder</CardTitle>
                 <CardDescription className="text-zinc-400">
-                Populate the homepage community grid with sample items.
+                Populate the homepage community grid with sample items. This will clear existing items.
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -371,5 +376,7 @@ export default function DataSeedingPage() {
     </div>
   );
 }
+
+    
 
     
