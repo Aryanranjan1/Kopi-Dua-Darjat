@@ -1,3 +1,4 @@
+
 'use client';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { Plus } from 'lucide-react';
@@ -5,81 +6,8 @@ import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { siteContentData } from '@/lib/site-content';
 
-const communityData = [
-  {
-    type: 'portrait',
-    name: 'Marina Mogilko',
-    imageUrl: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=500',
-    bgColor: 'bg-cyan-300',
-    className: 'sm:col-span-1',
-  },
-  {
-    type: 'logo',
-    name: 'Superhuman',
-    imageUrl: '/image/1.svg', 
-    className: 'sm:col-span-1',
-  },
-  {
-    type: 'quote',
-    quote: "Passionfroot makes it incredibly easy for me to secure sponsorship deals with brands that resonate with my audience.",
-    name: 'Jörg Storm',
-    role: 'Founder of AI Newsletter Weekly Storm, Top 50 Creator Worldwide',
-    bgColor: 'bg-yellow-300',
-    textColor: 'text-black',
-    className: 'sm:col-span-2',
-  },
-  {
-    type: 'logo',
-    name: 'Milk Road',
-    imageUrl: '/image/1.svg', 
-    className: 'sm:col-span-1',
-  },
-  {
-    type: 'portrait',
-    name: 'Zain Kahn',
-    imageUrl: 'https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?w=500',
-    bgColor: 'bg-green-400',
-    className: 'sm:col-span-1',
-  },
-  {
-    type: 'logo',
-    name: 'Every',
-    imageUrl: '/image/1.svg', 
-    className: 'sm:col-span-1',
-  },
-  {
-    type: 'portrait',
-    name: 'Ali Abdaal',
-    imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500',
-    bgColor: 'bg-orange-400',
-    className: 'sm:col-span-1',
-  },
-  {
-    type: 'quote',
-    quote: "Passionfroot has become a valuable channel for connecting with sponsors. The platform simplifies the process, and payments are always secure, making it a reliable tool for managing our sponsorships.",
-    name: 'Paula Echeverria',
-    role: 'Manager at Youtube Channel Slidebean',
-    bgColor: 'bg-black',
-    textColor: 'text-white',
-    className: 'sm:col-span-2',
-  },
-  {
-    type: 'portrait',
-    name: 'Bonnie Dilber',
-    imageUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500',
-    bgColor: 'bg-blue-400',
-    className: 'sm:col-span-1',
-  },
-  {
-    type: 'logo',
-    name: 'Sketchy',
-    imageUrl: '/image/1.svg', 
-    className: 'sm:col-span-1',
-  },
-];
-
 export default function Community() {
-  const { title, subtitle } = siteContentData.home.community;
+  const { title, subtitle, items: communityData } = siteContentData.home.community;
 
   return (
     <section className="py-24 sm:py-32 bg-white">

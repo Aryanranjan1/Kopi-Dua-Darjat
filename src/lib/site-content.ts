@@ -1,3 +1,4 @@
+
 export const siteContentData = {
   home: {
     hero: {
@@ -5,6 +6,24 @@ export const siteContentData = {
       subtitle: "From bean to cup, every pour is crafted with passion and precision. Our coffee celebrates the art of flavor , a golden mix of comfort, creativity, and caffeine confidence.",
       buttonText: "Find an Outlet",
       buttonLink: "/outlets",
+    },
+    activePromotions: {
+      title: "Sip Smart. <br /> <span class=\"text-accent\">Stay Sharp.</span>",
+      subtitle: "We know your day is challenging. Kopi Dua Darjat is more than just coffee; it's a daily ritual that connects you to a vibrant community and rich heritage. We're here to elevate your day.",
+      promoCard: {
+        title: "Latest Promos & Offers",
+        subtitle: "Stay ahead with our latest deals, new drink alerts, and exclusive offers for our community.",
+        button1Text: "Weekday Specials",
+        button1Link: "/promotions",
+        button2Text: "New Drinks",
+        button2Link: "/menu",
+      },
+      communityCard: {
+        title: "Join The Community",
+        subtitle: "Get daily updates, news, and see what's brewing in our vibrant community.",
+        buttonText: "Follow on Instagram",
+        buttonLink: "#",
+      }
     },
     brandStory: {
       title: "Antara Warisan & Artisan",
@@ -15,6 +34,78 @@ export const siteContentData = {
     community: {
         title: "Brewing Community, One Cup at a Time",
         subtitle: "From our baristas to our customers, we're a family united by a love for authentic Malaysian coffee.",
+        items: [
+            {
+              type: 'portrait',
+              name: 'Marina Mogilko',
+              imageUrl: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=500',
+              bgColor: 'bg-cyan-300',
+              className: 'sm:col-span-1',
+            },
+            {
+              type: 'logo',
+              name: 'Superhuman',
+              imageUrl: '/image/1.svg', 
+              className: 'sm:col-span-1',
+            },
+            {
+              type: 'quote',
+              quote: "Passionfroot makes it incredibly easy for me to secure sponsorship deals with brands that resonate with my audience.",
+              name: 'Jörg Storm',
+              role: 'Founder of AI Newsletter Weekly Storm, Top 50 Creator Worldwide',
+              bgColor: 'bg-yellow-300',
+              textColor: 'text-black',
+              className: 'sm:col-span-2',
+            },
+            {
+              type: 'logo',
+              name: 'Milk Road',
+              imageUrl: '/image/1.svg', 
+              className: 'sm:col-span-1',
+            },
+            {
+              type: 'portrait',
+              name: 'Zain Kahn',
+              imageUrl: 'https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?w=500',
+              bgColor: 'bg-green-400',
+              className: 'sm:col-span-1',
+            },
+            {
+              type: 'logo',
+              name: 'Every',
+              imageUrl: '/image/1.svg', 
+              className: 'sm:col-span-1',
+            },
+            {
+              type: 'portrait',
+              name: 'Ali Abdaal',
+              imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500',
+              bgColor: 'bg-orange-400',
+              className: 'sm:col-span-1',
+            },
+            {
+              type: 'quote',
+              quote: "Passionfroot has become a valuable channel for connecting with sponsors. The platform simplifies the process, and payments are always secure, making it a reliable tool for managing our sponsorships.",
+              name: 'Paula Echeverria',
+              role: 'Manager at Youtube Channel Slidebean',
+              bgColor: 'bg-black',
+              textColor: 'text-white',
+              className: 'sm:col-span-2',
+            },
+            {
+              type: 'portrait',
+              name: 'Bonnie Dilber',
+              imageUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500',
+              bgColor: 'bg-blue-400',
+              className: 'sm:col-span-1',
+            },
+            {
+              type: 'logo',
+              name: 'Sketchy',
+              imageUrl: '/image/1.svg', 
+              className: 'sm:col-span-1',
+            },
+        ]
     },
     latestStories: {
         title: "Latest Stories",
