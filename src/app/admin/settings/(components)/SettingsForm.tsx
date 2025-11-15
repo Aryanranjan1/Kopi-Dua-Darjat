@@ -163,13 +163,13 @@ export default function SettingsForm() {
                     <CardHeader><CardTitle>Brand & Identity</CardTitle><CardDescription className="text-zinc-400">Manage your brand's core visual assets and identity.</CardDescription></CardHeader>
                     <CardContent className="space-y-4">
                         <FormField control={form.control} name="brand.name" render={({ field }) => (
-                            <FormItem><FormLabel>Brand Name</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                            <FormItem><FormLabel className="text-white">Brand Name</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
                         )}/>
                         <FormField control={form.control} name="brand.tagline" render={({ field }) => (
-                            <FormItem><FormLabel>Tagline</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                            <FormItem><FormLabel className="text-white">Tagline</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
                         )}/>
                         <FormField control={form.control} name="brand.logoDarkId" render={({ field }) => (
-                            <FormItem><FormLabel>Logo (for light backgrounds)</FormLabel>
+                            <FormItem><FormLabel className="text-white">Logo (for light backgrounds)</FormLabel>
                              <Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger className={inputStyles}><SelectValue placeholder="Select an image" /></SelectTrigger></FormControl>
                                 <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
                                     {media?.map(m => <SelectItem key={m.id} value={m.id}>{m.id}</SelectItem>)}
@@ -178,7 +178,7 @@ export default function SettingsForm() {
                             <FormMessage/></FormItem>
                         )}/>
                          <FormField control={form.control} name="brand.logoLightId" render={({ field }) => (
-                            <FormItem><FormLabel>Logo (for dark backgrounds)</FormLabel>
+                            <FormItem><FormLabel className="text-white">Logo (for dark backgrounds)</FormLabel>
                              <Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger className={inputStyles}><SelectValue placeholder="Select an image" /></SelectTrigger></FormControl>
                                 <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
                                     {media?.map(m => <SelectItem key={m.id} value={m.id}>{m.id}</SelectItem>)}
@@ -187,7 +187,7 @@ export default function SettingsForm() {
                             <FormMessage/></FormItem>
                         )}/>
                          <FormField control={form.control} name="brand.faviconId" render={({ field }) => (
-                            <FormItem><FormLabel>Favicon</FormLabel>
+                            <FormItem><FormLabel className="text-white">Favicon</FormLabel>
                              <Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger className={inputStyles}><SelectValue placeholder="Select an image" /></SelectTrigger></FormControl>
                                 <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
                                     {media?.map(m => <SelectItem key={m.id} value={m.id}>{m.id}</SelectItem>)}
@@ -206,13 +206,13 @@ export default function SettingsForm() {
                         <div key={field.id} className="p-4 border border-zinc-700 rounded-lg space-y-4 relative">
                             <h4 className="text-lg font-semibold">Founder {index + 1}</h4>
                              <FormField control={form.control} name={`founders.${index}.name`} render={({ field }) => (
-                                <FormItem><FormLabel>Name</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                                <FormItem><FormLabel className="text-white">Name</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                             )} />
                              <FormField control={form.control} name={`founders.${index}.role`} render={({ field }) => (
-                                <FormItem><FormLabel>Role</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                                <FormItem><FormLabel className="text-white">Role</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                             )} />
                             <FormField control={form.control} name={`founders.${index}.imageId`} render={({ field }) => (
-                                <FormItem><FormLabel>Image</FormLabel>
+                                <FormItem><FormLabel className="text-white">Image</FormLabel>
                                 <Select onValueChange={field.onChange} value={field.value}>
                                     <FormControl><SelectTrigger className={inputStyles}><SelectValue placeholder="Select an image" /></SelectTrigger></FormControl>
                                     <SelectContent className="bg-zinc-900 border-zinc-800 text-white">{media?.map(m => <SelectItem key={m.id} value={m.id}>{m.id}</SelectItem>)}</SelectContent>
@@ -220,7 +220,7 @@ export default function SettingsForm() {
                                 <FormMessage /></FormItem>
                             )} />
                             <FormField control={form.control} name={`founders.${index}.quote`} render={({ field }) => (
-                                <FormItem><FormLabel>Quote</FormLabel><FormControl><Textarea {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                                <FormItem><FormLabel className="text-white">Quote</FormLabel><FormControl><Textarea {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                             )} />
                              <Button type="button" variant="destructive" size="icon" className="absolute top-4 right-4" onClick={() => remove(index)}><Trash2 className="h-4 w-4" /></Button>
                         </div>
@@ -233,11 +233,11 @@ export default function SettingsForm() {
                  <Card className="bg-transparent border-none">
                     <CardHeader><CardTitle>Contact Info</CardTitle><CardDescription className="text-zinc-400">Public contact and location details.</CardDescription></CardHeader>
                     <CardContent className="space-y-4">
-                        <FormField control={form.control} name="contact.email" render={({ field }) => (<FormItem><FormLabel>Email</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
-                        <FormField control={form.control} name="contact.phone" render={({ field }) => (<FormItem><FormLabel>Phone</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
-                        <FormField control={form.control} name="contact.address" render={({ field }) => (<FormItem><FormLabel>Address</FormLabel><FormControl><Textarea {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
-                        <FormField control={form.control} name="contact.googleMapsLink" render={({ field }) => (<FormItem><FormLabel>Google Maps URL</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
-                        <FormField control={form.control} name="contact.businessHours" render={({ field }) => (<FormItem><FormLabel>Business Hours</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="contact.email" render={({ field }) => (<FormItem><FormLabel className="text-white">Email</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="contact.phone" render={({ field }) => (<FormItem><FormLabel className="text-white">Phone</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="contact.address" render={({ field }) => (<FormItem><FormLabel className="text-white">Address</FormLabel><FormControl><Textarea {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="contact.googleMapsLink" render={({ field }) => (<FormItem><FormLabel className="text-white">Google Maps URL</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="contact.businessHours" render={({ field }) => (<FormItem><FormLabel className="text-white">Business Hours</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
                     </CardContent>
                 </Card>
             </TabsContent>
@@ -245,11 +245,11 @@ export default function SettingsForm() {
                  <Card className="bg-transparent border-none">
                     <CardHeader><CardTitle>Social Media</CardTitle><CardDescription className="text-zinc-400">Links to your social media profiles.</CardDescription></CardHeader>
                     <CardContent className="space-y-4">
-                        <FormField control={form.control} name="socials.instagram" render={({ field }) => (<FormItem><FormLabel>Instagram</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
-                        <FormField control={form.control} name="socials.facebook" render={({ field }) => (<FormItem><FormLabel>Facebook</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
-                        <FormField control={form.control} name="socials.tiktok" render={({ field }) => (<FormItem><FormLabel>TikTok</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
-                        <FormField control={form.control} name="socials.youtube" render={({ field }) => (<FormItem><FormLabel>YouTube</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
-                        <FormField control={form.control} name="socials.whatsapp" render={({ field }) => (<FormItem><FormLabel>WhatsApp</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="socials.instagram" render={({ field }) => (<FormItem><FormLabel className="text-white">Instagram</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="socials.facebook" render={({ field }) => (<FormItem><FormLabel className="text-white">Facebook</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="socials.tiktok" render={({ field }) => (<FormItem><FormLabel className="text-white">TikTok</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="socials.youtube" render={({ field }) => (<FormItem><FormLabel className="text-white">YouTube</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="socials.whatsapp" render={({ field }) => (<FormItem><FormLabel className="text-white">WhatsApp</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
                     </CardContent>
                 </Card>
             </TabsContent>
@@ -257,17 +257,17 @@ export default function SettingsForm() {
                  <Card className="bg-transparent border-none">
                     <CardHeader><CardTitle>SEO Defaults</CardTitle><CardDescription className="text-zinc-400">Default metadata for search engine optimization.</CardDescription></CardHeader>
                     <CardContent className="space-y-4">
-                        <FormField control={form.control} name="meta.defaultTitle" render={({ field }) => (<FormItem><FormLabel>Default Meta Title</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
-                        <FormField control={form.control} name="meta.defaultDescription" render={({ field }) => (<FormItem><FormLabel>Default Meta Description</FormLabel><FormControl><Textarea {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="meta.defaultTitle" render={({ field }) => (<FormItem><FormLabel className="text-white">Default Meta Title</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="meta.defaultDescription" render={({ field }) => (<FormItem><FormLabel className="text-white">Default Meta Description</FormLabel><FormControl><Textarea {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
                         <FormField control={form.control} name="meta.defaultImageId" render={({ field }) => (
-                            <FormItem><FormLabel>Default OG Image</FormLabel>
+                            <FormItem><FormLabel className="text-white">Default OG Image</FormLabel>
                                 <Select onValueChange={field.onChange} value={field.value}>
                                     <FormControl><SelectTrigger className={inputStyles}><SelectValue placeholder="Select an image" /></SelectTrigger></FormControl>
                                     <SelectContent className="bg-zinc-900 border-zinc-800 text-white">{media?.map(m => <SelectItem key={m.id} value={m.id}>{m.id}</SelectItem>)}</SelectContent>
                                 </Select>
                             <FormMessage /></FormItem>
                         )} />
-                        <FormField control={form.control} name="meta.keywords" render={({ field }) => (<FormItem><FormLabel>Default Keywords</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormDescription>Comma-separated keywords.</FormDescription><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="meta.keywords" render={({ field }) => (<FormItem><FormLabel className="text-white">Default Keywords</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormDescription>Comma-separated keywords.</FormDescription><FormMessage /></FormItem>)} />
                     </CardContent>
                 </Card>
             </TabsContent>
@@ -277,25 +277,25 @@ export default function SettingsForm() {
                     <CardContent className="space-y-4">
                          <FormField control={form.control} name="automation.newsletterIntegration" render={({ field }) => (
                             <FormItem className="flex flex-row items-center justify-between rounded-lg border border-zinc-700 p-4">
-                                <div className="space-y-0.5"><FormLabel>Newsletter Integration</FormLabel><FormDescription className="text-zinc-400">Enable or disable newsletter functionality.</FormDescription></div>
+                                <div className="space-y-0.5"><FormLabel className="text-white">Newsletter Integration</FormLabel><FormDescription className="text-zinc-400">Enable or disable newsletter functionality.</FormDescription></div>
                                 <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
                             </FormItem>
                          )} />
                           <FormField control={form.control} name="automation.googleBusinessSync" render={({ field }) => (
                             <FormItem className="flex flex-row items-center justify-between rounded-lg border border-zinc-700 p-4">
-                                <div className="space-y-0.5"><FormLabel>Google Business Sync</FormLabel><FormDescription className="text-zinc-400">Automatically sync outlet info with Google Business Profile.</FormDescription></div>
+                                <div className="space-y-0.5"><FormLabel className="text-white">Google Business Sync</FormLabel><FormDescription className="text-zinc-400">Automatically sync outlet info with Google Business Profile.</FormDescription></div>
                                 <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
                             </FormItem>
                          )} />
                          <FormField control={form.control} name="automation.autoBackup" render={({ field }) => (
                             <FormItem className="flex flex-row items-center justify-between rounded-lg border border-zinc-700 p-4">
-                                <div className="space-y-0.5"><FormLabel>Automatic Backups</FormLabel><FormDescription className="text-zinc-400">Enable daily automated backups of the Firestore database.</FormDescription></div>
+                                <div className="space-y-0.5"><FormLabel className="text-white">Automatic Backups</FormLabel><FormDescription className="text-zinc-400">Enable daily automated backups of the Firestore database.</FormDescription></div>
                                 <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
                             </FormItem>
                          )} />
                           <FormField control={form.control} name="automation.appCheckEnforced" render={({ field }) => (
                             <FormItem className="flex flex-row items-center justify-between rounded-lg border border-zinc-700 p-4">
-                                <div className="space-y-0.5"><FormLabel>App Check Enforcement</FormLabel><FormDescription className="text-zinc-400">Enforce Firebase App Check to protect backend resources.</FormDescription></div>
+                                <div className="space-y-0.5"><FormLabel className="text-white">App Check Enforcement</FormLabel><FormDescription className="text-zinc-400">Enforce Firebase App Check to protect backend resources.</FormDescription></div>
                                 <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
                             </FormItem>
                          )} />
