@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -41,14 +41,44 @@ const MediaCard = ({ asset, onEdit }: { asset: MediaAsset; onEdit: (asset: Media
   );
 };
 
-export default function MediaGrid({ assets, onUpdate, isLoading }: { assets: MediaAsset[], onUpdate: () => void, isLoading: boolean }) {
+export default function MediaGrid() {
+  const [assets, setAssets] = useState<MediaAsset[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedAsset, setSelectedAsset] = useState<MediaAsset | null>(null);
   const [newUrl, setNewUrl] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const { toast } = useToast();
   const firestore = useFirestore();
 
+  const scanForMedia = useCallback(async () => {
+    setIsLoading(true);
+    toast({ title: 'Scanning for media...' });
+    try {
+      const response = await fetch('/api/scan-media');
+      if (!response.ok) throw new Error('Failed to fetch media assets.');
+      const data = await response.json();
+      setAssets(data.assets);
+      toast({ title: 'Scan Complete!', description: `Found ${data.assets.length} media assets.` });
+    } catch (error: any) {
+      toast({ variant: 'destructive', title: 'Scan Failed', description: error.message });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [toast]);
+
+  useEffect(() => {
+    scanForMedia();
+  }, [scanForMedia]);
+
   const handleEditClick = (asset: MediaAsset) => {
+    if (asset.source === 'json') {
+      toast({
+        variant: 'default',
+        title: 'Static Asset',
+        description: 'This is a static asset. Please edit it via the "Static Content" tab.',
+      });
+      return;
+    }
     setSelectedAsset(asset);
     setNewUrl(asset.url);
   };
@@ -56,51 +86,34 @@ export default function MediaGrid({ assets, onUpdate, isLoading }: { assets: Med
   const handleSave = async () => {
     if (!selectedAsset) return;
 
-    if (selectedAsset.source === 'firestore') {
-      if (!firestore) {
-        toast({ variant: 'destructive', title: 'Error', description: 'Firestore not available.' });
-        return;
-      }
-      try {
-        const [collectionName, docId, ...rest] = selectedAsset.path.split('.');
-        const propertyPath = rest.join('.');
-        
-        const docRef = doc(firestore, collectionName, docId);
-        
-        const updateData: { [key: string]: any } = {};
-        set(updateData, propertyPath, newUrl);
+    if (!firestore) {
+      toast({ variant: 'destructive', title: 'Error', description: 'Firestore not available.' });
+      return;
+    }
 
-        await updateDoc(docRef, updateData);
-        toast({ title: 'Success', description: 'Firestore media updated.' });
-        onUpdate();
-      } catch (error: any) {
-        toast({ variant: 'destructive', title: 'Update Failed', description: error.message });
-      }
-    } else {
-        toast({
-            variant: 'destructive',
-            title: 'Action Not Supported',
-            description: 'Editing hardcoded JSON files is not supported. Please tell me what to change, and I will update the file for you.'
-        });
+    try {
+      const [collectionName, docId, ...rest] = selectedAsset.path.split('.');
+      const propertyPath = rest.join('.');
+      
+      const docRef = doc(firestore, collectionName, docId);
+      
+      const updateData: { [key: string]: any } = {};
+      set(updateData, propertyPath, newUrl);
+
+      await updateDoc(docRef, updateData);
+      toast({ title: 'Success', description: 'Firestore media updated.' });
+      scanForMedia();
+    } catch (error: any) {
+      toast({ variant: 'destructive', title: 'Update Failed', description: error.message });
     }
 
     setSelectedAsset(null);
   };
-  
-  const handleDelete = () => {
-      if (!selectedAsset) return;
-      
-      toast({
-            variant: 'destructive',
-            title: 'Action Not Supported',
-            description: 'Deleting media assets from the codebase is not supported.'
-        });
-  }
 
   const filteredMedia = React.useMemo(() => {
     if (!searchQuery) return assets;
     return assets.filter(item => 
-      item.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.path.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.url.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [assets, searchQuery]);
@@ -111,15 +124,15 @@ export default function MediaGrid({ assets, onUpdate, isLoading }: { assets: Med
           <div className="relative flex-grow">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
               <Input 
-                  placeholder="Search media by ID or URL..."
+                  placeholder="Search media by path or URL..."
                   className="pl-9 bg-zinc-800 border-zinc-700"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
               />
           </div>
-          <Button onClick={onUpdate} disabled={isLoading} variant="outline" className="bg-zinc-800 border-zinc-700">
+          <Button onClick={scanForMedia} disabled={isLoading} variant="outline" className="bg-zinc-800 border-zinc-700">
               {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <RefreshCw className="mr-2 h-4 w-4" />}
-              Refresh
+              Rescan
           </Button>
       </div>
 
@@ -140,7 +153,6 @@ export default function MediaGrid({ assets, onUpdate, isLoading }: { assets: Med
             )}
         </>
       )}
-
 
       <Dialog open={!!selectedAsset} onOpenChange={() => setSelectedAsset(null)}>
         <DialogContent className="bg-zinc-900 border-zinc-800 text-white">
@@ -163,14 +175,9 @@ export default function MediaGrid({ assets, onUpdate, isLoading }: { assets: Med
                 folderName={`media_library/${selectedAsset?.id || 'general'}`}
             />
           </div>
-           <DialogFooter className="justify-between sm:justify-between">
-                <Button variant="destructive" onClick={handleDelete} disabled={selectedAsset?.source === 'json'}>
-                    <Trash2 className="mr-2 h-4 w-4" /> Delete
-                </Button>
-                <div className="flex gap-2">
-                    <Button variant="ghost" onClick={() => setSelectedAsset(null)}>Cancel</Button>
-                    <Button onClick={handleSave} disabled={selectedAsset?.url === newUrl}>Save Changes</Button>
-                </div>
+           <DialogFooter>
+              <Button variant="ghost" onClick={() => setSelectedAsset(null)}>Cancel</Button>
+              <Button onClick={handleSave} disabled={selectedAsset?.url === newUrl}>Save Changes</Button>
             </DialogFooter>
         </DialogContent>
       </Dialog>
