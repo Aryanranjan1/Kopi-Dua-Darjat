@@ -54,6 +54,7 @@ const formSchema = z.object({
   bgColor: z.string().optional(),
   textColor: z.string().optional(),
   className: z.string().optional(),
+  rowSpan: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -61,15 +62,16 @@ type FormValues = z.infer<typeof formSchema>;
 const CommunityItemForm = ({ item, onSuccess }: { item?: CommunityItem; onSuccess: () => void }) => {
   const formMethods = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: item || {
-      type: 'portrait',
-      name: '',
-      imageUrl: '',
-      quote: '',
-      role: '',
-      bgColor: '',
-      textColor: '',
-      className: '',
+    defaultValues: {
+      type: item?.type || 'portrait',
+      name: item?.name || '',
+      imageUrl: item?.imageUrl || '',
+      quote: item?.quote || '',
+      role: item?.role || '',
+      bgColor: item?.bgColor || '',
+      textColor: item?.textColor || '',
+      className: item?.className?.split(' ').filter(c => c.startsWith('sm:col-span-')).join(' ') || '',
+      rowSpan: item?.className?.split(' ').filter(c => c.startsWith('sm:row-span-')).join(' ') || '',
     },
   });
   
@@ -82,6 +84,7 @@ const CommunityItemForm = ({ item, onSuccess }: { item?: CommunityItem; onSucces
     if (!firestore) return;
 
     try {
+       const combinedClassName = [values.className, values.rowSpan].filter(Boolean).join(' ');
        const dataToSave = {
         type: values.type,
         name: values.name,
@@ -90,7 +93,7 @@ const CommunityItemForm = ({ item, onSuccess }: { item?: CommunityItem; onSucces
         role: values.role || null,
         bgColor: values.bgColor || null,
         textColor: values.textColor || null,
-        className: values.className || null,
+        className: combinedClassName,
         displayOrder: item?.displayOrder || Date.now(),
         updatedAt: serverTimestamp(),
       };
@@ -169,9 +172,14 @@ const CommunityItemForm = ({ item, onSuccess }: { item?: CommunityItem; onSucces
               </>
             )}
 
-            <FormField control={formMethods.control} name="className" render={({ field }) => (
-              <FormItem><FormLabel>Grid Class Name</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} placeholder="e.g. sm:col-span-1" /></FormControl><FormMessage /></FormItem>
-            )} />
+             <div className="grid grid-cols-2 gap-4">
+              <FormField control={formMethods.control} name="className" render={({ field }) => (
+                <FormItem><FormLabel>Column Span</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} placeholder="e.g. sm:col-span-1" /></FormControl><FormMessage /></FormItem>
+              )} />
+              <FormField control={formMethods.control} name="rowSpan" render={({ field }) => (
+                <FormItem><FormLabel>Row Span</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} placeholder="e.g. sm:row-span-1" /></FormControl><FormMessage /></FormItem>
+              )} />
+             </div>
           </div>
         </ScrollArea>
         <Button type="submit" disabled={formMethods.formState.isSubmitting} className="w-full">

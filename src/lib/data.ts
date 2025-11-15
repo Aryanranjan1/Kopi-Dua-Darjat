@@ -31,7 +31,7 @@ export const communityItemsSeedData: Omit<CommunityItem, 'id' | 'displayOrder'>[
       type: "logo",
       name: "Milk Road",
       imageUrl: "/image/1.svg",
-      className: "sm:col-span-1"
+      className: "sm:col-span-1 sm:row-span-1"
     },
     {
       type: "portrait",
@@ -227,3 +227,4 @@ export const testimonialSeedData: Omit<Testimonial, 'id' | 'createdAt'>[] = [
     
 
     
+
