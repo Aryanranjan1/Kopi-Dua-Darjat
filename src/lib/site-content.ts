@@ -49,7 +49,7 @@ export const siteContentData = {
         },
         {
           "type": "quote",
-          "name": "Jörg Storm",
+          "name": "Aiman Rahman",
           "bgColor": "bg-yellow-300",
           "className": "sm:col-span-2"
         },
@@ -81,7 +81,7 @@ export const siteContentData = {
         },
         {
           "type": "quote",
-          "name": "Paula Echeverria",
+          "name": "Nisha A/P Krishnan",
           "bgColor": "bg-black",
           "className": "sm:col-span-2"
         },
@@ -162,7 +162,7 @@ export const siteContentData = {
         },
         {
           "year": "2024",
-          "title": "Future Forward",
+          "title": "Future Ahead",
           "description": "With over 50 outlets, we’re now looking ahead. Our focus is on sustainability, empowering local entrepreneurs, and continuing to innovate.",
           "imageId": "milestone-future"
         }
