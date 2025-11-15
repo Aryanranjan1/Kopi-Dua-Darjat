@@ -212,12 +212,12 @@ export const blogSeedData: Omit<Blog, 'createdAt' | 'updatedAt'>[] = [
 ];
 
 export const testimonialSeedData: Omit<Testimonial, 'id' | 'createdAt'>[] = [
-  { outletId: "kajang-prima", quote: "The brand recognition is incredible. Customers love the coffee, and my outlet has been profitable since month one.", name: "Siti Nurhaliza", designation: "Franchisee, Kajang", image: "testimonial-2" },
-  { outletId: "putrajaya-ayer8", quote: "I always wanted to own a café. Kopi Dua Darjat made that dream a reality with a low-cost, high-return model.", name: "Ravi Chandran", designation: "Franchisee, Putrajaya", image: "testimonial-3" },
-  { outletId: "shah-alam", quote: "I started my stall in Shah Alam — sold out every morning within 2 weeks! The training and marketing support made everything easy.", name: "Ahmad Faizal", designation: "Franchisee, Shah Alam", image: "testimonial-1" },
-  { outletId: "jb-city-square", quote: "A must-visit when I cross the border. It's the authentic Malaysian taste I miss.", name: "David Chen", designation: "Visitor, Singapore", image: "testimonial-3" },
-  { outletId: "georgetown", quote: "Perfect companion for a walk around historical Georgetown. The Coklat Artisan is my kid's favorite.", name: "Emily T.", designation: "Tourist, Australia", image: "testimonial-2" },
-  { outletId: "kota-kinabalu", quote: "The view is great, but the coffee is even better. Love this place!", name: "Jackson R.", designation: "Local Resident, KK", image: "testimonial-1" }
+  { outletId: "kajang-prima", quote: "The brand recognition is incredible. Customers love the coffee, and my outlet has been profitable since month one.", name: "Siti Nurhaliza", designation: "Franchisee, Kajang", image: "testimonial-2", rating: 5 },
+  { outletId: "putrajaya-ayer8", quote: "I always wanted to own a café. Kopi Dua Darjat made that dream a reality with a low-cost, high-return model.", name: "Ravi Chandran", designation: "Franchisee, Putrajaya", image: "testimonial-3", rating: 5 },
+  { outletId: "shah-alam", quote: "I started my stall in Shah Alam — sold out every morning within 2 weeks! The training and marketing support made everything easy.", name: "Ahmad Faizal", designation: "Franchisee, Shah Alam", image: "testimonial-1", rating: 5 },
+  { outletId: "jb-city-square", quote: "A must-visit when I cross the border. It's the authentic Malaysian taste I miss.", name: "David Chen", designation: "Visitor, Singapore", image: "testimonial-3", rating: 4 },
+  { outletId: "georgetown", quote: "Perfect companion for a walk around historical Georgetown. The Coklat Artisan is my kid's favorite.", name: "Emily T.", designation: "Tourist, Australia", image: "testimonial-2", rating: 5 },
+  { outletId: "kota-kinabalu", quote: "The view is great, but the coffee is even better. Love this place!", name: "Jackson R.", designation: "Local Resident, KK", image: "testimonial-1", rating: 4 }
 ]
 
     

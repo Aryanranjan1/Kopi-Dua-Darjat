@@ -65,7 +65,7 @@ export default function Community() {
               }
               if (item.type === 'quote') {
                 return (
-                  <AnimateOnScroll key={item.id} className={cn('min-h-[300px] md:min-h-0 md:aspect-[2/1] rounded-2xl p-6 sm:p-8 flex flex-col justify-between', item.bgColor, item.textColor, item.className)} delay={delay}>
+                  <AnimateOnScroll key={item.id} className={cn('min-h-[300px] md:min-h-0 md:aspect-square rounded-2xl p-6 sm:p-8 flex flex-col justify-between', item.bgColor, item.textColor, item.className)} delay={delay}>
                     <div>
                       <p className="text-4xl font-serif">"</p>
                       <p className="text-base md:text-lg font-medium">{item.quote}</p>
@@ -90,5 +90,3 @@ export default function Community() {
     </section>
   );
 }
-
-    
