@@ -43,62 +43,12 @@ const createSchemaFromObject = (obj: any): z.ZodType<any> => {
 
 const inputStyles = "bg-zinc-800 border-zinc-700 text-white focus-visible:ring-primary";
 
-const colorOptions = [
-    { label: 'Cyan', value: 'bg-cyan-300' },
-    { label: 'Yellow', value: 'bg-yellow-300' },
-    { label: 'Green', value: 'bg-green-400' },
-    { label: 'Orange', value: 'bg-orange-400' },
-    { label: 'Blue', value: 'bg-blue-400' },
-    { label: 'Black', value: 'bg-black' },
-    { label: 'White', value: 'bg-white' },
-];
-
-const textColorOptions = [
-    { label: 'Black', value: 'text-black' },
-    { label: 'White', value: 'text-white' },
-];
-
-
-const ColorSelector = ({ path, label }: { path: string; label: string }) => {
-    const { control } = useFormContext();
-    const isTextColor = label.toLowerCase().includes('text');
-    const options = isTextColor ? textColorOptions : colorOptions;
-
-    return (
-        <FormField
-            control={control}
-            name={path}
-            render={({ field }) => (
-                <FormItem>
-                    <FormLabel>{label}</FormLabel>
-                     <div className="flex items-center gap-2">
-                        <Select onValueChange={field.onChange} value={field.value || ''}>
-                            <FormControl>
-                                <SelectTrigger className={inputStyles}>
-                                    <SelectValue placeholder="Select a color" />
-                                </SelectTrigger>
-                            </FormControl>
-                            <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                                {options.map(option => (
-                                    <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                        <div className={cn("h-10 w-10 rounded-md border", field.value)} />
-                    </div>
-                    <FormMessage />
-                </FormItem>
-            )}
-        />
-    )
-}
-
 // --- FIELD RENDERING COMPONENTS ---
 
 const RenderField = ({ path, label }: { path: string; label: string }) => {
     const { control } = useFormContext();
     const isTextArea = ['description', 'content', 'quote', 'subtitle', 'visionText', 'text'].some(keyword => label.toLowerCase().includes(keyword));
-    const isImage = ['image', 'logo', 'favicon'].some(keyword => label.toLowerCase().includes(keyword));
+    const isImage = ['image', 'logo', 'favicon', 'imageUrl'].some(keyword => label.toLowerCase().includes(keyword));
 
     if (isImage) {
         return (
@@ -155,54 +105,6 @@ const MilestoneItem = ({ index, onRemove }: { index: number; onRemove: () => voi
     </div>
 );
 
-const CommunityItem = ({ index, onRemove }: { index: number; onRemove: () => void; }) => {
-    const { control, watch } = useFormContext();
-    const itemType = watch(`home.community.items[${index}].type`);
-
-    return (
-        <div className="border border-zinc-700 p-4 rounded-lg space-y-4 relative">
-            <Button type="button" variant="destructive" size="icon" onClick={onRemove} className="absolute top-2 right-2 h-7 w-7"><Trash2 className="h-4 w-4" /></Button>
-            <h5 className="font-medium text-sm text-zinc-400">Community Item {index + 1}</h5>
-            <FormField
-                control={control}
-                name={`home.community.items[${index}].type`}
-                render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Type</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value || 'portrait'}>
-                            <FormControl><SelectTrigger className={inputStyles}><SelectValue placeholder="Select a type" /></SelectTrigger></FormControl>
-                            <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                                <SelectItem value="portrait">Portrait</SelectItem>
-                                <SelectItem value="logo">Logo</SelectItem>
-                                <SelectItem value="quote">Quote</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        <FormMessage />
-                    </FormItem>
-                )}
-            />
-            
-            <RenderField path={`home.community.items[${index}].name`} label="Name" />
-            
-            {itemType === 'portrait' && (
-                <>
-                    <RenderField path={`home.community.items[${index}].imageUrl`} label="Image URL" />
-                    <ColorSelector path={`home.community.items[${index}].bgColor`} label="Background Color" />
-                </>
-            )}
-            {itemType === 'logo' && <RenderField path={`home.community.items[${index}].imageUrl`} label="Image URL" />}
-            {itemType === 'quote' && (
-                <>
-                    <RenderField path={`home.community.items[${index}].quote`} label="Quote" />
-                    <RenderField path={`home.community.items[${index}].role`} label="Role" />
-                    <ColorSelector path={`home.community.items[${index}].bgColor`} label="Background Color" />
-                    <ColorSelector path={`home.community.items[${index}].textColor`} label="Text Color" />
-                </>
-            )}
-            <RenderField path={`home.community.items[${index}].className`} label="Grid Class Name" />
-        </div>
-    );
-};
 
 const StringListItem = ({ path, onRemove }: { path: string; onRemove: () => void; }) => {
     const { control } = useFormContext();
@@ -278,9 +180,6 @@ const RenderObjectFields = ({ path, data }: { path: string; data: any }) => {
                 if (currentPath === 'about.milestones.items') {
                     return <FieldArrayManager key={currentPath} path={currentPath} title="Milestones" newItemShape={{ year: '', title: '', description: '', imageId: '' }} ItemComponent={MilestoneItem} />
                 }
-                if (currentPath === 'home.community.items') {
-                    return <FieldArrayManager key={currentPath} path={currentPath} title="Community Items" newItemShape={{ type: 'portrait', name: '', quote: '', role: '', imageUrl: '', bgColor: '', textColor: '', className: '' }} ItemComponent={CommunityItem} />
-                }
                 if (currentPath === 'about.visionMission.missionItems' || currentPath === 'franchise.support.items') {
                     return <StringListManager key={currentPath} path={currentPath} title={label} />
                 }
@@ -306,11 +205,6 @@ const RenderObjectFields = ({ path, data }: { path: string; data: any }) => {
                             <RenderObjectFields path={currentPath} data={value} />
                         </div>
                     );
-                }
-
-                const isColorField = label.toLowerCase().includes('color');
-                if (isColorField) {
-                    return <ColorSelector key={currentPath} path={currentPath} label={label} />
                 }
 
                 return <RenderField key={currentPath} path={currentPath} label={label} />;
@@ -380,3 +274,5 @@ export default function ContentForm({ initialData }: { initialData: any }) {
         </FormProvider>
     );
 }
+
+    

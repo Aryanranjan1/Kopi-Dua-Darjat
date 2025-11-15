@@ -6,9 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useFirestore } from '@/firebase';
 import { collection, writeBatch, getDocs, doc, setDoc, Timestamp } from 'firebase/firestore';
-import { blogSeedData, outlets as outletSeedData, menuGroups, menuCategories, menuItems, promotions, testimonialSeedData } from '@/lib/data';
+import { blogSeedData, outlets as outletSeedData, menuGroups, menuCategories, menuItems, promotions, testimonialSeedData, communityItemsSeedData } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, BookOpen, AlertTriangle, Instagram, Database } from 'lucide-react';
+import { Loader2, BookOpen, AlertTriangle, Instagram, Database, Users } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,6 +26,7 @@ import type { Review, Testimonial } from '@/lib/types';
 export default function DataSeedingPage() {
   const [isBlogLoading, setIsBlogLoading] = useState(false);
   const [isInstaLoading, setIsInstaLoading] = useState(false);
+  const [isCommunityLoading, setIsCommunityLoading] = useState(false);
   const [isMasterLoading, setIsMasterLoading] = useState(false);
   const firestore = useFirestore();
   const { toast } = useToast();
@@ -160,6 +161,35 @@ export default function DataSeedingPage() {
       setIsBlogLoading(false);
     }
   };
+  
+  const handleSeedCommunityItems = async () => {
+    if (!firestore) {
+      toast({ variant: 'destructive', title: 'Error', description: 'Firestore is not initialized.' });
+      return;
+    }
+    setIsCommunityLoading(true);
+    try {
+      const batch = writeBatch(firestore);
+      const collectionRef = collection(firestore, 'community_items');
+
+      communityItemsSeedData.forEach((item, index) => {
+        const docRef = doc(collectionRef, `item-${index}`);
+        batch.set(docRef, {...item, displayOrder: index});
+      });
+      
+      await batch.commit();
+      toast({ title: 'Success', description: 'Community grid items have been seeded.' });
+    } catch (error: any) {
+      console.error("Error seeding community items: ", error);
+      toast({
+        variant: 'destructive',
+        title: 'Seeding Failed',
+        description: `Could not seed community items: ${error.message}`,
+      });
+    } finally {
+      setIsCommunityLoading(false);
+    }
+  }
 
   const handleSeedTestInstaPost = async () => {
       if (!firestore) {
@@ -263,39 +293,30 @@ export default function DataSeedingPage() {
                 </AlertDialog>
             </CardContent>
         </Card>
-
+        
+        <div className="grid md:grid-cols-3 gap-6">
         <Card className="bg-zinc-900 border-zinc-800 text-white">
             <CardHeader>
                 <CardTitle className="flex items-center gap-2"><BookOpen /> Blog Post Seeder</CardTitle>
                 <CardDescription className="text-zinc-400">
-                Use this tool to populate your CMS with 15 new sample blog posts. This action only adds new data and will not delete existing posts.
+                Populate your CMS with 15 sample blog posts.
                 </CardDescription>
             </CardHeader>
             <CardContent>
-                <div className="flex items-start gap-4 rounded-lg border border-yellow-500/50 bg-yellow-500/10 p-4">
-                    <AlertTriangle className="h-6 w-6 text-yellow-400 mt-1" />
-                    <div>
-                        <h3 className="font-semibold text-yellow-300">Notice</h3>
-                        <p className="text-sm text-yellow-400/80">
-                        This action is non-destructive. It will add new blog posts from the seed file. If a post with the same ID already exists, it will be overwritten with the seed data.
-                        </p>
-                    </div>
-                </div>
-
                 <AlertDialog>
                     <AlertDialogTrigger asChild>
-                        <Button variant="outline" className="mt-6 w-full sm:w-auto text-yellow-400 border-yellow-500 hover:bg-yellow-400 hover:text-black" disabled={isBlogLoading}>
+                        <Button variant="outline" className="w-full sm:w-auto text-yellow-400 border-yellow-500 hover:bg-yellow-400 hover:text-black" disabled={isBlogLoading}>
                             {isBlogLoading ? (
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                             ) : (
                                 <BookOpen className="mr-2 h-4 w-4" />
                             )}
-                            Seed 15 Blog Posts
+                            Seed Blog Posts
                         </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
                         <AlertDialogHeader>
-                            <AlertDialogTitle>Are you sure you want to seed the blogs?</AlertDialogTitle>
+                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                             <AlertDialogDescription className="text-zinc-400">
                                 This will add or overwrite 15 blog posts in your Firestore database.
                             </AlertDialogDescription>
@@ -308,11 +329,31 @@ export default function DataSeedingPage() {
                 </AlertDialog>
             </CardContent>
         </Card>
+
+        <Card className="bg-zinc-900 border-zinc-800 text-white">
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2"><Users /> Community Grid Seeder</CardTitle>
+                <CardDescription className="text-zinc-400">
+                Populate the homepage community grid with sample items.
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                 <Button onClick={handleSeedCommunityItems} className="w-full sm:w-auto" disabled={isCommunityLoading}>
+                    {isCommunityLoading ? (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                        <Users className="mr-2 h-4 w-4" />
+                    )}
+                    Seed Community Items
+                </Button>
+            </CardContent>
+        </Card>
+
         <Card className="bg-zinc-900 border-zinc-800 text-white">
             <CardHeader>
                 <CardTitle className="flex items-center gap-2"><Instagram /> Insta-Feed Seeder</CardTitle>
                 <CardDescription className="text-zinc-400">
-                Use this to add 20 mock posts to your Instagram feed collection. This is useful for frontend testing if the automated sync has not run yet.
+                Add 20 mock posts to your Instagram feed collection.
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -322,10 +363,13 @@ export default function DataSeedingPage() {
                     ) : (
                         <Instagram className="mr-2 h-4 w-4" />
                     )}
-                    Seed 20 Mock Insta-Feed Posts
+                    Seed Mock Insta-Feed
                 </Button>
             </CardContent>
         </Card>
+        </div>
     </div>
   );
 }
+
+    

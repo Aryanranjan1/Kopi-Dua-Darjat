@@ -157,6 +157,20 @@ export type Outlet = {
   };
 };
 
+export type CommunityItem = {
+    id: string;
+    type: 'portrait' | 'logo' | 'quote';
+    name: string;
+    imageUrl: string;
+    quote?: string;
+    role?: string;
+    bgColor?: string;
+    textColor?: string;
+    className: string;
+    displayOrder: number;
+}
+
+
 // --- BLOG ---
 
 export type Blog = {
@@ -330,3 +344,5 @@ export interface InstagramSyncSettings {
     graph_access_token?: string | null;
     graph_account_id?: string | null;
 }
+
+    

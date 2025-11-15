@@ -109,6 +109,22 @@
         "answer": { "type": "string" }
       }
     },
+    "CommunityItem": {
+      "title": "Community Item",
+      "type": "object",
+      "description": "An item to be displayed in the community grid on the homepage.",
+      "properties": {
+          "type": { "type": "string", "enum": ["portrait", "logo", "quote"]},
+          "name": { "type": "string" },
+          "imageUrl": { "type": "string", "format": "uri" },
+          "quote": { "type": "string" },
+          "role": { "type": "string" },
+          "bgColor": { "type": "string" },
+          "textColor": { "type": "string" },
+          "className": { "type": "string" },
+          "displayOrder": { "type": "number"}
+      }
+    },
     "PublicInstaPost": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Public Instagram Post",
@@ -223,6 +239,15 @@
         }
       },
       {
+        "path": "/community_items/{itemId}",
+        "definition": {
+          "entityName": "CommunityItem",
+          "schema": { "$ref": "#/entities/CommunityItem" },
+          "description": "Stores items for the homepage community grid.",
+          "params": [{ "name": "itemId", "description": "Unique identifier for the community item." }]
+        }
+      },
+      {
         "path": "/roles_admin/{userId}",
         "definition": {
           "entityName": "adminRole",
@@ -252,3 +277,5 @@
     ]
   }
 }
+
+    
