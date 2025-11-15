@@ -1,4 +1,5 @@
 
+
 import type { Outlet, Blog, Testimonial, FaqItem, SiteSettings, MenuGroup, MenuCategory, MenuItem, Promotion, CommunityItem } from './types';
 import { Timestamp } from 'firebase/firestore';
 
@@ -15,7 +16,7 @@ export const communityItemsSeedData: Omit<CommunityItem, 'id' | 'displayOrder'>[
     },
     {
       type: "logo",
-      name: "Superhuman",
+      name: "Kopi Dua Darjat",
       imageUrl: "/image/1.svg",
       className: "sm:col-span-1"
     },
@@ -25,11 +26,12 @@ export const communityItemsSeedData: Omit<CommunityItem, 'id' | 'displayOrder'>[
       quote: "Kopi Dua Darjat's franchise model made it incredibly easy for me to start my own business. The support is amazing!",
       role: "Franchisee, Shah Alam",
       bgColor: "bg-yellow-300",
+      textColor: "text-black",
       className: "sm:col-span-2"
     },
     {
       type: "logo",
-      name: "Milk Road",
+      name: "Kopi Dua Darjat",
       imageUrl: "/image/1.svg",
       className: "sm:col-span-1 sm:row-span-1"
     },
@@ -42,7 +44,7 @@ export const communityItemsSeedData: Omit<CommunityItem, 'id' | 'displayOrder'>[
     },
     {
       type: "logo",
-      name: "Every",
+      name: "Kopi Dua Darjat",
       imageUrl: "/image/1.svg",
       className: "sm:col-span-1"
     },
@@ -71,7 +73,7 @@ export const communityItemsSeedData: Omit<CommunityItem, 'id' | 'displayOrder'>[
     },
     {
       type: "logo",
-      name: "Sketchy",
+      name: "Kopi Dua Darjat",
       imageUrl: "/image/1.svg",
       className: "sm:col-span-1"
     }
@@ -86,7 +88,7 @@ export const menuGroups: Omit<MenuGroup, 'createdAt' | 'updatedAt'>[] = [
 export const menuCategories: Omit<MenuCategory, 'createdAt' | 'updatedAt'>[] = [
   { id: 'darjat-series', name: 'Darjat Series', slug: 'darjat-series', groupId: 'nak-kopi', displayOrder: 1, status: 'published' },
   { id: 'kopi-series', name: 'Kopi Series', slug: 'kopi-series', groupId: 'nak-kopi', displayOrder: 2, status: 'published' },
-  { id: 'coklat-series', name: 'Coklat Series', slug: 'coklat-series', groupId: 'nak-lain', displayOrder: 3, status: 'published' },
+  { id: 'coklat-series', name: 'Coklat Series', slug: 'nak-lain', displayOrder: 3, status: 'published' },
   { id: 'matcha-series', name: 'Matcha Series', slug: 'matcha-series', groupId: 'nak-lain', displayOrder: 4, status: 'published' },
 ];
 
@@ -212,12 +214,12 @@ export const blogSeedData: Omit<Blog, 'createdAt' | 'updatedAt'>[] = [
 ];
 
 export const testimonialSeedData: Omit<Testimonial, 'id' | 'createdAt'>[] = [
-  { outletId: "kajang-prima", quote: "The brand recognition is incredible. Customers love the coffee, and my outlet has been profitable since month one.", name: "Siti Nurhaliza", designation: "Franchisee, Kajang", image: "testimonial-2", rating: 5 },
-  { outletId: "putrajaya-ayer8", quote: "I always wanted to own a café. Kopi Dua Darjat made that dream a reality with a low-cost, high-return model.", name: "Ravi Chandran", designation: "Franchisee, Putrajaya", image: "testimonial-3", rating: 5 },
-  { outletId: "shah-alam", quote: "I started my stall in Shah Alam — sold out every morning within 2 weeks! The training and marketing support made everything easy.", name: "Ahmad Faizal", designation: "Franchisee, Shah Alam", image: "testimonial-1", rating: 5 },
-  { outletId: "jb-city-square", quote: "A must-visit when I cross the border. It's the authentic Malaysian taste I miss.", name: "David Chen", designation: "Visitor, Singapore", image: "testimonial-3", rating: 4 },
-  { outletId: "georgetown", quote: "Perfect companion for a walk around historical Georgetown. The Coklat Artisan is my kid's favorite.", name: "Emily T.", designation: "Tourist, Australia", image: "testimonial-2", rating: 5 },
-  { outletId: "kota-kinabalu", quote: "The view is great, but the coffee is even better. Love this place!", name: "Jackson R.", designation: "Local Resident, KK", image: "testimonial-1", rating: 4 }
+  { outletId: "kajang-prima", quote: "The brand recognition is incredible. Customers love the coffee, and my outlet has been profitable since month one.", name: "Siti Nurhaliza", designation: "Franchisee, Kajang", imageId: "testimonial-2", rating: 5 },
+  { outletId: "putrajaya-ayer8", quote: "I always wanted to own a café. Kopi Dua Darjat made that dream a reality with a low-cost, high-return model.", name: "Ravi Chandran", designation: "Franchisee, Putrajaya", imageId: "testimonial-3", rating: 5 },
+  { outletId: "shah-alam", quote: "I started my stall in Shah Alam — sold out every morning within 2 weeks! The training and marketing support made everything easy.", name: "Ahmad Faizal", designation: "Franchisee, Shah Alam", imageId: "testimonial-1", rating: 5 },
+  { outletId: "jb-city-square", quote: "A must-visit when I cross the border. It's the authentic Malaysian taste I miss.", name: "David Chen", designation: "Visitor, Singapore", imageId: "testimonial-3", rating: 4 },
+  { outletId: "georgetown", quote: "Perfect companion for a walk around historical Georgetown. The Coklat Artisan is my kid's favorite.", name: "Emily T.", designation: "Tourist, Australia", imageId: "testimonial-2", rating: 5 },
+  { outletId: "kota-kinabalu", quote: "The view is great, but the coffee is even better. Love this place!", name: "Jackson R.", designation: "Local Resident, KK", imageId: "testimonial-1", rating: 4 }
 ]
 
     
@@ -227,4 +229,5 @@ export const testimonialSeedData: Omit<Testimonial, 'id' | 'createdAt'>[] = [
     
 
     
+
 

@@ -69,7 +69,7 @@ const CommunityItemForm = ({ item, onSuccess }: { item?: CommunityItem; onSucces
       quote: item?.quote || '',
       role: item?.role || '',
       bgColor: item?.bgColor || '',
-      textColor: item?.textColor || '',
+      textColor: item?.textColor || 'text-black',
       className: item?.className?.split(' ').filter(c => c.startsWith('sm:col-span-')).join(' ') || '',
       rowSpan: item?.className?.split(' ').filter(c => c.startsWith('sm:row-span-')).join(' ') || '',
     },
@@ -167,7 +167,17 @@ const CommunityItemForm = ({ item, onSuccess }: { item?: CommunityItem; onSucces
                   <FormItem><FormLabel>Background Color Class</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} placeholder="e.g. bg-yellow-300" /></FormControl><FormMessage /></FormItem>
                 )} />
                 <FormField control={formMethods.control} name="textColor" render={({ field }) => (
-                  <FormItem><FormLabel>Text Color Class</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} placeholder="e.g. text-white" /></FormControl><FormMessage /></FormItem>
+                   <FormItem>
+                    <FormLabel>Text Color</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl><SelectTrigger className={inputStyles}><SelectValue /></SelectTrigger></FormControl>
+                      <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                        <SelectItem value="text-black">Black</SelectItem>
+                        <SelectItem value="text-white">White</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
                 )} />
               </>
             )}

@@ -180,12 +180,12 @@ export default function DataSeedingPage() {
 
       // Add new items
       communityItemsSeedData.forEach((item, index) => {
-        const docRef = doc(collectionRef, `item-${String(index).padStart(2, '0')}`);
+        const docRef = doc(collection(firestore, 'community_items')); // Auto-generate ID
         batch.set(docRef, {...item, displayOrder: index});
       });
       
       await batch.commit();
-      toast({ title: 'Success', description: 'Community grid items have been seeded.' });
+      toast({ title: 'Success', description: 'Community grid items have been cleared and re-seeded.' });
     } catch (error: any) {
       console.error("Error seeding community items: ", error);
       toast({
@@ -364,14 +364,30 @@ export default function DataSeedingPage() {
                 </CardDescription>
             </CardHeader>
             <CardContent>
-                 <Button onClick={handleSeedCommunityItems} className="w-full sm:w-auto" disabled={isCommunityLoading}>
-                    {isCommunityLoading ? (
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    ) : (
-                        <Users className="mr-2 h-4 w-4" />
-                    )}
-                    Seed Community Items
-                </Button>
+                <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                        <Button onClick={handleSeedCommunityItems} className="w-full sm:w-auto" disabled={isCommunityLoading}>
+                            {isCommunityLoading ? (
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            ) : (
+                                <Users className="mr-2 h-4 w-4" />
+                            )}
+                            Seed Community Items
+                        </Button>
+                    </AlertDialogTrigger>
+                     <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                            <AlertDialogDescription className="text-zinc-400">
+                                This will delete all existing community grid items and replace them with the default seed data.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                        <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
+                        <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={handleSeedCommunityItems}>Yes, delete and re-seed</AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
             </CardContent>
         </Card>
 

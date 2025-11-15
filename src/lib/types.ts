@@ -230,7 +230,7 @@ export type Testimonial = {
   quote: string;
   name: string;
   designation: string;
-  image: string;
+  imageId: string;
   company?: string;
   outletId?: string;
   rating?: number;
