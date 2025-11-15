@@ -139,7 +139,7 @@ const FieldArrayManager = ({ path, objShape, itemShape }: { path: string, objSha
                     )}
                 </div>
             ))}
-            <Button type="button" variant="outline" onClick={() => append(isStringArray ? '' : itemShape)}><PlusCircle className="mr-2 h-4 w-4" /> Add Item</Button>
+            <Button type="button" variant="outline" onClick={() => append(isStringArray ? '' : itemShape)} className="bg-zinc-800 border-zinc-700 hover:bg-zinc-700 text-white"><PlusCircle className="mr-2 h-4 w-4" /> Add Item</Button>
         </div>
     );
 };
