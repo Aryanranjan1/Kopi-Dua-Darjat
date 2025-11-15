@@ -200,11 +200,11 @@ export default function SettingsForm() {
             </TabsContent>
             <TabsContent value="founders">
                 <Card className="bg-transparent border-none">
-                    <CardHeader><CardTitle>Founders</CardTitle><CardDescription className="text-zinc-400">Manage information about the company founders.</CardDescription></CardHeader>
+                    <CardHeader><CardTitle className="text-primary">Founders</CardTitle><CardDescription className="text-zinc-400">Manage information about the company founders.</CardDescription></CardHeader>
                     <CardContent className="space-y-6">
                         {fields.map((field, index) => (
                         <div key={field.id} className="p-4 border border-zinc-700 rounded-lg space-y-4 relative">
-                            <h4 className="text-lg font-semibold">Founder {index + 1}</h4>
+                            <h4 className="text-lg font-semibold text-primary">Founder {index + 1}</h4>
                              <FormField control={form.control} name={`founders.${index}.name`} render={({ field }) => (
                                 <FormItem><FormLabel className="text-white">Name</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                             )} />
@@ -231,7 +231,7 @@ export default function SettingsForm() {
             </TabsContent>
             <TabsContent value="contact">
                  <Card className="bg-transparent border-none">
-                    <CardHeader><CardTitle>Contact Info</CardTitle><CardDescription className="text-zinc-400">Public contact and location details.</CardDescription></CardHeader>
+                    <CardHeader><CardTitle className="text-primary">Contact Info</CardTitle><CardDescription className="text-zinc-400">Public contact and location details.</CardDescription></CardHeader>
                     <CardContent className="space-y-4">
                         <FormField control={form.control} name="contact.email" render={({ field }) => (<FormItem><FormLabel className="text-white">Email</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
                         <FormField control={form.control} name="contact.phone" render={({ field }) => (<FormItem><FormLabel className="text-white">Phone</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
@@ -243,7 +243,7 @@ export default function SettingsForm() {
             </TabsContent>
              <TabsContent value="socials">
                  <Card className="bg-transparent border-none">
-                    <CardHeader><CardTitle>Social Media</CardTitle><CardDescription className="text-zinc-400">Links to your social media profiles.</CardDescription></CardHeader>
+                    <CardHeader><CardTitle className="text-primary">Social Media</CardTitle><CardDescription className="text-zinc-400">Links to your social media profiles.</CardDescription></CardHeader>
                     <CardContent className="space-y-4">
                         <FormField control={form.control} name="socials.instagram" render={({ field }) => (<FormItem><FormLabel className="text-white">Instagram</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
                         <FormField control={form.control} name="socials.facebook" render={({ field }) => (<FormItem><FormLabel className="text-white">Facebook</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
@@ -255,7 +255,7 @@ export default function SettingsForm() {
             </TabsContent>
             <TabsContent value="seo">
                  <Card className="bg-transparent border-none">
-                    <CardHeader><CardTitle>SEO Defaults</CardTitle><CardDescription className="text-zinc-400">Default metadata for search engine optimization.</CardDescription></CardHeader>
+                    <CardHeader><CardTitle className="text-primary">SEO Defaults</CardTitle><CardDescription className="text-zinc-400">Default metadata for search engine optimization.</CardDescription></CardHeader>
                     <CardContent className="space-y-4">
                         <FormField control={form.control} name="meta.defaultTitle" render={({ field }) => (<FormItem><FormLabel className="text-white">Default Meta Title</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
                         <FormField control={form.control} name="meta.defaultDescription" render={({ field }) => (<FormItem><FormLabel className="text-white">Default Meta Description</FormLabel><FormControl><Textarea {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
@@ -273,7 +273,7 @@ export default function SettingsForm() {
             </TabsContent>
             <TabsContent value="automation">
                  <Card className="bg-transparent border-none">
-                    <CardHeader><CardTitle>Automation & System</CardTitle><CardDescription className="text-zinc-400">System-level configurations and integrations.</CardDescription></CardHeader>
+                    <CardHeader><CardTitle className="text-primary">Automation & System</CardTitle><CardDescription className="text-zinc-400">System-level configurations and integrations.</CardDescription></CardHeader>
                     <CardContent className="space-y-4">
                          <FormField control={form.control} name="automation.newsletterIntegration" render={({ field }) => (
                             <FormItem className="flex flex-row items-center justify-between rounded-lg border border-zinc-700 p-4">
