@@ -282,14 +282,20 @@ export type SiteSettings = {
   id: 'main';
   brand: {
     name: string;
-    favicon: string;
-    logoLight: string;
-    logoDark: string;
+    faviconId: string;
+    logoLightId: string;
+    logoDarkId: string;
     tagline: string;
     primaryColor: string;
     accentColor: string;
   };
-  founders: Founder[];
+  founders: {
+    name: string;
+    role: string;
+    imageId: string;
+    quote: string;
+    contact: string;
+  }[];
   contact: {
     email: string;
     phone: string;
@@ -313,7 +319,7 @@ export type SiteSettings = {
   meta: {
     defaultTitle: string;
     defaultDescription: string;
-    defaultImage: string;
+    defaultImageId: string;
     keywords?: string[];
   };
   lastUpdated: Timestamp;

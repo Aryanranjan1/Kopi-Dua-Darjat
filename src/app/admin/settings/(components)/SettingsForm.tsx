@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useForm, useFieldArray } from 'react-hook-form';
@@ -23,11 +24,13 @@ import type { SiteSettings } from '@/lib/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useMedia } from '@/lib/media';
 
 const founderSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   role: z.string().min(1, 'Role is required'),
-  image: z.string().url('Must be a valid URL').or(z.literal('')),
+  imageId: z.string().optional(),
   quote: z.string().optional(),
   contact: z.string().email('Must be a valid email').or(z.literal('')),
 });
@@ -35,9 +38,9 @@ const founderSchema = z.object({
 const formSchema = z.object({
   brand: z.object({
     name: z.string().min(1, 'Brand name is required'),
-    favicon: z.string().url().or(z.literal('')),
-    logoLight: z.string().url().or(z.literal('')),
-    logoDark: z.string().url().or(z.literal('')),
+    faviconId: z.string().optional(),
+    logoLightId: z.string().optional(),
+    logoDarkId: z.string().optional(),
     tagline: z.string().optional(),
     primaryColor: z.string().optional(),
     accentColor: z.string().optional(),
@@ -66,7 +69,7 @@ const formSchema = z.object({
   meta: z.object({
     defaultTitle: z.string().optional(),
     defaultDescription: z.string().optional(),
-    defaultImage: z.string().url().or(z.literal('')),
+    defaultImageId: z.string().optional(),
     keywords: z.string().optional(),
   }),
 });
@@ -76,26 +79,35 @@ type FormValues = z.infer<typeof formSchema>;
 export default function SettingsForm() {
   const { toast } = useToast();
   const firestore = useFirestore();
+  const { data: media, isLoading: isLoadingMedia } = useMedia();
 
   const settingsRef = useMemoFirebase(() => firestore ? doc(firestore, 'settings', 'main') : null, [firestore]);
-  const { data: settingsData, isLoading } = useDoc<SiteSettings>(settingsRef);
+  const { data: settingsData, isLoading: isLoadingSettings } = useDoc<SiteSettings>(settingsRef);
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     values: settingsData ? {
         ...settingsData,
+        brand: {
+            ...settingsData.brand,
+            faviconId: settingsData.brand?.faviconId || '',
+            logoLightId: settingsData.brand?.logoLightId || '',
+            logoDarkId: settingsData.brand?.logoDarkId || '',
+        },
+        founders: settingsData.founders?.map(f => ({ ...f, imageId: f.imageId || '' })) || [],
         meta: {
             ...settingsData.meta,
             keywords: settingsData.meta?.keywords?.join(', '),
+            defaultImageId: settingsData.meta?.defaultImageId || '',
         },
     } : undefined,
     defaultValues: {
-        brand: { name: '', favicon: '', logoLight: '', logoDark: '', tagline: '' },
+        brand: { name: '', tagline: '', faviconId: '', logoLightId: '', logoDarkId: '' },
         founders: [],
         contact: { email: '', phone: '', address: '', googleMapsLink: '', businessHours: '' },
         socials: { instagram: '', facebook: '', tiktok: '', youtube: '', whatsapp: '' },
         automation: { newsletterIntegration: false, googleBusinessSync: false, autoBackup: true, appCheckEnforced: true },
-        meta: { defaultTitle: '', defaultDescription: '', defaultImage: '', keywords: '' },
+        meta: { defaultTitle: '', defaultDescription: '', keywords: '', defaultImageId: '' },
     },
   });
 
@@ -107,7 +119,7 @@ export default function SettingsForm() {
   const { isSubmitting } = form.formState;
 
   const onSubmit = async (values: FormValues) => {
-    if (!firestore) return;
+    if (!firestore || !settingsRef) return;
     try {
       const dataToSave = {
         ...values,
@@ -116,7 +128,6 @@ export default function SettingsForm() {
             keywords: values.meta.keywords ? values.meta.keywords.split(',').map(kw => kw.trim()) : [],
         },
         lastUpdated: serverTimestamp(),
-        // updatedBy: 'admin_user_id' // This should be the current admin's UID
       };
 
       await setDoc(settingsRef, dataToSave, { merge: true });
@@ -126,6 +137,8 @@ export default function SettingsForm() {
       toast({ variant: 'destructive', title: 'Error', description: error.message });
     }
   };
+
+  const isLoading = isLoadingSettings || isLoadingMedia;
 
   if (isLoading) {
     return <div className="flex justify-center items-center h-64"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
@@ -155,14 +168,32 @@ export default function SettingsForm() {
                         <FormField control={form.control} name="brand.tagline" render={({ field }) => (
                             <FormItem><FormLabel>Tagline</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
                         )}/>
-                        <FormField control={form.control} name="brand.logoLight" render={({ field }) => (
-                            <FormItem><FormLabel>Logo Light URL</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormDescription>URL for logo used on dark backgrounds.</FormDescription><FormMessage/></FormItem>
+                        <FormField control={form.control} name="brand.logoDarkId" render={({ field }) => (
+                            <FormItem><FormLabel>Logo (for light backgrounds)</FormLabel>
+                             <Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger className={inputStyles}><SelectValue placeholder="Select an image" /></SelectTrigger></FormControl>
+                                <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                                    {media?.map(m => <SelectItem key={m.id} value={m.id}>{m.id}</SelectItem>)}
+                                </SelectContent>
+                             </Select>
+                            <FormMessage/></FormItem>
                         )}/>
-                        <FormField control={form.control} name="brand.logoDark" render={({ field }) => (
-                            <FormItem><FormLabel>Logo Dark URL</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormDescription>URL for logo used on light backgrounds.</FormDescription><FormMessage/></FormItem>
+                         <FormField control={form.control} name="brand.logoLightId" render={({ field }) => (
+                            <FormItem><FormLabel>Logo (for dark backgrounds)</FormLabel>
+                             <Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger className={inputStyles}><SelectValue placeholder="Select an image" /></SelectTrigger></FormControl>
+                                <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                                    {media?.map(m => <SelectItem key={m.id} value={m.id}>{m.id}</SelectItem>)}
+                                </SelectContent>
+                             </Select>
+                            <FormMessage/></FormItem>
                         )}/>
-                        <FormField control={form.control} name="brand.favicon" render={({ field }) => (
-                            <FormItem><FormLabel>Favicon URL</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                         <FormField control={form.control} name="brand.faviconId" render={({ field }) => (
+                            <FormItem><FormLabel>Favicon</FormLabel>
+                             <Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger className={inputStyles}><SelectValue placeholder="Select an image" /></SelectTrigger></FormControl>
+                                <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                                    {media?.map(m => <SelectItem key={m.id} value={m.id}>{m.id}</SelectItem>)}
+                                </SelectContent>
+                             </Select>
+                            <FormMessage/></FormItem>
                         )}/>
                     </CardContent>
                 </Card>
@@ -180,8 +211,13 @@ export default function SettingsForm() {
                              <FormField control={form.control} name={`founders.${index}.role`} render={({ field }) => (
                                 <FormItem><FormLabel>Role</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                             )} />
-                            <FormField control={form.control} name={`founders.${index}.image`} render={({ field }) => (
-                                <FormItem><FormLabel>Image URL</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                            <FormField control={form.control} name={`founders.${index}.imageId`} render={({ field }) => (
+                                <FormItem><FormLabel>Image</FormLabel>
+                                <Select onValueChange={field.onChange} value={field.value}>
+                                    <FormControl><SelectTrigger className={inputStyles}><SelectValue placeholder="Select an image" /></SelectTrigger></FormControl>
+                                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white">{media?.map(m => <SelectItem key={m.id} value={m.id}>{m.id}</SelectItem>)}</SelectContent>
+                                </Select>
+                                <FormMessage /></FormItem>
                             )} />
                             <FormField control={form.control} name={`founders.${index}.quote`} render={({ field }) => (
                                 <FormItem><FormLabel>Quote</FormLabel><FormControl><Textarea {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
@@ -189,7 +225,7 @@ export default function SettingsForm() {
                              <Button type="button" variant="destructive" size="icon" className="absolute top-4 right-4" onClick={() => remove(index)}><Trash2 className="h-4 w-4" /></Button>
                         </div>
                         ))}
-                        <Button type="button" variant="outline" onClick={() => append({ name: '', role: '', image: '', quote: '', contact: '' })}><Plus className="mr-2 h-4 w-4" /> Add Founder</Button>
+                        <Button type="button" variant="outline" onClick={() => append({ name: '', role: '', imageId: '', quote: '', contact: '' })}><Plus className="mr-2 h-4 w-4" /> Add Founder</Button>
                     </CardContent>
                 </Card>
             </TabsContent>
@@ -223,7 +259,14 @@ export default function SettingsForm() {
                     <CardContent className="space-y-4">
                         <FormField control={form.control} name="meta.defaultTitle" render={({ field }) => (<FormItem><FormLabel>Default Meta Title</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
                         <FormField control={form.control} name="meta.defaultDescription" render={({ field }) => (<FormItem><FormLabel>Default Meta Description</FormLabel><FormControl><Textarea {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
-                        <FormField control={form.control} name="meta.defaultImage" render={({ field }) => (<FormItem><FormLabel>Default OG Image URL</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="meta.defaultImageId" render={({ field }) => (
+                            <FormItem><FormLabel>Default OG Image</FormLabel>
+                                <Select onValueChange={field.onChange} value={field.value}>
+                                    <FormControl><SelectTrigger className={inputStyles}><SelectValue placeholder="Select an image" /></SelectTrigger></FormControl>
+                                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white">{media?.map(m => <SelectItem key={m.id} value={m.id}>{m.id}</SelectItem>)}</SelectContent>
+                                </Select>
+                            <FormMessage /></FormItem>
+                        )} />
                         <FormField control={form.control} name="meta.keywords" render={({ field }) => (<FormItem><FormLabel>Default Keywords</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormDescription>Comma-separated keywords.</FormDescription><FormMessage /></FormItem>)} />
                     </CardContent>
                 </Card>

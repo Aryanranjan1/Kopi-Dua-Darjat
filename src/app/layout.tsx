@@ -1,4 +1,5 @@
 
+
 import type { Metadata } from 'next';
 import './globals.css';
 import { cn } from '@/lib/utils';
@@ -9,7 +10,7 @@ import AppLayout from './AppLayout';
 import { SettingsProvider } from '@/components/layout/SettingsProvider';
 import { doc, getDoc } from 'firebase/firestore';
 import { initializeServerSideFirebase } from '@/firebase/server-init';
-import type { SiteSettings } from '@/lib/types';
+import type { SiteSettings, Media } from '@/lib/types';
 
 
 const montserrat = Montserrat({
@@ -24,27 +25,42 @@ const nunitoSansCondensed = Nunito_Sans_Condensed({
   display: 'swap',
 });
 
-// This function can be called at the layout level to fetch settings
-// It's a server-side function, so it runs once per request on the server.
-async function getSiteSettings(): Promise<SiteSettings | null> {
+async function getSiteSettings(): Promise<{ settings: SiteSettings | null; faviconUrl: string | null; ogImageUrl: string | null }> {
     try {
-        // We need a Firestore instance on the server.
-        // We use a dedicated server-side helper for this.
         const { firestore } = initializeServerSideFirebase();
         const settingsDoc = await getDoc(doc(firestore, "settings", "main"));
-        if (settingsDoc.exists()) {
-            return settingsDoc.data() as SiteSettings;
+        
+        if (!settingsDoc.exists()) {
+            return { settings: null, faviconUrl: null, ogImageUrl: null };
         }
-        return null;
+        
+        const settings = settingsDoc.data() as SiteSettings;
+        let faviconUrl: string | null = null;
+        let ogImageUrl: string | null = null;
+
+        if (settings.brand?.faviconId) {
+            const faviconDoc = await getDoc(doc(firestore, 'media', settings.brand.faviconId));
+            if (faviconDoc.exists()) {
+                faviconUrl = (faviconDoc.data() as Media).imageUrl;
+            }
+        }
+        if (settings.meta?.defaultImageId) {
+             const ogImageDoc = await getDoc(doc(firestore, 'media', settings.meta.defaultImageId));
+            if (ogImageDoc.exists()) {
+                ogImageUrl = (ogImageDoc.data() as Media).imageUrl;
+            }
+        }
+        
+        return { settings, faviconUrl, ogImageUrl };
     } catch (error) {
         console.error("Failed to fetch site settings:", error);
-        return null; // Return null on error
+        return { settings: null, faviconUrl: null, ogImageUrl: null };
     }
 }
 
 
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getSiteSettings();
+  const { settings, faviconUrl, ogImageUrl } = await getSiteSettings();
 
   return {
     title: {
@@ -54,12 +70,12 @@ export async function generateMetadata(): Promise<Metadata> {
     description: settings?.meta?.defaultDescription || 'Experience the perfect blend of heritage and artisan coffee. 50+ outlets serving quality Kopi Kampung from RM3.',
     keywords: settings?.meta?.keywords || ['Kopi Dua Darjat', 'kopi kampung', 'artisan coffee', 'malaysian cafe', 'franchise kopi'],
     icons: {
-      icon: settings?.brand?.favicon || '/favicon.ico',
+      icon: faviconUrl || '/favicon.ico',
     },
     openGraph: {
       title: settings?.meta?.defaultTitle,
       description: settings?.meta?.defaultDescription,
-      images: settings?.meta?.defaultImage ? [settings.meta.defaultImage] : [],
+      images: ogImageUrl ? [ogImageUrl] : [],
     },
   };
 }

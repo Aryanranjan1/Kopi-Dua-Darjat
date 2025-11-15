@@ -13,7 +13,7 @@ import { Skeleton } from '../ui/skeleton';
 export default function SiteFooter() {
   const { settings } = useSettings();
   const currentYear = new Date().getFullYear();
-  const { asset: logoAsset, isLoading: isLogoLoading } = useMediaAsset('logo-symbol');
+  const { asset: logoAsset, isLoading: isLogoLoading } = useMediaAsset(settings?.brand?.logoLightId || 'logo-symbol');
 
   return (
     <footer className="bg-black text-white">
