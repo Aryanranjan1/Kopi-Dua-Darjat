@@ -2,7 +2,7 @@
 'use client';
 
 import React from 'react';
-import { useForm, FormProvider, useFieldArray } from 'react-hook-form';
+import { useForm, FormProvider, useFieldArray, useFormContext } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
@@ -44,12 +44,10 @@ const createSchemaFromObject = (obj: any): z.ZodType<any> => {
 const RenderField = ({ path, label, value }: { path: string; label: string; value: any }) => {
   const { control } = useFormContext();
   const inputStyles = "bg-zinc-800 border-zinc-700 text-white focus-visible:ring-primary";
-  const fieldKey = path;
 
   if (label.toLowerCase().includes('image') || label.toLowerCase().includes('logo') || label.toLowerCase().includes('favicon')) {
     return (
       <FormField
-        key={fieldKey}
         control={control}
         name={path}
         render={({ field }) => (
@@ -67,7 +65,6 @@ const RenderField = ({ path, label, value }: { path: string; label: string; valu
   if (typeof value === 'boolean') {
     return (
       <FormField
-        key={fieldKey}
         control={control}
         name={path}
         render={({ field }) => (
@@ -80,11 +77,34 @@ const RenderField = ({ path, label, value }: { path: string; label: string; valu
     );
   }
 
+  if (path.endsWith('.type') && path.includes('community.items')) {
+    return (
+      <FormField
+        control={control}
+        name={path}
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>{label}</FormLabel>
+            <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <FormControl><SelectTrigger className={inputStyles}><SelectValue placeholder="Select a type" /></SelectTrigger></FormControl>
+              <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                <SelectItem value="portrait">Portrait</SelectItem>
+                <SelectItem value="logo">Logo</SelectItem>
+                <SelectItem value="quote">Quote</SelectItem>
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    );
+  }
+
   const isTextArea = typeof value === 'string' && (value.length > 80 || ['description', 'content', 'quote', 'subtitle', 'visionText', 'text'].includes(label.toLowerCase().replace(/\s/g, '')));
+  
   if (isTextArea) {
     return (
       <FormField
-        key={fieldKey}
         control={control}
         name={path}
         render={({ field }) => (
@@ -96,7 +116,6 @@ const RenderField = ({ path, label, value }: { path: string; label: string; valu
 
   return (
     <FormField
-      key={fieldKey}
       control={control}
       name={path}
       render={({ field }) => (
@@ -106,84 +125,10 @@ const RenderField = ({ path, label, value }: { path: string; label: string; valu
   );
 };
 
-const RenderCommunityItemFields = ({ index }: { index: number }) => {
-    const { watch } = useFormContext();
-    const itemType = watch(`home.community.items[${index}].type`);
-    const pathPrefix = `home.community.items[${index}]`;
-
-    return (
-         <div className="space-y-4">
-            <FormField
-                name={`${pathPrefix}.type`}
-                render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Type</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                                <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white focus-visible:ring-primary">
-                                    <SelectValue placeholder="Select a type" />
-                                </SelectTrigger>
-                            </FormControl>
-                            <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                                <SelectItem value="portrait">Portrait</SelectItem>
-                                <SelectItem value="logo">Logo</SelectItem>
-                                <SelectItem value="quote">Quote</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        <FormMessage />
-                    </FormItem>
-                )}
-            />
-            <RenderField path={`${pathPrefix}.name`} label="Name" value=""/>
-            <RenderField path={`${pathPrefix}.imageUrl`} label="Image Url" value="http://..."/>
-
-            {itemType === 'quote' && (
-                <>
-                    <RenderField path={`${pathPrefix}.quote`} label="Quote" value="A long text..."/>
-                    <RenderField path={`${pathPrefix}.role`} label="Role" value=""/>
-                    <RenderField path={`${pathPrefix}.textColor`} label="Text Color" value=""/>
-                </>
-            )}
-
-            {(itemType === 'portrait' || itemType === 'quote') && (
-                 <RenderField path={`${pathPrefix}.bgColor`} label="Bg Color" value=""/>
-            )}
-             <RenderField path={`${pathPrefix}.className`} label="Class Name" value=""/>
-        </div>
-    );
-};
-
-const FieldArrayManager = ({ arrayPath, newItemShape, title }: { arrayPath: string; newItemShape: any; title: string }) => {
-    const { control } = useFormContext();
-    const { fields, append, remove } = useFieldArray({ control, name: arrayPath });
-    const isStringArray = typeof newItemShape === 'string';
-
-    return (
-      <div className="space-y-4 p-4 border border-zinc-800 rounded-lg">
-        <h4 className="font-semibold capitalize text-lg text-primary">{title}</h4>
-        <div className="space-y-4">
-            {fields.map((field, index) => (
-                <div key={field.id} className="border border-zinc-700 p-4 rounded-lg space-y-4 relative">
-                    <Button type="button" variant="destructive" size="icon" onClick={() => remove(index)} className="absolute top-2 right-2 h-7 w-7"><Trash2 className="h-4 w-4" /></Button>
-                    <h5 className="font-medium text-sm text-zinc-400">Item {index + 1}</h5>
-                    {arrayPath === 'home.community.items' ? (
-                        <RenderCommunityItemFields index={index} />
-                    ) : isStringArray ? (
-                        <RenderField path={`${arrayPath}[${index}]`} label={`Value`} value="" />
-                    ) : (
-                        <RenderObjectFields obj={newItemShape} pathPrefix={`${arrayPath}[${index}]`} />
-                    )}
-                </div>
-            ))}
-             <Button type="button" variant="outline" onClick={() => append(newItemShape)} className="bg-zinc-800 border-zinc-700 hover:bg-zinc-700 text-white">
-                <PlusCircle className="mr-2 h-4 w-4" /> Add Item
-            </Button>
-        </div>
-      </div>
-    );
-};
 
 const RenderObjectFields = ({ obj, pathPrefix }: { obj: any; pathPrefix: string }) => {
+  const { watch } = useFormContext();
+  
   return (
     <>
       {Object.keys(obj).map(key => {
@@ -204,6 +149,11 @@ const RenderObjectFields = ({ obj, pathPrefix }: { obj: any; pathPrefix: string 
         }
         
         if (typeof value === 'object' && value !== null) {
+          if (pathPrefix.match(/community\.items\[\d+\]$/)) {
+            const itemType = watch(pathPrefix + '.type');
+            if (itemType === 'portrait' && ['quote', 'role', 'textColor'].includes(key)) return null;
+            if (itemType === 'logo' && ['quote', 'role', 'textColor', 'bgColor'].includes(key)) return null;
+          }
           return (
             <div key={currentPath} className="space-y-4 p-4 border border-zinc-800 rounded-lg">
               <h4 className="font-semibold capitalize text-lg text-primary">{label}</h4>
@@ -212,10 +162,44 @@ const RenderObjectFields = ({ obj, pathPrefix }: { obj: any; pathPrefix: string 
           );
         }
         
+        if (pathPrefix.match(/community\.items\[\d+\]$/)) {
+            const itemType = watch(pathPrefix + '.type');
+            if (itemType === 'portrait' && ['quote', 'role', 'textColor'].includes(key)) return null;
+            if (itemType === 'logo' && ['quote', 'role', 'textColor', 'bgColor'].includes(key)) return null;
+        }
+
         return <RenderField key={currentPath} path={currentPath} label={label} value={value} />;
       })}
     </>
   );
+};
+
+const FieldArrayManager = ({ arrayPath, newItemShape, title }: { arrayPath: string; newItemShape: any; title: string }) => {
+    const { control } = useFormContext();
+    const { fields, append, remove } = useFieldArray({ control, name: arrayPath });
+    const isStringArray = typeof newItemShape === 'string';
+
+    return (
+      <div className="space-y-4 p-4 border border-zinc-800 rounded-lg">
+        <h4 className="font-semibold capitalize text-lg text-primary">{title}</h4>
+        <div className="space-y-4">
+            {fields.map((field, index) => (
+                <div key={field.id} className="border border-zinc-700 p-4 rounded-lg space-y-4 relative">
+                    <Button type="button" variant="destructive" size="icon" onClick={() => remove(index)} className="absolute top-2 right-2 h-7 w-7"><Trash2 className="h-4 w-4" /></Button>
+                    <h5 className="font-medium text-sm text-zinc-400">Item {index + 1}</h5>
+                    {isStringArray ? (
+                        <RenderField path={`${arrayPath}[${index}]`} label={`Value`} value="" />
+                    ) : (
+                        <RenderObjectFields obj={newItemShape} pathPrefix={`${arrayPath}[${index}]`} />
+                    )}
+                </div>
+            ))}
+             <Button type="button" variant="outline" onClick={() => append(newItemShape)} className="bg-zinc-800 border-zinc-700 hover:bg-zinc-700 hover:text-black text-white">
+                <PlusCircle className="mr-2 h-4 w-4" /> Add Item
+            </Button>
+        </div>
+      </div>
+    );
 };
 
 
@@ -284,4 +268,3 @@ export default function ContentForm({ initialData }: ContentFormProps) {
     </FormProvider>
   );
 }
-
