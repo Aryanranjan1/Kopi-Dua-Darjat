@@ -203,7 +203,7 @@ export default function ContentForm({ initialData, onFormSubmit }: ContentFormPr
         </Accordion>
         <div className="flex justify-end pt-4">
           <Button type="submit" disabled={true}>
-            Save Changes (Disabled)
+            Save Changes
           </Button>
         </div>
       </form>
