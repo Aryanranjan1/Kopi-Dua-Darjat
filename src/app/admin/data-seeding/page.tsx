@@ -263,11 +263,7 @@ export default function DataSeedingPage() {
     const result = await seedMediaData(firestore);
 
     if (result.success) {
-      if(result.error === 'already_seeded') {
-        toast({ title: 'Media Already Seeded', description: 'No new media assets were added.' });
-      } else {
-        toast({ title: 'Media Seeding Complete!', description: `${result.count} media assets have been added to Firestore.` });
-      }
+      toast({ title: 'Media Seeding Complete!', description: `Deleted existing and added ${result.count} new media assets to Firestore.` });
     } else {
       toast({ variant: 'destructive', title: 'Media Seeding Failed', description: result.error });
     }
@@ -402,18 +398,34 @@ export default function DataSeedingPage() {
             <CardHeader>
                 <CardTitle className="flex items-center gap-2"><ImageIcon /> Media Asset Seeder</CardTitle>
                 <CardDescription className="text-zinc-400">
-                Seed all static images into the 'media' collection in Firestore.
+                Clear and re-seed all static images into the 'media' collection in Firestore.
                 </CardDescription>
             </CardHeader>
             <CardContent>
-                <Button onClick={handleSeedMedia} className="w-full sm:w-auto" disabled={isMediaLoading}>
-                    {isMediaLoading ? (
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    ) : (
-                        <ImageIcon className="mr-2 h-4 w-4" />
-                    )}
-                    Seed Media Assets
-                </Button>
+                <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                         <Button variant="destructive" className="w-full sm:w-auto" disabled={isMediaLoading}>
+                            {isMediaLoading ? (
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            ) : (
+                                <ImageIcon className="mr-2 h-4 w-4" />
+                            )}
+                            Seed Media Assets
+                        </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                            <AlertDialogDescription className="text-zinc-400">
+                                This will DELETE all existing media assets and re-seed them from the configuration file.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
+                            <AlertDialogAction className="bg-destructive hover:bg-destructive/90" onClick={handleSeedMedia}>Yes, delete and re-seed</AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
             </CardContent>
         </Card>
         </div>

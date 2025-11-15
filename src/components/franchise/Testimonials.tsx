@@ -15,9 +15,9 @@ import { Loader2, MessageSquare } from 'lucide-react';
 const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
   const { asset: image, isLoading: isLoadingImage } = useMediaAsset(testimonial.image);
   const { asset: companyLogo, isLoading: isLoadingLogo } = useMediaAsset('logo-symbol');
-  
-  const isLoading = isLoadingImage || isLoadingLogo;
 
+  const isLoading = isLoadingImage || isLoadingLogo;
+  
   return (
       <Card className="bg-white border-zinc-200 rounded-3xl h-full shadow-sm flex flex-col">
           <CardContent className="p-8 flex flex-col flex-grow">
@@ -41,7 +41,7 @@ const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
                <div className="flex items-center gap-2 border rounded-full px-3 py-1 text-sm">
                  <div className="w-12 h-12 relative">
                   {isLoading ? <Skeleton className="w-full h-full rounded-full" /> : companyLogo && (
-                    <Image src={companyLogo.imageUrl} alt="Company Logo" fill className="object-contain p-2 filter grayscale" data-ai-hint={companyLogo.imageHint}/>
+                    <Image src={companyLogo.imageUrl} alt="Company Logo" fill className="object-contain p-2 filter grayscale" data-ai-hint={companyLogo.imageHint} />
                   )}
                  </div>
                  <span className="font-semibold text-zinc-600">{testimonial.company || 'KDD Franchise'}</span>
@@ -61,7 +61,7 @@ const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
   );
 }
 
-export default function FranchiseTestimonials() {
+export default function Testimonials() {
   const firestore = useFirestore();
   const testimonialsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'testimonials'), limit(6)) : null, [firestore]);
   const { data: testimonials, isLoading } = useCollection<Testimonial>(testimonialsQuery);

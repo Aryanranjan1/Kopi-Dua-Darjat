@@ -48,25 +48,30 @@ export async function seedMediaData(firestore: any): Promise<{ success: boolean,
   
   const mediaCollectionRef = collection(firestore, 'media');
 
-  // Check if media has already been seeded to prevent duplicates
-  const existingMediaSnap = await getDocs(query(mediaCollectionRef, where('id', '==', originalMediaData.placeholderImages[0].id)));
-  if (!existingMediaSnap.empty) {
-    console.log("Media data already seems to be seeded.");
-    return { success: true, count: 0, error: "already_seeded" };
+  try {
+    // 1. Delete all existing documents in the collection
+    const existingSnapshot = await getDocs(mediaCollectionRef);
+    const deleteBatch = writeBatch(firestore);
+    existingSnapshot.forEach(doc => deleteBatch.delete(doc.ref));
+    await deleteBatch.commit();
+  } catch (error) {
+     console.error("Error deleting existing media data: ", error);
+     return { success: false, count: 0, error: `Failed to clear existing media: ${(error as Error).message}` };
   }
-  
-  const batch = writeBatch(firestore);
+
+  // 2. Seed new data
+  const seedBatch = writeBatch(firestore);
   let count = 0;
   
   originalMediaData.placeholderImages.forEach((mediaItem) => {
     // We use the ID from the JSON file as the document ID in Firestore
     const docRef = doc(mediaCollectionRef, mediaItem.id);
-    batch.set(docRef, mediaItem);
+    seedBatch.set(docRef, mediaItem);
     count++;
   });
 
   try {
-    await batch.commit();
+    await seedBatch.commit();
     return { success: true, count };
   } catch (error) {
     console.error("Error seeding media data: ", error);
