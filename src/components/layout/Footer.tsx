@@ -7,13 +7,18 @@ import { Facebook, Instagram, Twitter, Music2 } from 'lucide-react';
 import InteractiveMap from '../home/InteractiveMap';
 import { Card } from '../ui/card';
 import { useSettings } from './SettingsProvider';
-import { useMediaAsset } from '@/lib/media';
 import { Skeleton } from '../ui/skeleton';
 
+
+const SVGDisplay = ({ svgString }: { svgString: string }) => {
+  if (!svgString) return null;
+  return <div dangerouslySetInnerHTML={{ __html: svgString }} className="w-full h-full flex items-center justify-center [&_svg]:h-full [&_svg]:w-auto" />;
+};
+
+
 export default function SiteFooter() {
-  const { settings } = useSettings();
+  const { settings, isLoading } = useSettings();
   const currentYear = new Date().getFullYear();
-  const { asset: logoAsset, isLoading: isLogoLoading } = useMediaAsset(settings?.brand?.logoLightId || '');
 
   return (
     <footer className="bg-black text-white">
@@ -60,8 +65,8 @@ export default function SiteFooter() {
           </div>
           <div className="md:col-span-1 flex items-center justify-center">
              <div className="relative w-60 h-60">
-                {isLogoLoading ? <Skeleton className="w-full h-full rounded-full" /> : logoAsset && (
-                  <Image src={logoAsset.imageUrl} alt="Kopi Dua Darjat Logo" fill className="object-contain" data-ai-hint={logoAsset.imageHint} />
+                {isLoading ? <Skeleton className="w-full h-full rounded-full" /> : settings?.brand?.logoLight && (
+                  <SVGDisplay svgString={settings.brand.logoLight} />
                 )}
               </div>
           </div>

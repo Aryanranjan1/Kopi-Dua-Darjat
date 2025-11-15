@@ -38,11 +38,10 @@ async function getSiteSettings(): Promise<{ settings: SiteSettings | null; favic
         let faviconUrl: string | null = null;
         let ogImageUrl: string | null = null;
 
-        if (settings.brand?.faviconId) {
-            const faviconDoc = await getDoc(doc(firestore, 'media', settings.brand.faviconId));
-            if (faviconDoc.exists()) {
-                faviconUrl = (faviconDoc.data() as Media).imageUrl;
-            }
+        if (settings.brand?.favicon) {
+            const svgString = settings.brand.favicon;
+            const base64 = Buffer.from(svgString).toString('base64');
+            faviconUrl = `data:image/svg+xml;base64,${base64}`;
         }
         if (settings.meta?.defaultImageId) {
              const ogImageDoc = await getDoc(doc(firestore, 'media', settings.meta.defaultImageId));

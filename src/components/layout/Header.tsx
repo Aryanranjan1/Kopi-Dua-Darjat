@@ -17,7 +17,6 @@ import {
 } from '@/components/ui/sheet';
 import Image from 'next/image';
 import { useSettings } from './SettingsProvider';
-import { useMediaAsset } from '@/lib/media';
 import { Skeleton } from '../ui/skeleton';
 
 const navItems = [
@@ -28,10 +27,15 @@ const navItems = [
   { title: 'Contact', href: '/contact' },
 ];
 
+const SVGDisplay = ({ svgString }: { svgString: string }) => {
+  if (!svgString) return null;
+  return <div dangerouslySetInnerHTML={{ __html: svgString }} className="h-full w-auto flex items-center justify-center [&_svg]:h-16 [&_svg]:w-auto" />;
+};
+
+
 export default function Header() {
   const pathname = usePathname();
-  const { settings } = useSettings();
-  const { asset: logoAsset, isLoading: isLogoLoading } = useMediaAsset(settings?.brand?.logoDarkId || '');
+  const { settings, isLoading } = useSettings();
 
   const [isScrolled, setIsScrolled] = React.useState(false);
   const [isHidden, setIsHidden] = React.useState(false);
@@ -64,8 +68,12 @@ export default function Header() {
       <div className="container mx-auto px-6 h-20 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="p-0 m-0 h-20 flex items-center">
-            {isLogoLoading ? <Skeleton className="h-16 w-16" /> : logoAsset && (
-              <Image src={logoAsset.imageUrl} alt="Kopi Dua Darjat Logo" width={80} height={80} className="object-contain" data-ai-hint={logoAsset.imageHint}/>
+            {isLoading ? (
+              <Skeleton className="h-16 w-20" />
+            ) : settings?.brand?.logoDark ? (
+              <SVGDisplay svgString={settings.brand.logoDark} />
+            ) : (
+              <span className="font-bold text-lg">{settings?.brand?.name}</span>
             )}
         </Link>
 
@@ -112,9 +120,13 @@ export default function Header() {
                     </SheetHeader>
                     <div className="flex flex-col h-full p-4">
                         <Link href="/" className="h-20 flex items-center p-0 m-0">
-                           {isLogoLoading ? <Skeleton className="h-16 w-16" /> : logoAsset && (
-                              <Image src={logoAsset.imageUrl} alt="Kopi Dua Darjat Logo" width={80} height={80} data-ai-hint={logoAsset.imageHint}/>
-                            )}
+                           {isLoading ? (
+                              <Skeleton className="h-16 w-20" />
+                           ) : settings?.brand?.logoDark ? (
+                              <SVGDisplay svgString={settings.brand.logoDark} />
+                           ) : (
+                             <span className="font-bold text-lg">{settings?.brand?.name}</span>
+                           )}
                         </Link>
                         <div className="flex flex-col space-y-4 mt-8">
                             {navItems.map((item) => (

@@ -20,7 +20,7 @@ type MediaGroup = {
 };
 
 // --- Media Extraction Logic ---
-const imageKeys = ['imageUrl', 'coverImage', 'heroImage', 'interiorImage', 'logoLight', 'logoDark', 'favicon', 'image', 'photo', 'profile_photo_url', 'bannerImage', 'defaultImage'];
+const imageKeys = ['imageUrl', 'coverImage', 'heroImage', 'interiorImage', 'image', 'photo', 'profile_photo_url', 'bannerImage', 'defaultImageId'];
 const videoKeys = ['videoUrl'];
 
 const extractMediaFromObject = (obj: any, path: string = ''): MediaAsset[] => {

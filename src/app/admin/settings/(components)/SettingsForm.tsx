@@ -38,9 +38,9 @@ const founderSchema = z.object({
 const formSchema = z.object({
   brand: z.object({
     name: z.string().min(1, 'Brand name is required'),
-    faviconId: z.string().optional(),
-    logoLightId: z.string().optional(),
-    logoDarkId: z.string().optional(),
+    favicon: z.string().optional(),
+    logoLight: z.string().optional(),
+    logoDark: z.string().optional(),
     tagline: z.string().optional(),
     primaryColor: z.string().optional(),
     accentColor: z.string().optional(),
@@ -90,9 +90,9 @@ export default function SettingsForm() {
         ...settingsData,
         brand: {
             ...settingsData.brand,
-            faviconId: settingsData.brand?.faviconId || '',
-            logoLightId: settingsData.brand?.logoLightId || '',
-            logoDarkId: settingsData.brand?.logoDarkId || '',
+            favicon: settingsData.brand?.favicon || '',
+            logoLight: settingsData.brand?.logoLight || '',
+            logoDark: settingsData.brand?.logoDark || '',
         },
         founders: settingsData.founders?.map(f => ({ ...f, imageId: f.imageId || '' })) || [],
         meta: {
@@ -102,7 +102,7 @@ export default function SettingsForm() {
         },
     } : undefined,
     defaultValues: {
-        brand: { name: '', tagline: '', faviconId: '', logoLightId: '', logoDarkId: '' },
+        brand: { name: '', tagline: '', favicon: '', logoLight: '', logoDark: '' },
         founders: [],
         contact: { email: '', phone: '', address: '', googleMapsLink: '', businessHours: '' },
         socials: { instagram: '', facebook: '', tiktok: '', youtube: '', whatsapp: '' },
@@ -168,32 +168,14 @@ export default function SettingsForm() {
                         <FormField control={form.control} name="brand.tagline" render={({ field }) => (
                             <FormItem><FormLabel className="text-white">Tagline</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
                         )}/>
-                        <FormField control={form.control} name="brand.logoDarkId" render={({ field }) => (
-                            <FormItem><FormLabel className="text-white">Logo (for light backgrounds)</FormLabel>
-                             <Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger className={inputStyles}><SelectValue placeholder="Select an image" /></SelectTrigger></FormControl>
-                                <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                                    {media?.map(m => <SelectItem key={m.id} value={m.id}>{m.id}</SelectItem>)}
-                                </SelectContent>
-                             </Select>
-                            <FormMessage/></FormItem>
+                         <FormField control={form.control} name="brand.logoDark" render={({ field }) => (
+                            <FormItem><FormLabel className="text-white">Logo (for light backgrounds)</FormLabel><FormControl><Textarea placeholder="<svg>...</svg>" {...field} className={`${inputStyles} font-mono`} rows={5} /></FormControl><FormDescription>Paste raw SVG code.</FormDescription><FormMessage/></FormItem>
                         )}/>
-                         <FormField control={form.control} name="brand.logoLightId" render={({ field }) => (
-                            <FormItem><FormLabel className="text-white">Logo (for dark backgrounds)</FormLabel>
-                             <Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger className={inputStyles}><SelectValue placeholder="Select an image" /></SelectTrigger></FormControl>
-                                <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                                    {media?.map(m => <SelectItem key={m.id} value={m.id}>{m.id}</SelectItem>)}
-                                </SelectContent>
-                             </Select>
-                            <FormMessage/></FormItem>
+                         <FormField control={form.control} name="brand.logoLight" render={({ field }) => (
+                            <FormItem><FormLabel className="text-white">Logo (for dark backgrounds)</FormLabel><FormControl><Textarea placeholder="<svg>...</svg>" {...field} className={`${inputStyles} font-mono`} rows={5} /></FormControl><FormDescription>Paste raw SVG code.</FormDescription><FormMessage/></FormItem>
                         )}/>
-                         <FormField control={form.control} name="brand.faviconId" render={({ field }) => (
-                            <FormItem><FormLabel className="text-white">Favicon</FormLabel>
-                             <Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger className={inputStyles}><SelectValue placeholder="Select an image" /></SelectTrigger></FormControl>
-                                <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                                    {media?.map(m => <SelectItem key={m.id} value={m.id}>{m.id}</SelectItem>)}
-                                </SelectContent>
-                             </Select>
-                            <FormMessage/></FormItem>
+                         <FormField control={form.control} name="brand.favicon" render={({ field }) => (
+                            <FormItem><FormLabel className="text-white">Favicon</FormLabel><FormControl><Textarea placeholder="<svg>...</svg>" {...field} className={`${inputStyles} font-mono`} rows={5} /></FormControl><FormDescription>Paste raw SVG code for the site icon.</FormDescription><FormMessage/></FormItem>
                         )}/>
                     </CardContent>
                 </Card>
