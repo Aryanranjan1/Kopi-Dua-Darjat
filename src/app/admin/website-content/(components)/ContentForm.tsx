@@ -2,7 +2,7 @@
 'use client';
 
 import React from 'react';
-import { useForm, FormProvider, useFieldArray, useFormContext, Controller } from 'react-hook-form';
+import { useForm, FormProvider, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
@@ -10,48 +10,46 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Trash2, PlusCircle } from 'lucide-react';
+import { Trash2, PlusCircle, Loader2 } from 'lucide-react';
 import ImageUpload from '@/components/shared/ImageUpload';
 import { Switch } from '@/components/ui/switch';
-import { siteContentData } from '@/lib/site-content';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useToast } from '@/hooks/use-toast';
 
-// --- Schema Generation (from previous implementation) ---
+// --- Schema Generation ---
 const createSchemaFromObject = (obj: any): z.ZodType<any> => {
-  const shape: { [key: string]: z.ZodType<any> } = {};
-  for (const key in obj) {
-    const value = obj[key];
-    if (typeof value === 'string') {
-      shape[key] = z.string().optional().or(z.literal(''));
-    } else if (typeof value === 'number') {
-      shape[key] = z.coerce.number().optional();
-    } else if (typeof value === 'boolean') {
-      shape[key] = z.boolean().optional();
-    } else if (Array.isArray(value)) {
-      if (value.length > 0 && typeof value[0] === 'object' && value[0] !== null) {
-        shape[key] = z.array(createSchemaFromObject(value[0])).optional();
-      } else {
-        shape[key] = z.array(z.string()).optional();
-      }
-    } else if (typeof value === 'object' && value !== null) {
-      shape[key] = createSchemaFromObject(value);
+  if (Array.isArray(obj)) {
+    if (obj.length > 0) {
+      return z.array(createSchemaFromObject(obj[0])).optional();
     }
+    return z.array(z.any()).optional();
   }
-  return z.object(shape);
+  if (typeof obj === 'object' && obj !== null) {
+    const shape: { [key: string]: z.ZodType<any> } = {};
+    for (const key in obj) {
+      shape[key] = createSchemaFromObject(obj[key]);
+    }
+    return z.object(shape);
+  }
+  if (typeof obj === 'boolean') {
+    return z.boolean().optional();
+  }
+  if (typeof obj === 'number') {
+    return z.coerce.number().optional();
+  }
+  return z.string().optional().or(z.literal(''));
 };
 
-
-// --- Child Components for Rendering Fields ---
-
-const RenderField = ({ form, path, label }: { form: any; path: string; label: string }) => {
-  const { control } = form;
-  const value = form.getValues(path);
+// --- Rendering Components ---
+const RenderField = ({ path, label, value }: { path: string; label: string; value: any }) => {
+  const { control } = useFormContext();
   const inputStyles = "bg-zinc-800 border-zinc-700 text-white focus-visible:ring-primary";
+  const fieldKey = path;
 
-  // Check if the label suggests this is an image URL
-  if (label.toLowerCase().includes('image') || label.toLowerCase().includes('logo')) {
+  if (label.toLowerCase().includes('image') || label.toLowerCase().includes('logo') || label.toLowerCase().includes('favicon')) {
     return (
       <FormField
+        key={fieldKey}
         control={control}
         name={path}
         render={({ field }) => (
@@ -66,10 +64,10 @@ const RenderField = ({ form, path, label }: { form: any; path: string; label: st
     );
   }
 
-  // Handle booleans with a Switch component
   if (typeof value === 'boolean') {
     return (
       <FormField
+        key={fieldKey}
         control={control}
         name={path}
         render={({ field }) => (
@@ -82,12 +80,11 @@ const RenderField = ({ form, path, label }: { form: any; path: string; label: st
     );
   }
 
-  // Use a textarea for longer strings
-  const isTextArea = typeof value === 'string' && (value.length > 80 || ['description', 'content', 'quote', 'subtitle', 'visiontext'].includes(label.toLowerCase().replace(/\s/g, '')));
-  
+  const isTextArea = typeof value === 'string' && (value.length > 80 || ['description', 'content', 'quote', 'subtitle', 'visionText', 'text'].includes(label.toLowerCase().replace(/\s/g, '')));
   if (isTextArea) {
     return (
       <FormField
+        key={fieldKey}
         control={control}
         name={path}
         render={({ field }) => (
@@ -96,10 +93,10 @@ const RenderField = ({ form, path, label }: { form: any; path: string; label: st
       />
     );
   }
-  
-  // Default to a standard text input
+
   return (
     <FormField
+      key={fieldKey}
       control={control}
       name={path}
       render={({ field }) => (
@@ -109,56 +106,57 @@ const RenderField = ({ form, path, label }: { form: any; path: string; label: st
   );
 };
 
-const CommunityItemFields = ({ form, index }: { form: any; index: number }) => {
-    const itemType = form.watch(`home.community.items[${index}].type`);
-    const inputStyles = "bg-zinc-800 border-zinc-700 text-white focus-visible:ring-primary";
+const RenderCommunityItemFields = ({ index }: { index: number }) => {
+    const { watch } = useFormContext();
+    const itemType = watch(`home.community.items[${index}].type`);
+    const pathPrefix = `home.community.items[${index}]`;
 
     return (
-        <>
+         <div className="space-y-4">
             <FormField
-              control={form.control}
-              name={`home.community.items[${index}].type`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Type</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger className={inputStyles}>
-                        <SelectValue placeholder="Select a type" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                      <SelectItem value="portrait">Portrait</SelectItem>
-                      <SelectItem value="logo">Logo</SelectItem>
-                      <SelectItem value="quote">Quote</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
+                name={`${pathPrefix}.type`}
+                render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Type</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                                <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white focus-visible:ring-primary">
+                                    <SelectValue placeholder="Select a type" />
+                                </SelectTrigger>
+                            </FormControl>
+                            <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                                <SelectItem value="portrait">Portrait</SelectItem>
+                                <SelectItem value="logo">Logo</SelectItem>
+                                <SelectItem value="quote">Quote</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                    </FormItem>
+                )}
             />
-            <RenderField form={form} path={`home.community.items[${index}].name`} label="Name" />
-            <RenderField form={form} path={`home.community.items[${index}].imageUrl`} label="Image Url" />
-            
+            <RenderField path={`${pathPrefix}.name`} label="Name" value=""/>
+            <RenderField path={`${pathPrefix}.imageUrl`} label="Image Url" value="http://..."/>
+
             {itemType === 'quote' && (
                 <>
-                    <RenderField form={form} path={`home.community.items[${index}].quote`} label="Quote" />
-                    <RenderField form={form} path={`home.community.items[${index}].role`} label="Role" />
-                    <RenderField form={form} path={`home.community.items[${index}].textColor`} label="Text Color" />
+                    <RenderField path={`${pathPrefix}.quote`} label="Quote" value="A long text..."/>
+                    <RenderField path={`${pathPrefix}.role`} label="Role" value=""/>
+                    <RenderField path={`${pathPrefix}.textColor`} label="Text Color" value=""/>
                 </>
             )}
 
             {(itemType === 'portrait' || itemType === 'quote') && (
-                 <RenderField form={form} path={`home.community.items[${index}].bgColor`} label="Bg Color" />
+                 <RenderField path={`${pathPrefix}.bgColor`} label="Bg Color" value=""/>
             )}
-
-            <RenderField form={form} path={`home.community.items[${index}].className`} label="Class Name" />
-        </>
+             <RenderField path={`${pathPrefix}.className`} label="Class Name" value=""/>
+        </div>
     );
-}
+};
 
-const FieldArrayManager = ({ form, arrayPath, newItemShape, title, isCommunityItems = false, isStringArray = false }: { form: any; arrayPath: string; newItemShape: any, title: string, isCommunityItems?: boolean, isStringArray?: boolean }) => {
-    const { fields, append, remove } = useFieldArray({ control: form.control, name: arrayPath });
+const FieldArrayManager = ({ arrayPath, newItemShape, title }: { arrayPath: string; newItemShape: any; title: string }) => {
+    const { control } = useFormContext();
+    const { fields, append, remove } = useFieldArray({ control, name: arrayPath });
+    const isStringArray = typeof newItemShape === 'string';
 
     return (
       <div className="space-y-4 p-4 border border-zinc-800 rounded-lg">
@@ -168,16 +166,16 @@ const FieldArrayManager = ({ form, arrayPath, newItemShape, title, isCommunityIt
                 <div key={field.id} className="border border-zinc-700 p-4 rounded-lg space-y-4 relative">
                     <Button type="button" variant="destructive" size="icon" onClick={() => remove(index)} className="absolute top-2 right-2 h-7 w-7"><Trash2 className="h-4 w-4" /></Button>
                     <h5 className="font-medium text-sm text-zinc-400">Item {index + 1}</h5>
-                    {isCommunityItems ? (
-                        <CommunityItemFields form={form} index={index} />
+                    {arrayPath === 'home.community.items' ? (
+                        <RenderCommunityItemFields index={index} />
                     ) : isStringArray ? (
-                        <RenderField form={form} path={`${arrayPath}[${index}]`} label={`Value`} />
+                        <RenderField path={`${arrayPath}[${index}]`} label={`Value`} value="" />
                     ) : (
-                        <RenderObjectFields form={form} obj={newItemShape} pathPrefix={`${arrayPath}[${index}]`} />
+                        <RenderObjectFields obj={newItemShape} pathPrefix={`${arrayPath}[${index}]`} />
                     )}
                 </div>
             ))}
-            <Button type="button" variant="outline" onClick={() => append(newItemShape)} className="bg-zinc-800 border-zinc-700 hover:bg-zinc-700 text-white">
+             <Button type="button" variant="outline" onClick={() => append(newItemShape)} className="bg-zinc-800 border-zinc-700 hover:bg-zinc-700 text-white">
                 <PlusCircle className="mr-2 h-4 w-4" /> Add Item
             </Button>
         </div>
@@ -185,7 +183,7 @@ const FieldArrayManager = ({ form, arrayPath, newItemShape, title, isCommunityIt
     );
 };
 
-const RenderObjectFields = ({ form, obj, pathPrefix }: { form: any; obj: any; pathPrefix: string }) => {
+const RenderObjectFields = ({ obj, pathPrefix }: { obj: any; pathPrefix: string }) => {
   return (
     <>
       {Object.keys(obj).map(key => {
@@ -194,17 +192,12 @@ const RenderObjectFields = ({ form, obj, pathPrefix }: { form: any; obj: any; pa
         const label = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
 
         if (Array.isArray(value)) {
-          const isCommunity = currentPath === 'home.community.items';
-          const isStringArray = value.length > 0 && typeof value[0] === 'string';
           return (
              <div key={currentPath}>
                 <FieldArrayManager 
-                    form={form} 
                     arrayPath={currentPath} 
                     newItemShape={value[0] || ''} 
                     title={label}
-                    isCommunityItems={isCommunity}
-                    isStringArray={isStringArray}
                 />
              </div>
           );
@@ -214,31 +207,57 @@ const RenderObjectFields = ({ form, obj, pathPrefix }: { form: any; obj: any; pa
           return (
             <div key={currentPath} className="space-y-4 p-4 border border-zinc-800 rounded-lg">
               <h4 className="font-semibold capitalize text-lg text-primary">{label}</h4>
-              <RenderObjectFields form={form} obj={value} pathPrefix={currentPath} />
+              <RenderObjectFields obj={value} pathPrefix={currentPath} />
             </div>
           );
         }
         
-        return <RenderField key={currentPath} form={form} path={currentPath} label={label} />;
+        return <RenderField key={currentPath} path={currentPath} label={label} value={value} />;
       })}
     </>
   );
 };
 
 
-// --- Main Form Component ---
-
+// --- Main Form ---
 interface ContentFormProps {
   initialData: any;
-  onFormSubmit: (data: any) => void;
 }
 
-export default function ContentForm({ initialData, onFormSubmit }: ContentFormProps) {
+export default function ContentForm({ initialData }: ContentFormProps) {
   const formSchema = createSchemaFromObject(initialData);
   const formMethods = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: initialData,
   });
+  const { toast } = useToast();
+
+  const onFormSubmit = async (data: any) => {
+    try {
+        const response = await fetch('/api/update-content', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            const errorResult = await response.json();
+            throw new Error(errorResult.message || 'Failed to save content.');
+        }
+
+        toast({
+            title: 'Content Saved!',
+            description: 'Your changes have been written to the content file.',
+        });
+    } catch (error: any) {
+        console.error("Error saving content:", error);
+        toast({
+            variant: 'destructive',
+            title: 'Uh oh! Something went wrong.',
+            description: error.message || 'Could not save the content file.',
+        });
+    }
+  };
 
   return (
     <FormProvider {...formMethods}>
@@ -250,13 +269,14 @@ export default function ContentForm({ initialData, onFormSubmit }: ContentFormPr
                 {sectionKey.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
               </AccordionTrigger>
               <AccordionContent className="space-y-6 pt-4">
-                <RenderObjectFields form={formMethods} obj={initialData[sectionKey]} pathPrefix={sectionKey} />
+                <RenderObjectFields obj={initialData[sectionKey]} pathPrefix={sectionKey} />
               </AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>
         <div className="flex justify-end pt-4">
-          <Button type="submit">
+           <Button type="submit" disabled={formMethods.formState.isSubmitting}>
+            {formMethods.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Save Changes
           </Button>
         </div>
@@ -264,3 +284,4 @@ export default function ContentForm({ initialData, onFormSubmit }: ContentFormPr
     </FormProvider>
   );
 }
+
