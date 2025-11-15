@@ -160,7 +160,7 @@ export default function SettingsForm() {
             </TabsList>
             <TabsContent value="brand">
                 <Card className="bg-transparent border-none">
-                    <CardHeader><CardTitle>Brand & Identity</CardTitle><CardDescription className="text-zinc-400">Manage your brand's core visual assets and identity.</CardDescription></CardHeader>
+                    <CardHeader><CardTitle className="text-primary">Brand & Identity</CardTitle><CardDescription className="text-zinc-400">Manage your brand's core visual assets and identity.</CardDescription></CardHeader>
                     <CardContent className="space-y-4">
                         <FormField control={form.control} name="brand.name" render={({ field }) => (
                             <FormItem><FormLabel className="text-white">Brand Name</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
