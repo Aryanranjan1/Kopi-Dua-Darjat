@@ -82,11 +82,19 @@ const CommunityItemForm = ({ item, onSuccess }: { item?: CommunityItem; onSucces
     if (!firestore) return;
 
     try {
-      const dataToSave = {
-        ...values,
+       const dataToSave = {
+        type: values.type,
+        name: values.name,
+        imageUrl: values.imageUrl || null,
+        quote: values.quote || null,
+        role: values.role || null,
+        bgColor: values.bgColor || null,
+        textColor: values.textColor || null,
+        className: values.className || null,
         displayOrder: item?.displayOrder || Date.now(),
         updatedAt: serverTimestamp(),
       };
+
 
       if (item) {
         await setDoc(doc(firestore, 'community_items', item.id), dataToSave, { merge: true });
@@ -130,39 +138,39 @@ const CommunityItemForm = ({ item, onSuccess }: { item?: CommunityItem; onSucces
             {watchedType === 'portrait' && (
               <>
                 <FormField control={formMethods.control} name="imageUrl" render={({ field }) => (
-                  <FormItem><FormLabel>Image URL</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                  <FormItem><FormLabel>Image URL</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                 )} />
                 <FormField control={formMethods.control} name="bgColor" render={({ field }) => (
-                  <FormItem><FormLabel>Background Color Class</FormLabel><FormControl><Input {...field} className={inputStyles} placeholder="e.g. bg-cyan-300"/></FormControl><FormMessage /></FormItem>
+                  <FormItem><FormLabel>Background Color Class</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} placeholder="e.g. bg-cyan-300"/></FormControl><FormMessage /></FormItem>
                 )} />
               </>
             )}
             
             {watchedType === 'logo' && (
               <FormField control={formMethods.control} name="imageUrl" render={({ field }) => (
-                <FormItem><FormLabel>Logo URL</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                <FormItem><FormLabel>Logo URL</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
               )} />
             )}
 
             {watchedType === 'quote' && (
               <>
                 <FormField control={formMethods.control} name="quote" render={({ field }) => (
-                  <FormItem><FormLabel>Quote</FormLabel><FormControl><Textarea {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                  <FormItem><FormLabel>Quote</FormLabel><FormControl><Textarea {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                 )} />
                 <FormField control={formMethods.control} name="role" render={({ field }) => (
-                  <FormItem><FormLabel>Role/Title</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                  <FormItem><FormLabel>Role/Title</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                 )} />
                 <FormField control={formMethods.control} name="bgColor" render={({ field }) => (
-                  <FormItem><FormLabel>Background Color Class</FormLabel><FormControl><Input {...field} className={inputStyles} placeholder="e.g. bg-yellow-300" /></FormControl><FormMessage /></FormItem>
+                  <FormItem><FormLabel>Background Color Class</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} placeholder="e.g. bg-yellow-300" /></FormControl><FormMessage /></FormItem>
                 )} />
                 <FormField control={formMethods.control} name="textColor" render={({ field }) => (
-                  <FormItem><FormLabel>Text Color Class</FormLabel><FormControl><Input {...field} className={inputStyles} placeholder="e.g. text-white" /></FormControl><FormMessage /></FormItem>
+                  <FormItem><FormLabel>Text Color Class</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} placeholder="e.g. text-white" /></FormControl><FormMessage /></FormItem>
                 )} />
               </>
             )}
 
             <FormField control={formMethods.control} name="className" render={({ field }) => (
-              <FormItem><FormLabel>Grid Class Name</FormLabel><FormControl><Input {...field} className={inputStyles} placeholder="e.g. sm:col-span-1" /></FormControl><FormMessage /></FormItem>
+              <FormItem><FormLabel>Grid Class Name</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} placeholder="e.g. sm:col-span-1" /></FormControl><FormMessage /></FormItem>
             )} />
           </div>
         </ScrollArea>
@@ -270,5 +278,3 @@ export default function CommunityItemsManager() {
     </>
   );
 }
-
-    
