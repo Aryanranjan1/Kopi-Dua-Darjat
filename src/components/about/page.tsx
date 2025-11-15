@@ -96,42 +96,6 @@ export default function AboutPage() {
 
   const getAsset = (id: string) => media?.find(m => m.id === id);
 
-  const founderHadi = getAsset('founder-hadi');
-  const founderAzad = getAsset('founder-azad');
-  
-  const milestonesData = [
-    {
-      year: '2020',
-      title: 'Humble Beginnings',
-      description: 'Kopi Dua Darjat was born from a simple cart, with a big dream: to share authentic Malaysian kopi with everyone, affordably.',
-      image: getAsset('milestone-beginnings'),
-    },
-    {
-      year: '2021',
-      title: 'Perfecting Recipes',
-      description: 'Our obsession with quality led us to refine our recipes, balancing heritage flavors with artisan techniques to create our signature taste.',
-      image: getAsset('milestone-recipes'),
-    },
-    {
-      year: '2022',
-      title: 'Culinary Innovation',
-      description: 'We started innovating, introducing new series like Matcha and Menet, pushing the boundaries of what local coffee culture can be.',
-      image: getAsset('milestone-innovation'),
-    },
-    {
-      year: '2023',
-      title: 'Community & Culture',
-      description: 'More than just coffee, we became a community hub. Our stalls turned into meeting points for friends, family, and neighbors.',
-      image: getAsset('milestone-community'),
-    },
-     {
-      year: '2024',
-      title: 'Future Forward',
-      description: 'With over 50 outlets, we’re now looking ahead. Our focus is on sustainability, empowering local entrepreneurs, and continuing to innovate.',
-      image: getAsset('milestone-future'),
-    },
-  ];
-
   return (
     <>
     <div className="bg-background text-foreground">
@@ -165,21 +129,22 @@ export default function AboutPage() {
               <div className="space-y-24">
                 {isLoadingMedia ? (
                     [...Array(5)].map((_, i) => <MilestoneSkeleton key={i} />)
-                ) : milestonesData.map((milestone, index) =>
-                  milestone.image ? (
+                ) : content.milestones.items.map((milestone, index) => {
+                  const image = getAsset(milestone.imageId);
+                  return image ? (
                     <div key={index} className="relative">
                         <div className="hidden md:block absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-accent ring-8 ring-background"></div>
                         <Milestone
                             year={milestone.year}
                             title={milestone.title}
                             description={milestone.description}
-                            imageUrl={milestone.image.imageUrl}
-                            imageHint={milestone.image.imageHint}
+                            imageUrl={image.imageUrl}
+                            imageHint={image.imageHint}
                             reverse={index % 2 !== 0}
                         />
                     </div>
                   ) : null
-                )}
+                })}
               </div>
           </div>
         </div>
@@ -200,22 +165,22 @@ export default function AboutPage() {
             ) : (
                 <>
                 <AnimateOnScroll animationType="slideInFromLeft">
-                {founderHadi && (
+                {content.founders.items[0] && getAsset(content.founders.items[0].imageId) && (
                     <FounderMessage 
-                        name="Ahmad Hadi"
-                        quote="Every cup tells a story, a blend of heritage and dreams. We started Kopi Dua Darjat to share the true essence of Malaysian coffee with the world, one cup at a time."
-                        imageUrl={founderHadi.imageUrl}
-                        imageHint={founderHadi.imageHint}
+                        name={content.founders.items[0].name}
+                        quote={content.founders.items[0].quote}
+                        imageUrl={getAsset(content.founders.items[0].imageId)!.imageUrl}
+                        imageHint={getAsset(content.founders.items[0].imageId)!.imageHint}
                     />
                 )}
                 </AnimateOnScroll>
                 <AnimateOnScroll animationType="slideInFromRight">
-                {founderAzad && (
+                {content.founders.items[1] && getAsset(content.founders.items[1].imageId) && (
                     <FounderMessage 
-                        name="Azad"
-                        quote="Our goal has always been to craft an authentic coffee experience that feels both nostalgic and new. We balance tradition with artistry, ensuring our methods are sustainable and our partners are empowered."
-                        imageUrl={founderAzad.imageUrl}
-                        imageHint={founderAzad.imageHint}
+                        name={content.founders.items[1].name}
+                        quote={content.founders.items[1].quote}
+                        imageUrl={getAsset(content.founders.items[1].imageId)!.imageUrl}
+                        imageHint={getAsset(content.founders.items[1].imageId)!.imageHint}
                         reverse
                     />
                 )}

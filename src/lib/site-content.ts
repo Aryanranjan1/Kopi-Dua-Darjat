@@ -50,10 +50,54 @@ export const siteContentData = {
         },
     ],
     milestones: {
-        title: "Our Milestones"
+      title: "Our Milestones",
+      items: [
+        {
+          year: '2020',
+          title: 'Humble Beginnings',
+          description: 'Kopi Dua Darjat was born from a simple cart, with a big dream: to share authentic Malaysian kopi with everyone, affordably.',
+          imageId: 'milestone-beginnings',
+        },
+        {
+          year: '2021',
+          title: 'Perfecting Recipes',
+          description: 'Our obsession with quality led us to refine our recipes, balancing heritage flavors with artisan techniques to create our signature taste.',
+          imageId: 'milestone-recipes',
+        },
+        {
+          year: '2022',
+          title: 'Culinary Innovation',
+          description: 'We started innovating, introducing new series like Matcha and Menet, pushing the boundaries of what local coffee culture can be.',
+          imageId: 'milestone-innovation',
+        },
+        {
+          year: '2023',
+          title: 'Community & Culture',
+          description: 'More than just coffee, we became a community hub. Our stalls turned into meeting points for friends, family, and neighbors.',
+          imageId: 'milestone-community',
+        },
+        {
+          year: '2024',
+          title: 'Future Forward',
+          description: 'With over 50 outlets, we’re now looking ahead. Our focus is on sustainability, empowering local entrepreneurs, and continuing to innovate.',
+          imageId: 'milestone-future',
+        },
+      ]
     },
     founders: {
-        title: "A Message from Our Founders"
+        title: "A Message from Our Founders",
+        items: [
+          {
+            name: "Ahmad Hadi",
+            quote: "Every cup tells a story, a blend of heritage and dreams. We started Kopi Dua Darjat to share the true essence of Malaysian coffee with the world, one cup at a time.",
+            imageId: "founder-hadi"
+          },
+          {
+            name: "Azad",
+            quote: "Our goal has always been to craft an authentic coffee experience that feels both nostalgic and new. We balance tradition with artistry, ensuring our methods are sustainable and our partners are empowered.",
+            imageId: "founder-azad"
+          }
+        ]
     },
     visionMission: {
         visionTitle: "Our Vision",
@@ -138,13 +182,13 @@ export const siteContentData = {
     },
     support: {
         title: "Full Support, From Setup to Sales",
-        subtitle: "We don’t just give you a logo — we teach you the system, supply chain, and marketing that keep sales brewing and customers happy.",
+        subtitle: "We don’t just give you a logo — we provide a complete system for success.",
         items: [
-            'Comprehensive Barista Training',
-            'Stall Operations & Management',
-            'Supply Chain & Inventory Control',
-            'Local & National Marketing Support',
-            'Ongoing Product Innovation'
+            "Comprehensive Barista Training: From bean to cup, master the art of Kopi Dua Darjat.",
+            "Operational Setup: We assist with site selection, kiosk setup, and equipment sourcing.",
+            "Marketing & Branding: Leverage our national campaigns and localized marketing strategies.",
+            "Supply Chain: Gain access to our network of premium, ethically-sourced ingredient suppliers.",
+            "Ongoing Support: Our dedicated team is always here to help you grow and succeed."
         ],
         buttonText: "Talk to Our Team",
         buttonLink: "/franchise/apply",
