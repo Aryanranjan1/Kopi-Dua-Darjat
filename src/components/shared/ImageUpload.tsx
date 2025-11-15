@@ -18,6 +18,15 @@ interface ImageUploadProps {
   label?: string;
 }
 
+const isValidUrl = (url: string) => {
+  try {
+    new URL(url);
+    return true;
+  } catch (_) {
+    return false;
+  }
+};
+
 export default function ImageUpload({ value, onChange, folderName = 'uploads', label = "Image URL" }: ImageUploadProps) {
   const storage = useStorage();
   const { toast } = useToast();
@@ -91,7 +100,7 @@ export default function ImageUpload({ value, onChange, folderName = 'uploads', l
           {label}
       </label>
       <div className="flex items-center gap-4">
-        {value && (
+        {value && isValidUrl(value) && (
             <div className="relative w-20 h-20 shrink-0">
                 <Image src={value} alt="Current image" fill className="object-cover rounded-md bg-zinc-800" />
             </div>
