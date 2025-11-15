@@ -23,7 +23,7 @@ type MediaGroup = {
 const imageKeys = ['imageUrl', 'coverImage', 'heroImage', 'interiorImage', 'logoLight', 'logoDark', 'favicon', 'image', 'photo', 'profile_photo_url', 'bannerImage', 'defaultImage'];
 const videoKeys = ['videoUrl'];
 
-const extractMediaFromObject = (obj: any, path: string = '', source: 'json' | 'firestore'): MediaAsset[] => {
+const extractMediaFromObject = (obj: any, path: string = ''): MediaAsset[] => {
   let assets: MediaAsset[] = [];
   if (!obj || typeof obj !== 'object') return assets;
 
@@ -35,7 +35,7 @@ const extractMediaFromObject = (obj: any, path: string = '', source: 'json' | 'f
           id: obj.id || currentPathId,
           url: obj.url,
           type: 'image',
-          source,
+          source: 'firestore',
           path: path,
         });
         // Stop recursion here if we've found a media object
@@ -52,11 +52,10 @@ const extractMediaFromObject = (obj: any, path: string = '', source: 'json' | 'f
 
     if (Array.isArray(value)) {
         value.forEach((item, index) => {
-            assets = assets.concat(extractMediaFromObject(item, `${currentPath}[${index}]`, source));
+            assets = assets.concat(extractMediaFromObject(item, `${currentPath}[${index}]`));
         });
     } else if (typeof value === 'object' && value !== null) {
-      // Pass the key as the id hint
-      const nestedAssets = extractMediaFromObject(value, currentPath, source);
+      const nestedAssets = extractMediaFromObject(value, currentPath);
       assets = assets.concat(nestedAssets);
 
     } else if (typeof value === 'string' && value.startsWith('http')) {
@@ -65,11 +64,7 @@ const extractMediaFromObject = (obj: any, path: string = '', source: 'json' | 'f
       const isIconExtension = /\.(ico)$/i.test(value);
 
       if (imageKeys.includes(key) || isImageExtension || isVideoExtension || isIconExtension) {
-        // Exclude admin-panel specific images
-        if (key === 'photo' && (currentPath.includes('author') || currentPath.includes('founders'))) {
-           // continue; // Skip author/founder photos if they are considered internal
-        }
-        if (currentPath.includes('menuItems')) continue; // Skip individual menu items for clarity
+        if (currentPath.includes('menuItems')) continue;
 
         let type: MediaAsset['type'] = 'image';
         if (videoKeys.includes(key) || isVideoExtension) type = 'video';
@@ -79,7 +74,7 @@ const extractMediaFromObject = (obj: any, path: string = '', source: 'json' | 'f
           id: obj.id || key,
           url: value,
           type: type,
-          source,
+          source: 'firestore',
           path: currentPath,
         });
       }
@@ -92,13 +87,11 @@ const groupAssets = (assets: MediaAsset[]): MediaGroup[] => {
     const groups: { [key: string]: MediaAsset[] } = {};
 
     const getGroupName = (path: string): string => {
-        if (path.startsWith('site-content.ts.home')) return 'Homepage';
-        if (path.startsWith('site-content.ts.about')) return 'About Page';
-        if (path.startsWith('site-content.ts.franchise')) return 'Franchise Page';
-        if (path.startsWith('placeholder-images.json')) return 'General & Placeholders';
+        if (path.startsWith('settings.main.brand')) return 'Brand & Logos';
+        if (path.startsWith('settings.main.founders')) return 'Founders (Global)';
         if (path.startsWith('blogs')) return 'Blog Posts';
-        if (path.startsWith('settings')) return 'Global Site Settings';
         if (path.startsWith('outlets')) return 'Outlets';
+        if (path.startsWith('media')) return 'General Media Library';
         return 'Other';
     }
 
@@ -121,32 +114,15 @@ export async function GET(request: Request) {
   try {
     let foundAssets: MediaAsset[] = [];
 
-    // 1. Scan hardcoded TS/JSON files
-    try {
-        const siteContentPath = path.join(process.cwd(), 'src', 'lib', 'site-content.ts');
-        const siteContentFile = await fs.readFile(siteContentPath, 'utf-8');
-        const siteContentJsonString = siteContentFile.substring(siteContentFile.indexOf('{'), siteContentFile.lastIndexOf('}') + 1);
-        const siteContentData = JSON.parse(siteContentJsonString);
-        foundAssets = foundAssets.concat(extractMediaFromObject(siteContentData, 'site-content.ts', 'json'));
-
-        const placeholderImagesPath = path.join(process.cwd(), 'src', 'lib', 'placeholder-images.json');
-        const placeholderImagesFile = await fs.readFile(placeholderImagesPath, 'utf-8');
-        const placeholderImagesData = JSON.parse(placeholderImagesFile);
-        foundAssets = foundAssets.concat(extractMediaFromObject(placeholderImagesData, 'placeholder-images.json', 'json'));
-
-    } catch (fileError) {
-        console.warn("Could not scan static content files:", fileError);
-    }
-
-    // 2. Scan Firestore database collections
+    // Scan Firestore database collections
     const { firestore } = initializeServerSideFirebase();
-    const collectionsToScan = ['blogs', 'outlets', 'settings'];
+    const collectionsToScan = ['blogs', 'outlets', 'settings', 'media'];
     
     for (const collectionName of collectionsToScan) {
         try {
             const snapshot = await getDocs(collection(firestore, collectionName));
             snapshot.forEach(document => {
-                foundAssets = foundAssets.concat(extractMediaFromObject(document.data(), `${collectionName}.${document.id}`, 'firestore'));
+                foundAssets = foundAssets.concat(extractMediaFromObject(document.data(), `${collectionName}.${document.id}`));
             });
         } catch (dbError) {
             console.warn(`Could not scan collection '${collectionName}':`, dbError);

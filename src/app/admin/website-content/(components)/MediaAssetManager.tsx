@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -35,7 +36,7 @@ const MediaCard = ({ asset, onEdit }: { asset: MediaAsset; onEdit: (asset: Media
         <Image src={asset.url} alt={asset.id} fill className="w-full h-full object-cover" sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw" />
       )}
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent p-2 flex flex-col justify-end">
-        <p className="text-xs font-mono text-white truncate" title={asset.path}>{asset.id}</p>
+        <p className="text-xs font-mono text-white truncate" title={asset.path}>{asset.path}</p>
         <p className="text-xs text-zinc-400 capitalize">{asset.source}</p>
       </div>
        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -78,14 +79,6 @@ export default function MediaAssetManager() {
   }, [scanForMedia]);
 
   const handleEditClick = (asset: MediaAsset) => {
-    if (asset.source === 'json') {
-      toast({
-        variant: 'default',
-        title: 'Static Asset',
-        description: 'This is a static asset. Please edit it via the "Static Content" tab.',
-      });
-      return;
-    }
     setSelectedAsset(asset);
     setNewUrl(asset.url);
   };
