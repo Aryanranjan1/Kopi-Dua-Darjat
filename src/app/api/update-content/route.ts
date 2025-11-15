@@ -32,11 +32,13 @@ export async function POST(request: Request) {
 export const siteContentData = ${JSON.stringify(data, null, 2)};
 `;
 
-    // Define the path to the content file
     const filePath = path.join(process.cwd(), 'src', 'lib', 'site-content.ts');
+    const tempFilePath = `${filePath}.tmp`;
 
-    // Write the new content to the file
-    await fs.writeFile(filePath, fileContent.trim(), 'utf8');
+    // Atomically write the file to prevent race conditions with Next.js dev server
+    await fs.writeFile(tempFilePath, fileContent.trim(), 'utf8');
+    await fs.rename(tempFilePath, filePath);
+
 
     return NextResponse.json({ message: 'Content updated successfully.' }, { status: 200 });
 
