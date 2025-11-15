@@ -1,7 +1,8 @@
+
 'use client';
 
 import React from 'react';
-import { useForm, FormProvider, useFieldArray, useFormContext } from 'react-hook-form';
+import { useForm, FormProvider, useFieldArray, useFormContext, Control, FieldPath, FieldValues } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
@@ -14,9 +15,9 @@ import ImageUpload from '@/components/shared/ImageUpload';
 import { Switch } from '@/components/ui/switch';
 
 
+// Helper to dynamically create a Zod schema from an object shape.
 const createSchemaFromObject = (obj: any): z.ZodType<any> => {
   const shape: { [key: string]: z.ZodType<any> } = {};
-
   for (const key in obj) {
     const value = obj[key];
     if (typeof value === 'string') {
@@ -35,10 +36,118 @@ const createSchemaFromObject = (obj: any): z.ZodType<any> => {
       shape[key] = createSchemaFromObject(value);
     }
   }
-
   return z.object(shape);
 };
 
+// --- Child Components for Rendering Fields ---
+
+const RenderField = ({ fieldKey, path }: { fieldKey: string, path: string }) => {
+    const { control, getValues } = useFormContext();
+    const label = fieldKey.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+    const inputStyles = "bg-zinc-800 border-zinc-700 text-white focus-visible:ring-primary";
+
+    if (fieldKey.toLowerCase().includes('image')) {
+        return (
+            <FormField
+                control={control}
+                name={path}
+                render={({ field }) => (
+                    <ImageUpload
+                        label={label}
+                        value={field.value || ''}
+                        onChange={field.onChange}
+                        folderName={`static-content/${path.replace(/\./g, '/')}`}
+                    />
+                )}
+            />
+        );
+    }
+  
+    const value = getValues(path);
+
+    if (typeof value === 'boolean') {
+        return (
+            <FormField
+                control={control}
+                name={path}
+                render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border border-zinc-700 p-4">
+                        <div className="space-y-0.5"><FormLabel>{label}</FormLabel></div>
+                        <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                    </FormItem>
+                )}
+            />
+        );
+    }
+
+    if (typeof value === 'string' && value.length > 100) {
+        return (
+            <FormField
+                control={control}
+                name={path}
+                render={({ field }) => (
+                    <FormItem><FormLabel>{label}</FormLabel><FormControl><Textarea {...field} className={inputStyles} rows={4} /></FormControl><FormMessage /></FormItem>
+                )}
+            />
+        );
+    }
+
+    return (
+        <FormField
+            control={control}
+            name={path}
+            render={({ field }) => (
+                <FormItem><FormLabel>{label}</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+            )}
+        />
+    );
+};
+
+const FieldArrayManager = ({ path, objShape }: { path: string, objShape: any }) => {
+    const { control } = useFormContext();
+    const { fields, append, remove } = useFieldArray({ control, name: path });
+
+    return (
+        <div className="space-y-4">
+            {fields.map((field, index) => (
+                <div key={field.id} className="border border-zinc-700 p-4 rounded-lg space-y-4 relative">
+                    <Button type="button" variant="destructive" size="icon" onClick={() => remove(index)} className="absolute top-2 right-2 h-7 w-7"><Trash2 className="h-4 w-4" /></Button>
+                    <RenderObjectFields obj={objShape} pathPrefix={`${path}[${index}]`} />
+                </div>
+            ))}
+            <Button type="button" variant="outline" onClick={() => append(objShape)}><PlusCircle className="mr-2 h-4 w-4" /> Add Item</Button>
+        </div>
+    );
+};
+
+const RenderObjectFields = ({ obj, pathPrefix = '' }: { obj: any, pathPrefix?: string }) => {
+    return (
+        <>
+            {Object.keys(obj).map(key => {
+                const currentPath = pathPrefix ? `${pathPrefix}.${key}` : key;
+                const value = obj[key];
+
+                if (Array.isArray(value)) {
+                    return <FieldArrayManager key={currentPath} path={currentPath} objShape={value[0] || {}} />;
+                }
+                
+                if (typeof value === 'object' && value !== null) {
+                    return (
+                        <div key={currentPath} className="space-y-4 p-4 border border-zinc-800 rounded-lg">
+                            <h4 className="font-semibold capitalize text-lg text-primary">{key}</h4>
+                            <RenderObjectFields obj={value} pathPrefix={currentPath} />
+                        </div>
+                    );
+                }
+                
+                return <RenderField key={currentPath} fieldKey={key} path={currentPath} />;
+            })}
+        </>
+    );
+};
+
+
+// --- Main Form Component ---
 
 interface ContentFormProps {
   initialData: any;
@@ -52,136 +161,6 @@ export default function ContentForm({ initialData, onFormSubmit }: ContentFormPr
     defaultValues: initialData,
   });
 
-  const renderField = (key: string, path: string) => {
-    const label = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
-    const inputStyles = "bg-zinc-800 border-zinc-700 text-white focus-visible:ring-primary";
-    const { control } = useFormContext();
-  
-    if (key.toLowerCase().includes('image')) {
-      return (
-        <FormField
-          key={key}
-          control={control}
-          name={path}
-          render={({ field }) => (
-            <ImageUpload
-              label={label}
-              value={field.value}
-              onChange={field.onChange}
-              folderName={`static-content/${path.replace(/\./g, '/')}`}
-            />
-          )}
-        />
-      );
-    }
-  
-    const value = formMethods.getValues(path as any);
-  
-    if (typeof value === 'boolean') {
-      return (
-        <FormField
-          key={key}
-          control={control}
-          name={path}
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border border-zinc-700 p-4">
-                <div className="space-y-0.5">
-                    <FormLabel>{label}</FormLabel>
-                </div>
-                <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
-            </FormItem>
-          )}
-        />
-      )
-    }
-
-    if (typeof value === 'string' && value.length > 100) {
-        return (
-             <FormField
-                key={key}
-                control={control}
-                name={path}
-                render={({ field }) => (
-                    <FormItem>
-                    <FormLabel>{label}</FormLabel>
-                    <FormControl><Textarea {...field} className={inputStyles} rows={4} /></FormControl>
-                    <FormMessage />
-                    </FormItem>
-                )}
-            />
-        )
-    }
-  
-    return (
-      <FormField
-        key={key}
-        control={control}
-        name={path}
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>{label}</FormLabel>
-            <FormControl><Input {...field} className={inputStyles} /></FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-    );
-  };
-  
-  const FieldArrayManager = ({ path, objShape }: { path: string, objShape: any }) => {
-    const { control } = useFormContext();
-    const { fields, append, remove } = useFieldArray({
-      control,
-      name: path,
-    });
-  
-    return (
-      <div className="space-y-4">
-        {fields.map((field, index) => (
-          <div key={field.id} className="border border-zinc-700 p-4 rounded-lg space-y-4 relative">
-             <Button
-              type="button"
-              variant="destructive"
-              size="icon"
-              onClick={() => remove(index)}
-              className="absolute top-2 right-2 h-7 w-7"
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
-            {renderObjectFields(objShape, `${path}[${index}]`)}
-          </div>
-        ))}
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => append(objShape)}
-        >
-          <PlusCircle className="mr-2 h-4 w-4" /> Add Item
-        </Button>
-      </div>
-    );
-  };
-  
-  const renderObjectFields = (obj: any, path: string = '') => {
-    return Object.keys(obj).map(key => {
-      const currentPath = path ? `${path}.${key}` : key;
-      const value = obj[key];
-  
-      if (Array.isArray(value)) {
-        return <FieldArrayManager key={currentPath} path={currentPath} objShape={value[0]} />;
-      } else if (typeof value === 'object' && value !== null) {
-        return (
-          <div key={currentPath} className="space-y-4 p-4 border border-zinc-800 rounded-lg">
-            <h4 className="font-semibold capitalize text-lg text-primary">{key}</h4>
-            {renderObjectFields(value, currentPath)}
-          </div>
-        );
-      } else {
-        return renderField(key, currentPath);
-      }
-    });
-  };
-
   return (
     <FormProvider {...formMethods}>
       <form onSubmit={formMethods.handleSubmit(onFormSubmit)} className="space-y-6">
@@ -192,7 +171,7 @@ export default function ContentForm({ initialData, onFormSubmit }: ContentFormPr
                 {sectionKey.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
               </AccordionTrigger>
               <AccordionContent className="space-y-6">
-                {renderObjectFields(initialData[sectionKey], sectionKey)}
+                <RenderObjectFields obj={initialData[sectionKey]} pathPrefix={sectionKey} />
               </AccordionContent>
             </AccordionItem>
           ))}
@@ -206,3 +185,4 @@ export default function ContentForm({ initialData, onFormSubmit }: ContentFormPr
     </FormProvider>
   );
 }
+
