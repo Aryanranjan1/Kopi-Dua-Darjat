@@ -25,17 +25,17 @@ const DrinkCard = ({ item }: { item: MenuItem }) => (
       {item.isPopular && <Badge className="absolute top-3 left-3 bg-white/80 backdrop-blur-sm text-black shadow-md">Popular</Badge>}
     </div>
     <CardContent className="p-4 flex flex-col flex-grow text-black">
-      <h4 className="font-headline font-bold text-lg truncate">{item.name}</h4>
+      <h4 className="font-headline font-bold text-base sm:text-lg truncate">{item.name}</h4>
       <p className="text-sm text-black/70 line-clamp-2 mt-1 flex-grow hidden sm:block">{item.description}</p>
       <div className="flex items-center gap-2 mt-2">
         {[...Array(5)].map((_, i) => (
-          <Star key={i} className="w-4 h-4 text-black/80 fill-black/80" />
+          <Star key={i} className="w-3 h-3 sm:w-4 sm:h-4 text-black/80 fill-black/80" />
         ))}
       </div>
       <div className="flex justify-between items-center mt-2">
-        <p className="font-semibold text-black text-lg">RM{item.price.toFixed(2)}</p>
-        <Link href="#" className="bg-black text-white rounded-full p-2 hover:bg-neutral-800">
-            <ArrowUpRight className="h-5 w-5" />
+        <p className="font-semibold text-black text-base sm:text-lg">RM{item.price.toFixed(2)}</p>
+        <Link href="#" className="bg-black text-white rounded-full p-1.5 sm:p-2 hover:bg-neutral-800">
+            <ArrowUpRight className="h-4 w-4 sm:h-5 sm:w-5" />
         </Link>
       </div>
     </CardContent>
