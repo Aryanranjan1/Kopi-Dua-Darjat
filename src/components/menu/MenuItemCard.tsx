@@ -5,7 +5,7 @@ import Image from 'next/image';
 import type { MenuItem, Promotion, DailySpecial } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowUpRight, ArrowUp, Star } from 'lucide-react';
+import { ArrowUpRight, ArrowRight, Star } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '../ui/badge';
 import { getDiscountDisplay } from '@/lib/utils';
@@ -32,13 +32,13 @@ export default function MenuItemCard({ drink, promotions, dailySpecials }: MenuI
   const offerText = getOfferBadge();
 
   return (
-    <div className="p-1 h-full group">
+    <div className="p-1 h-full">
       <Card className="rounded-3xl bg-primary text-primary-foreground border-primary/40 w-full h-full flex flex-col transition-all duration-300 transform hover:shadow-xl hover:-translate-y-1">
         <CardContent className="p-4 flex flex-col items-center text-center flex-grow">
           {offerText && (
              <Badge className="absolute top-2 right-2 bg-accent text-accent-foreground z-10 shadow-lg">{offerText}</Badge>
           )}
-          <div className="relative w-full aspect-square mb-4">
+          <div className="relative w-full aspect-square mb-4 group">
             <Image
               src={drink.imageUrl}
               alt={drink.name}
@@ -56,10 +56,10 @@ export default function MenuItemCard({ drink, promotions, dailySpecials }: MenuI
               </div>
               <div className="mt-4 flex justify-between items-center">
                 <p className="font-semibold text-primary-foreground text-lg">RM{drink.price.toFixed(2)}</p>
-                 <Button asChild size="icon" className="rounded-full bg-black text-white hover:bg-white hover:text-black transition-colors duration-300">
+                 <Button asChild size="icon" className="group/btn rounded-full bg-black text-white hover:bg-white hover:text-black transition-colors duration-300">
                     <Link href={`/outlets?item=${drink.slug}`}>
-                        <ArrowUpRight className="h-5 w-5 transition-transform duration-300 group-hover:opacity-0 group-hover:rotate-45" />
-                        <ArrowUp className="h-5 w-5 absolute transition-opacity duration-300 opacity-0 group-hover:opacity-100" />
+                        <ArrowUpRight className="h-5 w-5 absolute transition-transform duration-300 group-hover/btn:rotate-45 group-hover/btn:opacity-0" />
+                        <ArrowRight className="h-5 w-5 absolute transition-transform duration-300 opacity-0 group-hover/btn:opacity-100" />
                         <span className="sr-only">View Details</span>
                     </Link>
                 </Button>
@@ -70,4 +70,3 @@ export default function MenuItemCard({ drink, promotions, dailySpecials }: MenuI
     </div>
   );
 }
-
