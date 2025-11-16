@@ -1,10 +1,11 @@
+
 "use client";
 
 import Image from 'next/image';
 import type { MenuItem, Promotion, DailySpecial } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowUp, ArrowRight, Star } from 'lucide-react';
+import { Star, ArrowUpRight, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '../ui/badge';
 import { getDiscountDisplay } from '@/lib/utils';
@@ -78,3 +79,4 @@ export default function MenuItemCard({ drink, promotions, dailySpecials }: MenuI
     </div>
   );
 }
+
