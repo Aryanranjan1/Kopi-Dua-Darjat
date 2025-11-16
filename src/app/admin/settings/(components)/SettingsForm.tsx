@@ -59,10 +59,14 @@ const formSchema = z.object({
     whatsapp: z.string().url().or(z.literal('')),
   }),
   automation: z.object({
-    newsletterIntegration: z.boolean().default(false),
-    googleBusinessSync: z.boolean().default(false),
-    autoBackup: z.boolean().default(true),
+    instagramSyncEnabled: z.boolean().default(false),
+    instagramApiKey: z.string().optional(),
+    marketingEngineEnabled: z.boolean().default(false),
+    marketingApiKey: z.string().optional(),
+    analyticsEnabled: z.boolean().default(false),
+    analyticsApiKey: z.string().optional(),
     appCheckEnforced: z.boolean().default(true),
+    recaptchaSiteKey: z.string().optional(),
   }),
   meta: z.object({
     defaultTitle: z.string().optional(),
@@ -88,7 +92,6 @@ export default function SettingsForm() {
         ...settingsData,
         brand: {
             ...settingsData.brand,
-            favicon: settingsData.brand?.favicon || '',
         },
         founders: settingsData.founders?.map(f => ({ ...f, imageId: f.imageId || '' })) || [],
         meta: {
@@ -96,13 +99,29 @@ export default function SettingsForm() {
             keywords: settingsData.meta?.keywords?.join(', '),
             defaultImageId: settingsData.meta?.defaultImageId || '',
         },
+        automation: {
+            ...settingsData.automation,
+            instagramApiKey: settingsData.automation?.instagramApiKey || '',
+            marketingApiKey: settingsData.automation?.marketingApiKey || '',
+            analyticsApiKey: settingsData.automation?.analyticsApiKey || '',
+            recaptchaSiteKey: settingsData.automation?.recaptchaSiteKey || '',
+        }
     } : undefined,
     defaultValues: {
-        brand: { name: '', tagline: '', favicon: '' },
+        brand: { name: '', tagline: '' },
         founders: [],
         contact: { email: '', phone: '', address: '', googleMapsLink: '', businessHours: '' },
         socials: { instagram: '', facebook: '', tiktok: '', youtube: '', whatsapp: '' },
-        automation: { newsletterIntegration: false, googleBusinessSync: false, autoBackup: true, appCheckEnforced: true },
+        automation: { 
+            instagramSyncEnabled: false,
+            instagramApiKey: '',
+            marketingEngineEnabled: false,
+            marketingApiKey: '',
+            analyticsEnabled: false,
+            analyticsApiKey: '',
+            appCheckEnforced: true,
+            recaptchaSiteKey: '',
+        },
         meta: { defaultTitle: '', defaultDescription: '', keywords: '', defaultImageId: '' },
     },
   });
@@ -111,6 +130,8 @@ export default function SettingsForm() {
     control: form.control,
     name: "founders",
   });
+  
+  const watchedAutomation = form.watch("automation");
 
   const { isSubmitting } = form.formState;
 
@@ -205,11 +226,11 @@ export default function SettingsForm() {
                  <Card className="bg-transparent border-none">
                     <CardHeader><CardTitle className="text-primary">Contact Info</CardTitle><CardDescription className="text-zinc-400">Public contact and location details.</CardDescription></CardHeader>
                     <CardContent className="space-y-4">
-                        <FormField control={form.control} name="contact.email" render={({ field }) => (<FormItem><FormLabel className="text-white">Email</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
-                        <FormField control={form.control} name="contact.phone" render={({ field }) => (<FormItem><FormLabel className="text-white">Phone</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
-                        <FormField control={form.control} name="contact.address" render={({ field }) => (<FormItem><FormLabel className="text-white">Address</FormLabel><FormControl><Textarea {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
-                        <FormField control={form.control} name="contact.googleMapsLink" render={({ field }) => (<FormItem><FormLabel className="text-white">Google Maps URL</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
-                        <FormField control={form.control} name="contact.businessHours" render={({ field }) => (<FormItem><FormLabel className="text-white">Business Hours</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="contact.email" render={({ field }) => (<FormItem><FormLabel className="text-white">Email</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="contact.phone" render={({ field }) => (<FormItem><FormLabel className="text-white">Phone</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="contact.address" render={({ field }) => (<FormItem><FormLabel className="text-white">Address</FormLabel><FormControl><Textarea {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="contact.googleMapsLink" render={({ field }) => (<FormItem><FormLabel className="text-white">Google Maps URL</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="contact.businessHours" render={({ field }) => (<FormItem><FormLabel className="text-white">Business Hours</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
                     </CardContent>
                 </Card>
             </TabsContent>
@@ -217,11 +238,11 @@ export default function SettingsForm() {
                  <Card className="bg-transparent border-none">
                     <CardHeader><CardTitle className="text-primary">Social Media</CardTitle><CardDescription className="text-zinc-400">Links to your social media profiles.</CardDescription></CardHeader>
                     <CardContent className="space-y-4">
-                        <FormField control={form.control} name="socials.instagram" render={({ field }) => (<FormItem><FormLabel className="text-white">Instagram</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
-                        <FormField control={form.control} name="socials.facebook" render={({ field }) => (<FormItem><FormLabel className="text-white">Facebook</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
-                        <FormField control={form.control} name="socials.tiktok" render={({ field }) => (<FormItem><FormLabel className="text-white">TikTok</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
-                        <FormField control={form.control} name="socials.youtube" render={({ field }) => (<FormItem><FormLabel className="text-white">YouTube</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
-                        <FormField control={form.control} name="socials.whatsapp" render={({ field }) => (<FormItem><FormLabel className="text-white">WhatsApp</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="socials.instagram" render={({ field }) => (<FormItem><FormLabel className="text-white">Instagram</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="socials.facebook" render={({ field }) => (<FormItem><FormLabel className="text-white">Facebook</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="socials.tiktok" render={({ field }) => (<FormItem><FormLabel className="text-white">TikTok</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="socials.youtube" render={({ field }) => (<FormItem><FormLabel className="text-white">YouTube</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="socials.whatsapp" render={({ field }) => (<FormItem><FormLabel className="text-white">WhatsApp</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
                     </CardContent>
                 </Card>
             </TabsContent>
@@ -229,8 +250,8 @@ export default function SettingsForm() {
                  <Card className="bg-transparent border-none">
                     <CardHeader><CardTitle className="text-primary">SEO Defaults</CardTitle><CardDescription className="text-zinc-400">Default metadata for search engine optimization.</CardDescription></CardHeader>
                     <CardContent className="space-y-4">
-                        <FormField control={form.control} name="meta.defaultTitle" render={({ field }) => (<FormItem><FormLabel className="text-white">Default Meta Title</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
-                        <FormField control={form.control} name="meta.defaultDescription" render={({ field }) => (<FormItem><FormLabel className="text-white">Default Meta Description</FormLabel><FormControl><Textarea {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="meta.defaultTitle" render={({ field }) => (<FormItem><FormLabel className="text-white">Default Meta Title</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="meta.defaultDescription" render={({ field }) => (<FormItem><FormLabel className="text-white">Default Meta Description</FormLabel><FormControl><Textarea {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>)} />
                         <FormField control={form.control} name="meta.defaultImageId" render={({ field }) => (
                             <FormItem><FormLabel className="text-white">Default OG Image</FormLabel>
                                 <Select onValueChange={field.onChange} value={field.value}>
@@ -239,38 +260,66 @@ export default function SettingsForm() {
                                 </Select>
                             <FormMessage /></FormItem>
                         )} />
-                        <FormField control={form.control} name="meta.keywords" render={({ field }) => (<FormItem><FormLabel className="text-white">Default Keywords</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormDescription>Comma-separated keywords.</FormDescription><FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="meta.keywords" render={({ field }) => (<FormItem><FormLabel className="text-white">Default Keywords</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormDescription>Comma-separated keywords.</FormDescription><FormMessage /></FormItem>)} />
                     </CardContent>
                 </Card>
             </TabsContent>
             <TabsContent value="automation">
                  <Card className="bg-transparent border-none">
                     <CardHeader><CardTitle className="text-primary">Automation & System</CardTitle><CardDescription className="text-zinc-400">System-level configurations and integrations.</CardDescription></CardHeader>
-                    <CardContent className="space-y-4">
-                         <FormField control={form.control} name="automation.newsletterIntegration" render={({ field }) => (
-                            <FormItem className="flex flex-row items-center justify-between rounded-lg border border-zinc-700 p-4">
-                                <div className="space-y-0.5"><FormLabel className="text-white">Newsletter Integration</FormLabel><FormDescription className="text-zinc-400">Enable or disable newsletter functionality.</FormDescription></div>
-                                <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
-                            </FormItem>
-                         )} />
-                          <FormField control={form.control} name="automation.googleBusinessSync" render={({ field }) => (
-                            <FormItem className="flex flex-row items-center justify-between rounded-lg border border-zinc-700 p-4">
-                                <div className="space-y-0.5"><FormLabel className="text-white">Google Business Sync</FormLabel><FormDescription className="text-zinc-400">Automatically sync outlet info with Google Business Profile.</FormDescription></div>
-                                <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
-                            </FormItem>
-                         )} />
-                         <FormField control={form.control} name="automation.autoBackup" render={({ field }) => (
-                            <FormItem className="flex flex-row items-center justify-between rounded-lg border border-zinc-700 p-4">
-                                <div className="space-y-0.5"><FormLabel className="text-white">Automatic Backups</FormLabel><FormDescription className="text-zinc-400">Enable daily automated backups of the Firestore database.</FormDescription></div>
-                                <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
-                            </FormItem>
-                         )} />
-                          <FormField control={form.control} name="automation.appCheckEnforced" render={({ field }) => (
-                            <FormItem className="flex flex-row items-center justify-between rounded-lg border border-zinc-700 p-4">
-                                <div className="space-y-0.5"><FormLabel className="text-white">App Check Enforcement</FormLabel><FormDescription className="text-zinc-400">Enforce Firebase App Check to protect backend resources.</FormDescription></div>
-                                <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
-                            </FormItem>
-                         )} />
+                    <CardContent className="space-y-6">
+                        <div className="space-y-2 p-4 border border-zinc-700 rounded-lg">
+                             <FormField control={form.control} name="automation.instagramSyncEnabled" render={({ field }) => (
+                                <FormItem className="flex flex-row items-center justify-between">
+                                    <div className="space-y-0.5"><FormLabel className="text-white">Instagram Sync</FormLabel><FormDescription className="text-zinc-400">Enable automatic daily sync from Instagram.</FormDescription></div>
+                                    <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                                </FormItem>
+                             )} />
+                             {watchedAutomation.instagramSyncEnabled && (
+                                <FormField control={form.control} name="automation.instagramApiKey" render={({ field }) => (
+                                    <FormItem><FormLabel className="text-white/70">Instagram API Key</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                                )}/>
+                             )}
+                        </div>
+                        <div className="space-y-2 p-4 border border-zinc-700 rounded-lg">
+                             <FormField control={form.control} name="automation.marketingEngineEnabled" render={({ field }) => (
+                                <FormItem className="flex flex-row items-center justify-between">
+                                    <div className="space-y-0.5"><FormLabel className="text-white">Marketing Engine</FormLabel><FormDescription className="text-zinc-400">Enable automated marketing features.</FormDescription></div>
+                                    <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                                </FormItem>
+                             )} />
+                             {watchedAutomation.marketingEngineEnabled && (
+                                <FormField control={form.control} name="automation.marketingApiKey" render={({ field }) => (
+                                    <FormItem><FormLabel className="text-white/70">Marketing API Key</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                                )}/>
+                             )}
+                        </div>
+                        <div className="space-y-2 p-4 border border-zinc-700 rounded-lg">
+                             <FormField control={form.control} name="automation.analyticsEnabled" render={({ field }) => (
+                                <FormItem className="flex flex-row items-center justify-between">
+                                    <div className="space-y-0.5"><FormLabel className="text-white">Analytics</FormLabel><FormDescription className="text-zinc-400">Enable website performance analytics.</FormDescription></div>
+                                    <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                                </FormItem>
+                             )} />
+                             {watchedAutomation.analyticsEnabled && (
+                                <FormField control={form.control} name="automation.analyticsApiKey" render={({ field }) => (
+                                    <FormItem><FormLabel className="text-white/70">Analytics API Key</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                                )}/>
+                             )}
+                        </div>
+                         <div className="space-y-2 p-4 border border-zinc-700 rounded-lg">
+                             <FormField control={form.control} name="automation.appCheckEnforced" render={({ field }) => (
+                                <FormItem className="flex flex-row items-center justify-between">
+                                    <div className="space-y-0.5"><FormLabel className="text-white">App Check Enforcement</FormLabel><FormDescription className="text-zinc-400">Enforce Firebase App Check to protect backend resources.</FormDescription></div>
+                                    <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                                </FormItem>
+                             )} />
+                             {watchedAutomation.appCheckEnforced && (
+                                <FormField control={form.control} name="automation.recaptchaSiteKey" render={({ field }) => (
+                                    <FormItem><FormLabel className="text-white/70">reCAPTCHA v3 Site Key</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                                )}/>
+                             )}
+                        </div>
                     </CardContent>
                 </Card>
             </TabsContent>

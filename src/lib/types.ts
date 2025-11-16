@@ -309,10 +309,14 @@ export type SiteSettings = {
     whatsapp: string;
   };
   automation: {
-    newsletterIntegration: boolean;
-    googleBusinessSync: boolean;
-    autoBackup: boolean;
-    appCheckEnforced: boolean;
+    instagramSyncEnabled?: boolean;
+    instagramApiKey?: string;
+    marketingEngineEnabled?: boolean;
+    marketingApiKey?: string;
+    analyticsEnabled?: boolean;
+    analyticsApiKey?: string;
+    appCheckEnforced?: boolean;
+    recaptchaSiteKey?: string;
   };
   meta: {
     defaultTitle: string;

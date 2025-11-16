@@ -11,9 +11,7 @@
           "type": "object",
           "properties": {
             "name": { "type": "string" },
-            "favicon": { "type": "string", "format": "uri" },
-            "logoLight": { "type": "string", "format": "uri" },
-            "logoDark": { "type": "string", "format": "uri" },
+            "favicon": { "type": "string" },
             "tagline": { "type": "string" },
             "primaryColor": { "type": "string" },
             "accentColor": { "type": "string" }
@@ -26,7 +24,7 @@
             "properties": {
               "name": { "type": "string" },
               "role": { "type": "string" },
-              "image": { "type": "string", "format": "uri" },
+              "imageId": { "type": "string" },
               "quote": { "type": "string" },
               "contact": { "type": "string", "format": "email" }
             }
@@ -55,10 +53,14 @@
         "automation": {
           "type": "object",
           "properties": {
-            "newsletterIntegration": { "type": "boolean" },
-            "googleBusinessSync": { "type": "boolean" },
-            "autoBackup": { "type": "boolean" },
-            "appCheckEnforced": { "type": "boolean" }
+            "instagramSyncEnabled": { "type": "boolean" },
+            "instagramApiKey": { "type": "string" },
+            "marketingEngineEnabled": { "type": "boolean" },
+            "marketingApiKey": { "type": "string" },
+            "analyticsEnabled": { "type": "boolean" },
+            "analyticsApiKey": { "type": "string" },
+            "appCheckEnforced": { "type": "boolean" },
+            "recaptchaSiteKey": { "type": "string" }
           }
         },
         "meta": {
@@ -66,7 +68,7 @@
           "properties": {
             "defaultTitle": { "type": "string" },
             "defaultDescription": { "type": "string" },
-            "defaultImage": { "type": "string", "format": "uri" },
+            "defaultImageId": { "type": "string" },
             "keywords": { "type": "array", "items": { "type": "string" } }
           }
         },
@@ -277,5 +279,3 @@
     ]
   }
 }
-
-    
