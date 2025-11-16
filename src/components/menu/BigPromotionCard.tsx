@@ -54,7 +54,7 @@ export default function BigPromotionCard({ drink, promotions }: BigPromotionCard
         <CardContent className="p-4 sm:p-6 flex flex-col flex-grow">
           <div className="flex-grow">
             <h3 className="font-bold text-xl sm:text-2xl text-black truncate">{drink.name}</h3>
-            <p className="text-sm sm:text-base text-black/60 mt-1 h-12">{drink.description}</p>
+            <p className="text-sm sm:text-base text-black/60 mt-1 hidden sm:block">{drink.description}</p>
             <div className="flex items-center gap-1 mt-2">
               {[...Array(5)].map((_, i) => (
                 <Star key={i} className="w-4 h-4 text-orange-400 fill-orange-400" />

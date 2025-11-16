@@ -1,3 +1,4 @@
+
 'use client';
 
 import type { MenuItem } from '@/lib/types';
@@ -25,7 +26,7 @@ const DrinkCard = ({ item }: { item: MenuItem }) => (
     </div>
     <CardContent className="p-4 flex flex-col flex-grow text-black">
       <h4 className="font-headline font-bold text-lg truncate">{item.name}</h4>
-      <p className="text-sm text-black/70 line-clamp-2 mt-1 h-10 flex-grow">{item.description}</p>
+      <p className="text-sm text-black/70 line-clamp-2 mt-1 flex-grow hidden sm:block">{item.description}</p>
       <div className="flex items-center gap-2 mt-2">
         {[...Array(5)].map((_, i) => (
           <Star key={i} className="w-4 h-4 text-black/80 fill-black/80" />

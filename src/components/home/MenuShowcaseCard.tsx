@@ -48,7 +48,7 @@ export default function MenuShowcaseCard({ drink, promotions, dailySpecials }: M
           </div>
           <div className="flex-grow">
             <h3 className="text-xl font-headline font-semibold group-hover:text-primary transition-colors">{drink.name}</h3>
-            <p className="text-sm text-zinc-400 mt-1">{drink.description}</p>
+            <p className="text-sm text-zinc-400 mt-1 hidden sm:block">{drink.description}</p>
           </div>
         </Link>
         <div className="mt-4 flex justify-between items-center">
