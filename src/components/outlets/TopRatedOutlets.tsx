@@ -14,16 +14,16 @@ import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { ScrollArea } from '../ui/scroll-area';
 
 const TopOutletCard = ({ outlet }: { outlet: Outlet }) => (
-  <Card className="p-4 flex justify-between items-center gap-4 bg-[#f3e5d3]/35 rounded-3xl">
+  <Card className="p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[#f3e5d3]/35 rounded-3xl">
     <div className="flex-1 overflow-hidden pr-2">
-      <h4 className="font-bold text-base sm:text-lg text-foreground truncate">{outlet.name}</h4>
+      <h4 className="font-bold text-base sm:text-lg text-foreground">{outlet.name}</h4>
       <div className="flex items-center gap-1 mt-1">
         <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
         <span className="text-sm font-bold text-foreground">{outlet.rating?.toFixed(1)}</span>
         <span className="text-xs text-muted-foreground">({outlet.reviewCount || 0} reviews)</span>
       </div>
     </div>
-    <Button asChild className="bg-foreground/80 text-background hover:bg-foreground/70 rounded-full shrink-0">
+    <Button asChild className="bg-foreground/80 text-background hover:bg-foreground/70 rounded-full shrink-0 w-full sm:w-auto">
       <Link href={`/${outlet.slug}`}>
         View Outlet
       </Link>

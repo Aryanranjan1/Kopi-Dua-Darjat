@@ -18,12 +18,12 @@ export default function OutletCard({ outlet, userLocation }: OutletCardProps) {
 
   return (
     <Card className="p-4 flex flex-col items-start gap-4 bg-[#f3e5d3]/35 rounded-3xl">
-      <div className="flex-1 w-full">
+      <div className="flex-1 w-full min-w-0">
         <h4 className="font-bold text-base text-foreground flex items-start">
             <Pin className="w-4 h-4 mr-2 text-accent shrink-0 mt-1" />
-            <span>{outlet.name}</span>
+            <span className="break-words">{outlet.name}</span>
         </h4>
-        <p className="text-sm text-muted-foreground pl-6">{outlet.address}</p>
+        <p className="text-sm text-muted-foreground pl-6 break-words">{outlet.address}</p>
         {outlet.distance && (
           <p className="text-xs font-bold text-accent mt-1 pl-6">
             {outlet.distance.toFixed(1)} km away
