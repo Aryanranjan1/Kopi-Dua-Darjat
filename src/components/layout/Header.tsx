@@ -66,7 +66,7 @@ export default function Header() {
         <Link href="/" className="p-0 m-0 h-20 flex items-center">
             {isLoading ? (
               <Skeleton className="h-16 w-20" />
-            ) : <Logo />}
+            ) : <Logo className="filter brightness-0" />}
         </Link>
 
 
@@ -114,7 +114,7 @@ export default function Header() {
                         <Link href="/" className="h-20 flex items-center p-0 m-0">
                            {isLoading ? (
                               <Skeleton className="h-16 w-20" />
-                           ) : <Logo />}
+                           ) : <Logo className="filter brightness-0" />}
                         </Link>
                         <div className="flex flex-col space-y-4 mt-8">
                             {navItems.map((item) => (

@@ -60,7 +60,7 @@ export default function SiteFooter() {
           </div>
           <div className="md:col-span-1 flex items-center justify-center">
              <div className="relative w-60 h-60">
-                {isLoading ? <Skeleton className="w-full h-full rounded-full" /> : <Logo />}
+                {isLoading ? <Skeleton className="w-full h-full rounded-full" /> : <Logo className="w-full h-full object-contain" />}
               </div>
           </div>
         </div>
