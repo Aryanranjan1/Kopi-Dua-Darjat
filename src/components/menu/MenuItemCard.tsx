@@ -33,21 +33,21 @@ export default function MenuItemCard({ drink, promotions, dailySpecials }: MenuI
 
   return (
     <div className="p-1 h-full">
-      <Card className="rounded-3xl bg-[#fddc5d] text-primary-foreground border-black/10 w-full h-full flex flex-col transition-all duration-300 transform hover:shadow-xl hover:-translate-y-1">
-        <CardContent className="p-4 flex flex-col items-center text-center flex-grow">
+      <Card className="rounded-3xl bg-[#fddc5d] text-primary-foreground border border-black/10 w-full h-full flex flex-col transition-all duration-300 transform hover:shadow-xl hover:-translate-y-1">
+        <CardContent className="relative p-0 flex flex-col items-center text-center flex-grow">
           {offerText && (
              <Badge className="absolute top-2 right-2 bg-accent text-accent-foreground z-10 shadow-lg">{offerText}</Badge>
           )}
-          <div className="relative w-full aspect-square mb-4 group">
+          <div className="relative w-full aspect-square p-4">
             <Image
               src={drink.imageUrl}
               alt={drink.name}
               fill
               sizes="(max-width: 768px) 90vw, (max-width: 1200px) 45vw, 30vw"
-              className="object-cover drop-shadow-2xl transition-transform duration-300 group-hover:scale-105"
+              className="object-cover drop-shadow-2xl"
             />
           </div>
-          <div className="w-full text-left mt-auto">
+          <div className="w-full text-left mt-auto p-4 border-t border-black/10">
               <h3 className="font-bold text-lg text-primary-foreground truncate">{drink.name}</h3>
               <p className="text-sm text-primary-foreground/70 mt-1 h-10">{drink.description}</p>
               <div className="flex items-center gap-1 mt-2">
@@ -57,10 +57,10 @@ export default function MenuItemCard({ drink, promotions, dailySpecials }: MenuI
               </div>
               <div className="mt-4 flex justify-between items-center">
                 <p className="font-semibold text-primary-foreground text-lg">RM{drink.price.toFixed(2)}</p>
-                 <Button asChild size="icon" className="group/btn rounded-full bg-black text-white hover:bg-white hover:text-black transition-colors duration-300">
+                 <Button asChild size="icon" className="group rounded-full bg-black text-white hover:bg-white hover:text-black transition-colors duration-300">
                     <Link href={`/outlets?item=${drink.slug}`}>
-                        <ArrowUpRight className="h-5 w-5 absolute transition-transform duration-300 group-hover/btn:rotate-45 group-hover/btn:opacity-0" />
-                        <ArrowRight className="h-5 w-5 absolute transition-transform duration-300 opacity-0 group-hover/btn:opacity-100" />
+                        <ArrowUpRight className="h-5 w-5 absolute transition-transform duration-300 group-hover:rotate-45 group-hover:opacity-0" />
+                        <ArrowRight className="h-5 w-5 absolute transition-transform duration-300 opacity-0 group-hover:opacity-100" />
                         <span className="sr-only">View Details</span>
                     </Link>
                 </Button>
