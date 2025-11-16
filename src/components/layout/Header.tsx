@@ -64,9 +64,7 @@ export default function Header() {
       <div className="container mx-auto px-6 h-20 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="p-0 m-0 h-20 flex items-center">
-            {isLoading ? (
-              <Skeleton className="h-16 w-20" />
-            ) : <Logo className="filter brightness-0" />}
+            <Logo className="filter brightness-0" />
         </Link>
 
 
@@ -112,9 +110,7 @@ export default function Header() {
                     </SheetHeader>
                     <div className="flex flex-col h-full p-4">
                         <Link href="/" className="h-20 flex items-center p-0 m-0">
-                           {isLoading ? (
-                              <Skeleton className="h-16 w-20" />
-                           ) : <Logo className="filter brightness-0" />}
+                           <Logo className="filter brightness-0" />
                         </Link>
                         <div className="flex flex-col space-y-4 mt-8">
                             {navItems.map((item) => (
