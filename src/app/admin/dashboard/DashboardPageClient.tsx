@@ -71,33 +71,6 @@ const StatCard = ({
   </Card>
 );
 
-const recentActivities = [
-  {
-    user: 'admin@kopi.com',
-    action: 'published a new blog post:',
-    target: 'The Secret Behind Our Kopi Kampung',
-    time: '2h ago',
-  },
-  {
-    user: 'admin@kopi.com',
-    action: 'updated an outlet:',
-    target: 'Kajang Prima',
-    time: '5h ago',
-  },
-  {
-    user: 'admin@kopi.com',
-    action: 'added a new menu item:',
-    target: 'Darjat Pandan',
-    time: '1d ago',
-  },
-  {
-    user: 'azad@kopi.com',
-    action: 'marked a message as read',
-    target: 'Partnership Inquiry',
-    time: '2d ago',
-  },
-];
-
 const salesData = [
   { name: 'Jan', sales: 4000 },
   { name: 'Feb', sales: 3000 },
@@ -207,13 +180,6 @@ export default function DashboardPageClient() {
           value={String(dailySpecials?.length || 0)}
           icon={Sparkles}
         />
-        <StatCard
-          title="Total Sales (Month)"
-          value="RM12,450"
-          icon={BarChart}
-          change="-2.1% from last month"
-          changeType="decrease"
-        />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -266,70 +232,41 @@ export default function DashboardPageClient() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <Card className="lg:col-span-2 bg-zinc-900 border-zinc-800">
-          <CardHeader>
-            <CardTitle className="text-white">Recent Activity</CardTitle>
-            <CardDescription className="text-zinc-400">
-              What's been happening across the CMS.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {recentActivities.map((activity, index) => (
-                <div key={index} className="flex items-start gap-3">
-                  <div className="text-zinc-500 text-xs w-16 text-right shrink-0">
-                    {activity.time}
-                  </div>
-                  <div className="h-full w-px bg-zinc-700"></div>
-                  <div className="text-sm">
-                    <span className="font-semibold text-zinc-300">
-                      {activity.user}
-                    </span>
-                    <span className="text-zinc-400"> {activity.action} </span>
-                    <span className="font-medium text-primary hover:underline cursor-pointer">
-                      {activity.target}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-        <div className="space-y-8">
-          <Card className="bg-zinc-900 border-zinc-800">
+        <div className="lg:col-span-2 space-y-8">
+            <Card className="bg-zinc-900 border-zinc-800">
+                <CardHeader>
+                <CardTitle className="text-white">Quick Actions</CardTitle>
+                </CardHeader>
+                <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <Button asChild variant="outline" className="bg-primary/20 border-primary/50 text-primary hover:bg-primary/30">
+                        <Link href="/admin/blog/edit/new">New Post</Link>
+                    </Button>
+                    <Button asChild variant="outline" className="bg-primary/20 border-primary/50 text-primary hover:bg-primary/30">
+                        <Link href="/admin/menu">Add Item</Link>
+                    </Button>
+                    <Button asChild variant="outline" className="bg-primary/20 border-primary/50 text-primary hover:bg-primary/30">
+                        <Link href="/admin/outlets">Add Outlet</Link>
+                    </Button>
+                    <Button asChild variant="outline" className="bg-primary/20 border-primary/50 text-primary hover:bg-primary/30">
+                        <Link href="/admin/promotions">New Promo</Link>
+                    </Button>
+                </CardContent>
+            </Card>
+        </div>
+        <Card className="bg-zinc-900 border-zinc-800">
             <CardHeader>
-              <CardTitle className="text-white">Quick Actions</CardTitle>
-            </CardHeader>
-            <CardContent className="grid grid-cols-2 gap-2">
-              <Button asChild variant="outline" className="bg-primary/20 border-primary/50 text-primary hover:bg-primary/30">
-                <Link href="/admin/blog/edit/new">New Post</Link>
-              </Button>
-              <Button asChild variant="outline" className="bg-primary/20 border-primary/50 text-primary hover:bg-primary/30">
-                <Link href="/admin/menu">Add Item</Link>
-              </Button>
-              <Button asChild variant="outline" className="bg-primary/20 border-primary/50 text-primary hover:bg-primary/30">
-                <Link href="/admin/outlets">Add Outlet</Link>
-              </Button>
-              <Button asChild variant="outline" className="bg-primary/20 border-primary/50 text-primary hover:bg-primary/30">
-                <Link href="/admin/promotions">New Promo</Link>
-              </Button>
-            </CardContent>
-          </Card>
-          <Card className="bg-zinc-900 border-zinc-800">
-            <CardHeader>
-              <CardTitle className="text-white">Website Health</CardTitle>
+            <CardTitle className="text-white">Website Health</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between">
                 <span className="text-zinc-400">Hosting Status</span>
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                  <span className="text-green-400 font-bold">Online</span>
+                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                <span className="text-green-400 font-bold">Online</span>
                 </div>
-              </div>
+            </div>
             </CardContent>
-          </Card>
-        </div>
+        </Card>
       </div>
     </div>
   );
