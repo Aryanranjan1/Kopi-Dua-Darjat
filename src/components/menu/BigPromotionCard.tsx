@@ -36,19 +36,20 @@ export default function BigPromotionCard({ drink, promotions }: BigPromotionCard
   return (
     <div className="p-1 h-full">
         <Card
-          className="rounded-3xl border border-black text-black w-full h-full flex flex-col transition-all duration-300 transform hover:shadow-xl hover:-translate-y-1 overflow-hidden"
+          className="rounded-3xl border border-black text-black w-full h-full flex flex-col transition-all duration-300 transform hover:shadow-xl hover:-translate-y-1 overflow-visible"
           style={{ backgroundColor: '#fddc5d' }}
         >
-          <CardContent className="relative p-0 flex flex-col items-center text-center flex-grow">
+          <CardContent className="relative p-4 pt-32 flex flex-col items-center text-center flex-grow">
             {offerText && (
               <Badge className="absolute top-3 left-3 bg-white/80 backdrop-blur-sm text-black shadow-md z-10">{offerText}</Badge>
             )}
-            <div className="relative w-full aspect-square group">
+            <div className="relative w-full h-80 -mt-48 mb-4 group">
                 <Image
                     src={drink.imageUrl}
                     alt={drink.name}
                     fill
-                    className="object-cover"
+                    sizes="(max-width: 768px) 90vw, (max-width: 1200px) 45vw, 30vw"
+                    className="object-contain drop-shadow-2xl transition-transform duration-300 group-hover:scale-105 rotate-12"
                 />
             </div>
             <div className="p-6 w-full text-left mt-auto">
