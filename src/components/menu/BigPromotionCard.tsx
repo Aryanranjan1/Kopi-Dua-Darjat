@@ -33,7 +33,6 @@ export default function BigPromotionCard({ drink, promotions }: BigPromotionCard
   const discountedPrice = getDiscountedPrice();
   const showCutPrice = promotion && (promotion.discountType === 'flat' || promotion.discountType === 'percentage');
 
-
   return (
     <div className="p-1 h-full">
         <Card
@@ -44,18 +43,17 @@ export default function BigPromotionCard({ drink, promotions }: BigPromotionCard
             {offerText && (
               <Badge className="absolute top-3 left-3 bg-white/80 backdrop-blur-sm text-black shadow-md z-10">{offerText}</Badge>
             )}
-          <div className="relative w-full aspect-square group">
-              <Image
-                  src={drink.imageUrl}
-                  alt={drink.name}
-                  fill
-                  className="object-cover"
-              />
-          </div>
-          </CardContent>
-           <div className="p-4 w-full text-left mt-auto">
-              <h3 className="font-bold text-xl text-black truncate">{drink.name}</h3>
-              <p className="text-sm text-black/60 mt-1 h-10">{drink.description}</p>
+            <div className="relative w-full aspect-square group">
+                <Image
+                    src={drink.imageUrl}
+                    alt={drink.name}
+                    fill
+                    className="object-cover"
+                />
+            </div>
+            <div className="p-6 w-full text-left mt-auto">
+              <h3 className="font-bold text-2xl text-black truncate">{drink.name}</h3>
+              <p className="text-base text-black/60 mt-1 h-10">{drink.description}</p>
               <div className="flex items-center gap-1 mt-2">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="w-4 h-4 text-orange-400 fill-orange-400" />
@@ -65,11 +63,11 @@ export default function BigPromotionCard({ drink, promotions }: BigPromotionCard
                   <div className="flex items-baseline gap-2">
                     {showCutPrice ? (
                       <>
-                        <p className="font-semibold text-black text-lg">RM{discountedPrice.toFixed(2)}</p>
-                        <p className="text-sm text-black/60 line-through">RM{drink.price.toFixed(2)}</p>
+                        <p className="font-semibold text-black text-2xl">RM{discountedPrice.toFixed(2)}</p>
+                        <p className="text-base text-black/60 line-through">RM{drink.price.toFixed(2)}</p>
                       </>
                     ) : (
-                      <p className="font-semibold text-black text-lg">RM{drink.price.toFixed(2)}</p>
+                      <p className="font-semibold text-black text-2xl">RM{drink.price.toFixed(2)}</p>
                     )}
                   </div>
                  <Button asChild size="icon" className="group rounded-full bg-black text-white hover:bg-white hover:text-black transition-colors duration-300">
@@ -81,6 +79,7 @@ export default function BigPromotionCard({ drink, promotions }: BigPromotionCard
                   </Button>
               </div>
             </div>
+          </CardContent>
         </Card>
     </div>
   );

@@ -52,8 +52,7 @@ export default function PromotionCard({ drink, promotions }: PromotionCardProps)
               className="object-cover"
             />
           </div>
-        </CardContent>
-        <div className="p-4 w-full text-left mt-auto">
+          <div className="p-4 w-full text-left mt-auto">
             <h3 className="font-bold text-lg text-black truncate">{drink.name}</h3>
             <p className="text-sm text-black/60 mt-1 h-10">{drink.description}</p>
             <div className="flex items-center gap-1 mt-2">
@@ -80,7 +79,8 @@ export default function PromotionCard({ drink, promotions }: PromotionCardProps)
                 </Link>
                 </Button>
             </div>
-        </div>
+          </div>
+        </CardContent>
       </Card>
     </div>
   );
