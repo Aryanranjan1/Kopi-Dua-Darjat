@@ -24,7 +24,7 @@ const DrinkCard = ({ item }: { item: MenuItem }) => (
   <Card className="rounded-3xl overflow-hidden group bg-primary border-black/10 transition-all duration-300 transform hover:shadow-xl hover:-translate-y-1 h-full flex flex-col">
     <div className="relative aspect-square w-full">
       <Image src={item.imageUrl} alt={item.name} fill className="object-cover transition-transform duration-300 group-hover:scale-105" />
-      {item.isPopular && <Badge className="absolute top-2 right-2 bg-black text-white">Popular</Badge>}
+      {item.isPopular && <Badge className="absolute top-3 left-3 bg-white/80 backdrop-blur-sm text-black shadow-md">Popular</Badge>}
     </div>
     <CardContent className="p-4 flex flex-col flex-grow text-black">
       <h4 className="font-headline font-bold text-lg truncate">{item.name}</h4>
