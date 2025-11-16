@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -23,6 +24,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, where } from 'firebase/firestore';
+import type { MenuItem, DailySpecial } from '@/lib/types';
 import {
   Area,
   Bar,
@@ -35,6 +37,7 @@ import {
   BarChart as RechartsBarChart,
   AreaChart as RechartsAreaChart,
 } from 'recharts';
+import { useMemo } from 'react';
 
 const StatCard = ({
   title,
@@ -114,9 +117,9 @@ export default function DashboardPageClient() {
       [firestore]
     )
   );
-  const { data: menuItems } = useCollection(
+  const { data: menuItems } = useCollection<MenuItem>(
     useMemoFirebase(
-      () => (firestore ? query(collection(firestore, 'menuItems')) : null),
+      () => (firestore ? query(collection(firestore, 'menuItems'), where('status', '==', 'published')) : null),
       [firestore]
     )
   );
@@ -126,12 +129,19 @@ export default function DashboardPageClient() {
       [firestore]
     )
   );
-  const { data: dailySpecials } = useCollection(
+  const { data: dailySpecials } = useCollection<DailySpecial>(
     useMemoFirebase(
       () => (firestore ? query(collection(firestore, 'dailySpecials')) : null),
       [firestore]
     )
   );
+  
+  const dailySpecialsCount = useMemo(() => {
+    if (!dailySpecials || !menuItems) return 0;
+    const publishedItemIds = new Set(menuItems.map(item => item.id));
+    return dailySpecials.filter(special => publishedItemIds.has(special.menuItemId)).length;
+  }, [dailySpecials, menuItems]);
+
 
   return (
     <div className="space-y-8">
@@ -177,7 +187,7 @@ export default function DashboardPageClient() {
         />
         <StatCard
           title="Daily Specials"
-          value={String(dailySpecials?.length || 0)}
+          value={String(dailySpecialsCount)}
           icon={Sparkles}
         />
       </div>
@@ -230,9 +240,9 @@ export default function DashboardPageClient() {
           </CardContent>
         </Card>
       </div>
-
+      
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-8">
+        <div className="lg:col-span-2">
             <Card className="bg-zinc-900 border-zinc-800">
                 <CardHeader>
                 <CardTitle className="text-white">Quick Actions</CardTitle>
