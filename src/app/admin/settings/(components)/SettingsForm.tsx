@@ -39,8 +39,6 @@ const formSchema = z.object({
   brand: z.object({
     name: z.string().min(1, 'Brand name is required'),
     favicon: z.string().optional(),
-    logoLight: z.string().optional(),
-    logoDark: z.string().optional(),
     tagline: z.string().optional(),
     primaryColor: z.string().optional(),
     accentColor: z.string().optional(),
@@ -91,8 +89,6 @@ export default function SettingsForm() {
         brand: {
             ...settingsData.brand,
             favicon: settingsData.brand?.favicon || '',
-            logoLight: settingsData.brand?.logoLight || '',
-            logoDark: settingsData.brand?.logoDark || '',
         },
         founders: settingsData.founders?.map(f => ({ ...f, imageId: f.imageId || '' })) || [],
         meta: {
@@ -102,7 +98,7 @@ export default function SettingsForm() {
         },
     } : undefined,
     defaultValues: {
-        brand: { name: '', tagline: '', favicon: '', logoLight: '', logoDark: '' },
+        brand: { name: '', tagline: '', favicon: '' },
         founders: [],
         contact: { email: '', phone: '', address: '', googleMapsLink: '', businessHours: '' },
         socials: { instagram: '', facebook: '', tiktok: '', youtube: '', whatsapp: '' },
@@ -167,12 +163,6 @@ export default function SettingsForm() {
                         )}/>
                         <FormField control={form.control} name="brand.tagline" render={({ field }) => (
                             <FormItem><FormLabel className="text-white">Tagline</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
-                        )}/>
-                         <FormField control={form.control} name="brand.logoDark" render={({ field }) => (
-                            <FormItem><FormLabel className="text-white">Logo (for light backgrounds)</FormLabel><FormControl><Textarea placeholder="<svg>...</svg>" {...field} className={`${inputStyles} font-mono`} rows={5} /></FormControl><FormDescription>Paste raw SVG code.</FormDescription><FormMessage/></FormItem>
-                        )}/>
-                         <FormField control={form.control} name="brand.logoLight" render={({ field }) => (
-                            <FormItem><FormLabel className="text-white">Logo (for dark backgrounds)</FormLabel><FormControl><Textarea placeholder="<svg>...</svg>" {...field} className={`${inputStyles} font-mono`} rows={5} /></FormControl><FormDescription>Paste raw SVG code.</FormDescription><FormMessage/></FormItem>
                         )}/>
                          <FormField control={form.control} name="brand.favicon" render={({ field }) => (
                             <FormItem><FormLabel className="text-white">Favicon</FormLabel><FormControl><Textarea placeholder="<svg>...</svg>" {...field} className={`${inputStyles} font-mono`} rows={5} /></FormControl><FormDescription>Paste raw SVG code for the site icon.</FormDescription><FormMessage/></FormItem>

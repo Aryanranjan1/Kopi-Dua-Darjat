@@ -283,8 +283,6 @@ export type SiteSettings = {
   brand: {
     name: string;
     favicon: string; // SVG code
-    logoLight: string; // SVG code
-    logoDark: string; // SVG code
     tagline: string;
     primaryColor: string;
     accentColor: string;

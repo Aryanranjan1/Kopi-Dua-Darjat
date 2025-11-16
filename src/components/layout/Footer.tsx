@@ -8,12 +8,7 @@ import InteractiveMap from '../home/InteractiveMap';
 import { Card } from '../ui/card';
 import { useSettings } from './SettingsProvider';
 import { Skeleton } from '../ui/skeleton';
-
-
-const SVGDisplay = ({ svgString }: { svgString: string }) => {
-  if (!svgString) return null;
-  return <div dangerouslySetInnerHTML={{ __html: svgString }} className="w-full h-full flex items-center justify-center [&_svg]:h-full [&_svg]:w-auto" />;
-};
+import { Logo } from './Logo';
 
 
 export default function SiteFooter() {
@@ -65,9 +60,7 @@ export default function SiteFooter() {
           </div>
           <div className="md:col-span-1 flex items-center justify-center">
              <div className="relative w-60 h-60">
-                {isLoading ? <Skeleton className="w-full h-full rounded-full" /> : settings?.brand?.logoLight && (
-                  <SVGDisplay svgString={settings.brand.logoLight} />
-                )}
+                {isLoading ? <Skeleton className="w-full h-full rounded-full" /> : <Logo />}
               </div>
           </div>
         </div>

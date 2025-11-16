@@ -18,6 +18,7 @@ import {
 import Image from 'next/image';
 import { useSettings } from './SettingsProvider';
 import { Skeleton } from '../ui/skeleton';
+import { Logo } from './Logo';
 
 const navItems = [
   { title: 'Home', href: '/' },
@@ -26,11 +27,6 @@ const navItems = [
   { title: 'Outlets', href: '/outlets' },
   { title: 'Contact', href: '/contact' },
 ];
-
-const SVGDisplay = ({ svgString }: { svgString: string }) => {
-  if (!svgString) return null;
-  return <div dangerouslySetInnerHTML={{ __html: svgString }} className="h-full w-auto flex items-center justify-center [&_svg]:h-16 [&_svg]:w-auto" />;
-};
 
 
 export default function Header() {
@@ -70,11 +66,7 @@ export default function Header() {
         <Link href="/" className="p-0 m-0 h-20 flex items-center">
             {isLoading ? (
               <Skeleton className="h-16 w-20" />
-            ) : settings?.brand?.logoDark ? (
-              <SVGDisplay svgString={settings.brand.logoDark} />
-            ) : (
-              <span className="font-bold text-lg">{settings?.brand?.name}</span>
-            )}
+            ) : <Logo />}
         </Link>
 
 
@@ -122,11 +114,7 @@ export default function Header() {
                         <Link href="/" className="h-20 flex items-center p-0 m-0">
                            {isLoading ? (
                               <Skeleton className="h-16 w-20" />
-                           ) : settings?.brand?.logoDark ? (
-                              <SVGDisplay svgString={settings.brand.logoDark} />
-                           ) : (
-                             <span className="font-bold text-lg">{settings?.brand?.name}</span>
-                           )}
+                           ) : <Logo />}
                         </Link>
                         <div className="flex flex-col space-y-4 mt-8">
                             {navItems.map((item) => (
