@@ -35,53 +35,53 @@ export default function BigPromotionCard({ drink, promotions }: BigPromotionCard
 
   return (
     <div className="p-1 h-full">
-        <Card
-          className="rounded-3xl border border-black text-black w-full h-full flex flex-col transition-all duration-300 transform hover:shadow-xl hover:-translate-y-1 overflow-visible"
-          style={{ backgroundColor: '#fddc5d' }}
-        >
-          <CardContent className="relative p-4 pt-32 flex flex-col items-center text-center flex-grow">
-            {offerText && (
-              <Badge className="absolute top-3 left-3 bg-white/80 backdrop-blur-sm text-black shadow-md z-10">{offerText}</Badge>
-            )}
-            <div className="relative w-full h-80 -mt-48 mb-4 group">
-                <Image
-                    src={drink.imageUrl}
-                    alt={drink.name}
-                    fill
-                    sizes="(max-width: 768px) 90vw, (max-width: 1200px) 45vw, 30vw"
-                    className="object-contain drop-shadow-2xl transition-transform duration-300 group-hover:scale-105 rotate-12"
-                />
+      <Card
+        className="rounded-3xl border border-black text-black w-full h-full flex flex-col transition-all duration-300 transform hover:shadow-xl hover:-translate-y-1 overflow-hidden"
+        style={{ backgroundColor: '#fddc5d' }}
+      >
+        <div className="relative w-full aspect-square group">
+          {offerText && (
+            <Badge className="absolute top-3 left-3 bg-white/80 backdrop-blur-sm text-black shadow-md z-10">{offerText}</Badge>
+          )}
+          <Image
+            src={drink.imageUrl}
+            alt={drink.name}
+            fill
+            sizes="(max-width: 768px) 90vw, 50vw"
+            className="object-contain p-4 drop-shadow-lg transition-transform duration-300 group-hover:scale-105"
+          />
+        </div>
+        <CardContent className="p-4 sm:p-6 flex flex-col flex-grow">
+          <div className="flex-grow">
+            <h3 className="font-bold text-xl sm:text-2xl text-black truncate">{drink.name}</h3>
+            <p className="text-sm sm:text-base text-black/60 mt-1">{drink.description}</p>
+            <div className="flex items-center gap-1 mt-2">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="w-4 h-4 text-orange-400 fill-orange-400" />
+              ))}
             </div>
-            <div className="p-6 w-full text-left mt-auto">
-              <h3 className="font-bold text-2xl text-black truncate">{drink.name}</h3>
-              <p className="text-base text-black/60 mt-1 h-10">{drink.description}</p>
-              <div className="flex items-center gap-1 mt-2">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 text-orange-400 fill-orange-400" />
-                ))}
-              </div>
-              <div className="mt-4 flex justify-between items-center">
-                  <div className="flex items-baseline gap-2">
-                    {showCutPrice ? (
-                      <>
-                        <p className="font-semibold text-black text-2xl">RM{discountedPrice.toFixed(2)}</p>
-                        <p className="text-base text-black/60 line-through">RM{drink.price.toFixed(2)}</p>
-                      </>
-                    ) : (
-                      <p className="font-semibold text-black text-2xl">RM{drink.price.toFixed(2)}</p>
-                    )}
-                  </div>
-                 <Button asChild size="icon" className="group rounded-full bg-black text-white hover:bg-white hover:text-black transition-colors duration-300">
-                    <Link href={`/outlets?promotion=${drink.slug}`}>
-                      <ArrowUpRight className="h-5 w-5 absolute transition-transform duration-300 group-hover:rotate-45 group-hover:opacity-0" />
-                      <ArrowRight className="h-5 w-5 absolute transition-transform duration-300 opacity-0 group-hover:opacity-100" />
-                      <span className="sr-only">View Details</span>
-                    </Link>
-                  </Button>
-              </div>
+          </div>
+          <div className="mt-4 flex justify-between items-center">
+            <div className="flex items-baseline gap-2">
+              {showCutPrice ? (
+                <>
+                  <p className="font-semibold text-black text-xl sm:text-2xl">RM{discountedPrice.toFixed(2)}</p>
+                  <p className="text-base text-black/60 line-through">RM{drink.price.toFixed(2)}</p>
+                </>
+              ) : (
+                <p className="font-semibold text-black text-xl sm:text-2xl">RM{drink.price.toFixed(2)}</p>
+              )}
             </div>
-          </CardContent>
-        </Card>
+            <Button asChild size="icon" className="group rounded-full bg-black text-white hover:bg-white hover:text-black transition-colors duration-300">
+              <Link href={`/outlets?promotion=${drink.slug}`}>
+                <ArrowUpRight className="h-5 w-5 absolute transition-transform duration-300 group-hover:rotate-45 group-hover:opacity-0" />
+                <ArrowRight className="h-5 w-5 absolute transition-transform duration-300 opacity-0 group-hover:opacity-100" />
+                <span className="sr-only">View Details</span>
+              </Link>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

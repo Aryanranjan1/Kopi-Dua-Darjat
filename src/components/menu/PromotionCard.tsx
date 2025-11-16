@@ -37,26 +37,26 @@ export default function PromotionCard({ drink, promotions }: PromotionCardProps)
   return (
     <div className="p-1 h-full">
       <Card 
-        className="rounded-3xl border border-black text-black w-full h-full flex flex-col transition-all duration-300 transform hover:shadow-xl hover:-translate-y-1"
+        className="rounded-3xl border border-black text-black w-full h-full flex flex-col transition-all duration-300 transform hover:shadow-xl hover:-translate-y-1 overflow-hidden"
         style={{ backgroundColor: '#fddc5d' }}
       >
-        <div className="relative w-full aspect-square group overflow-hidden rounded-t-3xl">
+        <div className="relative w-full aspect-square group">
+           {offerText && (
+            <Badge className="absolute top-3 left-3 bg-white/80 backdrop-blur-sm text-black shadow-md z-10">{offerText}</Badge>
+          )}
           <Image
               src={drink.imageUrl}
               alt={drink.name}
               fill
-              sizes="(max-width: 768px) 90vw, (max-width: 1200px) 45vw, 30vw"
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              sizes="(max-width: 768px) 90vw, 30vw"
+              className="object-contain p-4 drop-shadow-lg transition-transform duration-300 group-hover:scale-105"
           />
-           {offerText && (
-            <Badge className="absolute top-3 left-3 bg-white/80 backdrop-blur-sm text-black shadow-md">{offerText}</Badge>
-          )}
         </div>
 
         <CardContent className="p-4 flex flex-col flex-grow">
           <div className="flex-grow">
             <h3 className="font-bold text-lg text-black truncate">{drink.name}</h3>
-            <p className="text-sm text-black/60 mt-1 h-10">{drink.description}</p>
+            <p className="text-sm text-black/60 mt-1">{drink.description}</p>
             <div className="flex items-center gap-1 mt-2">
               {[...Array(5)].map((_, i) => (
                 <Star key={i} className="w-4 h-4 text-orange-400 fill-orange-400" />
@@ -88,4 +88,3 @@ export default function PromotionCard({ drink, promotions }: PromotionCardProps)
     </div>
   );
 }
-
