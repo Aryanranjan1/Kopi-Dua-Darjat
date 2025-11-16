@@ -48,13 +48,13 @@ export default function BigPromotionCard({ drink, promotions }: BigPromotionCard
             alt={drink.name}
             fill
             sizes="(max-width: 768px) 90vw, 50vw"
-            className="object-contain p-4 drop-shadow-lg transition-transform duration-300 group-hover:scale-105"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
         </div>
         <CardContent className="p-4 sm:p-6 flex flex-col flex-grow">
           <div className="flex-grow">
             <h3 className="font-bold text-xl sm:text-2xl text-black truncate">{drink.name}</h3>
-            <p className="text-sm sm:text-base text-black/60 mt-1">{drink.description}</p>
+            <p className="text-sm sm:text-base text-black/60 mt-1 h-12">{drink.description}</p>
             <div className="flex items-center gap-1 mt-2">
               {[...Array(5)].map((_, i) => (
                 <Star key={i} className="w-4 h-4 text-orange-400 fill-orange-400" />

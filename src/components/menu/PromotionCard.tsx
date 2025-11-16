@@ -49,7 +49,7 @@ export default function PromotionCard({ drink, promotions }: PromotionCardProps)
               alt={drink.name}
               fill
               sizes="(max-width: 768px) 90vw, 30vw"
-              className="object-contain p-4 drop-shadow-lg transition-transform duration-300 group-hover:scale-105"
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
         </div>
 
