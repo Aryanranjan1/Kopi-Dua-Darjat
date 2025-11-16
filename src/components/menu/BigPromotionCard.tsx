@@ -31,6 +31,8 @@ export default function BigPromotionCard({ drink, promotions }: BigPromotionCard
   };
 
   const discountedPrice = getDiscountedPrice();
+  const showCutPrice = promotion && (promotion.discountType === 'flat' || promotion.discountType === 'percentage');
+
 
   return (
     <div className="p-1 h-full">
@@ -38,6 +40,7 @@ export default function BigPromotionCard({ drink, promotions }: BigPromotionCard
           className="rounded-3xl border border-black text-black w-full h-full flex flex-col transition-all duration-300 transform hover:shadow-xl hover:-translate-y-1 overflow-hidden"
           style={{ backgroundColor: '#fddc5d' }}
         >
+          <div className="border-b border-black/20">
             <CardContent className="relative p-4 flex flex-col items-center text-center flex-grow">
               {offerText && (
                 <Badge className="absolute top-2 right-2 bg-accent text-accent-foreground z-10 shadow-lg">{offerText}</Badge>
@@ -50,7 +53,9 @@ export default function BigPromotionCard({ drink, promotions }: BigPromotionCard
                     className="object-cover"
                 />
             </div>
-            <div className="w-full text-left mt-auto">
+            </CardContent>
+          </div>
+           <div className="p-4 w-full text-left mt-auto">
               <h3 className="font-bold text-xl text-black truncate">{drink.name}</h3>
               <p className="text-sm text-black/60 mt-1 h-10">{drink.description}</p>
               <div className="flex items-center gap-1 mt-2">
@@ -59,8 +64,8 @@ export default function BigPromotionCard({ drink, promotions }: BigPromotionCard
                 ))}
               </div>
               <div className="mt-4 flex justify-between items-center">
-                  <div className="flex items-center gap-2">
-                    {promotion ? (
+                  <div className="flex items-baseline gap-2">
+                    {showCutPrice ? (
                       <>
                         <p className="font-semibold text-black text-lg">RM{discountedPrice.toFixed(2)}</p>
                         <p className="text-sm text-black/60 line-through">RM{drink.price.toFixed(2)}</p>
@@ -71,14 +76,13 @@ export default function BigPromotionCard({ drink, promotions }: BigPromotionCard
                   </div>
                  <Button asChild size="icon" className="group rounded-full bg-black text-white hover:bg-white hover:text-black transition-colors duration-300">
                     <Link href={`/outlets?promotion=${drink.slug}`}>
-                      <ArrowUpRight className="h-5 w-5 absolute transition-transform duration-300 group-hover:opacity-0" />
+                      <ArrowUpRight className="h-5 w-5 absolute transition-transform duration-300 group-hover:rotate-45 group-hover:opacity-0" />
                       <ArrowRight className="h-5 w-5 absolute transition-transform duration-300 opacity-0 group-hover:opacity-100" />
                       <span className="sr-only">View Details</span>
                     </Link>
                   </Button>
               </div>
             </div>
-            </CardContent>
         </Card>
     </div>
   );

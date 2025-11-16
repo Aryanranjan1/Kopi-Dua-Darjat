@@ -31,6 +31,8 @@ export default function PromotionCard({ drink, promotions }: PromotionCardProps)
   };
 
   const discountedPrice = getDiscountedPrice();
+  const showCutPrice = promotion && (promotion.discountType === 'flat' || promotion.discountType === 'percentage');
+
 
   return (
     <div className="p-1 h-full">
@@ -38,47 +40,49 @@ export default function PromotionCard({ drink, promotions }: PromotionCardProps)
         className="rounded-3xl border border-black text-black w-full h-full flex flex-col transition-all duration-300 transform hover:shadow-xl hover:-translate-y-1 overflow-hidden"
         style={{ backgroundColor: '#fddc5d' }}
       >
-        <CardContent className="relative p-4 flex flex-col items-center text-center flex-grow">
-           {offerText && (
-            <Badge className="absolute top-2 right-2 bg-accent text-accent-foreground z-10 shadow-lg">{offerText}</Badge>
-          )}
-          <div className="relative w-full aspect-square mb-4 group">
-            <Image
-              src={drink.imageUrl}
-              alt={drink.name}
-              fill
-              className="object-cover"
-            />
-          </div>
-          <div className="w-full text-left mt-auto">
-              <h3 className="font-bold text-lg text-black truncate">{drink.name}</h3>
-              <p className="text-sm text-black/60 mt-1 h-10">{drink.description}</p>
-              <div className="flex items-center gap-1 mt-2">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 text-orange-400 fill-orange-400" />
-                ))}
-              </div>
-              <div className="mt-4 flex justify-between items-center">
-                 <div className="flex items-center gap-2">
-                    {promotion ? (
-                      <>
-                        <p className="font-semibold text-black text-base">RM{discountedPrice.toFixed(2)}</p>
-                        <p className="text-xs text-black/60 line-through">RM{drink.price.toFixed(2)}</p>
-                      </>
-                    ) : (
-                      <p className="font-semibold text-black text-base">RM{drink.price.toFixed(2)}</p>
-                    )}
-                  </div>
-                 <Button asChild size="icon" className="group rounded-full bg-black text-white hover:bg-white hover:text-black transition-colors duration-300">
-                  <Link href={`/outlets?promotion=${drink.slug}`}>
-                    <ArrowUpRight className="h-4 w-4 absolute transition-transform duration-300 group-hover:opacity-0" />
-                    <ArrowRight className="h-4 w-4 absolute transition-transform duration-300 opacity-0 group-hover:opacity-100" />
-                    <span className="sr-only">View Details</span>
-                  </Link>
-                 </Button>
-              </div>
-          </div>
-        </CardContent>
+        <div className="border-b border-black/20">
+          <CardContent className="relative p-4 flex flex-col items-center text-center flex-grow">
+            {offerText && (
+              <Badge className="absolute top-2 right-2 bg-accent text-accent-foreground z-10 shadow-lg">{offerText}</Badge>
+            )}
+            <div className="relative w-full aspect-square mb-4 group">
+              <Image
+                src={drink.imageUrl}
+                alt={drink.name}
+                fill
+                className="object-cover"
+              />
+            </div>
+          </CardContent>
+        </div>
+        <div className="p-4 w-full text-left mt-auto">
+            <h3 className="font-bold text-lg text-black truncate">{drink.name}</h3>
+            <p className="text-sm text-black/60 mt-1 h-10">{drink.description}</p>
+            <div className="flex items-center gap-1 mt-2">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="w-4 h-4 text-orange-400 fill-orange-400" />
+              ))}
+            </div>
+            <div className="mt-4 flex justify-between items-center">
+                <div className="flex items-baseline gap-2">
+                  {showCutPrice ? (
+                    <>
+                      <p className="font-semibold text-black text-base">RM{discountedPrice.toFixed(2)}</p>
+                      <p className="text-xs text-black/60 line-through">RM{drink.price.toFixed(2)}</p>
+                    </>
+                  ) : (
+                    <p className="font-semibold text-black text-base">RM{drink.price.toFixed(2)}</p>
+                  )}
+                </div>
+                <Button asChild size="icon" className="group rounded-full bg-black text-white hover:bg-white hover:text-black transition-colors duration-300">
+                <Link href={`/outlets?promotion=${drink.slug}`}>
+                  <ArrowUpRight className="h-4 w-4 absolute transition-transform duration-300 group-hover:opacity-0" />
+                  <ArrowRight className="h-4 w-4 absolute transition-transform duration-300 opacity-0 group-hover:opacity-100" />
+                  <span className="sr-only">View Details</span>
+                </Link>
+                </Button>
+            </div>
+        </div>
       </Card>
     </div>
   );
