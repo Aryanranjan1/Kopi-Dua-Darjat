@@ -32,37 +32,34 @@ export default function MenuItemCard({ drink, promotions, dailySpecials }: MenuI
   const offerText = getOfferBadge();
 
   return (
-    <div className="p-1">
-      <Card className="rounded-3xl bg-primary/65 overflow-visible">
-        <CardContent className="relative p-4 pt-32 flex flex-col items-center text-center">
+    <div className="p-1 h-full group">
+      <Card className="rounded-3xl bg-black text-white border-zinc-800 w-full h-full flex flex-col transition-all duration-300 transform hover:shadow-xl hover:border-primary hover:-translate-y-1">
+        <CardContent className="p-4 flex flex-col items-center text-center flex-grow">
           {offerText && (
              <Badge className="absolute top-2 right-2 bg-accent text-accent-foreground z-10 shadow-lg">{offerText}</Badge>
           )}
-          <div className="relative w-full h-80 -mt-48 mb-4 group">
+          <div className="relative w-full aspect-square mb-4 group">
             <Image
               src={drink.imageUrl}
               alt={drink.name}
               fill
-              className="object-contain drop-shadow-2xl transition-transform duration-300 group-hover:scale-105 rotate-12"
+              className="object-contain drop-shadow-2xl transition-transform duration-300 group-hover:scale-105"
             />
           </div>
-          <div className="w-full flex justify-between items-center text-left">
-              <div className="flex-grow">
-                  <h3 className="font-bold text-xl text-foreground truncate">{drink.name}</h3>
-                  <div className="flex items-center gap-2 mt-1">
-                      <p className="font-semibold text-accent text-lg">RM{drink.price.toFixed(2)}</p>
-                      <div className="flex items-center">
-                          {[...Array(5)].map((_, i) => (
-                          <Star key={i} className="w-4 h-4 text-orange-400 fill-orange-400" />
-                          ))}
-                      </div>
-                  </div>
+          <div className="w-full text-left mt-auto">
+              <h3 className="font-bold text-lg text-white truncate">{drink.name}</h3>
+              <p className="text-sm text-zinc-400 mt-1 h-10">{drink.description}</p>
+              <div className="flex items-center gap-1 mt-2">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-4 h-4 text-amber-400 fill-amber-400" />
+                ))}
               </div>
-             <Button asChild variant="outline" size="icon" className="rounded-full border-2 border-foreground/50 hover:bg-primary hover:border-primary shrink-0">
-              <Link href={`/outlets?item=${drink.slug}`}>
-                <ArrowUpRight className="w-5 h-5" />
-              </Link>
-             </Button>
+              <div className="mt-4 flex justify-between items-center">
+                <p className="font-semibold text-primary text-lg">RM{drink.price.toFixed(2)}</p>
+                <Button size="icon" variant="outline" className="rounded-full bg-zinc-800 border-zinc-700 text-white hover:bg-primary hover:text-black">
+                  <Plus className="w-5 h-5" />
+                </Button>
+              </div>
           </div>
         </CardContent>
       </Card>
