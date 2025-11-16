@@ -44,7 +44,7 @@ export default function PromotionCard({ drink, promotions }: PromotionCardProps)
           {offerText && (
             <Badge className="absolute top-3 left-3 bg-white/80 backdrop-blur-sm text-black shadow-md z-10">{offerText}</Badge>
           )}
-          <div className="relative w-full aspect-square group">
+          <div className="relative w-full flex-grow group">
             <Image
               src={drink.imageUrl}
               alt={drink.name}
@@ -52,7 +52,7 @@ export default function PromotionCard({ drink, promotions }: PromotionCardProps)
               className="object-cover"
             />
           </div>
-          <div className="p-4 w-full text-left mt-auto">
+          <div className="p-4 w-full text-left mt-auto border-t border-black/10">
             <h3 className="font-bold text-lg text-black truncate">{drink.name}</h3>
             <p className="text-sm text-black/60 mt-1 h-10">{drink.description}</p>
             <div className="flex items-center gap-1 mt-2">
