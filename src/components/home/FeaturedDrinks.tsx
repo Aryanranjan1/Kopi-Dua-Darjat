@@ -86,7 +86,7 @@ export default function FeaturedDrinks() {
           >
             <CarouselContent className="-ml-4 py-16">
               {drinksToShow?.map((drink) => (
-                <CarouselItem key={drink.id} className="basis-full md:basis-1/2 lg:basis-1/3 pl-4 overflow-visible">
+                <CarouselItem key={drink.id} className="basis-1/2 md:basis-1/2 lg:basis-1/3 pl-4 overflow-visible">
                   <div className="p-1">
                     <MenuItemCard 
                       drink={drink}
