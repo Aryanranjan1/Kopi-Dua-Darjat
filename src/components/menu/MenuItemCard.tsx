@@ -1,4 +1,3 @@
-
 "use client";
 
 import Image from 'next/image';
@@ -36,8 +35,10 @@ export default function MenuItemCard({ drink, promotions, dailySpecials }: MenuI
 
   return (
     <div className="p-1 h-full">
-      <Card className="rounded-3xl bg-white text-black border border-black/10 w-full h-full flex flex-col transition-all duration-300 transform hover:shadow-xl hover:-translate-y-1 overflow-hidden">
-        
+      <Card
+        className="rounded-3xl text-black border border-black w-full h-full flex flex-col transition-all duration-300 transform hover:shadow-xl hover:-translate-y-1 overflow-hidden"
+        style={{ backgroundColor: '#fddc5d' }}
+      >
         {/* Image Section */}
         <div className="relative w-full aspect-square group">
           <Image
@@ -79,4 +80,3 @@ export default function MenuItemCard({ drink, promotions, dailySpecials }: MenuI
     </div>
   );
 }
-
