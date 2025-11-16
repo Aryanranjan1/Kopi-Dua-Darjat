@@ -21,20 +21,12 @@ This card is used on the homepage in the "Popular Products" carousel and on the 
 - **File where it's used**: 
     - `src/components/home/FeaturedDrinks.tsx`
     - `src/components/menu/MenuCarousel.tsx`
+    - `src/components/menu/MenuPromotions.tsx` (for the "More Great Offers" carousel)
 
-### 3. Menu Showcase Card (`MenuShowcaseCard.tsx`) - **Unused**
-
-This card was likely intended for the homepage's "Our Menu" section but is not currently implemented.
-
-- **Appearance**: A black card with a white border, a contained product image, name, description, price, and a link button.
-- **File where it's defined**: `src/components/home/MenuShowcaseCard.tsx`
-- **Status**: **Not currently used in the application.**
-
-### 4. Promotion Cards
+### 3. Promotion Cards
 
 These cards are specifically designed to highlight promotions on the main menu page.
 
 - **`BigPromotionCard.tsx`**: A large, single-column card for a featured promotion.
 - **`PromotionCard.tsx`**: A smaller card used in a two-column grid.
-- **`PromotionCarouselCard.tsx`**: A card similar to the "Featured Drinks" card, used in a carousel for additional offers.
 - **File where they're used**: All are used within `src/components/menu/MenuPromotions.tsx`.

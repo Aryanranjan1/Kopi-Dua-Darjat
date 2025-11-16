@@ -1,51 +1,149 @@
+'use client';
 
-"use client";
+import { useState, useEffect } from 'react';
+import type { Promotion, MenuItem } from '@/lib/types';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection, query, where, limit, getDocs, doc } from 'firebase/firestore';
+import { Skeleton } from '../ui/skeleton';
+import BigPromotionCard from './BigPromotionCard';
+import PromotionCard from './PromotionCard';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel';
+import MenuItemCard from './MenuItemCard';
 
-import Image from 'next/image';
-import type { MenuItem, Promotion } from '@/lib/types';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { ArrowUpRight } from 'lucide-react';
-import Link from 'next/link';
-import { Badge } from '../ui/badge';
-import { getDiscountDisplay } from '@/lib/utils';
+const MenuPromotionsContent = () => {
+    const firestore = useFirestore();
+    const [promotedItems, setPromotedItems] = useState<MenuItem[]>([]);
+    const [promotions, setPromotions] = useState<Promotion[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
-interface PromotionCarouselCardProps {
-  drink: MenuItem;
-  promotions: Promotion[];
-}
+    useEffect(() => {
+        if (!firestore) return;
 
-export default function PromotionCarouselCard({ drink, promotions }: PromotionCarouselCardProps) {
-  const promotion = promotions.find(p => p.menuItemIds?.includes(drink.id));
-  const offerText = promotion ? getDiscountDisplay(promotion) : null;
-  
-  return (
-    <div className="p-1">
-      <Card className="rounded-3xl bg-primary/65 overflow-visible">
-        <CardContent className="relative p-4 pt-32 flex flex-col items-center text-center">
-          {offerText && (
-            <Badge className="absolute top-2 right-2 bg-accent text-accent-foreground z-10 shadow-lg">{offerText}</Badge>
-          )}
-          <div className="relative w-full h-80 -mt-48 mb-4 group">
-            <Image
-              src={drink.imageUrl}
-              alt={drink.name}
-              fill
-              className="object-contain drop-shadow-2xl transition-transform duration-300 group-hover:scale-105 rotate-12"
-            />
-          </div>
-          <div className="w-full flex justify-between items-center text-left">
-              <div className="flex-grow">
-                  <h3 className="font-bold text-xl text-foreground truncate">{drink.name}</h3>
-              </div>
-             <Button asChild variant="outline" size="icon" className="rounded-full border-2 border-foreground/50 hover:bg-primary hover:border-primary shrink-0">
-              <Link href={`/outlets?promotion=${drink.slug}`}>
-                <ArrowUpRight className="w-5 h-5" />
-              </Link>
-             </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
+        const fetchPromotedItems = async () => {
+            setIsLoading(true);
+            try {
+                const promotionsQuery = query(
+                    collection(firestore, 'promotions'),
+                    where('status', '==', 'active'),
+                    limit(10)
+                );
+                const promoSnap = await getDocs(promotionsQuery);
+                const fetchedPromotions = promoSnap.docs.map(d => ({ id: d.id, ...d.data() } as Promotion));
+                setPromotions(fetchedPromotions);
+                
+                const allMenuItemIds = fetchedPromotions.flatMap(p => p.menuItemIds || []);
+                if (allMenuItemIds.length === 0) {
+                    setPromotedItems([]);
+                    setIsLoading(false);
+                    return;
+                }
+
+                const uniqueMenuItemIds = [...new Set(allMenuItemIds)];
+                
+                // Fetch all items in batches of 30, as 'in' query supports max 30
+                const itemPromises = [];
+                for (let i = 0; i < uniqueMenuItemIds.length; i += 30) {
+                    const batchIds = uniqueMenuItemIds.slice(i, i + 30);
+                    const itemsQuery = query(collection(firestore, 'menuItems'), where('__name__', 'in', batchIds));
+                    itemPromises.push(getDocs(itemsQuery));
+                }
+                
+                const itemSnapshots = await Promise.all(itemPromises);
+                const items = itemSnapshots.flatMap(snap => snap.docs.map(d => ({ id: d.id, ...d.data() } as MenuItem)));
+                
+                setPromotedItems(items);
+
+            } catch (error) {
+                console.error("Error fetching promoted items:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchPromotedItems();
+    }, [firestore]);
+
+
+    if (isLoading) {
+        return (
+            <div className="py-12 sm:py-16">
+                <div className="container mx-auto px-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <Skeleton className="h-[450px] w-full rounded-3xl" />
+                    <div className="grid grid-cols-2 gap-6">
+                    <Skeleton className="h-[217px] w-full rounded-3xl" />
+                    <Skeleton className="h-[217px] w-full rounded-3xl" />
+                    <Skeleton className="h-[217px] w-full rounded-3xl" />
+                    <Skeleton className="h-[217px] w-full rounded-3xl" />
+                    </div>
+                </div>
+                </div>
+            </div>
+        )
+    }
+
+    if (!promotedItems || promotedItems.length < 5) {
+        return null; // Don't render if we don't have enough promotions for the layout
+    }
+
+    const mainPromoItem = promotedItems[0];
+    const gridPromoItems = promotedItems.slice(1, 5);
+    const remainingPromoItems = promotedItems.slice(5);
+    const showRemainingCarousel = remainingPromoItems.length > 0;
+
+    return (
+        <div className="py-12 sm:py-16">
+            <div className="container mx-auto px-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {mainPromoItem && <BigPromotionCard drink={mainPromoItem} promotions={promotions} />}
+                    <div className="grid grid-cols-2 gap-6">
+                        {gridPromoItems.map((drink) => (
+                        <PromotionCard key={drink.id} drink={drink} promotions={promotions} />
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            {showRemainingCarousel && (
+                 <div className="container mx-auto px-4 mt-16">
+                    <h3 className="text-3xl font-headline font-bold text-foreground tracking-wider text-center mb-8">More Great Offers</h3>
+                    <Carousel
+                        opts={{
+                        align: 'start',
+                        loop: remainingPromoItems.length > 4,
+                        }}
+                        className="w-full"
+                    >
+                        <CarouselContent className="-ml-4 py-24">
+                        {remainingPromoItems.map((drink) => (
+                            <CarouselItem
+                            key={drink.id}
+                            className="basis-1/2 md:basis-1/3 lg:basis-1/4 pl-4 overflow-visible"
+                            >
+                            <MenuItemCard drink={drink} promotions={promotions} dailySpecials={[]} />
+                            </CarouselItem>
+                        ))}
+                        </CarouselContent>
+                        {remainingPromoItems.length > 4 && (
+                        <>
+                            <CarouselPrevious className="ml-14" />
+                            <CarouselNext className="mr-14" />
+                        </>
+                        )}
+                    </Carousel>
+                </div>
+            )}
+        </div>
+    );
+};
+
+
+export default function MenuPromotions() {
+    return <MenuPromotionsContent />;
 }

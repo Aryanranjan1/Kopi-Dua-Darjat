@@ -8,7 +8,6 @@ import { collection, query, where, limit, getDocs, doc } from 'firebase/firestor
 import { Skeleton } from '../ui/skeleton';
 import BigPromotionCard from './BigPromotionCard';
 import PromotionCard from './PromotionCard';
-import PromotionCarouselCard from './PromotionCarouselCard';
 import {
   Carousel,
   CarouselContent,
@@ -16,6 +15,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel';
+import MenuItemCard from './MenuItemCard';
 
 const MenuPromotionsContent = () => {
     const firestore = useFirestore();
@@ -47,9 +47,16 @@ const MenuPromotionsContent = () => {
 
                 const uniqueMenuItemIds = [...new Set(allMenuItemIds)];
                 
-                const itemsQuery = query(collection(firestore, 'menuItems'), where('__name__', 'in', uniqueMenuItemIds));
-                const itemsSnap = await getDocs(itemsQuery);
-                const items = itemsSnap.docs.map(d => ({ id: d.id, ...d.data() } as MenuItem));
+                // Fetch all items in batches of 30, as 'in' query supports max 30
+                const itemPromises = [];
+                for (let i = 0; i < uniqueMenuItemIds.length; i += 30) {
+                    const batchIds = uniqueMenuItemIds.slice(i, i + 30);
+                    const itemsQuery = query(collection(firestore, 'menuItems'), where('__name__', 'in', batchIds));
+                    itemPromises.push(getDocs(itemsQuery));
+                }
+                
+                const itemSnapshots = await Promise.all(itemPromises);
+                const items = itemSnapshots.flatMap(snap => snap.docs.map(d => ({ id: d.id, ...d.data() } as MenuItem)));
                 
                 setPromotedItems(items);
 
@@ -120,7 +127,7 @@ const MenuPromotionsContent = () => {
                             key={drink.id}
                             className="basis-1/2 md:basis-1/3 lg:basis-1/4 pl-4 overflow-visible"
                             >
-                            <PromotionCarouselCard drink={drink} promotions={promotions} />
+                            <MenuItemCard drink={drink} promotions={promotions} dailySpecials={[]} />
                             </CarouselItem>
                         ))}
                         </CarouselContent>
