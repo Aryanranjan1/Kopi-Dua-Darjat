@@ -33,7 +33,7 @@ export default function MenuItemCard({ drink, promotions, dailySpecials }: MenuI
 
   return (
     <div className="p-1 h-full">
-      <Card className="rounded-3xl bg-primary text-primary-foreground border-primary/40 w-full h-full flex flex-col transition-all duration-300 transform hover:shadow-xl hover:-translate-y-1">
+      <Card className="rounded-3xl bg-[#fddc5d] text-primary-foreground border-black/10 w-full h-full flex flex-col transition-all duration-300 transform hover:shadow-xl hover:-translate-y-1">
         <CardContent className="p-4 flex flex-col items-center text-center flex-grow">
           {offerText && (
              <Badge className="absolute top-2 right-2 bg-accent text-accent-foreground z-10 shadow-lg">{offerText}</Badge>
@@ -43,6 +43,7 @@ export default function MenuItemCard({ drink, promotions, dailySpecials }: MenuI
               src={drink.imageUrl}
               alt={drink.name}
               fill
+              sizes="(max-width: 768px) 90vw, (max-width: 1200px) 45vw, 30vw"
               className="object-cover drop-shadow-2xl transition-transform duration-300 group-hover:scale-105"
             />
           </div>
