@@ -20,7 +20,7 @@ import { ArrowUpRight, Star } from 'lucide-react';
 const DrinkCard = ({ item }: { item: MenuItem }) => (
   <Card className="rounded-3xl overflow-hidden group bg-[#fde047] border-black/10 transition-all duration-300 transform hover:shadow-xl hover:-translate-y-1 h-full flex flex-col">
     <div className="relative aspect-square w-full">
-      <Image src={item.imageUrl} alt={item.name} fill className="object-contain p-4 drop-shadow-lg transition-transform duration-300 group-hover:scale-105" />
+      <Image src={item.imageUrl} alt={item.name} fill className="object-cover transition-transform duration-300 group-hover:scale-105" />
       {item.isPopular && <Badge className="absolute top-2 right-2 bg-black text-white">Popular</Badge>}
     </div>
     <CardContent className="p-4 flex flex-col flex-grow text-black">
