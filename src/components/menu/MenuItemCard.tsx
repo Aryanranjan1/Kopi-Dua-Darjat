@@ -70,8 +70,8 @@ export default function MenuItemCard({ drink, promotions, dailySpecials }: MenuI
             <p className="font-semibold text-black text-lg">RM{drink.price.toFixed(2)}</p>
             <Button asChild size="icon" className="group rounded-full bg-black text-white hover:bg-white hover:text-black transition-colors duration-300">
                 <Link href={`/outlets?item=${drink.slug}`}>
-                    <ArrowUpRight className="h-5 w-5 absolute transition-transform duration-300 group-hover:rotate-45 group-hover:opacity-0" />
-                    <ArrowRight className="h-5 w-5 absolute transition-transform duration-300 opacity-0 group-hover:opacity-100" />
+                    <ArrowUpRight className="h-4 w-4 absolute transition-transform duration-300 group-hover:rotate-45 group-hover:opacity-0" />
+                    <ArrowRight className="h-4 w-4 absolute transition-transform duration-300 opacity-0 group-hover:opacity-100" />
                     <span className="sr-only">View Details</span>
                 </Link>
             </Button>
