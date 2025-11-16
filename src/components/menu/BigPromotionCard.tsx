@@ -40,12 +40,12 @@ export default function BigPromotionCard({ drink, promotions }: BigPromotionCard
           className="rounded-3xl border border-black text-black w-full h-full flex flex-col transition-all duration-300 transform hover:shadow-xl hover:-translate-y-1 overflow-hidden"
           style={{ backgroundColor: '#fddc5d' }}
         >
-          <div className="border-b border-black/20">
-            <CardContent className="relative p-4 flex flex-col items-center text-center flex-grow">
+          <div>
+            <CardContent className="relative p-0 flex flex-col items-center text-center flex-grow">
               {offerText && (
-                <Badge className="absolute top-2 right-2 bg-accent text-accent-foreground z-10 shadow-lg">{offerText}</Badge>
+                <Badge className="absolute top-2 left-2 bg-black text-white z-10 shadow-lg">{offerText}</Badge>
               )}
-            <div className="relative w-full aspect-square mb-4 group">
+            <div className="relative w-full aspect-square group">
                 <Image
                     src={drink.imageUrl}
                     alt={drink.name}
