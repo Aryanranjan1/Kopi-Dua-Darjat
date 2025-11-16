@@ -19,7 +19,7 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowUpRight, Star } from 'lucide-react';
 
 const DrinkCard = ({ item }: { item: MenuItem }) => (
-  <Card className="rounded-3xl overflow-hidden group bg-[#fde047] border-black/10 transition-all duration-300 transform hover:shadow-xl hover:-translate-y-1 h-full flex flex-col">
+  <Card className="rounded-3xl overflow-hidden group bg-primary border-black/10 transition-all duration-300 transform hover:shadow-xl hover:-translate-y-1 h-full flex flex-col">
     <div className="relative aspect-square w-full">
       <Image src={item.imageUrl} alt={item.name} fill className="object-cover transition-transform duration-300 group-hover:scale-105" />
       {item.isPopular && <Badge className="absolute top-3 left-3 bg-white/80 backdrop-blur-sm text-black shadow-md">Popular</Badge>}
@@ -53,8 +53,8 @@ export default function PopularProductsCarousel({ items }: { items: MenuItem[] }
     <section className="bg-white py-20 md:py-24">
       <div className="container mx-auto px-6 max-w-7xl">
         <AnimateOnScroll animationType="fadeIn">
-            <h2 className="text-4xl md:text-5xl font-headline font-bold text-center mb-12 text-black">
-                Popular at this Outlet
+            <h2 className="text-4xl md:text-5xl font-headline font-bold text-center mb-12 text-black uppercase underline decoration-primary decoration-4 underline-offset-8">
+                Popular Here
             </h2>
             <Carousel
               plugins={[plugin.current]}
@@ -68,7 +68,7 @@ export default function PopularProductsCarousel({ items }: { items: MenuItem[] }
             >
               <CarouselContent className="-ml-4">
                 {items.map((item) => (
-                  <CarouselItem key={item.id} className="md:basis-1/2 lg:basis-1/4 pl-4">
+                  <CarouselItem key={item.id} className="basis-1/2 md:basis-1/2 lg:basis-1/4 pl-4">
                     <DrinkCard item={item} />
                   </CarouselItem>
                 ))}
