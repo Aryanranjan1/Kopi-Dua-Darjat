@@ -5,7 +5,7 @@ import Image from 'next/image';
 import type { MenuItem, Promotion, DailySpecial } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowUpRight, ArrowRight, Star } from 'lucide-react';
+import { ArrowUpRight, ArrowUp, Star } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '../ui/badge';
 import { getDiscountDisplay } from '@/lib/utils';
@@ -56,9 +56,10 @@ export default function MenuItemCard({ drink, promotions, dailySpecials }: MenuI
               </div>
               <div className="mt-4 flex justify-between items-center">
                 <p className="font-semibold text-primary-foreground text-lg">RM{drink.price.toFixed(2)}</p>
-                 <Button asChild size="icon" className="rounded-full bg-black text-white hover:bg-black/80">
+                 <Button asChild size="icon" className="rounded-full bg-black text-white hover:bg-white hover:text-black transition-colors duration-300">
                     <Link href={`/outlets?item=${drink.slug}`}>
-                        <ArrowUpRight className="h-5 w-5 transition-transform duration-300 group-hover:rotate-[-45deg]" />
+                        <ArrowUpRight className="h-5 w-5 transition-transform duration-300 group-hover:opacity-0 group-hover:rotate-45" />
+                        <ArrowUp className="h-5 w-5 absolute transition-opacity duration-300 opacity-0 group-hover:opacity-100" />
                         <span className="sr-only">View Details</span>
                     </Link>
                 </Button>
@@ -69,3 +70,4 @@ export default function MenuItemCard({ drink, promotions, dailySpecials }: MenuI
     </div>
   );
 }
+
