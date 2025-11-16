@@ -43,7 +43,7 @@ export default function MenuItemCard({ drink, promotions, dailySpecials }: MenuI
               src={drink.imageUrl}
               alt={drink.name}
               fill
-              className="object-contain drop-shadow-2xl transition-transform duration-300 group-hover:scale-105"
+              className="object-cover drop-shadow-2xl transition-transform duration-300 group-hover:scale-105"
             />
           </div>
           <div className="w-full text-left mt-auto">
