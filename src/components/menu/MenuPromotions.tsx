@@ -113,7 +113,7 @@ const MenuPromotionsContent = () => {
 
             {showRemainingCarousel && (
                  <div className="container mx-auto px-4 mt-16">
-                    <h3 className="text-3xl font-headline font-bold text-foreground tracking-wider text-center mb-8">More Great Offers</h3>
+                    <h3 className="text-5xl font-headline font-bold text-foreground tracking-wider text-center mb-8 uppercase underline decoration-primary decoration-4 underline-offset-8">More Great Offers</h3>
                     <Carousel
                         opts={{
                         align: 'start',
