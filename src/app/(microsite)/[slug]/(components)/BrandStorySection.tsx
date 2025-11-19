@@ -4,9 +4,9 @@
 import Image from 'next/image';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
-import type { SiteSettings } from '@/lib/types';
+import type { SiteSettings, Media } from '@/lib/types';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
-import { useMediaAsset } from '@/lib/media';
+import { useMedia, useMediaAsset } from '@/lib/media';
 import { Skeleton } from '@/components/ui/skeleton';
 
 interface BrandStorySectionProps {
@@ -14,8 +14,12 @@ interface BrandStorySectionProps {
 }
 
 export default function BrandStorySection({ settings }: BrandStorySectionProps) {
-  const founder1 = settings.founders?.[0];
-  const { asset: founderImage, isLoading } = useMediaAsset(founder1?.imageId || '');
+  // Use a specific image for this section, falling back to a random one.
+  const { asset: specificBrandStoryImage, isLoading: isLoadingSpecific } = useMediaAsset('brand-story-image');
+  const { data: allMedia, isLoading: isLoadingAll } = useMedia();
+
+  const imageToDisplay = specificBrandStoryImage || (allMedia && allMedia.length > 0 ? allMedia[Math.floor(Math.random() * allMedia.length)] : null);
+  const isLoading = isLoadingSpecific || isLoadingAll;
 
   const story = {
       title: "Antara Warisan & Artisan",
@@ -32,16 +36,16 @@ export default function BrandStorySection({ settings }: BrandStorySectionProps) 
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-24 items-center">
           
           <AnimateOnScroll animationType="slideInFromLeft">
-            <div className="relative aspect-square rounded-lg overflow-hidden">
-                {isLoading ? <Skeleton className="w-full h-full" /> : (founderImage && 
+            <div className="relative aspect-square rounded-lg overflow-hidden border-2 border-zinc-200 bg-zinc-100 flex items-center justify-center">
+                {isLoading ? <Skeleton className="w-full h-full" /> : (imageToDisplay ? 
                     <Image
-                      src={founderImage.imageUrl}
-                      alt={founder1?.name || 'Founder'}
+                      src={imageToDisplay.imageUrl}
+                      alt={imageToDisplay.description || 'Brand story image'}
                       fill
                       className="object-cover"
-                      data-ai-hint={founderImage.imageHint}
+                      data-ai-hint={imageToDisplay.imageHint}
                     />
-                )}
+                : <p className="text-zinc-500">No image available</p>)}
             </div>
           </AnimateOnScroll>
 
