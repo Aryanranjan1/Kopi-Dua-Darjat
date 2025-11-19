@@ -18,7 +18,7 @@ export default function OutletCard({ outlet, userLocation }: OutletCardProps) {
 
   return (
     <Card className="p-4 flex flex-col items-start gap-4 bg-[#f3e5d3]/35 rounded-3xl">
-      <div className="flex-1 w-full min-w-0">
+      <div className="flex-1 w-full min-w-0 overflow-hidden">
         <h4 className="font-bold text-base text-foreground flex items-start">
             <Pin className="w-4 h-4 mr-2 text-accent shrink-0 mt-1" />
             <span className="break-words">{outlet.name}</span>
