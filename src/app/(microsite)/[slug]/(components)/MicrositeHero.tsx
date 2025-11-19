@@ -1,24 +1,23 @@
 
 'use client';
 
-import type { Outlet } from '@/lib/types';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Mouse } from 'lucide-react';
 
 interface MicrositeHeroProps {
-  outlet: Outlet;
+  outletName: string;
+  heroImageUrl?: string | null;
 }
 
-export default function MicrositeHero({ outlet }: MicrositeHeroProps) {
-  const heroImageUrl = "https://lh3.googleusercontent.com/p/AF1QipPN12db8DKjb9jFg8lHFguXVNf7TbsrIug8BwE6=w426-h240-k-no";
+export default function MicrositeHero({ outletName, heroImageUrl }: MicrositeHeroProps) {
   
   return (
     <section id="home" className="relative w-full h-screen bg-zinc-900">
       {heroImageUrl ? (
         <Image
           src={heroImageUrl}
-          alt={outlet.name}
+          alt={outletName}
           fill
           className="object-cover"
           priority
