@@ -65,40 +65,23 @@ export default function FranchiseModel() {
 
         {/* --- Mobile View --- */}
         <div className="mt-16 md:hidden">
-             <div className="relative w-full max-w-md mx-auto">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-full bg-border/50"></div>
-
-                <div className="relative flex flex-col gap-16">
+            <div className="relative">
+                <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-px bg-border/50" aria-hidden="true"></div>
+                <div className="space-y-12">
                     {steps.map((step, index) => {
                         const Icon = iconMap[step.title] || FileText;
+                        const isEven = index % 2 === 0;
                         return (
                             <AnimateOnScroll key={index} animationType="fadeIn" delay={index * 0.1}>
-                                <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4">
-                                    {index % 2 === 0 ? (
-                                        <>
-                                            <div className="text-right">
-                                                <p className="text-sm font-semibold text-accent">Step {index + 1}</p>
-                                                <h3 className="text-2xl font-headline mt-1 text-foreground">{step.title}</h3>
-                                                <p className="mt-1 text-sm text-muted-foreground">{step.description}</p>
-                                            </div>
-                                            <div className="relative z-10 bg-background text-foreground w-16 h-16 flex items-center justify-center rounded-full border-4 border-accent shadow-lg">
-                                                <Icon className="w-8 h-8" />
-                                            </div>
-                                            <div></div>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <div></div>
-                                             <div className="relative z-10 bg-background text-foreground w-16 h-16 flex items-center justify-center rounded-full border-4 border-accent shadow-lg">
-                                                <Icon className="w-8 h-8" />
-                                            </div>
-                                            <div className="text-left">
-                                                <p className="text-sm font-semibold text-accent">Step {index + 1}</p>
-                                                <h3 className="text-2xl font-headline mt-1 text-foreground">{step.title}</h3>
-                                                <p className="mt-1 text-sm text-muted-foreground">{step.description}</p>
-                                            </div>
-                                        </>
-                                    )}
+                                <div className="relative">
+                                    <div className="relative z-10 bg-background text-foreground w-16 h-16 flex items-center justify-center rounded-full border-4 border-accent shadow-lg mx-auto">
+                                        <Icon className="w-8 h-8" />
+                                    </div>
+                                    <div className={`mt-4 w-[calc(50%-2rem)] ${isEven ? 'ml-auto text-left' : 'mr-auto text-right'}`}>
+                                        <p className="text-sm font-semibold text-accent">Step {index + 1}</p>
+                                        <h3 className="text-2xl font-headline mt-1 text-foreground">{step.title}</h3>
+                                        <p className="mt-1 text-sm text-muted-foreground">{step.description}</p>
+                                    </div>
                                 </div>
                             </AnimateOnScroll>
                         )
