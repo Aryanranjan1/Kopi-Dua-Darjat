@@ -5,7 +5,7 @@
 
 @layer base {
   :root {
-    --background: 37 50% 98%; /* Lighter beige for menu */
+    --background: 37 33% 95%; /* #f7f4ef */
     --foreground: 24 10% 10%; /* Dark brown/black for text */
     --card: 32 58% 87%;
     --card-foreground: 0 0% 0%;
@@ -40,7 +40,7 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
   .dark {
-    --background: 37 50% 98%; /* Lighter beige for menu */
+    --background: 37 33% 95%; /* #f7f4ef */
     --foreground: 24 10% 10%; /* Dark brown/black for text */
     --card: 32 58% 87%;
     --card-foreground: 0 0% 0%;

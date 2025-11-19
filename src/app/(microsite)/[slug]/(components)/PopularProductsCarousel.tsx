@@ -50,7 +50,7 @@ export default function PopularProductsCarousel({ items }: { items: MenuItem[] }
   )
 
   return (
-    <section className="bg-white py-20 md:py-24">
+    <section className="bg-background py-20 md:py-24">
       <div className="container mx-auto px-6 max-w-7xl">
         <AnimateOnScroll animationType="fadeIn">
             <h2 className="text-4xl md:text-5xl font-headline font-bold text-center mb-12 text-black uppercase underline decoration-primary decoration-4 underline-offset-8">

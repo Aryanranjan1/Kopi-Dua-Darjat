@@ -1,3 +1,4 @@
+
 'use client';
 
 import { notFound } from 'next/navigation';
@@ -40,7 +41,7 @@ export default function MicrositePageClient(data: PageData) {
   const hasReviews = reviewData && reviewData.reviews && reviewData.reviews.length > 0;
 
   return (
-    <div className="bg-white text-black">
+    <div className="bg-background text-black">
       <MicrositeHero outlet={outlet} />
       <main>
         <PopularProductsCarousel items={featuredItems} />
