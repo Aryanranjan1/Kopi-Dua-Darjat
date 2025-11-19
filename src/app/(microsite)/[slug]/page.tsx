@@ -70,15 +70,6 @@ async function getMicrositeData(slug: string) {
     fetchCollection<PublicInstaPost>(firestore, 'public_insta_feed', query(collection(firestore, 'public_insta_feed'), orderBy('rank', 'asc'), limit(20)))
   ]);
   
-  let heroImageUrl = outlet.heroImage;
-  if (!heroImageUrl) {
-    const allMedia = await fetchCollection<Media>(firestore, 'media');
-    if (allMedia.length > 0) {
-        const randomIndex = Math.floor(Math.random() * allMedia.length);
-        heroImageUrl = allMedia[randomIndex].imageUrl;
-    }
-  }
-
   const outletMenuItems = allMenuItems.filter(item => 
     item.isGeneral || !item.outletIds || item.outletIds.length === 0 || item.outletIds.includes(outlet.id)
   );
@@ -91,7 +82,7 @@ async function getMicrositeData(slug: string) {
   const outletPromotions = allPromotions.filter(p => !p.outletIds || p.outletIds.length === 0 || p.outletIds.includes(outlet.id));
 
   return serializeTimestamps({ 
-    outlet: { ...outlet, heroImage: heroImageUrl },
+    outlet,
     menuCategories: outletMenuCategories,
     allMenuItems: outletMenuItems,
     featuredItems: outletFeaturedItems,

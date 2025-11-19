@@ -18,6 +18,8 @@ export default function OutletShowcaseCard({ outlet, userLocation }: OutletShowc
     ? `https://www.google.com/maps/dir/?api=1&origin=${userLocation.latitude},${userLocation.longitude}&destination=${outlet.lat},${outlet.lng}`
     : `https://www.google.com/maps/search/?api=1&query=${outlet.lat},${outlet.lng}`;
 
+  const imageToShow = outlet.cardImage || "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=500&auto=format&fit=crop";
+
   return (
     <div className="p-1 h-full group">
       <Card className="rounded-3xl bg-primary/30 overflow-hidden h-full flex flex-col border border-primary/40 hover:border-primary transition-all duration-300">
@@ -25,7 +27,7 @@ export default function OutletShowcaseCard({ outlet, userLocation }: OutletShowc
           <Link href={`/${outlet.slug}`} className="block">
             <div className="relative w-full aspect-video mb-4 group overflow-hidden rounded-2xl">
               <Image
-                src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=500&auto=format&fit=crop"
+                src={imageToShow}
                 alt={outlet.name}
                 fill
                 className="object-cover transition-transform duration-300 group-hover:scale-105"

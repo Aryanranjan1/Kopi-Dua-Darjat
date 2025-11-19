@@ -78,6 +78,7 @@ const formSchema = z.object({
   status: z.enum(['active', 'inactive']),
   heroImage: z.string().url('Must be a valid URL').optional().or(z.literal('')),
   interiorImage: z.string().url('Must be a valid URL').optional().or(z.literal('')),
+  cardImage: z.string().url('Must be a valid URL').optional().or(z.literal('')),
   tagline: z.string().optional(),
   mapsLink: z.string().url('Must be a valid URL').optional().or(z.literal('')),
   whatsappLink: z.string().url('Must be a valid URL').optional().or(z.literal('')),
@@ -271,7 +272,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: '', slug: '', address: '', city: '', state: '', lat: 0, lng: 0, hours: '', phone: '', email: '',
-      status: 'active', heroImage: '', interiorImage: '', tagline: '', mapsLink: '', whatsappLink: '',
+      status: 'active', heroImage: '', interiorImage: '', cardImage: '', tagline: '', mapsLink: '', whatsappLink: '',
       chatbotEmbed: '', isChatbotEnabled: false, placeId: '', menuItemIds: [],
       seo: { title: '', description: '', keywords: '' },
     },
@@ -285,6 +286,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
         email: outlet.email || '',
         heroImage: outlet.heroImage || '',
         interiorImage: outlet.interiorImage || '',
+        cardImage: outlet.cardImage || '',
         tagline: outlet.tagline || '',
         mapsLink: outlet.mapsLink || '',
         whatsappLink: outlet.whatsappLink || '',
@@ -300,7 +302,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
     } else {
         form.reset({
             name: '', slug: '', address: '', city: '', state: '', lat: 0, lng: 0, hours: '', phone: '', email: '',
-            status: 'active', heroImage: '', interiorImage: '', tagline: '', mapsLink: '', whatsappLink: '',
+            status: 'active', heroImage: '', interiorImage: '', cardImage: '', tagline: '', mapsLink: '', whatsappLink: '',
             chatbotEmbed: '', isChatbotEnabled: false, placeId: '', menuItemIds: [],
             seo: { title: '', description: '', keywords: '' },
         })
@@ -334,6 +336,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
       email: values.email || null,
       heroImage: values.heroImage || null,
       interiorImage: values.interiorImage || null,
+      cardImage: values.cardImage || null,
       tagline: values.tagline || null,
       mapsLink: values.mapsLink || null,
       whatsappLink: values.whatsappLink || null,
@@ -533,7 +536,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
                           )}/>
                       </div>
 
-                      <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">Microsite Content</h3>
+                      <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">Microsite & Card Content</h3>
                       <FormField control={form.control} name="tagline" render={({ field }) => (
                           <FormItem><FormLabel>Tagline</FormLabel><FormControl><Input placeholder="A catchy tagline for this outlet" {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
                       )}/>
@@ -543,10 +546,22 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
                               name="heroImage"
                               render={({ field }) => (
                                   <ImageUpload
-                                      label="Hero Image"
+                                      label="Microsite Hero Image"
                                       value={field.value || ''}
                                       onChange={field.onChange}
                                       folderName={`outlets/${outlet?.slug || 'new'}/hero`}
+                                  />
+                              )}
+                          />
+                           <FormField
+                              control={form.control}
+                              name="cardImage"
+                              render={({ field }) => (
+                                  <ImageUpload
+                                      label="Outlet Card Image"
+                                      value={field.value || ''}
+                                      onChange={field.onChange}
+                                      folderName={`outlets/${outlet?.slug || 'new'}/card`}
                                   />
                               )}
                           />
@@ -555,7 +570,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
                               name="interiorImage"
                               render={({ field }) => (
                                   <ImageUpload
-                                      label="Interior Image"
+                                      label="Interior/Secondary Image"
                                       value={field.value || ''}
                                       onChange={field.onChange}
                                       folderName={`outlets/${outlet?.slug || 'new'}/interior`}

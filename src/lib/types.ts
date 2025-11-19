@@ -139,6 +139,7 @@ export type Outlet = {
   reviewCount?: number;
   heroImage?: string;
   interiorImage?: string;
+  cardImage?: string;
   tagline?: string;
   mapsLink?: string;
   googleMapsEmbedUrl?: string;
