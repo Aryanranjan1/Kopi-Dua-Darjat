@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Menu, MapPin, Phone, Instagram } from 'lucide-react';
+import { Menu, Phone, Instagram } from 'lucide-react';
 import {
   Sheet,
   SheetContent,
@@ -73,8 +73,8 @@ export default function MicrositeHeader({ outlet }: MicrositeHeaderProps) {
               key={item.href}
               href={item.href}
               className={cn(
-                'relative text-sm font-medium transition-colors hover:text-primary',
-                 isScrolled ? 'text-black' : 'text-white'
+                'relative text-sm font-medium transition-colors',
+                 isScrolled ? 'text-black hover:text-black/70' : 'text-white hover:text-white/70'
               )}
             >
               {item.title}
@@ -98,13 +98,13 @@ export default function MicrositeHeader({ outlet }: MicrositeHeaderProps) {
 
         <div className="hidden lg:flex items-center gap-4">
             <div className="flex items-center gap-2">
-                <a href={outlet.whatsappLink || '#'} target="_blank" rel="noopener noreferrer" className={cn('text-sm font-medium transition-colors', isScrolled ? 'text-black' : 'text-white', 'hover:text-primary')}>
+                <a href={outlet.whatsappLink || '#'} target="_blank" rel="noopener noreferrer" className={cn('text-sm font-medium transition-colors', isScrolled ? 'text-black hover:text-black/70' : 'text-white hover:text-white/70')}>
                     <Phone className="h-5 w-5" />
                 </a>
-                <a href="#" target="_blank" rel="noopener noreferrer" className={cn('text-sm font-medium transition-colors', isScrolled ? 'text-black' : 'text-white', 'hover:text-primary')}>
+                <a href="#" target="_blank" rel="noopener noreferrer" className={cn('text-sm font-medium transition-colors', isScrolled ? 'text-black hover:text-black/70' : 'text-white hover:text-white/70')}>
                     <Instagram className="h-5 w-5" />
                 </a>
-                <a href="#" target="_blank" rel="noopener noreferrer" className={cn('text-sm font-medium transition-colors', isScrolled ? 'text-black' : 'text-white', 'hover:text-primary')}>
+                <a href="#" target="_blank" rel="noopener noreferrer" className={cn('text-sm font-medium transition-colors', isScrolled ? 'text-black hover:text-black/70' : 'text-white hover:text-white/70')}>
                     <FaTiktok className="h-5 w-5" />
                 </a>
             </div>
@@ -119,7 +119,7 @@ export default function MicrositeHeader({ outlet }: MicrositeHeaderProps) {
         <div className="flex items-center gap-2 lg:hidden ml-auto">
             <Sheet>
                 <SheetTrigger asChild>
-                    <Button variant="ghost" size="icon" className={cn('lg:hidden hover:bg-white/20', isScrolled ? 'text-black hover:text-black' : 'text-white hover:text-white')}>
+                    <Button variant="ghost" size="icon" className={cn('lg:hidden', isScrolled ? 'text-black hover:text-black' : 'text-white hover:text-white')}>
                     <Menu className="h-6 w-6" />
                     <span className="sr-only">Toggle Menu</span>
                     </Button>
@@ -148,9 +148,8 @@ export default function MicrositeHeader({ outlet }: MicrositeHeaderProps) {
                             ))}
                         </div>
                         <div className="mt-auto">
-                            <Button asChild className="w-full rounded-full bg-black text-white hover:bg-white hover:text-black">
+                            <Button asChild className="w-full rounded-full bg-black text-white hover:bg-white hover:text-black border border-transparent hover:border-black">
                                <a href={directionsUrl} target="_blank" rel="noopener noreferrer">
-                                <MapPin className="mr-2 h-4 w-4" />
                                 Visit Us
                               </a>
                             </Button>
