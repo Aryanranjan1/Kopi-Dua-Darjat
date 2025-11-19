@@ -98,7 +98,7 @@ export default function OutletFinder() {
   return (
     <section className="py-24 sm:py-32 bg-white">
       <div className="container mx-auto px-6 sm:px-12">
-        <div className="grid lg:grid-cols-5 gap-y-8 lg:gap-12">
+        <div className="grid gap-y-8 lg:grid-cols-5 lg:gap-12">
           <div className="lg:col-span-2 flex flex-col">
             <AnimateOnScroll animationType="slideInFromLeft">
               <div className="text-center lg:text-left">
