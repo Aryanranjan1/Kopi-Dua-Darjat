@@ -41,16 +41,16 @@ export default function FranchiseModel() {
                     const isEven = index % 2 === 0;
                     return (
                         <AnimateOnScroll key={index} animationType="fadeIn" delay={index * 0.1}>
-                            <div className="grid grid-cols-2 items-center gap-20">
+                            <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-x-8">
                                 {/* Text Content */}
-                                <div className={`relative z-10 ${isEven ? 'order-1 text-right' : 'order-2 text-left'}`}>
+                                <div className={`relative z-10 ${isEven ? 'col-start-1 text-right' : 'col-start-3 text-left'}`}>
                                     <p className="text-sm font-semibold text-accent">Step {index + 1}</p>
                                     <h3 className="text-3xl font-headline mt-1 text-foreground">{step.title}</h3>
                                     <p className="mt-2 text-muted-foreground">{step.description}</p>
                                 </div>
                                 
                                 {/* Icon aligned with the wave */}
-                                <div className={`relative flex items-center justify-center ${isEven ? 'order-2' : 'order-1'}`}>
+                                <div className={`col-start-2 row-start-1 flex items-center justify-center`}>
                                     <div className="relative z-10 bg-background text-foreground w-20 h-20 flex items-center justify-center rounded-full border-4 border-accent shadow-lg">
                                         <Icon className="w-10 h-10" />
                                     </div>
