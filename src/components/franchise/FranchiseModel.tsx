@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
@@ -22,7 +21,7 @@ export default function FranchiseModel() {
     <section className="py-24 sm:py-32 bg-primary text-black">
       <div className="container mx-auto px-4">
         <AnimateOnScroll animationType="slideInFromBottom" className="text-center max-w-3xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-headline text-black">{title}</h2>
+          <h2 className="text-4xl md:text-5xl font-headline font-bold text-black">{title}</h2>
           <p className="mt-4 text-lg text-black/70">
             {subtitle}
           </p>
@@ -64,28 +63,28 @@ export default function FranchiseModel() {
 
         {/* --- Mobile View --- */}
         <div className="mt-16 md:hidden">
-            <div className="relative">
-                <div className="absolute top-0 bottom-0 left-8 w-px bg-black" aria-hidden="true"></div>
-                <div className="space-y-12">
-                    {steps.map((step, index) => {
-                        const Icon = iconMap[step.title] || FileText;
-                        return (
-                            <AnimateOnScroll key={index} animationType="fadeIn" delay={index * 0.1}>
-                                <div className="relative flex items-start gap-6">
-                                    <div className="relative z-10 bg-white text-black w-16 h-16 flex items-center justify-center rounded-full border-4 border-accent shadow-lg flex-shrink-0">
-                                        <Icon className="w-8 h-8" />
-                                    </div>
-                                    <div className="pt-1.5">
-                                        <p className="text-sm font-semibold text-accent">Step {index + 1}</p>
-                                        <h3 className="text-2xl font-headline mt-1 text-black">{step.title}</h3>
-                                        <p className="mt-1 text-sm text-black/70">{step.description}</p>
-                                    </div>
-                                </div>
-                            </AnimateOnScroll>
-                        )
-                    })}
-                </div>
-            </div>
+          <div className="relative">
+              <div className="absolute top-0 bottom-0 left-8 w-px bg-black" aria-hidden="true"></div>
+              <div className="space-y-12">
+                  {steps.map((step, index) => {
+                      const Icon = iconMap[step.title] || FileText;
+                      return (
+                          <AnimateOnScroll key={index} animationType="fadeIn" delay={index * 0.1}>
+                              <div className="relative flex items-start gap-6">
+                                  <div className="relative z-10 bg-white text-black w-16 h-16 flex items-center justify-center rounded-full border-4 border-accent shadow-lg flex-shrink-0">
+                                      <Icon className="w-8 h-8" />
+                                  </div>
+                                  <div className="pt-1.5">
+                                      <p className="text-sm font-semibold text-accent">Step {index + 1}</p>
+                                      <h3 className="text-2xl font-headline mt-1 text-black">{step.title}</h3>
+                                      <p className="mt-1 text-sm text-black/70">{step.description}</p>
+                                  </div>
+                              </div>
+                          </AnimateOnScroll>
+                      )
+                  })}
+              </div>
+          </div>
         </div>
       </div>
     </section>
