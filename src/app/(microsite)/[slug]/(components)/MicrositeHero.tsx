@@ -42,8 +42,8 @@ const FloatingReviewCard = ({ reviewData }: { reviewData: ReviewDocument | null 
 
 
 export default function MicrositeHero({ outlet, featuredItems, reviewData }: MicrositeHeroProps) {
-    const popularDrink = featuredItems[0];
-    const satelliteDrinks = featuredItems.slice(1, 5);
+    const popularDrink = featuredItems && featuredItems.length > 0 ? featuredItems[0] : null;
+    const satelliteDrinks = featuredItems ? featuredItems.slice(1, 5) : [];
 
     const satellitePositions = [
         { top: '5%', left: '15%', size: 90 },
@@ -134,4 +134,3 @@ export default function MicrositeHero({ outlet, featuredItems, reviewData }: Mic
     </section>
   );
 }
-
