@@ -112,7 +112,7 @@ export default function OutletFinder() {
             </AnimateOnScroll>
             <AnimateOnScroll animationType="fadeIn" delay={0.2}>
               <div className="mt-6 flex flex-col sm:flex-row gap-4">
-                <div className="relative w-full sm:w-auto sm:flex-grow">
+                <div className="relative flex-1">
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                   <Input 
                     placeholder="Enter city, postcode, or outlet name..." 
