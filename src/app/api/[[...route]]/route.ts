@@ -1,10 +1,10 @@
 
 import { ai } from '@/ai/genkit';
-import { handleRequest } from '@genkit-ai/next';
+import { createHandler } from '@genkit-ai/next';
 
 // All Genkit flows and tools are defined in the plugin.
 // This handler now ONLY deals with Genkit flows.
-const handler = handleRequest({
+const handler = createHandler({
   flows: [ai],
 });
 
