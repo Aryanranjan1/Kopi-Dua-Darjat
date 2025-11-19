@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Menu, MapPin } from 'lucide-react';
+import { Menu, MapPin, Phone, Instagram, MessageCircle } from 'lucide-react';
 import {
   Sheet,
   SheetContent,
@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/sheet';
 import { Logo } from '@/components/layout/Logo';
 import type { Outlet } from '@/lib/types';
+import { FaTiktok } from 'react-icons/fa';
 
 const navItems = [
   { title: 'Home', href: '/' },
@@ -55,7 +56,7 @@ export default function MicrositeHeader({ outlet }: MicrositeHeaderProps) {
         
         {/* Desktop Navigation */}
         <nav className="hidden lg:flex items-center gap-8">
-          {navItems.slice(0,2).map((item) => (
+          {navItems.slice(0,4).map((item) => (
             <Link
               key={item.href}
               href={item.href}
@@ -86,38 +87,40 @@ export default function MicrositeHeader({ outlet }: MicrositeHeaderProps) {
         </div>
 
 
-        <nav className="hidden lg:flex items-center gap-8">
-            {navItems.slice(2,4).map((item) => (
+        <nav className="hidden lg:flex items-center gap-4">
             <Link
-              key={item.href}
-              href={item.href}
+              href="/contact"
               className={cn(
                 'relative text-sm font-medium transition-colors',
                  isScrolled ? 'text-black' : 'text-white',
-                 pathname === item.href
+                 pathname === "/contact"
                   ? 'text-primary'
                   : 'hover:text-primary'
               )}
             >
-              {item.title}
-               {pathname === item.href && (
+              Contact
+               {pathname === "/contact" && (
                 <span className={cn(
                     "absolute -bottom-1 left-0 w-full h-0.5",
                     isScrolled ? "bg-black" : "bg-white"
                 )} />
               )}
             </Link>
-          ))}
+            <div className="flex items-center gap-2">
+                <a href={outlet.whatsappLink || '#'} target="_blank" rel="noopener noreferrer" className={cn('text-sm font-medium transition-colors', isScrolled ? 'text-black' : 'text-white', 'hover:text-primary')}>
+                    <Phone className="h-5 w-5" />
+                </a>
+                <a href="#" target="_blank" rel="noopener noreferrer" className={cn('text-sm font-medium transition-colors', isScrolled ? 'text-black' : 'text-white', 'hover:text-primary')}>
+                    <Instagram className="h-5 w-5" />
+                </a>
+                <a href="#" target="_blank" rel="noopener noreferrer" className={cn('text-sm font-medium transition-colors', isScrolled ? 'text-black' : 'text-white', 'hover:text-primary')}>
+                    <FaTiktok className="h-5 w-5" />
+                </a>
+            </div>
         </nav>
 
         {/* Right Actions */}
-        <div className="flex items-center gap-2">
-            <Button asChild className="hidden lg:flex rounded-full bg-white text-black hover:bg-primary hover:text-black">
-              <a href={directionsUrl} target="_blank" rel="noopener noreferrer">
-                Visit Us
-              </a>
-            </Button>
-            
+        <div className="flex items-center gap-2 lg:hidden">
             {/* Mobile Navigation Trigger */}
             <Sheet>
                 <SheetTrigger asChild>
@@ -165,4 +168,3 @@ export default function MicrositeHeader({ outlet }: MicrositeHeaderProps) {
     </header>
   );
 }
-
