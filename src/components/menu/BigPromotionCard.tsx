@@ -39,7 +39,7 @@ export default function BigPromotionCard({ drink, promotions }: BigPromotionCard
         className="rounded-3xl border border-black text-black w-full h-full flex flex-col transition-all duration-300 transform hover:shadow-xl hover:-translate-y-1 overflow-hidden"
         style={{ backgroundColor: '#fddc5d' }}
       >
-        <div className="relative w-full aspect-square group">
+        <div className="relative w-full aspect-[4/5] group">
           {offerText && (
             <Badge className="absolute top-3 left-3 bg-white/80 backdrop-blur-sm text-black shadow-md z-10">{offerText}</Badge>
           )}
