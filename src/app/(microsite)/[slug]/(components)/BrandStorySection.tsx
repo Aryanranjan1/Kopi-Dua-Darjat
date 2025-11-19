@@ -14,12 +14,8 @@ interface BrandStorySectionProps {
 }
 
 export default function BrandStorySection({ settings }: BrandStorySectionProps) {
-  // Use a specific image for this section, falling back to a random one.
-  const { asset: specificBrandStoryImage, isLoading: isLoadingSpecific } = useMediaAsset('brand-story-image');
-  const { data: allMedia, isLoading: isLoadingAll } = useMedia();
-
-  const imageToDisplay = specificBrandStoryImage || (allMedia && allMedia.length > 0 ? allMedia[Math.floor(Math.random() * allMedia.length)] : null);
-  const isLoading = isLoadingSpecific || isLoadingAll;
+  // Use the specific image ID "about-microsite-image"
+  const { asset: imageToDisplay, isLoading } = useMediaAsset('about-microsite-image');
 
   const story = {
       title: "Antara Warisan & Artisan",
@@ -37,7 +33,9 @@ export default function BrandStorySection({ settings }: BrandStorySectionProps) 
           
           <AnimateOnScroll animationType="slideInFromLeft">
             <div className="relative aspect-square rounded-lg overflow-hidden border-2 border-zinc-200 bg-zinc-100 flex items-center justify-center">
-                {isLoading ? <Skeleton className="w-full h-full" /> : (imageToDisplay ? 
+                {isLoading ? (
+                    <Skeleton className="w-full h-full" /> 
+                ) : imageToDisplay ? (
                     <Image
                       src={imageToDisplay.imageUrl}
                       alt={imageToDisplay.description || 'Brand story image'}
@@ -45,7 +43,9 @@ export default function BrandStorySection({ settings }: BrandStorySectionProps) 
                       className="object-cover"
                       data-ai-hint={imageToDisplay.imageHint}
                     />
-                : <p className="text-zinc-500">No image available</p>)}
+                ) : (
+                    <p className="text-zinc-500">Image not set. Set 'about-microsite-image' in admin.</p>
+                )}
             </div>
           </AnimateOnScroll>
 
