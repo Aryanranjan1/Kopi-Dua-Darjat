@@ -1,3 +1,4 @@
+
 'use client';
 
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
@@ -26,7 +27,7 @@ export default function FranchiseModel() {
           </p>
         </AnimateOnScroll>
 
-        <div className="relative mt-20 max-w-2xl mx-auto">
+        <div className="relative mt-20 max-w-3xl mx-auto px-8">
             {/* Wavy Line SVG */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 h-full w-40" aria-hidden="true">
                 <svg width="100%" height="100%" viewBox="0 0 160 1000" preserveAspectRatio="none" className="h-full w-full">
@@ -50,9 +51,9 @@ export default function FranchiseModel() {
                     const Icon = iconMap[step.title] || FileText;
                     return (
                         <AnimateOnScroll key={index} animationType="fadeIn" delay={index * 0.1}>
-                            <div className="grid grid-cols-2 gap-8 items-center">
+                            <div className="grid grid-cols-2 gap-16 items-center">
                                 {/* Icon aligned with the wave */}
-                                <div className={`flex justify-center items-center ${index % 2 === 0 ? 'order-1' : 'order-2'}`}>
+                                <div className={`flex items-center ${index % 2 === 0 ? 'order-1 justify-end' : 'order-2 justify-start'}`}>
                                     <div className="relative z-10 bg-background text-foreground w-28 h-28 flex items-center justify-center rounded-full border-4 border-accent shadow-lg">
                                         <Icon className="w-12 h-12" />
                                     </div>
