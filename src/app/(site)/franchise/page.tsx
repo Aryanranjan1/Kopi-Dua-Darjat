@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 import FranchiseHero from '@/components/franchise/FranchiseHero';
 import ValueProposition from '@/components/franchise/ValueProposition';
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
 
 export default function FranchisePage() {
   return (
-    <div className="bg-background text-foreground">
+    <div className="bg-black text-foreground">
       <FranchiseHero />
       <ValueProposition />
       <FranchiseModel />
