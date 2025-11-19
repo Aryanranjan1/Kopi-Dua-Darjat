@@ -40,16 +40,17 @@ export default function MicrositeHeader({ outlet }: MicrositeHeaderProps) {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
 
-      const sections = ['home', 'about', 'menu', 'outlet-locator'];
-      let currentSection = 'home';
-
-      for (const sectionId of sections) {
+      let currentSection = '';
+      for(const item of navItems) {
+        const sectionId = item.href.substring(1);
         const sectionEl = document.getElementById(sectionId);
         if (sectionEl && window.scrollY >= sectionEl.offsetTop - 100) {
           currentSection = sectionId;
         }
       }
-      setActiveSection(currentSection);
+      if (currentSection) {
+        setActiveSection(currentSection);
+      }
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
