@@ -30,7 +30,7 @@ export default function FranchiseModel() {
 
         {/* --- Desktop & Tablet View --- */}
         <div className="relative mt-20 max-w-5xl mx-auto hidden md:block px-12">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 flex justify-center w-40 h-full">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 flex justify-center w-40">
               <svg width="104" height="100%" viewBox="0 0 104 780" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
                   <path d="M52 0V110C52 110 -11 199 52 333C115 467 52 560 52 560V780" stroke="hsl(var(--foreground))" strokeOpacity="0.3" strokeWidth="2" strokeDasharray="8 8"/>
               </svg>
@@ -42,7 +42,7 @@ export default function FranchiseModel() {
                     const isEven = index % 2 === 0;
                     return (
                         <AnimateOnScroll key={index} animationType="fadeIn" delay={index * 0.1}>
-                            <div className="grid grid-cols-[1fr_10rem_1fr] items-center gap-x-16">
+                            <div className="grid grid-cols-[1fr_10rem_1fr] items-center gap-x-20">
                                 {/* Text Content */}
                                 <div className={`relative z-10 ${isEven ? 'col-start-1 text-right' : 'col-start-3 text-left'}`}>
                                     <p className="text-sm font-semibold text-accent">Step {index + 1}</p>
