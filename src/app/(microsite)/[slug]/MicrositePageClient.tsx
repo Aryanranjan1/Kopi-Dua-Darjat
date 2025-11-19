@@ -14,6 +14,7 @@ import MicrositeNewsletterSignUp from './(components)/MicrositeNewsletterSignUp'
 import MenuShowcaseSection from './(components)/MenuShowcaseSection';
 import PopularProductsCarousel from './(components)/PopularProductsCarousel';
 import CustomerReviews from './(components)/CustomerReviews';
+import MicrositeHeader from './(components)/MicrositeHeader';
 
 
 // --- TYPES ---
@@ -42,7 +43,8 @@ export default function MicrositePageClient(data: PageData) {
 
   return (
     <div className="bg-background text-black">
-      <MicrositeHero outlet={outlet} />
+      <MicrositeHeader outlet={outlet} />
+      <MicrositeHero />
       <main>
         <PopularProductsCarousel items={featuredItems} />
         <MenuShowcaseSection items={allMenuItems} categories={menuCategories} />

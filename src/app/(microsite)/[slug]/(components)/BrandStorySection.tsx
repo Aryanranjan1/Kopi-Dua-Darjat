@@ -27,7 +27,7 @@ export default function BrandStorySection({ settings }: BrandStorySectionProps) 
   }
 
   return (
-    <section className="bg-white py-20 md:py-32">
+    <section id="about-story" className="bg-white py-20 md:py-32">
       <div className="container mx-auto px-6 max-w-7xl">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-24 items-center">
           
