@@ -9,7 +9,7 @@ interface MicrositeHeroProps {
 }
 
 export default function MicrositeHero({ outlet }: MicrositeHeroProps) {
-  const heroImageUrl = "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSz128v6Y9CJhTN9m1JGDFmwH4G5Wt0suN4bYA35vGk_dV5f1h8mCKLyZVp8RYWF14J-cgbjzWK2OmjRSQCqOz3koHxfB81P86wZLhZpKgFdAaQnxgtlWK1yvPhPqrgGdaYp2i0E5Q=w408-h544-k-no";
+  const heroImageUrl = "https://lh3.googleusercontent.com/p/AF1QipPN12db8DKjb9jFg8lHFguXVNf7TbsrIug8BwE6=w426-h240-k-no";
   
   return (
     <section className="relative w-full h-screen bg-zinc-900">
