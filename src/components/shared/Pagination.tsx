@@ -3,6 +3,7 @@
 
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useMediaQuery } from '@/hooks/use-media-query';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface PaginationProps {
@@ -13,6 +14,8 @@ interface PaginationProps {
 }
 
 export function Pagination({ currentPage, totalPages, onPageChange, className }: PaginationProps) {
+  const isMobile = useMediaQuery('(max-width: 640px)');
+
   if (totalPages <= 1) {
     return null;
   }
@@ -28,10 +31,10 @@ export function Pagination({ currentPage, totalPages, onPageChange, className }:
   // Generate page numbers with ellipses
   const getPageNumbers = () => {
     const pages = [];
-    const pageLimit = 3; // How many numbers to show around current page
-    const totalButtons = pageLimit * 2 + 1; // e.g., 1 ... 4 5 6 ... 10
+    const pageLimit = isMobile ? 1 : 2; // Show fewer pages on mobile
+    const totalButtons = pageLimit * 2 + 3; // 1 (current) + 2*pageLimit + 2 (first/last)
 
-    if (totalPages <= totalButtons + 2) {
+    if (totalPages <= totalButtons) {
       // Show all pages if there aren't too many
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
@@ -39,7 +42,8 @@ export function Pagination({ currentPage, totalPages, onPageChange, className }:
     } else {
       // Complex case with ellipses
       pages.push(1); // Always show first page
-      if (currentPage > pageLimit + 1) {
+
+      if (currentPage > pageLimit + 2) {
         pages.push('...');
       }
 
@@ -50,7 +54,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, className }:
         pages.push(i);
       }
 
-      if (currentPage < totalPages - pageLimit) {
+      if (currentPage < totalPages - (pageLimit + 1)) {
         pages.push('...');
       }
 
@@ -64,7 +68,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, className }:
   const pages = getPageNumbers();
 
   return (
-    <div className={cn("mt-12 flex justify-center items-center flex-wrap gap-2", className)}>
+    <div className={cn("mt-12 flex justify-center items-center flex-wrap gap-1 sm:gap-2", className)}>
       <Button
         variant="outline"
         size="icon"
@@ -80,12 +84,12 @@ export function Pagination({ currentPage, totalPages, onPageChange, className }:
             key={page}
             variant={currentPage === page ? 'default' : 'outline'}
             onClick={() => onPageChange(page)}
-            className={cn("rounded-full", currentPage === page ? '' : 'text-black')}
+            className={cn("rounded-full h-9 w-9 sm:h-10 sm:w-10", currentPage === page ? '' : 'text-black')}
           >
             {page}
           </Button>
         ) : (
-          <span key={`ellipsis-${index}`} className="px-4 py-2 text-black">
+          <span key={`ellipsis-${index}`} className="px-1 sm:px-2 py-2 text-black">
             ...
           </span>
         )
