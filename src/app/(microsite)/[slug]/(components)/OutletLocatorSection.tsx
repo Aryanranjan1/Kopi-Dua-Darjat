@@ -19,7 +19,7 @@ export default function OutletLocatorSection({ currentOutlet }: OutletLocatorSec
   const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
 
   return (
-    <section className="bg-black text-white">
+    <section id="outlet-locator" className="bg-black text-white">
       <div className="grid lg:grid-cols-2 min-h-[70vh]">
         <div className="flex items-center justify-center p-8 sm:p-12 lg:p-16">
             <AnimateOnScroll animationType="slideInFromLeft" className="max-w-md w-full">

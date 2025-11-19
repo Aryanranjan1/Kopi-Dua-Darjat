@@ -18,7 +18,7 @@ const ITEMS_PER_PAGE = 10;
 type SortOption = 'default' | 'price-asc' | 'price-desc' | 'name-asc';
 
 const DrinkCard = ({ item }: { item: MenuItem }) => (
-  <Card className="rounded-3xl overflow-hidden group bg-[#fde047] border-black/10 transition-all duration-300 transform hover:shadow-xl hover:-translate-y-1 h-full flex flex-col">
+  <Card className="rounded-3xl overflow-hidden group bg-primary border-black/10 transition-all duration-300 transform hover:shadow-xl hover:-translate-y-1 h-full flex flex-col">
     <div className="relative aspect-square w-full">
       <Image src={item.imageUrl} alt={item.name} fill className="object-cover transition-transform duration-300 group-hover:scale-105" />
       {item.isPopular && <Badge className="absolute top-3 left-3 bg-white/80 backdrop-blur-sm text-black shadow-md">Popular</Badge>}
@@ -141,11 +141,13 @@ export default function MenuShowcaseSection({ items, categories }: { items: Menu
         </div>
         
         {totalPages > 1 && (
+          <div className="mt-12 flex justify-center">
             <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
                 onPageChange={setCurrentPage}
             />
+          </div>
         )}
 
       </div>

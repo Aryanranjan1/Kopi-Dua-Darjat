@@ -41,7 +41,7 @@ export default function MicrositePageClient(data: PageData) {
   const hasReviews = reviewData && reviewData.reviews && reviewData.reviews.length > 0;
 
   return (
-    <div className="bg-background text-black">
+    <div className="bg-[#f7f4ef] text-black">
       <MicrositeHero outlet={outlet} />
       <main>
         <PopularProductsCarousel items={featuredItems} />

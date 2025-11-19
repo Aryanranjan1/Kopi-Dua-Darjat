@@ -20,10 +20,10 @@ import type { Outlet } from '@/lib/types';
 import { FaTiktok } from 'react-icons/fa';
 
 const navItems = [
-  { title: 'Home', href: '/' },
-  { title: 'About', href: '#about-story' },
+  { title: 'Home', href: '#home' },
+  { title: 'About', href: '#about' },
   { title: 'Menu', href: '#menu' },
-  { title: 'Outlets', href: '/outlets' },
+  { title: 'Outlets', href: '#outlet-locator' },
 ];
 
 interface MicrositeHeaderProps {
@@ -33,10 +33,23 @@ interface MicrositeHeaderProps {
 export default function MicrositeHeader({ outlet }: MicrositeHeaderProps) {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = React.useState(false);
+  const [activeSection, setActiveSection] = React.useState('home');
+
 
   React.useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
+
+      const sections = ['home', 'about', 'menu', 'outlet-locator'];
+      let currentSection = 'home';
+
+      for (const sectionId of sections) {
+        const sectionEl = document.getElementById(sectionId);
+        if (sectionEl && window.scrollY >= sectionEl.offsetTop - 100) {
+          currentSection = sectionId;
+        }
+      }
+      setActiveSection(currentSection);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -62,13 +75,13 @@ export default function MicrositeHeader({ outlet }: MicrositeHeaderProps) {
               className={cn(
                 'relative text-sm font-medium transition-colors',
                  isScrolled ? 'text-black' : 'text-white',
-                 pathname === item.href
+                 activeSection === item.href.substring(1)
                   ? 'text-primary'
                   : 'hover:text-primary'
               )}
             >
               {item.title}
-              {pathname === item.href && (
+              {activeSection === item.href.substring(1) && (
                 <span className={cn(
                     "absolute -bottom-1 left-0 w-full h-0.5",
                     isScrolled ? "bg-black" : "bg-white"
@@ -100,15 +113,13 @@ export default function MicrositeHeader({ outlet }: MicrositeHeaderProps) {
             </div>
              <Button asChild variant="outline" className={cn('rounded-full ml-4', isScrolled ? 'border-black text-black hover:bg-black hover:text-white' : 'border-white text-white hover:bg-white hover:text-black')}>
                 <a href={directionsUrl} target="_blank" rel="noopener noreferrer">
-                    <MapPin className="mr-2 h-4 w-4" />
                     Visit Us
                 </a>
             </Button>
         </div>
 
-        {/* Right Actions */}
-        <div className="flex items-center gap-2 lg:hidden">
-            {/* Mobile Navigation Trigger */}
+        {/* Mobile Navigation Trigger */}
+        <div className="flex items-center gap-2 lg:hidden ml-auto">
             <Sheet>
                 <SheetTrigger asChild>
                     <Button variant="ghost" size="icon" className={cn('lg:hidden hover:bg-white/20', isScrolled ? 'text-black hover:text-black' : 'text-white hover:text-white')}>
@@ -132,7 +143,7 @@ export default function MicrositeHeader({ outlet }: MicrositeHeaderProps) {
                                 href={item.href}
                                 className={cn(
                                     'text-lg font-medium',
-                                    pathname === item.href ? 'text-primary' : 'text-foreground/70 hover:text-foreground'
+                                    activeSection === item.href.substring(1) ? 'text-primary' : 'text-foreground/70 hover:text-foreground'
                                 )}
                                 >
                                 {item.title}
