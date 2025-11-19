@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
@@ -40,7 +41,7 @@ export default function FranchiseModel() {
                     const isEven = index % 2 === 0;
                     return (
                         <AnimateOnScroll key={index} animationType="fadeIn" delay={index * 0.1}>
-                            <div className="grid grid-cols-2 items-center gap-16">
+                            <div className="grid grid-cols-2 items-center gap-20">
                                 {/* Text Content */}
                                 <div className={`relative z-10 ${isEven ? 'order-1 text-right' : 'order-2 text-left'}`}>
                                     <p className="text-sm font-semibold text-accent">Step {index + 1}</p>
@@ -49,7 +50,7 @@ export default function FranchiseModel() {
                                 </div>
                                 
                                 {/* Icon aligned with the wave */}
-                                <div className={`relative flex items-center justify-center ${isEven ? 'order-2 justify-start' : 'order-1 justify-end'}`}>
+                                <div className={`relative flex items-center justify-center ${isEven ? 'order-2' : 'order-1'}`}>
                                     <div className="relative z-10 bg-background text-foreground w-20 h-20 flex items-center justify-center rounded-full border-4 border-accent shadow-lg">
                                         <Icon className="w-10 h-10" />
                                     </div>
@@ -63,27 +64,50 @@ export default function FranchiseModel() {
 
         {/* --- Mobile View --- */}
         <div className="mt-16 md:hidden">
-            <div className="relative flex flex-col items-center gap-12">
-                {/* Vertical Line */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 h-full w-px bg-foreground/20"></div>
+             <div className="relative w-full max-w-md mx-auto">
+                <div className="absolute top-0 left-0 w-full h-full">
+                    <svg width="300" height="700" viewBox="0 0 300 700" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
+                        <path d="M150 20 V680" stroke="hsl(var(--foreground))" strokeOpacity="0.3" strokeWidth="2" strokeDasharray="8 8"/>
+                    </svg>
+                </div>
 
-                {steps.map((step, index) => {
-                    const Icon = iconMap[step.title] || FileText;
-                    return (
-                        <AnimateOnScroll key={index} animationType="fadeIn" delay={index * 0.1} className="w-full">
-                           <div className="flex flex-col items-center text-center">
-                                <div className="relative z-10 bg-background text-foreground w-20 h-20 flex items-center justify-center rounded-full border-4 border-accent shadow-lg">
-                                    <Icon className="w-10 h-10" />
+                <div className="relative flex flex-col gap-16">
+                    {steps.map((step, index) => {
+                        const Icon = iconMap[step.title] || FileText;
+                        const isEven = index % 2 === 0;
+                        return (
+                            <AnimateOnScroll key={index} animationType="fadeIn" delay={index * 0.1}>
+                                <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4">
+                                    {isEven ? (
+                                        <>
+                                            <div className="text-right">
+                                                <p className="text-sm font-semibold text-accent">Step {index + 1}</p>
+                                                <h3 className="text-2xl font-headline mt-1 text-foreground">{step.title}</h3>
+                                                <p className="mt-1 text-sm text-muted-foreground">{step.description}</p>
+                                            </div>
+                                            <div className="relative z-10 bg-background text-foreground w-16 h-16 flex items-center justify-center rounded-full border-4 border-accent shadow-lg">
+                                                <Icon className="w-8 h-8" />
+                                            </div>
+                                            <div></div>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <div></div>
+                                             <div className="relative z-10 bg-background text-foreground w-16 h-16 flex items-center justify-center rounded-full border-4 border-accent shadow-lg">
+                                                <Icon className="w-8 h-8" />
+                                            </div>
+                                            <div className="text-left">
+                                                <p className="text-sm font-semibold text-accent">Step {index + 1}</p>
+                                                <h3 className="text-2xl font-headline mt-1 text-foreground">{step.title}</h3>
+                                                <p className="mt-1 text-sm text-muted-foreground">{step.description}</p>
+                                            </div>
+                                        </>
+                                    )}
                                 </div>
-                                <div className="mt-4">
-                                     <p className="text-sm font-semibold text-accent">Step {index + 1}</p>
-                                    <h3 className="text-2xl font-headline mt-1 text-foreground">{step.title}</h3>
-                                    <p className="mt-2 text-muted-foreground max-w-xs mx-auto">{step.description}</p>
-                                </div>
-                           </div>
-                        </AnimateOnScroll>
-                    )
-                })}
+                            </AnimateOnScroll>
+                        )
+                    })}
+                </div>
             </div>
         </div>
       </div>
