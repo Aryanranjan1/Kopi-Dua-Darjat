@@ -42,7 +42,7 @@ export default function MicrositePageClient(data: PageData) {
 
   return (
     <div className="bg-background text-black">
-      <MicrositeHero />
+      <MicrositeHero outlet={outlet} />
       <main>
         <PopularProductsCarousel items={featuredItems} />
         <MenuShowcaseSection items={allMenuItems} categories={menuCategories} />
