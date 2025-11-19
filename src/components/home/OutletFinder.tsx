@@ -98,7 +98,7 @@ export default function OutletFinder() {
   return (
     <section className="py-24 sm:py-32 bg-white">
       <div className="container mx-auto px-6 sm:px-12">
-        <div className="grid lg:grid-cols-5 gap-8 lg:gap-12">
+        <div className="grid lg:grid-cols-5 gap-y-8 lg:gap-12">
           <div className="lg:col-span-2 flex flex-col">
             <AnimateOnScroll animationType="slideInFromLeft">
               <div className="text-center lg:text-left">
@@ -112,7 +112,7 @@ export default function OutletFinder() {
             </AnimateOnScroll>
             <AnimateOnScroll animationType="fadeIn" delay={0.2}>
               <div className="mt-6 flex flex-col gap-4">
-                <div className="relative flex-1">
+                <div className="relative">
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                   <Input 
                     placeholder="Enter city, postcode, or outlet name..." 
