@@ -68,15 +68,15 @@ export default function InstaExploreGrid() {
   }, [posts]);
 
   return (
-    <section className="bg-black py-24 sm:py-32">
-        <div className="container mx-auto">
+    <section className="bg-black w-full">
+        <div className="w-full">
              {isLoading ? (
                 <div className="flex justify-center items-center h-64">
                     <Loader2 className="w-12 h-12 text-primary animate-spin" />
                 </div>
                 ) : visiblePosts && visiblePosts.length > 0 ? (
-                <div className="bg-neutral-950/80 p-1 md:p-2 rounded-[2rem] overflow-hidden shadow-inner border border-neutral-800">
-                    <div className="grid grid-cols-3 gap-[3px] sm:gap-[4px] grid-flow-dense">
+                <div className="bg-neutral-950/80 overflow-hidden">
+                    <div className="grid grid-cols-3 gap-[2px] sm:gap-[3px] grid-flow-dense">
                         {visiblePosts.map((post, i) => {
                            const isReel = post.mediaType === 'VIDEO';
                            // A more robust pattern for placing larger tiles to avoid gaps
@@ -101,7 +101,7 @@ export default function InstaExploreGrid() {
                 </div>
             )}
             {visiblePosts && visiblePosts.length > 0 && (
-                <div className="mt-12 text-center">
+                <div className="py-12 text-center">
                     <Button asChild variant="outline" className="rounded-full border-white/50 bg-white text-black hover:bg-white/80 hover:text-black">
                         <a href="https://www.instagram.com/explore/tags/kopiduadarjat/" target="_blank" rel="noopener noreferrer">
                             explore more
