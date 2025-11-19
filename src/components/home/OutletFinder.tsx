@@ -111,7 +111,7 @@ export default function OutletFinder() {
               </div>
             </AnimateOnScroll>
             <AnimateOnScroll animationType="fadeIn" delay={0.2}>
-              <div className="mt-6 flex flex-col sm:flex-row gap-4">
+              <div className="mt-6 flex flex-col sm:flex-row sm:flex-wrap gap-4">
                 <div className="relative flex-grow">
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                   <Input 
