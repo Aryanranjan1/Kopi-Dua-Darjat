@@ -75,7 +75,7 @@ export default function InstaExploreGrid() {
                     <Loader2 className="w-12 h-12 text-primary animate-spin" />
                 </div>
                 ) : visiblePosts && visiblePosts.length > 0 ? (
-                <div className="bg-neutral-950/80 overflow-hidden">
+                <div className="bg-neutral-950/80 overflow-hidden relative">
                     <div className="grid grid-cols-3 gap-[2px] sm:gap-[3px] grid-flow-dense">
                         {visiblePosts.map((post, i) => {
                            const isReel = post.mediaType === 'VIDEO';
@@ -91,6 +91,14 @@ export default function InstaExploreGrid() {
                            return <PostItem key={post.id} post={post} className={spanClasses} />;
                         })}
                     </div>
+                    <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/70 to-transparent pointer-events-none z-10" />
+                    <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20">
+                         <Button asChild variant="outline" className="rounded-full border-white/50 bg-white text-black hover:bg-white/80 hover:text-black">
+                            <a href="https://www.instagram.com/explore/tags/kopiduadarjat/" target="_blank" rel="noopener noreferrer">
+                                explore more
+                            </a>
+                        </Button>
+                    </div>
                 </div>
                 ) : (
                 <div className="flex flex-col items-center py-10 text-center text-white">
@@ -98,15 +106,6 @@ export default function InstaExploreGrid() {
                     #KopiDua<span className="text-primary">Darjat</span> on Instagram
                     </h2>
                     <p className="text-gray-400 mt-4 mb-4">No posts available right now.</p>
-                </div>
-            )}
-            {visiblePosts && visiblePosts.length > 0 && (
-                <div className="py-12 text-center">
-                    <Button asChild variant="outline" className="rounded-full border-white/50 bg-white text-black hover:bg-white/80 hover:text-black">
-                        <a href="https://www.instagram.com/explore/tags/kopiduadarjat/" target="_blank" rel="noopener noreferrer">
-                            explore more
-                        </a>
-                    </Button>
                 </div>
             )}
         </div>
