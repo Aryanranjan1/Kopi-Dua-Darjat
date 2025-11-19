@@ -109,7 +109,7 @@ export default function MicrositeHeader({ outlet }: MicrositeHeaderProps) {
                     <FaTiktok className="h-5 w-5" />
                 </a>
             </div>
-             <Button asChild variant="outline" className={cn('rounded-full ml-4', isScrolled ? 'border-black text-black hover:bg-black hover:text-white' : 'border-white text-white hover:bg-white hover:text-black')}>
+             <Button asChild variant="outline" className={cn('rounded-full ml-4', isScrolled ? 'border-black text-black hover:bg-black hover:text-white' : 'bg-white text-black border-transparent')}>
                 <a href={directionsUrl} target="_blank" rel="noopener noreferrer">
                     Visit Us
                 </a>
