@@ -73,11 +73,8 @@ export default function MicrositeHeader({ outlet }: MicrositeHeaderProps) {
               key={item.href}
               href={item.href}
               className={cn(
-                'relative text-sm font-medium transition-colors',
-                 isScrolled ? 'text-black' : 'text-white',
-                 activeSection === item.href.substring(1)
-                  ? 'text-primary'
-                  : 'hover:text-primary'
+                'relative text-sm font-medium transition-colors hover:text-primary',
+                 isScrolled ? 'text-black' : 'text-white'
               )}
             >
               {item.title}
