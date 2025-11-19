@@ -20,8 +20,8 @@ import type { Outlet } from '@/lib/types';
 
 const navItems = [
   { title: 'Home', href: '/' },
-  { title: 'About', href: '/about' },
-  { title: 'Menu', href: '/menu' },
+  { title: 'About', href: '#about-story' },
+  { title: 'Menu', href: '#menu' },
   { title: 'Outlets', href: '/outlets' },
   { title: 'Contact', href: '/contact' },
 ];
@@ -48,30 +48,64 @@ export default function MicrositeHeader({ outlet }: MicrositeHeaderProps) {
     <header
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-        isScrolled ? 'bg-white shadow-md' : 'bg-transparent'
+        isScrolled ? 'bg-white shadow-md' : 'bg-black/30 backdrop-blur-sm'
       )}
     >
       <div className="container mx-auto px-6 h-20 flex items-center justify-between">
-        {/* Logo */}
-        <Link href="/" className="p-0 m-0 h-20 flex items-center">
-            <Logo className={cn("filter", isScrolled ? 'brightness-0' : 'brightness-0 invert')} />
-        </Link>
-
-
+        
         {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center justify-center bg-black/50 rounded-full shadow-lg p-1">
-          {navItems.map((item) => (
+        <nav className="hidden lg:flex items-center gap-8">
+          {navItems.slice(0,2).map((item) => (
             <Link
               key={item.href}
               href={item.href}
               className={cn(
-                'relative px-4 py-2 text-sm font-medium rounded-full transition-colors',
+                'relative text-sm font-medium transition-colors',
+                 isScrolled ? 'text-black' : 'text-white',
                  pathname === item.href
-                  ? 'text-foreground bg-primary/90'
-                  : 'text-white hover:text-primary'
+                  ? 'text-primary'
+                  : 'hover:text-primary'
               )}
             >
               {item.title}
+              {pathname === item.href && (
+                <span className={cn(
+                    "absolute -bottom-1 left-0 w-full h-0.5",
+                    isScrolled ? "bg-black" : "bg-white"
+                )} />
+              )}
+            </Link>
+          ))}
+        </nav>
+        
+        {/* Logo */}
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+            <Link href="/" className="p-0 m-0 h-20 flex items-center">
+                <Logo className={cn("filter", isScrolled ? 'brightness-0' : 'brightness-0 invert')} />
+            </Link>
+        </div>
+
+
+        <nav className="hidden lg:flex items-center gap-8">
+            {navItems.slice(2,4).map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                'relative text-sm font-medium transition-colors',
+                 isScrolled ? 'text-black' : 'text-white',
+                 pathname === item.href
+                  ? 'text-primary'
+                  : 'hover:text-primary'
+              )}
+            >
+              {item.title}
+               {pathname === item.href && (
+                <span className={cn(
+                    "absolute -bottom-1 left-0 w-full h-0.5",
+                    isScrolled ? "bg-black" : "bg-white"
+                )} />
+              )}
             </Link>
           ))}
         </nav>
@@ -80,7 +114,6 @@ export default function MicrositeHeader({ outlet }: MicrositeHeaderProps) {
         <div className="flex items-center gap-2">
             <Button asChild className="hidden lg:flex rounded-full bg-white text-black hover:bg-primary hover:text-black">
               <a href={directionsUrl} target="_blank" rel="noopener noreferrer">
-                <MapPin className="mr-2 h-4 w-4" />
                 Visit Us
               </a>
             </Button>
@@ -132,3 +165,4 @@ export default function MicrositeHeader({ outlet }: MicrositeHeaderProps) {
     </header>
   );
 }
+
