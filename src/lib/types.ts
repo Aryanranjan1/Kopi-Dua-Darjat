@@ -146,6 +146,11 @@ export type Outlet = {
   whatsappLink?: string;
   chatbotEmbed?: string;
   isChatbotEnabled?: boolean;
+  socials?: {
+    instagram?: string;
+    tiktok?: string;
+    facebook?: string;
+  };
   createdAt?: any;
   updatedAt?: any;
   // New review structure
@@ -231,7 +236,7 @@ export type Testimonial = {
   quote: string;
   name: string;
   designation: string;
-  imageId: string;
+  image: string;
   company?: string;
   outletId?: string;
   rating?: number;

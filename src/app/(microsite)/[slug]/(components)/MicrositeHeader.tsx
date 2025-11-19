@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/sheet';
 import { Logo } from '@/components/layout/Logo';
 import type { Outlet } from '@/lib/types';
-import { FaTiktok } from 'react-icons/fa';
+import { FaTiktok, FaFacebook } from 'react-icons/fa';
 
 const navItems = [
   { title: 'Home', href: '#home' },
@@ -98,18 +98,34 @@ export default function MicrositeHeader({ outlet }: MicrositeHeaderProps) {
 
 
         <div className="hidden lg:flex items-center gap-4">
-            <div className="flex items-center gap-2">
-                <a href={outlet.whatsappLink || '#'} target="_blank" rel="noopener noreferrer" className={cn('text-sm font-medium transition-colors', isScrolled ? 'text-black hover:text-black/70' : 'text-white hover:text-white/70')}>
-                    <Phone className="h-5 w-5" />
-                </a>
-                <a href="#" target="_blank" rel="noopener noreferrer" className={cn('text-sm font-medium transition-colors', isScrolled ? 'text-black hover:text-black/70' : 'text-white hover:text-white/70')}>
-                    <Instagram className="h-5 w-5" />
-                </a>
-                <a href="#" target="_blank" rel="noopener noreferrer" className={cn('text-sm font-medium transition-colors', isScrolled ? 'text-black hover:text-black/70' : 'text-white hover:text-white/70')}>
-                    <FaTiktok className="h-5 w-5" />
-                </a>
+            <div className="flex items-center gap-4">
+                {outlet.whatsappLink && (
+                  <a href={outlet.whatsappLink} target="_blank" rel="noopener noreferrer" className={cn('text-sm font-medium transition-colors', isScrolled ? 'text-black hover:text-black/70' : 'text-white hover:text-white/70')}>
+                      <Phone className="h-5 w-5" />
+                  </a>
+                )}
+                {outlet.socials?.instagram && (
+                  <a href={outlet.socials.instagram} target="_blank" rel="noopener noreferrer" className={cn('text-sm font-medium transition-colors', isScrolled ? 'text-black hover:text-black/70' : 'text-white hover:text-white/70')}>
+                      <Instagram className="h-5 w-5" />
+                  </a>
+                )}
+                {outlet.socials?.tiktok && (
+                    <a href={outlet.socials.tiktok} target="_blank" rel="noopener noreferrer" className={cn('text-sm font-medium transition-colors', isScrolled ? 'text-black hover:text-black/70' : 'text-white hover:text-white/70')}>
+                        <FaTiktok className="h-5 w-5" />
+                    </a>
+                )}
+                {outlet.socials?.facebook && (
+                    <a href={outlet.socials.facebook} target="_blank" rel="noopener noreferrer" className={cn('text-sm font-medium transition-colors', isScrolled ? 'text-black hover:text-black/70' : 'text-white hover:text-white/70')}>
+                        <FaFacebook className="h-5 w-5" />
+                    </a>
+                )}
             </div>
-             <Button asChild variant="outline" className={cn('rounded-full ml-4', isScrolled ? 'border-black text-black hover:bg-black hover:text-white' : 'bg-white text-black border-transparent')}>
+             <Button asChild variant="outline" className={cn(
+               'rounded-full ml-4',
+                isScrolled 
+                ? 'border-black text-black hover:bg-black hover:text-white' 
+                : 'bg-white text-black border-transparent hover:bg-white/90'
+             )}>
                 <a href={directionsUrl} target="_blank" rel="noopener noreferrer">
                     Visit Us
                 </a>
