@@ -70,9 +70,6 @@ export default function InstaExploreGrid() {
   return (
     <section className="bg-black py-24 sm:py-32">
         <div className="container mx-auto">
-            <h2 className="text-center font-headline text-4xl font-bold text-primary md:text-5xl uppercase underline decoration-white decoration-4 underline-offset-8 mb-12 break-words">
-                #KOPIDUADARJAT
-            </h2>
              {isLoading ? (
                 <div className="flex justify-center items-center h-64">
                     <Loader2 className="w-12 h-12 text-primary animate-spin" />
