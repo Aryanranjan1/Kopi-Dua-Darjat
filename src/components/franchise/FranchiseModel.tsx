@@ -19,11 +19,11 @@ export default function FranchiseModel() {
   const { title, subtitle, steps } = siteContentData.franchise.franchiseModel;
 
   return (
-    <section className="py-24 sm:py-32 bg-primary text-primary-foreground">
+    <section className="py-24 sm:py-32 bg-black text-primary-foreground">
       <div className="container mx-auto px-4">
         <AnimateOnScroll animationType="slideInFromBottom" className="text-center max-w-3xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-headline text-foreground">{title}</h2>
-          <p className="mt-4 text-lg text-muted-foreground">
+          <h2 className="text-4xl md:text-5xl font-headline text-white">{title}</h2>
+          <p className="mt-4 text-lg text-white/70">
             {subtitle}
           </p>
         </AnimateOnScroll>
@@ -32,7 +32,7 @@ export default function FranchiseModel() {
         <div className="relative mt-20 max-w-5xl mx-auto hidden md:block px-12">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 flex justify-center w-40">
               <svg width="104" height="100%" viewBox="0 0 104 780" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-                  <path d="M52 0V110C52 110 -11 199 52 333C115 467 52 560 52 560V780" stroke="hsl(var(--foreground))" strokeOpacity="0.3" strokeWidth="2" strokeDasharray="8 8"/>
+                  <path d="M52 0V110C52 110 -11 199 52 333C115 467 52 560 52 560V780" stroke="hsl(var(--primary))" strokeOpacity="0.8" strokeWidth="2" strokeDasharray="8 8"/>
               </svg>
             </div>
 
@@ -46,8 +46,8 @@ export default function FranchiseModel() {
                                 {/* Text Content */}
                                 <div className={`relative z-10 ${isEven ? 'col-start-1 text-right' : 'col-start-3 text-left'}`}>
                                     <p className="text-sm font-semibold text-accent">Step {index + 1}</p>
-                                    <h3 className="text-3xl font-headline mt-1 text-foreground">{step.title}</h3>
-                                    <p className="mt-2 text-muted-foreground">{step.description}</p>
+                                    <h3 className="text-3xl font-headline mt-1 text-white">{step.title}</h3>
+                                    <p className="mt-2 text-white/70">{step.description}</p>
                                 </div>
                                 
                                 {/* Icon aligned with the wave */}
@@ -66,21 +66,20 @@ export default function FranchiseModel() {
         {/* --- Mobile View --- */}
         <div className="mt-16 md:hidden">
             <div className="relative">
-                <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-px bg-border/50" aria-hidden="true"></div>
+                <div className="absolute top-0 bottom-0 left-8 w-px bg-primary/50" aria-hidden="true"></div>
                 <div className="space-y-12">
                     {steps.map((step, index) => {
                         const Icon = iconMap[step.title] || FileText;
-                        const isEven = index % 2 === 0;
                         return (
                             <AnimateOnScroll key={index} animationType="fadeIn" delay={index * 0.1}>
-                                <div className="relative">
-                                    <div className="relative z-10 bg-background text-foreground w-16 h-16 flex items-center justify-center rounded-full border-4 border-accent shadow-lg mx-auto">
+                                <div className="relative flex items-start gap-6">
+                                    <div className="relative z-10 bg-black text-primary w-16 h-16 flex items-center justify-center rounded-full border-4 border-accent shadow-lg flex-shrink-0">
                                         <Icon className="w-8 h-8" />
                                     </div>
-                                    <div className={`mt-4 w-[calc(50%-2rem)] ${isEven ? 'ml-auto text-left' : 'mr-auto text-right'}`}>
+                                    <div className="pt-1.5">
                                         <p className="text-sm font-semibold text-accent">Step {index + 1}</p>
-                                        <h3 className="text-2xl font-headline mt-1 text-foreground">{step.title}</h3>
-                                        <p className="mt-1 text-sm text-muted-foreground">{step.description}</p>
+                                        <h3 className="text-2xl font-headline mt-1 text-white">{step.title}</h3>
+                                        <p className="mt-1 text-sm text-white/70">{step.description}</p>
                                     </div>
                                 </div>
                             </AnimateOnScroll>
