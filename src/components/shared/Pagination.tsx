@@ -64,7 +64,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, className }:
   const pages = getPageNumbers();
 
   return (
-    <div className={cn("mt-12 flex justify-center items-center space-x-2", className)}>
+    <div className={cn("mt-12 flex justify-center items-center flex-wrap gap-2", className)}>
       <Button
         variant="outline"
         size="icon"
