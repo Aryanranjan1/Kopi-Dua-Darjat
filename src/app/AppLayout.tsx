@@ -10,6 +10,9 @@ import { useEffect } from 'react';
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAdminPage = pathname.startsWith('/admin');
+  const isMicrositePage = /^\/[a-zA-Z0-9-]+$/.test(pathname) && pathname !== '/';
+
+
   const { settings } = useSettings();
 
   // Dynamically update theme colors from settings
@@ -23,9 +26,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      {!isAdminPage && <Header />}
+      {!isAdminPage && !isMicrositePage && <Header />}
       {children}
-      {!isAdminPage && <SiteFooter />}
+      {!isAdminPage && !isMicrositePage && <SiteFooter />}
     </>
   );
 }
