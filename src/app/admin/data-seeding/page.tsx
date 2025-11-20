@@ -4,6 +4,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertTriangle, Database } from 'lucide-react';
 import MigrationManager from './(components)/MigrationManager';
+import DemoDataSeeder from './(components)/DemoDataSeeder';
 
 export default function DataSeedingPage() {
   return (
@@ -24,6 +25,7 @@ export default function DataSeedingPage() {
             </CardContent>
         </Card>
 
+        <DemoDataSeeder />
         <MigrationManager />
     </div>
   );
