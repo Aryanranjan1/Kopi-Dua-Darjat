@@ -1,28 +1,31 @@
 
-
 import { Timestamp } from "firebase/firestore";
+
+// --- CORE MULTILINGUAL TYPES ---
+export type LangCode = 'en' | 'ms';
+
+export const SUPPORTED_LANGUAGES: { code: LangCode; name: string }[] = [
+  { code: 'en', name: 'English' },
+  { code: 'ms', name: 'Bahasa Melayu' },
+];
+
+export const DEFAULT_LANGUAGE: LangCode = 'en';
+
+/**
+ * A generic interface for documents that have localized content.
+ * @template T - The shape of the translatable fields.
+ */
+export interface Localized<T> {
+  translations: Record<LangCode, Partial<T>>;
+}
+
+// --- App-Specific Types ---
 
 export type NavItem = {
   title: string;
   href: string;
   disabled?: boolean;
 };
-
-// This type is deprecated and will be removed after migration.
-export type Drink = {
-  id: string;
-  name: string;
-  slug: string;
-  price: number;
-  image: string;
-  description: string;
-  tags: string[];
-  isFeatured: boolean;
-  hasPromotion?: boolean;
-  promotionDetails?: string;
-};
-
-// New Data Models for Firestore-backed CMS
 
 export type Media = {
   id: string;
@@ -33,32 +36,38 @@ export type Media = {
 
 export type MenuGroup = {
   id: string;
-  name: string;
-  slug: string;
   displayOrder: number;
+  slug: string;
   status: 'draft' | 'published';
-  createdAt: any; // Firestore Timestamp
-  updatedAt: any; // Firestore Timestamp
+  createdAt: any;
+  updatedAt: any;
+  translations: {
+    [key in LangCode]?: {
+      name: string;
+    }
+  }
 };
 
 export type MenuCategory = {
   id: string;
-  name: string;
-  slug: string;
-  description?: string;
-  imageUrl?: string;
   groupId: string;
   displayOrder: number;
+  slug: string;
+  imageUrl?: string;
   status: 'draft' | 'published';
-  createdAt: any; // Firestore Timestamp
-  updatedAt: any; // Firestore Timestamp
+  createdAt: any;
+  updatedAt: any;
+  translations: {
+    [key in LangCode]?: {
+      name: string;
+      description?: string;
+    }
+  }
 };
 
 export type MenuItem = {
   id: string;
-  name:string;
   slug: string;
-  description: string;
   price: number;
   imageUrl: string;
   categoryId: string;
@@ -67,10 +76,16 @@ export type MenuItem = {
   isGeneral: boolean;
   status: 'draft' | 'published';
   isPopular: boolean;
-  tags?: string[]; // For 'featured', 'new', etc.
+  tags?: string[];
   displayOrder: number;
-  createdAt: any; // Firestore Timestamp
-  updatedAt: any; // Firestore Timestamp
+  createdAt: any;
+  updatedAt: any;
+  translations: {
+    [key in LangCode]?: {
+      name: string;
+      description: string;
+    }
+  }
 };
 
 export type DailySpecial = {
@@ -82,11 +97,8 @@ export type DailySpecial = {
 
 export type Promotion = {
   id:string;
-  title: string;
-  description?: string;
   discountType: 'percentage' | 'flat' | 'bogo' | 'custom';
   discountValue: number;
-  customDiscountDescription?: string;
   startDate: any; // Firestore Timestamp
   endDate: any; // Firestore Timestamp
   menuItemIds?: string[];
@@ -95,6 +107,13 @@ export type Promotion = {
   status: 'active' | 'scheduled' | 'expired';
   createdAt: any; // Firestore Timestamp
   updatedAt: any; // Firestore Timestamp
+  translations: {
+    [key in LangCode]?: {
+      title: string;
+      description?: string;
+      customDiscountDescription?: string;
+    }
+  }
 };
 
 export type Review = {
@@ -123,14 +142,9 @@ export type ReviewDocument = {
 
 export type Outlet = {
   id: string;
-  name: string;
   slug: string;
-  address: string;
-  city: string;
-  state: string;
   lat: number;
   lng: number;
-  hours: string;
   phone?: string;
   email?: string;
   status: 'active' | 'inactive';
@@ -140,7 +154,6 @@ export type Outlet = {
   heroImage?: string;
   interiorImage?: string;
   cardImage?: string;
-  tagline?: string;
   mapsLink?: string;
   googleMapsEmbedUrl?: string;
   whatsappLink?: string;
@@ -156,11 +169,21 @@ export type Outlet = {
   // New review structure
   reviewsPath?: string;
   lastFetched?: any; // Firestore Timestamp
-  seo?: {
+  seo?: { // SEO is not translated for now
     title?: string;
     description?: string;
     keywords?: string;
   };
+  translations: {
+    [key in LangCode]?: {
+      name: string;
+      address: string;
+      city: string;
+      state: string;
+      hours: string;
+      tagline?: string;
+    }
+  }
 };
 
 export type CommunityItem = {
@@ -181,9 +204,7 @@ export type CommunityItem = {
 
 export type Blog = {
   id: string;
-  title: string;
   slug: string;
-  excerpt: string;
   coverImage: {
     url: string;
     alt: string;
@@ -202,52 +223,46 @@ export type Blog = {
     title?: string;
     description?: string;
     keywords?: string[];
-    metaImage?: string;
-    ogTitle?: string;
-    ogDescription?: string;
-    ogImage?: string;
   };
-  content: string; // Storing as Markdown/HTML string for simplicity
   createdAt: any; // Firestore Timestamp
   updatedAt: any; // Firestore Timestamp
   publishedAt?: any; // Firestore Timestamp
   views?: number;
   likes?: number;
-};
-
-
-// Old blog type, to be replaced by the one above
-export type BlogPost = {
-  id: string;
-  title: string;
-  slug: string;
-  excerpt: string;
-  imageUrl: string;
-  author: string;
-  publishDate: string; // Keep as string for display
-  publishDateISO: string; // Add ISO string for sorting
-  tags: string[];
-  popularity: number; // Add for "Popular" sort
-  content: string; // Added for rich text content
+  translations: {
+    [key in LangCode]?: {
+      title: string;
+      content: string;
+      excerpt: string;
+    }
+  }
 };
 
 export type Testimonial = {
   id: string;
-  quote: string;
-  name: string;
   designation: string;
   image: string;
   company?: string;
   outletId?: string;
   rating?: number;
   createdAt?: any; // Firestore Timestamp
+  translations: {
+    [key in LangCode]?: {
+      name: string;
+      quote: string;
+    }
+  }
 };
 
 export type FaqItem = {
     id: string;
     category: 'General' | 'Product' | 'Franchise';
-    question: string;
-    answer: string;
+    translations: {
+      [key in LangCode]?: {
+        question: string;
+        answer: string;
+      }
+    }
 };
 
 export type ContactMessage = {
@@ -276,14 +291,7 @@ export type NewsletterSubscriber = {
   createdAt: any; // Firestore Timestamp
 };
 
-export type Founder = {
-  name: string;
-  role: string;
-  imageId: string;
-  quote: string;
-  contact: string;
-};
-
+// Site settings are global and not translated at the document level
 export type SiteSettings = {
   id: 'main';
   brand: {

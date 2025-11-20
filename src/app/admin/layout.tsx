@@ -7,6 +7,7 @@ import { useUser } from '@/firebase';
 import { Loader2 } from 'lucide-react';
 import AdminSidebar from './(components)/AdminSidebar';
 import AdminHeader from './(components)/AdminHeader';
+import { AdminLanguageProvider } from './(components)/AdminLanguageContext';
 
 export default function AdminLayout({
   children,
@@ -46,14 +47,16 @@ export default function AdminLayout({
 
   // If user is authenticated and not on login page, render the admin layout
   return (
-    <div className="min-h-screen bg-zinc-900 text-white">
-      <AdminSidebar isOpen={isSidebarOpen} setIsOpen={setSidebarOpen} />
-      <div className="lg:pl-64 transition-all duration-300">
-        <AdminHeader onMenuClick={() => setSidebarOpen(true)} />
-        <main className="p-4 sm:p-6 lg:p-8">
-          {children}
-        </main>
+    <AdminLanguageProvider>
+      <div className="min-h-screen bg-zinc-900 text-white">
+        <AdminSidebar isOpen={isSidebarOpen} setIsOpen={setSidebarOpen} />
+        <div className="lg:pl-64 transition-all duration-300">
+          <AdminHeader onMenuClick={() => setSidebarOpen(true)} />
+          <main className="p-4 sm:p-6 lg:p-8">
+            {children}
+          </main>
+        </div>
       </div>
-    </div>
+    </AdminLanguageProvider>
   );
 }
