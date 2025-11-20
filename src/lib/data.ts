@@ -540,5 +540,19 @@ export const outlets: Omit<Outlet, 'id' | 'createdAt' | 'updatedAt'>[] = [
       "lng": 113.045,
       "hours": "10 AM - 10 PM",
       "status": "active"
-    }
+    },
+    // ---- 20 New Outlets ----
+    ...[...Array(20)].map((_, i) => ({
+      "name": `Kopi Dua Darjat - New Branch ${i + 1}`,
+      "slug": `kopi-new-branch-${i + 1}`,
+      "address": `${i + 1} Future Street, Innovation City, 50000`,
+      "city": ["Kuala Lumpur", "Selangor", "Penang", "Johor"][i % 4],
+      "state": ["Kuala Lumpur", "Selangor", "Penang", "Johor"][i % 4],
+      "lat": 3.1 + (i * 0.01),
+      "lng": 101.7 + (i * 0.01),
+      "hours": "9 AM - 9 PM",
+      "status": "active",
+      "cardImage": "https://images.unsplash.com/photo-1759376928130-415a2e369c3e?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "heroImage": "https://images.unsplash.com/photo-1759376928130-415a2e369c3e?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+    }))
   ]

@@ -21,7 +21,7 @@ export default function MasterDataSeeder() {
         return;
     }
     setIsSeeding(true);
-    toast({ title: 'Master Seed Initiated...', description: 'Wiping and re-seeding all data. This may take a moment.' });
+    toast({ title: 'Master Seed Initiated...', description: 'Wiping and re-seeding all data. This may take a moment and you will be notified upon completion.', duration: 10000 });
     
     const result = await masterSeed(firestore);
     
@@ -35,11 +35,11 @@ export default function MasterDataSeeder() {
   };
 
   return (
-    <Card className="bg-zinc-900 border-zinc-800 text-white">
+    <Card className="bg-zinc-900 border-zinc-800 text-white md:col-span-2 lg:col-span-3">
       <CardHeader>
         <CardTitle className="flex items-center gap-2"><Database /> Master Data Reset</CardTitle>
         <CardDescription className="text-zinc-400">
-          Use this tool to completely wipe all content collections and re-seed them with the original multilingual sample data.
+          Use this tool to completely wipe all content collections and re-seed them with a full set of multilingual sample data.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -48,7 +48,7 @@ export default function MasterDataSeeder() {
           <div>
             <h3 className="font-semibold text-destructive">Warning: Highly Destructive Action</h3>
             <p className="text-sm text-destructive/80">
-              This will permanently delete all documents in your content collections before seeding new data. This action cannot be undone and will reset your website content.
+              This will permanently delete all documents in your content collections before seeding new data. This action cannot be undone and will reset your entire website's content.
             </p>
           </div>
         </div>
