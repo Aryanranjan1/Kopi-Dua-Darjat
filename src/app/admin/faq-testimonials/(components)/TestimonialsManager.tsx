@@ -38,6 +38,8 @@ import { useToast } from '@/hooks/use-toast';
 import { useMediaAsset } from '@/lib/media';
 import Image from 'next/image';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useAdminLanguage } from '../../(components)/AdminLanguageContext';
+import { getLocalized } from '@/lib/localization';
 
 const TestimonialImage = ({ imageId }: { imageId: string }) => {
     const { asset, isLoading } = useMediaAsset(imageId);
@@ -49,6 +51,8 @@ const TestimonialImage = ({ imageId }: { imageId: string }) => {
 export default function TestimonialsManager() {
   const firestore = useFirestore();
   const { toast } = useToast();
+  const { language } = useAdminLanguage();
+
   const testimonialsQuery = useMemoFirebase(
     () => firestore ? query(collection(firestore, 'testimonials'), orderBy('createdAt', 'desc')) : null,
     [firestore]
@@ -99,32 +103,35 @@ export default function TestimonialsManager() {
         <TableBody>
           {isLoading && <TableRow><TableCell colSpan={5} className="text-center"><Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" /></TableCell></TableRow>}
           {!isLoading && testimonials?.length === 0 && <TableRow><TableCell colSpan={5} className="text-center text-zinc-400 py-8">No testimonials found.</TableCell></TableRow>}
-          {testimonials?.map(testimonial => (
-            <TableRow key={testimonial.id} className="border-zinc-700 hover:bg-zinc-800">
-              <TableCell><TestimonialImage imageId={testimonial.image} /></TableCell>
-              <TableCell className="font-medium">{testimonial.name}</TableCell>
-              <TableCell>{testimonial.designation}</TableCell>
-              <TableCell className="text-zinc-400 truncate max-w-xs">"{testimonial.quote}"</TableCell>
-              <TableCell className="text-right">
-                <Button variant="ghost" size="icon" onClick={() => handleEdit(testimonial)}><Edit className="h-4 w-4" /></Button>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="ghost" size="icon"><Trash2 className="h-4 w-4 text-red-500" /></Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                      <AlertDialogDescription className="text-zinc-400">This will permanently delete this testimonial.</AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
-                      <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleDelete(testimonial.id)}>Delete</AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </TableCell>
-            </TableRow>
-          ))}
+          {testimonials?.map(testimonial => {
+            const localized = getLocalized(testimonial, language);
+            return (
+              <TableRow key={testimonial.id} className="border-zinc-700 hover:bg-zinc-800">
+                <TableCell><TestimonialImage imageId={testimonial.image} /></TableCell>
+                <TableCell className="font-medium">{localized.name}</TableCell>
+                <TableCell>{testimonial.designation}</TableCell>
+                <TableCell className="text-zinc-400 truncate max-w-xs">"{localized.quote}"</TableCell>
+                <TableCell className="text-right">
+                  <Button variant="ghost" size="icon" onClick={() => handleEdit(testimonial)}><Edit className="h-4 w-4" /></Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="ghost" size="icon"><Trash2 className="h-4 w-4 text-red-500" /></Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                        <AlertDialogDescription className="text-zinc-400">This will permanently delete this testimonial.</AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
+                        <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleDelete(testimonial.id)}>Delete</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </TableCell>
+              </TableRow>
+            )
+          })}
         </TableBody>
       </Table>
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

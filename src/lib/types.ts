@@ -34,6 +34,7 @@ export type Media = {
   imageHint: string;
 }
 
+// --- MENU ---
 export type MenuGroup = {
   id: string;
   displayOrder: number;
@@ -41,12 +42,7 @@ export type MenuGroup = {
   status: 'draft' | 'published';
   createdAt: any;
   updatedAt: any;
-  translations: {
-    [key in LangCode]?: {
-      name: string;
-    }
-  }
-};
+} & Localized<{ name: string; }>;
 
 export type MenuCategory = {
   id: string;
@@ -57,13 +53,7 @@ export type MenuCategory = {
   status: 'draft' | 'published';
   createdAt: any;
   updatedAt: any;
-  translations: {
-    [key in LangCode]?: {
-      name: string;
-      description?: string;
-    }
-  }
-};
+} & Localized<{ name: string; description?: string; }>;
 
 export type MenuItem = {
   id: string;
@@ -80,20 +70,13 @@ export type MenuItem = {
   displayOrder: number;
   createdAt: any;
   updatedAt: any;
-  translations: {
-    [key in LangCode]?: {
-      name: string;
-      description: string;
-    }
-  }
-};
+} & Localized<{ name: string; description: string; }>;
 
 export type DailySpecial = {
   id: string;
   menuItemId: string;
   addedAt: any; // Firestore Timestamp
 };
-
 
 export type Promotion = {
   id:string;
@@ -107,14 +90,10 @@ export type Promotion = {
   status: 'active' | 'scheduled' | 'expired';
   createdAt: any; // Firestore Timestamp
   updatedAt: any; // Firestore Timestamp
-  translations: {
-    [key in LangCode]?: {
-      title: string;
-      description?: string;
-      customDiscountDescription?: string;
-    }
-  }
-};
+} & Localized<{ title: string; description?: string; customDiscountDescription?: string; }>;
+
+
+// --- OUTLETS & REVIEWS ---
 
 export type Review = {
   source: 'google' | 'manual';
@@ -123,11 +102,9 @@ export type Review = {
   text: string;
   time: number | Timestamp;
   attribution?: string;
-  // Google specific fields
   profile_photo_url?: string;
   relative_time_description?: string;
-  // Manual specific fields
-  id?: string; // for managing manual reviews
+  id?: string;
 }
 
 export type ReviewDocument = {
@@ -148,8 +125,8 @@ export type Outlet = {
   phone?: string;
   email?: string;
   status: 'active' | 'inactive';
-  placeId?: string; // Google Place ID
-  rating?: number; // Google Rating
+  placeId?: string;
+  rating?: number;
   reviewCount?: number;
   heroImage?: string;
   interiorImage?: string;
@@ -166,25 +143,15 @@ export type Outlet = {
   };
   createdAt?: any;
   updatedAt?: any;
-  // New review structure
   reviewsPath?: string;
-  lastFetched?: any; // Firestore Timestamp
-  seo?: { // SEO is not translated for now
+  lastFetched?: any;
+  seo?: {
     title?: string;
     description?: string;
     keywords?: string;
   };
-  translations: {
-    [key in LangCode]?: {
-      name: string;
-      address: string;
-      city: string;
-      state: string;
-      hours: string;
-      tagline?: string;
-    }
-  }
-};
+} & Localized<{ name: string; address: string; city: string; state: string; hours: string; tagline?: string; }>;
+
 
 export type CommunityItem = {
     id: string;
@@ -229,14 +196,8 @@ export type Blog = {
   publishedAt?: any; // Firestore Timestamp
   views?: number;
   likes?: number;
-  translations: {
-    [key in LangCode]?: {
-      title: string;
-      content: string;
-      excerpt: string;
-    }
-  }
-};
+} & Localized<{ title: string; content: string; excerpt: string; }>;
+
 
 export type Testimonial = {
   id: string;
@@ -246,25 +207,15 @@ export type Testimonial = {
   outletId?: string;
   rating?: number;
   createdAt?: any; // Firestore Timestamp
-  translations: {
-    [key in LangCode]?: {
-      name: string;
-      quote: string;
-    }
-  }
-};
+} & Localized<{ name: string; quote: string; }>;
+
 
 export type FaqItem = {
     id: string;
     category: 'General' | 'Product' | 'Franchise';
-    translations: {
-      [key in LangCode]?: {
-        question: string;
-        answer: string;
-      }
-    }
-};
+} & Localized<{ question: string; answer: string; }>;
 
+// --- USER SUBMISSIONS ---
 export type ContactMessage = {
   id: string;
   name: string;
@@ -291,7 +242,7 @@ export type NewsletterSubscriber = {
   createdAt: any; // Firestore Timestamp
 };
 
-// Site settings are global and not translated at the document level
+// --- GLOBAL SETTINGS ---
 export type SiteSettings = {
   id: 'main';
   brand: {
@@ -342,6 +293,7 @@ export type SiteSettings = {
   updatedBy: string;
 };
 
+// --- SOCIAL ---
 export interface PublicInstaPost {
   id: string;
   username: string;

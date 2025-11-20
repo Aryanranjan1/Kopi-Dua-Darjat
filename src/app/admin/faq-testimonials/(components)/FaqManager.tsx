@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo } from 'react';
@@ -35,10 +36,14 @@ import { Loader2, PlusCircle, Edit, Trash2 } from 'lucide-react';
 import FaqForm from './FaqForm';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
+import { useAdminLanguage } from '../../(components)/AdminLanguageContext';
+import { getLocalized } from '@/lib/localization';
 
 export default function FaqManager() {
   const firestore = useFirestore();
   const { toast } = useToast();
+  const { language } = useAdminLanguage();
+
   const faqQuery = useMemoFirebase(
     () => firestore ? query(collection(firestore, 'faq'), orderBy('category')) : null,
     [firestore]
@@ -87,32 +92,35 @@ export default function FaqManager() {
         <TableBody>
           {isLoading && <TableRow><TableCell colSpan={3} className="text-center"><Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" /></TableCell></TableRow>}
           {!isLoading && faqItems?.length === 0 && <TableRow><TableCell colSpan={3} className="text-center text-zinc-400 py-8">No FAQ items found.</TableCell></TableRow>}
-          {faqItems?.map(faq => (
-            <TableRow key={faq.id} className="border-zinc-700 hover:bg-zinc-800">
-              <TableCell className="font-medium">{faq.question}</TableCell>
-              <TableCell>
-                <Badge variant="secondary">{faq.category}</Badge>
-              </TableCell>
-              <TableCell className="text-right">
-                <Button variant="ghost" size="icon" onClick={() => handleEdit(faq)}><Edit className="h-4 w-4" /></Button>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="ghost" size="icon"><Trash2 className="h-4 w-4 text-red-500" /></Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                      <AlertDialogDescription className="text-zinc-400">This will permanently delete this FAQ item.</AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
-                      <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleDelete(faq.id)}>Delete</AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </TableCell>
-            </TableRow>
-          ))}
+          {faqItems?.map(faq => {
+            const localized = getLocalized(faq, language);
+            return (
+              <TableRow key={faq.id} className="border-zinc-700 hover:bg-zinc-800">
+                <TableCell className="font-medium">{localized.question}</TableCell>
+                <TableCell>
+                  <Badge variant="secondary">{faq.category}</Badge>
+                </TableCell>
+                <TableCell className="text-right">
+                  <Button variant="ghost" size="icon" onClick={() => handleEdit(faq)}><Edit className="h-4 w-4" /></Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="ghost" size="icon"><Trash2 className="h-4 w-4 text-red-500" /></Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                        <AlertDialogDescription className="text-zinc-400">This will permanently delete this FAQ item.</AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
+                        <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleDelete(faq.id)}>Delete</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </TableCell>
+              </TableRow>
+            )
+          })}
         </TableBody>
       </Table>
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

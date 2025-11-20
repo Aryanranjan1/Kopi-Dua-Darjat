@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -13,6 +14,7 @@ import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { BookOpen } from 'lucide-react';
 import { useMemo } from 'react';
 import { siteContentData } from '@/lib/site-content';
+import { getLocalized } from '@/lib/localization';
 
 export default function LatestStories() {
     const firestore = useFirestore();
@@ -61,6 +63,8 @@ export default function LatestStories() {
     const featuredPost = sortedBlogPosts[0];
     const otherPosts = sortedBlogPosts.slice(1, 4);
 
+    const localizedFeatured = getLocalized(featuredPost, 'en');
+    
     return (
         <section className="py-24 sm:py-40 bg-black">
             <div className="container mx-auto px-6 sm:px-12">
@@ -80,7 +84,7 @@ export default function LatestStories() {
                             <div className="overflow-hidden rounded-2xl mb-4 aspect-[4/3]">
                                 <Image 
                                     src={featuredPost.coverImage.url} 
-                                    alt={featuredPost.title} 
+                                    alt={localizedFeatured.title || ''} 
                                     width={800} 
                                     height={600}
                                     className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
@@ -88,39 +92,42 @@ export default function LatestStories() {
                                 />
                             </div>
                             <p className="text-sm font-semibold text-accent mb-2">{featuredPost.category}</p>
-                            <h3 className="text-2xl font-bold text-white mb-2 transition-colors group-hover:text-primary">{featuredPost.title}</h3>
+                            <h3 className="text-2xl font-bold text-white mb-2 transition-colors group-hover:text-primary">{localizedFeatured.title}</h3>
                             <p className="text-sm text-zinc-400 mb-4">
                                 {featuredPost.publishedAt ? format(featuredPost.publishedAt.toDate(), 'PPP') : ''} • by {featuredPost.author?.name || 'Admin'}
                             </p>
-                            <p className="text-zinc-400 line-clamp-3">{featuredPost.excerpt}</p>
+                            <p className="text-zinc-400 line-clamp-3">{localizedFeatured.excerpt}</p>
                         </Link>
                     </AnimateOnScroll>
 
                     {/* Other Posts */}
                     <div className="space-y-6">
-                        {otherPosts.map((post, index) => (
-                            <AnimateOnScroll key={post.id} animationType="slideInFromRight" delay={index * 0.1}>
-                                <Link href={`/news/${post.slug}`} className="group flex items-center gap-4 sm:gap-6 rounded-2xl p-2 transition-all hover:ring-2 hover:ring-white/50">
-                                    <div className="relative w-24 h-24 sm:w-32 sm:h-32 shrink-0">
-                                         <Image 
-                                            src={post.coverImage.url} 
-                                            alt={post.title}
-                                            fill
-                                            sizes="(max-width: 640px) 96px, 128px"
-                                            className="object-cover rounded-2xl transition-transform duration-300 group-hover:scale-105"
-                                            data-ai-hint={post.coverImage.alt}
-                                         />
-                                    </div>
-                                    <div className="flex-grow">
-                                        <p className="text-sm font-semibold text-accent mb-1">{post.category}</p>
-                                        <h4 className="font-bold text-base sm:text-lg text-white transition-colors group-hover:text-primary line-clamp-2">{post.title}</h4>
-                                        <p className="text-xs text-zinc-400 mt-1">
-                                            {post.publishedAt ? format(post.publishedAt.toDate(), 'PPP') : ''}
-                                        </p>
-                                    </div>
-                                </Link>
-                            </AnimateOnScroll>
-                        ))}
+                        {otherPosts.map((post, index) => {
+                            const localizedPost = getLocalized(post, 'en');
+                            return (
+                                <AnimateOnScroll key={post.id} animationType="slideInFromRight" delay={index * 0.1}>
+                                    <Link href={`/news/${post.slug}`} className="group flex items-center gap-4 sm:gap-6 rounded-2xl p-2 transition-all hover:ring-2 hover:ring-white/50">
+                                        <div className="relative w-24 h-24 sm:w-32 sm:h-32 shrink-0">
+                                            <Image 
+                                                src={post.coverImage.url} 
+                                                alt={localizedPost.title || ''}
+                                                fill
+                                                sizes="(max-width: 640px) 96px, 128px"
+                                                className="object-cover rounded-2xl transition-transform duration-300 group-hover:scale-105"
+                                                data-ai-hint={post.coverImage.alt}
+                                            />
+                                        </div>
+                                        <div className="flex-grow">
+                                            <p className="text-sm font-semibold text-accent mb-1">{post.category}</p>
+                                            <h4 className="font-bold text-base sm:text-lg text-white transition-colors group-hover:text-primary line-clamp-2">{localizedPost.title}</h4>
+                                            <p className="text-xs text-zinc-400 mt-1">
+                                                {post.publishedAt ? format(post.publishedAt.toDate(), 'PPP') : ''}
+                                            </p>
+                                        </div>
+                                    </Link>
+                                </AnimateOnScroll>
+                            )
+                        })}
                     </div>
                 </div>
             </div>

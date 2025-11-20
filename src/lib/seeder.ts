@@ -1,7 +1,7 @@
 
 'use client';
 
-import { collection, writeBatch, getDocs, doc, Firestore, getDoc } from 'firebase/firestore';
+import { collection, writeBatch, getDocs, doc, Firestore, getDoc, deleteField } from 'firebase/firestore';
 
 const COLLECTIONS_TO_MIGRATE = [
     'blogs', 'menuCategories', 'menuGroups', 'menuItems', 
@@ -15,7 +15,7 @@ const FIELDS_TO_TRANSLATE: Record<string, string[]> = {
     menuItems: ['name', 'description'],
     outlets: ['name', 'address', 'city', 'state', 'hours', 'tagline'],
     promotions: ['title', 'description', 'customDiscountDescription'],
-    testimonials: ['name', 'quote'],
+    testimonials: ['name', 'quote', 'designation'],
     faq: ['question', 'answer'],
 };
 
@@ -49,32 +49,29 @@ export async function migrateAllToTranslations(firestore: Firestore | null, dryR
 
             const translatableFields = FIELDS_TO_TRANSLATE[collectionName] || [];
             const englishTranslation: Record<string, any> = {};
-            const fieldsToRemove: Record<string, any> = {};
+            const fieldsToDelete: Record<string, any> = {};
 
             let hasTranslatableField = false;
             for (const field of translatableFields) {
-                if (data[field] !== undefined) {
+                if (data[field] !== undefined && data[field] !== null && data[field] !== '') {
                     englishTranslation[field] = data[field];
-                    fieldsToRemove[field] = true; // Mark for removal if you want to clean up top-level fields
+                    fieldsToDelete[field] = deleteField();
                     hasTranslatableField = true;
                 }
             }
 
             if (hasTranslatableField) {
                 migratedCount++;
-                logs.push(`[${dryRun ? 'DRY-RUN' : 'LIVE'}] Migrating ${collectionName}/${docSnap.id}`);
+                logs.push(`[${dryRun ? 'DRY-RUN' : 'LIVE'}] Migrating ${collectionName}/${docSnap.id}. Moving fields: ${Object.keys(englishTranslation).join(', ')}`);
 
                 if (!dryRun) {
                     const updatePayload: any = {
+                        ...fieldsToDelete, // Add the deleteField sentinels
                         translations: {
                             en: englishTranslation
                         }
                     };
-                    // Uncomment the lines below if you want to remove the old top-level fields
-                    // for (const field in fieldsToRemove) {
-                    //     updatePayload[field] = deleteField();
-                    // }
-                    batch.set(docSnap.ref, updatePayload, { merge: true });
+                    batch.update(docSnap.ref, updatePayload);
                 }
             }
         }

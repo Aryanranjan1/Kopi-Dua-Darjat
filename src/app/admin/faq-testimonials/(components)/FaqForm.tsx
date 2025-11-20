@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -20,41 +21,62 @@ import { Loader2 } from 'lucide-react';
 import { useFirestore } from '@/firebase';
 import { collection, addDoc, doc, setDoc } from 'firebase/firestore';
 import type { FaqItem } from '@/lib/types';
+import { useAdminLanguage } from '../../(components)/AdminLanguageContext';
+import { getLocalized } from '@/lib/localization';
 
 interface FaqFormProps {
   faqItem?: FaqItem;
   onSuccess: () => void;
 }
 
-const formSchema = z.object({
+const translationSchema = z.object({
   question: z.string().min(10, 'Question is too short.'),
   answer: z.string().min(10, 'Answer is too short.'),
+});
+
+const formSchema = z.object({
   category: z.enum(['General', 'Product', 'Franchise']),
+  translations: translationSchema,
 });
 
 export default function FaqForm({ faqItem, onSuccess }: FaqFormProps) {
   const { toast } = useToast();
   const firestore = useFirestore();
+  const { language } = useAdminLanguage();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: faqItem || {
-      question: '',
-      answer: '',
+    values: faqItem ? {
+      category: faqItem.category,
+      translations: getLocalized(faqItem, language),
+    } : {
       category: 'General',
+      translations: { question: '', answer: '' },
     },
   });
 
   const { isSubmitting } = form.formState;
 
+  const handleCopyToLanguage = () => {
+    if (!faqItem) return;
+    const englishContent = getLocalized(faqItem, 'en');
+    form.setValue('translations', englishContent);
+    toast({ title: "Content Copied", description: "English content has been copied to the current form." });
+  }
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (!firestore) return;
     try {
+      const dataToSave = {
+        category: values.category,
+        [`translations.${language}`]: values.translations,
+      };
+
       if (faqItem) {
-        await setDoc(doc(firestore, 'faq', faqItem.id), values, { merge: true });
+        await setDoc(doc(firestore, 'faq', faqItem.id), dataToSave, { merge: true });
         toast({ title: 'FAQ Updated' });
       } else {
-        await addDoc(collection(firestore, 'faq'), values);
+        await addDoc(collection(firestore, 'faq'), dataToSave);
         toast({ title: 'FAQ Created' });
       }
       onSuccess();
@@ -68,12 +90,15 @@ export default function FaqForm({ faqItem, onSuccess }: FaqFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        {language !== 'en' && faqItem && (
+            <Button type="button" variant="outline" size="sm" onClick={handleCopyToLanguage} className="w-full">Copy from English</Button>
+        )}
         <FormField
           control={form.control}
-          name="question"
+          name="translations.question"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Question</FormLabel>
+              <FormLabel>Question ({language.toUpperCase()})</FormLabel>
               <FormControl><Input {...field} className={inputStyles} /></FormControl>
               <FormMessage />
             </FormItem>
@@ -81,10 +106,10 @@ export default function FaqForm({ faqItem, onSuccess }: FaqFormProps) {
         />
         <FormField
           control={form.control}
-          name="answer"
+          name="translations.answer"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Answer</FormLabel>
+              <FormLabel>Answer ({language.toUpperCase()})</FormLabel>
               <FormControl><Textarea {...field} className={inputStyles} rows={5} /></FormControl>
               <FormMessage />
             </FormItem>

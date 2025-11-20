@@ -18,52 +18,84 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
-import type { Review, Testimonial } from '@/lib/types';
-import { useEffect } from 'react';
-import { Slider } from '@/components/ui/slider';
-
+import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { collection, addDoc, doc, setDoc, serverTimestamp, query } from 'firebase/firestore';
+import type { Testimonial, Media } from '@/lib/types';
+import { useAdminLanguage } from '../(components)/AdminLanguageContext';
+import { getLocalized } from '@/lib/localization';
 
 interface TestimonialFormProps {
-  testimonial?: Review;
-  outletId?: string;
-  onSave: (review: Omit<Review, 'source' | 'time'>) => void;
-  onCancel: () => void;
+  testimonial?: Testimonial;
+  onSuccess: () => void;
 }
 
-const formSchema = z.object({
-  id: z.string().optional(),
-  author_name: z.string().min(2, 'Name is required.'),
-  text: z.string().min(10, 'Quote is too short.'),
-  rating: z.coerce.number().min(1).max(5),
+const translationSchema = z.object({
+  name: z.string().min(2, 'Name is required.'),
+  quote: z.string().min(10, 'Quote is too short.'),
 });
 
-export default function TestimonialForm({ testimonial, outletId, onSave, onCancel }: TestimonialFormProps) {
+const formSchema = z.object({
+  designation: z.string().min(2, 'Designation is required.'),
+  image: z.string().min(1, 'Image is required.'),
+  company: z.string().optional(),
+  rating: z.coerce.number().min(1).max(5).optional(),
+  translations: translationSchema,
+});
+
+export default function TestimonialForm({ testimonial, onSuccess }: TestimonialFormProps) {
   const { toast } = useToast();
+  const firestore = useFirestore();
+  const { language } = useAdminLanguage();
+  const { data: media, isLoading: isLoadingMedia } = useCollection<Media>(useMemoFirebase(() => firestore ? query(collection(firestore, 'media')) : null, [firestore]));
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      id: testimonial?.id || `manual_${Date.now()}`,
-      author_name: testimonial?.author_name || '',
-      text: testimonial?.text || '',
-      rating: testimonial?.rating || 4,
-    },
+    values: testimonial ? {
+      designation: testimonial.designation,
+      image: testimonial.image,
+      company: testimonial.company || '',
+      rating: testimonial.rating || 4,
+      translations: getLocalized(testimonial, language),
+    } : {
+      designation: '',
+      image: '',
+      company: '',
+      rating: 4,
+      translations: { name: '', quote: '' },
+    }
   });
-  
-  useEffect(() => {
-      form.reset({
-        id: testimonial?.id || `manual_${Date.now()}`,
-        author_name: testimonial?.author_name || '',
-        text: testimonial?.text || '',
-        rating: testimonial?.rating || 4,
-      })
-  }, [testimonial, form]);
 
   const { isSubmitting } = form.formState;
 
+  const handleCopyToLanguage = () => {
+    if (!testimonial) return;
+    form.setValue('translations', getLocalized(testimonial, 'en'));
+    toast({ title: "Content Copied", description: "English content has been copied to the current form." });
+  }
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    onSave(values);
-    toast({ title: `Testimonial ${testimonial ? 'Updated' : 'Added'}` });
+    if (!firestore) return;
+    try {
+      const dataToSave = {
+        designation: values.designation,
+        image: values.image,
+        company: values.company || null,
+        rating: values.rating,
+        [`translations.${language}`]: values.translations,
+        updatedAt: serverTimestamp(),
+      };
+
+      if (testimonial) {
+        await setDoc(doc(firestore, 'testimonials', testimonial.id), dataToSave, { merge: true });
+        toast({ title: 'Testimonial Updated' });
+      } else {
+        await addDoc(collection(firestore, 'testimonials'), { ...dataToSave, createdAt: serverTimestamp() });
+        toast({ title: 'Testimonial Created' });
+      }
+      onSuccess();
+    } catch (error: any) {
+      toast({ variant: 'destructive', title: 'Error', description: error.message });
+    }
   };
   
   const inputStyles = "bg-zinc-800 border-zinc-700 text-white focus-visible:ring-primary";
@@ -71,57 +103,66 @@ export default function TestimonialForm({ testimonial, outletId, onSave, onCance
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        {language !== 'en' && testimonial && (
+            <Button type="button" variant="outline" size="sm" onClick={handleCopyToLanguage} className="w-full">Copy from English</Button>
+        )}
         <FormField
           control={form.control}
-          name="author_name"
+          name="translations.name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Author Name</FormLabel>
-              <FormControl><Input {...field} className={inputStyles} placeholder="e.g., John Doe" /></FormControl>
+              <FormLabel>Name ({language.toUpperCase()})</FormLabel>
+              <FormControl><Input {...field} className={inputStyles} /></FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         <FormField
           control={form.control}
-          name="rating"
+          name="designation"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Rating: {field.value}</FormLabel>
-              <FormControl>
-                <Slider
-                    value={[field.value]}
-                    onValueChange={(value) => field.onChange(value[0])}
-                    min={1}
-                    max={5}
-                    step={1}
-                />
-              </FormControl>
+              <FormLabel>Designation</FormLabel>
+              <FormControl><Input {...field} className={inputStyles} /></FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         <FormField
           control={form.control}
-          name="text"
+          name="image"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Review Text</FormLabel>
-              <FormControl><Textarea {...field} className={inputStyles} rows={4} placeholder="The coffee was amazing..."/></FormControl>
+              <FormLabel>Image</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl><SelectTrigger className={inputStyles}><SelectValue placeholder="Select an image asset" /></SelectTrigger></FormControl>
+                <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                  {isLoadingMedia ? <SelectItem value="loading" disabled>Loading...</SelectItem> : media?.map(m => (
+                    <SelectItem key={m.id} value={m.id}>{m.id}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="translations.quote"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Quote ({language.toUpperCase()})</FormLabel>
+              <FormControl><Textarea {...field} className={inputStyles} rows={4} /></FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         
-        <div className="flex justify-end gap-4">
-            <Button type="button" variant="ghost" onClick={onCancel}>Cancel</Button>
-            <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {testimonial ? 'Save Changes' : 'Add Testimonial'}
-            </Button>
-        </div>
+        <Button type="submit" disabled={isSubmitting} className="w-full">
+          {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          {testimonial ? 'Save Changes' : 'Create Testimonial'}
+        </Button>
       </form>
     </Form>
   );
 }
-

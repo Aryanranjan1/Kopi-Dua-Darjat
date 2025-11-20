@@ -40,10 +40,14 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
+import { useAdminLanguage } from '../../(components)/AdminLanguageContext';
+import { getLocalized } from '@/lib/localization';
+
 
 export default function BlogPostsManager() {
   const firestore = useFirestore();
   const { toast } = useToast();
+  const { language } = useAdminLanguage();
   
   const postsQuery = useMemoFirebase(
     () => firestore ? query(collection(firestore, 'blogs'), orderBy('publishedAt', 'desc')) : null,
@@ -57,11 +61,12 @@ export default function BlogPostsManager() {
   const filteredPosts = useMemo(() => {
     if (!posts) return [];
     return posts.filter(post => {
-      const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase());
+      const localized = getLocalized(post, language, 'en');
+      const matchesSearch = localized.title?.toLowerCase().includes(searchQuery.toLowerCase()) || false;
       const matchesStatus = statusFilter === 'all' || post.status === statusFilter;
       return matchesSearch && matchesStatus;
     });
-  }, [posts, searchQuery, statusFilter]);
+  }, [posts, searchQuery, statusFilter, language]);
 
   const handleDelete = async (id: string) => {
     if (!firestore) return;
@@ -108,7 +113,7 @@ export default function BlogPostsManager() {
         <TableHeader>
           <TableRow className="border-zinc-700 hover:bg-zinc-800/80">
             <TableHead>Cover</TableHead>
-            <TableHead>Title</TableHead>
+            <TableHead>Title ({language.toUpperCase()})</TableHead>
             <TableHead>Category</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Published On</TableHead>
@@ -118,48 +123,51 @@ export default function BlogPostsManager() {
         <TableBody>
           {isLoading && <TableRow><TableCell colSpan={6} className="text-center"><Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" /></TableCell></TableRow>}
           {!isLoading && filteredPosts.length === 0 && <TableRow><TableCell colSpan={6} className="text-center text-zinc-400 py-8">No posts found.</TableCell></TableRow>}
-          {filteredPosts?.map(post => (
-            <TableRow key={post.id} className="border-zinc-700 hover:bg-zinc-800/80">
-              <TableCell>
-                <Image src={post.coverImage.url || 'https://placehold.co/100x100'} alt={post.coverImage.alt || post.title} width={40} height={40} className="rounded-md object-cover bg-zinc-700" />
-              </TableCell>
-              <TableCell className="font-medium">{post.title}</TableCell>
-              <TableCell>{post.category}</TableCell>
-              <TableCell>
-                <Badge variant={post.status === 'published' ? 'default' : 'secondary'} className={cn(
-                  post.status === 'published' ? 'bg-green-600' : 'bg-zinc-600'
-                )}>
-                  {post.status}
-                </Badge>
-              </TableCell>
-              <TableCell className="text-xs">
-                {post.publishedAt ? format(post.publishedAt.toDate(), 'dd MMM yyyy') : 'N/A'}
-              </TableCell>
-              <TableCell className="text-right">
-                <Button asChild variant="ghost" size="icon" disabled={post.status === 'draft'}>
-                  <Link href={`/news/${post.slug}`} target="_blank"><ExternalLink className="h-4 w-4" /></Link>
-                </Button>
-                <Button asChild variant="ghost" size="icon">
-                  <Link href={`/admin/blog/edit/${post.id}`}><Edit className="h-4 w-4" /></Link>
-                </Button>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="ghost" size="icon"><Trash2 className="h-4 w-4 text-red-500" /></Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                        <AlertDialogDescription className="text-zinc-400">This will permanently delete the post "{post.title}".</AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
-                      <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleDelete(post.id)}>Delete</AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </TableCell>
-            </TableRow>
-          ))}
+          {filteredPosts?.map(post => {
+            const localized = getLocalized(post, language, 'en');
+            return (
+              <TableRow key={post.id} className="border-zinc-700 hover:bg-zinc-800/80">
+                <TableCell>
+                  <Image src={post.coverImage.url || 'https://placehold.co/100x100'} alt={post.coverImage.alt || localized.title || ''} width={40} height={40} className="rounded-md object-cover bg-zinc-700" />
+                </TableCell>
+                <TableCell className="font-medium">{localized.title}</TableCell>
+                <TableCell>{post.category}</TableCell>
+                <TableCell>
+                  <Badge variant={post.status === 'published' ? 'default' : 'secondary'} className={cn(
+                    post.status === 'published' ? 'bg-green-600' : 'bg-zinc-600'
+                  )}>
+                    {post.status}
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-xs">
+                  {post.publishedAt ? format(post.publishedAt.toDate(), 'dd MMM yyyy') : 'N/A'}
+                </TableCell>
+                <TableCell className="text-right">
+                  <Button asChild variant="ghost" size="icon" disabled={post.status === 'draft'}>
+                    <Link href={`/news/${post.slug}`} target="_blank"><ExternalLink className="h-4 w-4" /></Link>
+                  </Button>
+                  <Button asChild variant="ghost" size="icon">
+                    <Link href={`/admin/blog/edit/${post.id}`}><Edit className="h-4 w-4" /></Link>
+                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="ghost" size="icon"><Trash2 className="h-4 w-4 text-red-500" /></Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
+                      <AlertDialogHeader>
+                          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                          <AlertDialogDescription className="text-zinc-400">This will permanently delete the post "{localized.title}".</AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
+                        <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleDelete(post.id)}>Delete</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </TableCell>
+              </TableRow>
+            )
+          })}
         </TableBody>
       </Table>
     </>
