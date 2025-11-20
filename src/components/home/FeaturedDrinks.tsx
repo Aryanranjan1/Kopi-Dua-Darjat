@@ -103,7 +103,7 @@ function FeaturedDrinksContent() {
           </div>
         </AnimateOnScroll>
 
-        <AnimateOnScroll animationType="fadeIn" delay={0.2}>
+        <AnimateOnScroll animationType="slideInFromLeft" delay={0.2}>
           <Carousel
             opts={{
               align: 'start',
