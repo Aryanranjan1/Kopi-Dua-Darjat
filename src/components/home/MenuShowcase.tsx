@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
@@ -123,9 +124,12 @@ export default function MenuShowcase() {
                     </SelectTrigger>
                     <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
                         <SelectItem value="all">All Categories</SelectItem>
-                        {categories?.map(cat => (
-                          <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
-                        ))}
+                        {categories?.map(cat => {
+                          const catName = typeof cat.name === 'object' ? (cat.name as any).en : cat.name;
+                          return (
+                            <SelectItem key={cat.id} value={cat.id}>{catName}</SelectItem>
+                          )
+                        })}
                     </SelectContent>
                     </Select>
                     <Select value={sortOrder} onValueChange={(value) => setSortOrder(value as SortOption)}>
