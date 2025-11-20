@@ -1,6 +1,6 @@
+
 'use client';
 
-import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Logo } from './Logo';
 import { cn } from '@/lib/utils';
@@ -13,15 +13,25 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ isLoading }) => {
   return (
     <AnimatePresence>
       {isLoading && (
-        <div className="fixed inset-0 z-[100] bg-black pointer-events-none">
+        <motion.div
+          className="fixed inset-0 z-[100] bg-black pointer-events-none"
+          initial={false}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.5, delay: 1 }}
+        >
           <div className="relative w-full h-full flex items-center justify-center">
             {/* Rotating Logo */}
             <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+              initial={{ opacity: 1 }}
+              exit={{ opacity: 0, transition: { duration: 0.3 } }}
               className="absolute z-10 w-24 h-24 md:w-32 md:h-32"
             >
-              <Logo className="filter brightness-0 invert sepia saturate-[5000%] hue-rotate-[3deg]" />
+               <motion.div
+                 animate={{ rotate: 360 }}
+                 transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+               >
+                <Logo className="filter brightness-0 invert sepia saturate-[5000%] hue-rotate-[3deg]" />
+              </motion.div>
             </motion.div>
 
             {/* Staggered Columns */}
@@ -30,7 +40,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ isLoading }) => {
                 <motion.div
                   key={i}
                   initial={{ y: 0 }}
-                  exit={{ y: '-100vh' }}
+                  exit={{ y: '-100%' }}
                   transition={{
                     duration: 0.8,
                     ease: 'easeInOut',
@@ -38,16 +48,16 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ isLoading }) => {
                   }}
                   className={cn(
                     'w-1/5 bg-black h-full',
-                    // Responsive column visibility
-                    'sm:hidden md:hidden lg:block', // Only all 5 on lg and up
-                    i < 3 && 'md:w-1/3', // 3 columns for md
-                    i < 1 && 'sm:w-full' // 1 column for sm
+                    // This setup ensures columns reduce correctly on smaller screens
+                    // On md (tablets), the last 2 are hidden. On sm (mobile), the last 4 are hidden.
+                    i >= 1 && 'hidden sm:block', // columns 2-5 hidden on xs
+                    i >= 3 && 'sm:hidden md:block' // columns 4-5 hidden on sm
                   )}
                 />
               ))}
             </div>
           </div>
-        </div>
+        </motion.div>
       )}
     </AnimatePresence>
   );

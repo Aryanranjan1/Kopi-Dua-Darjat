@@ -31,7 +31,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <LoadingScreen isLoading={isLoading} />
-      {children}
+      {!isLoading && children}
     </>
   );
 }
