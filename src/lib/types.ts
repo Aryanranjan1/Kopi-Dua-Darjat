@@ -80,6 +80,9 @@ export type DailySpecial = {
 
 export type Promotion = {
   id:string;
+  title: string;
+  description?: string;
+  customDiscountDescription?: string;
   discountType: 'percentage' | 'flat' | 'bogo' | 'custom';
   discountValue: number;
   startDate: any; // Firestore Timestamp
@@ -90,7 +93,7 @@ export type Promotion = {
   status: 'active' | 'scheduled' | 'expired';
   createdAt: any; // Firestore Timestamp
   updatedAt: any; // Firestore Timestamp
-} & Localized<{ title: string; description?: string; customDiscountDescription?: string; }>;
+};
 
 
 // --- OUTLETS & REVIEWS ---
