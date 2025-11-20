@@ -84,7 +84,7 @@ export default function FaqManager() {
       <Table>
         <TableHeader>
           <TableRow className="border-zinc-700 hover:bg-zinc-800">
-            <TableHead>Question</TableHead>
+            <TableHead>Question ({language.toUpperCase()})</TableHead>
             <TableHead>Category</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
@@ -93,7 +93,7 @@ export default function FaqManager() {
           {isLoading && <TableRow><TableCell colSpan={3} className="text-center"><Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" /></TableCell></TableRow>}
           {!isLoading && faqItems?.length === 0 && <TableRow><TableCell colSpan={3} className="text-center text-zinc-400 py-8">No FAQ items found.</TableCell></TableRow>}
           {faqItems?.map(faq => {
-            const localized = getLocalized(faq, language);
+            const localized = getLocalized(faq, language, 'en');
             return (
               <TableRow key={faq.id} className="border-zinc-700 hover:bg-zinc-800">
                 <TableCell className="font-medium">{localized.question}</TableCell>

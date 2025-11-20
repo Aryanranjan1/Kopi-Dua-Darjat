@@ -10,6 +10,7 @@ import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy } from 'firebase/firestore';
 import type { CommunityItem } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import { getLocalized } from '@/lib/localization';
 
 export default function Community() {
   const { title, subtitle } = siteContentData.home.community;
@@ -42,13 +43,15 @@ export default function Community() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
             {communityItems?.map((item, index) => {
               const delay = (index % 4) * 0.1;
+              const localized = getLocalized(item, 'en');
+
               if (item.type === 'portrait') {
                 return (
                   <AnimateOnScroll key={item.id} className={cn('relative aspect-square rounded-2xl overflow-hidden group', item.bgColor, item.className)} delay={delay}>
-                    <Image src={item.imageUrl} alt={item.name} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" className="object-cover object-center grayscale" />
+                    <Image src={item.imageUrl} alt={localized.name || ''} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" className="object-cover object-center grayscale" />
                     <div className="absolute inset-0 bg-black/20"></div>
                     <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center">
-                      <p className="text-white font-bold text-sm sm:text-base">{item.name}</p>
+                      <p className="text-white font-bold text-sm sm:text-base">{localized.name}</p>
                       <div className="w-8 h-8 rounded-full bg-white/30 flex items-center justify-center backdrop-blur-sm shrink-0">
                         <Plus className="w-5 h-5 text-white" />
                       </div>
@@ -59,7 +62,7 @@ export default function Community() {
               if (item.type === 'logo') {
                 return (
                   <AnimateOnScroll key={item.id} className={cn('relative aspect-square rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-center p-8', item.className)} delay={delay}>
-                    <Image src={item.imageUrl} alt={item.name} width={150} height={40} className="object-contain filter grayscale" />
+                    <Image src={item.imageUrl} alt={localized.name || ''} width={150} height={40} className="object-contain filter grayscale" />
                   </AnimateOnScroll>
                 );
               }
@@ -68,12 +71,12 @@ export default function Community() {
                   <AnimateOnScroll key={item.id} className={cn('rounded-2xl p-6 sm:p-8 flex flex-col justify-between', item.bgColor, item.textColor, item.className, item.className?.includes('sm:col-span-2') ? 'aspect-[2/1]' : 'aspect-square')} delay={delay}>
                     <div>
                       <p className="text-4xl font-serif">"</p>
-                      <p className="text-base md:text-lg font-medium">{item.quote}</p>
+                      <p className="text-base md:text-lg font-medium">{localized.quote}</p>
                     </div>
                     <div className="mt-4 flex justify-between items-end">
                       <div className="max-w-[80%]">
-                        <p className="font-bold text-sm sm:text-base">{item.name}</p>
-                        <p className="text-xs sm:text-sm opacity-80">{item.role}</p>
+                        <p className="font-bold text-sm sm:text-base">{localized.name}</p>
+                        <p className="text-xs sm:text-sm opacity-80">{localized.role}</p>
                       </div>
                       <div className="w-8 h-8 rounded-full bg-black/10 flex items-center justify-center backdrop-blur-sm shrink-0">
                         <Plus className="w-5 h-5" />

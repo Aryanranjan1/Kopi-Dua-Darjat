@@ -7,6 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowUpRight, MapPin } from 'lucide-react';
 import Link from 'next/link';
+import { getLocalized } from '@/lib/localization';
 
 interface OutletShowcaseCardProps {
   outlet: Outlet & { distance?: number };
@@ -19,6 +20,7 @@ export default function OutletShowcaseCard({ outlet, userLocation }: OutletShowc
     : `https://www.google.com/maps/search/?api=1&query=${outlet.lat},${outlet.lng}`;
 
   const imageToShow = outlet.cardImage || "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=500&auto=format&fit=crop";
+  const localized = getLocalized(outlet, 'en');
 
   return (
     <div className="p-1 h-full group">
@@ -28,14 +30,14 @@ export default function OutletShowcaseCard({ outlet, userLocation }: OutletShowc
             <div className="relative w-full aspect-video mb-4 group overflow-hidden rounded-2xl">
               <Image
                 src={imageToShow}
-                alt={outlet.name}
+                alt={localized.name || ''}
                 fill
                 className="object-cover transition-transform duration-300 group-hover:scale-105"
               />
             </div>
             <div className="flex-grow">
-              <h3 className="font-bold text-xl text-foreground truncate transition-colors group-hover:text-accent">{outlet.name}</h3>
-              <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{outlet.address}</p>
+              <h3 className="font-bold text-xl text-foreground truncate transition-colors group-hover:text-accent">{localized.name}</h3>
+              <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{localized.address}</p>
             </div>
           </Link>
           <div className="w-full flex justify-between items-center text-left mt-4">
@@ -48,7 +50,7 @@ export default function OutletShowcaseCard({ outlet, userLocation }: OutletShowc
               )}
             </div>
             <Button asChild variant="outline" size="icon" className="rounded-full border-2 border-foreground/50 hover:bg-primary hover:border-primary shrink-0 bg-transparent text-foreground hover:text-primary-foreground">
-              <a href={directionsUrl} target="_blank" rel="noopener noreferrer">
+              <a href={directionsUrl} target="_blank" rel="noopener noreferrer" aria-label={`Get directions to ${localized.name}`}>
                 <ArrowUpRight className="w-5 h-5" />
               </a>
             </Button>

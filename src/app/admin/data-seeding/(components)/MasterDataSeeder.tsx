@@ -16,6 +16,10 @@ export default function MasterDataSeeder() {
   const { toast } = useToast();
 
   const handleMasterSeed = async () => {
+    if (!firestore) {
+        toast({ title: 'Error', description: 'Firestore not available.', variant: 'destructive'});
+        return;
+    }
     setIsSeeding(true);
     toast({ title: 'Master Seed Initiated...', description: 'Wiping and re-seeding all data. This may take a moment.' });
     

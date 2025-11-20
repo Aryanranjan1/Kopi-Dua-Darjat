@@ -8,7 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Badge } from '../ui/badge';
-import { getDiscountDisplay } from '@/lib/utils';
+import { getDiscountDisplay, getLocalized } from '@/lib/utils';
 
 interface MenuShowcaseCardProps {
   drink: MenuItem;
@@ -18,6 +18,8 @@ interface MenuShowcaseCardProps {
 
 export default function MenuShowcaseCard({ drink, promotions, dailySpecials }: MenuShowcaseCardProps) {
   
+  const localized = getLocalized(drink, 'en');
+
   const getOfferBadge = (): string | null => {
     const promotion = promotions.find(p => p.menuItemIds?.includes(drink.id));
     if (promotion) {
@@ -41,14 +43,14 @@ export default function MenuShowcaseCard({ drink, promotions, dailySpecials }: M
             )}
             <Image
               src={drink.imageUrl}
-              alt={drink.name}
+              alt={localized.name || ''}
               fill
               className="object-contain transition-transform duration-300 group-hover:scale-110"
             />
           </div>
           <div className="flex-grow">
-            <h3 className="text-xl font-headline font-semibold group-hover:text-primary transition-colors">{drink.name}</h3>
-            <p className="text-sm text-zinc-400 mt-1 hidden sm:block">{drink.description}</p>
+            <h3 className="text-xl font-headline font-semibold group-hover:text-primary transition-colors">{localized.name}</h3>
+            <p className="text-sm text-zinc-400 mt-1 hidden sm:block">{localized.description}</p>
           </div>
         </Link>
         <div className="mt-4 flex justify-between items-center">

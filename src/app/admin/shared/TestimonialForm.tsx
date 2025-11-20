@@ -32,10 +32,10 @@ interface TestimonialFormProps {
 const translationSchema = z.object({
   name: z.string().min(2, 'Name is required.'),
   quote: z.string().min(10, 'Quote is too short.'),
+  designation: z.string().min(2, 'Designation is required.'),
 });
 
 const formSchema = z.object({
-  designation: z.string().min(2, 'Designation is required.'),
   image: z.string().min(1, 'Image is required.'),
   company: z.string().optional(),
   rating: z.coerce.number().min(1).max(5).optional(),
@@ -51,17 +51,15 @@ export default function TestimonialForm({ testimonial, onSuccess }: TestimonialF
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     values: testimonial ? {
-      designation: testimonial.designation,
       image: testimonial.image,
       company: testimonial.company || '',
       rating: testimonial.rating || 4,
-      translations: getLocalized(testimonial, language),
+      translations: getLocalized(testimonial, language, 'en'),
     } : {
-      designation: '',
       image: '',
       company: '',
       rating: 4,
-      translations: { name: '', quote: '' },
+      translations: { name: '', quote: '', designation: '' },
     }
   });
 
@@ -77,7 +75,6 @@ export default function TestimonialForm({ testimonial, onSuccess }: TestimonialF
     if (!firestore) return;
     try {
       const dataToSave = {
-        designation: values.designation,
         image: values.image,
         company: values.company || null,
         rating: values.rating,
@@ -119,10 +116,10 @@ export default function TestimonialForm({ testimonial, onSuccess }: TestimonialF
         />
         <FormField
           control={form.control}
-          name="designation"
+          name="translations.designation"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Designation</FormLabel>
+              <FormLabel>Designation ({language.toUpperCase()})</FormLabel>
               <FormControl><Input {...field} className={inputStyles} /></FormControl>
               <FormMessage />
             </FormItem>

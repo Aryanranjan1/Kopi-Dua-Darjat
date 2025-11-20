@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/select';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
+import { getLocalized } from '@/lib/localization';
 
 
 const OUTLETS_PER_PAGE = 8;
@@ -52,7 +53,10 @@ function OutletShowcaseContent() {
   const allStates = useMemo(() => {
     if (!outlets) return ['All'];
     const states = new Set<string>(['All']);
-    outlets.forEach(outlet => states.add(outlet.city));
+    outlets.forEach(outlet => {
+        const localized = getLocalized(outlet, 'en');
+        if (localized.city) states.add(localized.city);
+    });
     return Array.from(states);
   }, [outlets]);
 
@@ -89,7 +93,7 @@ function OutletShowcaseContent() {
     if (itemParam && menuItems.length > 0) {
       const selectedItem = menuItems.find(item => item.slug === itemParam);
       if (selectedItem) {
-        dynamicTitle = `Outlets for ${selectedItem.name}`;
+        dynamicTitle = `Outlets for ${getLocalized(selectedItem, 'en').name}`;
         if (!selectedItem.isGeneral && selectedItem.outletIds && selectedItem.outletIds.length > 0) {
           const itemOutletIds = new Set(selectedItem.outletIds);
           processedOutlets = processedOutlets.filter(outlet => itemOutletIds.has(outlet.id));
@@ -98,23 +102,27 @@ function OutletShowcaseContent() {
     }
 
     if (selectedState !== 'All') {
-      processedOutlets = processedOutlets.filter(outlet => outlet.city === selectedState);
+      processedOutlets = processedOutlets.filter(outlet => getLocalized(outlet, 'en').city === selectedState);
     }
 
     if (searchQuery) {
       const lowercasedQuery = searchQuery.toLowerCase();
-      processedOutlets = processedOutlets.filter(outlet =>
-        outlet.name.toLowerCase().includes(lowercasedQuery) ||
-        outlet.address.toLowerCase().includes(lowercasedQuery)
-      );
+      processedOutlets = processedOutlets.filter(outlet => {
+          const localized = getLocalized(outlet, 'en');
+          return localized.name?.toLowerCase().includes(lowercasedQuery) ||
+                 localized.address?.toLowerCase().includes(lowercasedQuery)
+      });
     }
 
     processedOutlets.sort((a, b) => {
+      const localizedA = getLocalized(a, 'en');
+      const localizedB = getLocalized(b, 'en');
+
       if (activeSort === 'Nearest') {
-        if (!position || a.distance === undefined || b.distance === undefined) return a.name.localeCompare(b.name);
+        if (!position || a.distance === undefined || b.distance === undefined) return (localizedA.name || '').localeCompare(localizedB.name || '');
         return a.distance - b.distance;
       }
-      return a.name.localeCompare(b.name);
+      return (localizedA.name || '').localeCompare(localizedB.name || '');
     });
 
     return { filteredAndSortedOutlets: processedOutlets, dynamicTitle };

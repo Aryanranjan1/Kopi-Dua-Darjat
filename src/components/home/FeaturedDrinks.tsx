@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
@@ -45,7 +44,6 @@ function FeaturedDrinksContent() {
   const [promotions, setPromotions] = useState<Promotion[]>([]);
   const [dailySpecials, setDailySpecials] = useState<DailySpecial[]>([]);
   
-  // Query for items marked as popular
   const popularQuery = useMemoFirebase(
     () => firestore ? query(
       collection(firestore, 'menuItems'), 
@@ -57,7 +55,6 @@ function FeaturedDrinksContent() {
   );
   const { data: popularItems, isLoading: isLoadingPopular } = useCollection<MenuItem>(popularQuery);
   
-  // A fallback query in case no items are marked as popular
   const genericQuery = useMemoFirebase(
     () => firestore ? query(
       collection(firestore, 'menuItems'), 
@@ -82,14 +79,18 @@ function FeaturedDrinksContent() {
     fetchOffers();
   }, [firestore]);
   
-  const drinksToShow = popularItems && popularItems.length > 0 ? popularItems : genericItems;
+  const drinksToShow = useMemo(() => {
+    const items = popularItems && popularItems.length > 0 ? popularItems : genericItems;
+    return items || [];
+  }, [popularItems, genericItems]);
+
   const isLoading = isLoadingPopular || isLoadingGeneric;
 
   if (isLoading) {
     return <FeaturedDrinksSkeleton />;
   }
   
-  if (!drinksToShow || drinksToShow.length === 0) {
+  if (drinksToShow.length === 0) {
       return null;
   }
 
@@ -113,7 +114,7 @@ function FeaturedDrinksContent() {
             className="w-full"
           >
             <CarouselContent className="-ml-4 py-16">
-              {drinksToShow?.map((drink) => (
+              {drinksToShow.map((drink) => (
                 <CarouselItem key={drink.id} className="basis-1/2 md:basis-1/2 lg:basis-1/3 pl-4 overflow-visible">
                   <div className="p-1">
                     <MenuItemCard 

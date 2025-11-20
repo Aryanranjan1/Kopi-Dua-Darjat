@@ -104,12 +104,12 @@ export default function TestimonialsManager() {
           {isLoading && <TableRow><TableCell colSpan={5} className="text-center"><Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" /></TableCell></TableRow>}
           {!isLoading && testimonials?.length === 0 && <TableRow><TableCell colSpan={5} className="text-center text-zinc-400 py-8">No testimonials found.</TableCell></TableRow>}
           {testimonials?.map(testimonial => {
-            const localized = getLocalized(testimonial, language);
+            const localized = getLocalized(testimonial, language, 'en');
             return (
               <TableRow key={testimonial.id} className="border-zinc-700 hover:bg-zinc-800">
                 <TableCell><TestimonialImage imageId={testimonial.image} /></TableCell>
                 <TableCell className="font-medium">{localized.name}</TableCell>
-                <TableCell>{testimonial.designation}</TableCell>
+                <TableCell>{localized.designation}</TableCell>
                 <TableCell className="text-zinc-400 truncate max-w-xs">"{localized.quote}"</TableCell>
                 <TableCell className="text-right">
                   <Button variant="ghost" size="icon" onClick={() => handleEdit(testimonial)}><Edit className="h-4 w-4" /></Button>

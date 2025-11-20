@@ -17,11 +17,13 @@ import Autoplay from "embla-carousel-autoplay"
 import type { Testimonial } from '@/lib/types';
 import { useMediaAsset } from '@/lib/media';
 import { Skeleton } from '@/components/ui/skeleton';
+import { getLocalized } from '@/lib/localization';
 
 const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
   const { asset: image, isLoading: isLoadingImage } = useMediaAsset(testimonial.image);
   const { asset: companyLogo, isLoading: isLoadingLogo } = useMediaAsset('logo-symbol');
-  
+  const localized = getLocalized(testimonial, 'en');
+
   const isLoading = isLoadingImage || isLoadingLogo;
 
   return (
@@ -33,7 +35,7 @@ const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
                   {isLoading ? <Skeleton className="w-full h-full rounded-full" /> : image && (
                       <Image
                           src={image.imageUrl}
-                          alt={testimonial.name}
+                          alt={localized.name || ''}
                           fill
                           className="object-cover"
                           data-ai-hint={image.imageHint}
@@ -55,12 +57,12 @@ const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
           </div>
 
           <blockquote className="text-xl font-medium text-zinc-800 flex-grow my-4">
-          “{testimonial.quote}”
+          “{localized.quote}”
           </blockquote>
           
           <div className="border-t border-zinc-200 pt-4">
-            <p className="font-bold text-zinc-900 text-lg">{testimonial.name}</p>
-            <p className="text-zinc-600">{testimonial.designation}</p>
+            <p className="font-bold text-zinc-900 text-lg">{localized.name}</p>
+            <p className="text-zinc-600">{localized.designation}</p>
           </div>
         </CardContent>
     </Card>

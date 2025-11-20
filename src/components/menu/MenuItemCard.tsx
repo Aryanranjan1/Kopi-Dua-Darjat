@@ -9,6 +9,7 @@ import { Star, ArrowUpRight, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '../ui/badge';
 import { getDiscountDisplay } from '@/lib/utils';
+import { getLocalized } from '@/lib/localization';
 
 interface MenuItemCardProps {
   drink: MenuItem;
@@ -18,6 +19,8 @@ interface MenuItemCardProps {
 
 export default function MenuItemCard({ drink, promotions, dailySpecials }: MenuItemCardProps) {
   
+  const localized = getLocalized(drink, 'en');
+
   const getOfferBadge = (): string | null => {
     if (drink.isPopular) {
       return 'Popular';
@@ -34,8 +37,8 @@ export default function MenuItemCard({ drink, promotions, dailySpecials }: MenuI
 
   const offerText = getOfferBadge();
   
-  const drinkName = drink.name;
-  const drinkDescription = drink.description;
+  const drinkName = localized.name || drink.slug;
+  const drinkDescription = localized.description || '';
 
   return (
     <div className="p-1 h-full">

@@ -99,13 +99,13 @@ export type Review = {
   source: 'google' | 'manual';
   author_name: string;
   rating: number;
-  text: string;
   time: number | Timestamp;
   attribution?: string;
   profile_photo_url?: string;
   relative_time_description?: string;
   id?: string;
-}
+} & Localized<{ text: string }>;
+
 
 export type ReviewDocument = {
   outletId: string;
@@ -156,15 +156,12 @@ export type Outlet = {
 export type CommunityItem = {
     id: string;
     type: 'portrait' | 'logo' | 'quote';
-    name: string;
     imageUrl: string;
-    quote?: string;
-    role?: string;
     bgColor?: string;
     textColor?: string;
     className: string;
     displayOrder: number;
-}
+} & Localized<{ name: string; quote?: string; role?: string; }>;
 
 
 // --- BLOG ---
@@ -201,13 +198,12 @@ export type Blog = {
 
 export type Testimonial = {
   id: string;
-  designation: string;
   image: string;
   company?: string;
   outletId?: string;
   rating?: number;
   createdAt?: any; // Firestore Timestamp
-} & Localized<{ name: string; quote: string; }>;
+} & Localized<{ name: string; quote: string; designation: string; }>;
 
 
 export type FaqItem = {
