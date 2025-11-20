@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo, Fragment } from 'react';
@@ -37,6 +38,7 @@ import { Loader2, PlusCircle, Edit, Trash2, Search, ArrowUp, ArrowDown } from 'l
 import MenuItemForm from './MenuItemForm';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
+import { getLocalized } from '@/lib/utils';
 
 export default function MenuItemsManager() {
   const firestore = useFirestore();
@@ -53,7 +55,7 @@ export default function MenuItemsManager() {
     [firestore]
   );
   const { data: categories } = useCollection<MenuCategory>(categoriesQuery);
-  const categoryMap = useMemo(() => new Map(categories?.map(c => [c.id, c.name])), [categories]);
+  const categoryMap = useMemo(() => new Map(categories?.map(c => [c.id, getLocalized(c, 'en').name])), [categories]);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<MenuItem | undefined>(undefined);
@@ -66,7 +68,10 @@ export default function MenuItemsManager() {
     categories.forEach(cat => {
       const categoryItems = menuItems
         .filter(item => item.categoryId === cat.id)
-        .filter(item => item.name.toLowerCase().includes(searchQuery.toLowerCase()));
+        .filter(item => {
+            const localized = getLocalized(item, 'en');
+            return localized.name?.toLowerCase().includes(searchQuery.toLowerCase());
+        });
       if (categoryItems.length > 0 || searchQuery === '') {
         grouped.set(cat.id, categoryItems);
       }
@@ -157,46 +162,49 @@ export default function MenuItemsManager() {
                   {categoryMap.get(categoryId) || 'Uncategorized'}
                 </TableCell>
               </TableRow>
-              {categoryItems.map((item, index) => (
-                <TableRow key={item.id} className="border-zinc-700 hover:bg-zinc-800/80">
-                  <TableCell>
-                     <div className="flex items-center gap-1">
-                      <Button variant="ghost" size="icon" disabled={index === 0} onClick={() => handleReorder(item, 'up')}><ArrowUp className="h-4 w-4"/></Button>
-                      <Button variant="ghost" size="icon" disabled={index === categoryItems.length - 1} onClick={() => handleReorder(item, 'down')}><ArrowDown className="h-4 w-4"/></Button>
-                    </div>
-                  </TableCell>
-                  <TableCell className="font-medium flex items-center gap-4">
-                    <Image src={item.imageUrl} alt={item.name} width={40} height={40} className="rounded-md object-contain bg-zinc-700 p-1" />
-                    {item.name}
-                  </TableCell>
-                  <TableCell>RM{item.price.toFixed(2)}</TableCell>
-                  <TableCell>
-                    <Badge variant={item.status === 'published' ? 'default' : 'secondary'} className={item.status === 'published' ? 'bg-green-600 text-white' : 'bg-zinc-600 text-zinc-200'}>
-                      {item.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <Button variant="ghost" size="icon" onClick={() => handleEdit(item)}>
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button variant="ghost" size="icon"><Trash2 className="h-4 w-4 text-red-500" /></Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
-                        <AlertDialogHeader>
-                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                            <AlertDialogDescription className="text-zinc-400">This will permanently delete the item "{item.name}".</AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
-                          <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleDelete(item.id)}>Delete</AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {categoryItems.map((item, index) => {
+                const localized = getLocalized(item, 'en');
+                return (
+                  <TableRow key={item.id} className="border-zinc-700 hover:bg-zinc-800/80">
+                    <TableCell>
+                       <div className="flex items-center gap-1">
+                        <Button variant="ghost" size="icon" disabled={index === 0} onClick={() => handleReorder(item, 'up')}><ArrowUp className="h-4 w-4"/></Button>
+                        <Button variant="ghost" size="icon" disabled={index === categoryItems.length - 1} onClick={() => handleReorder(item, 'down')}><ArrowDown className="h-4 w-4"/></Button>
+                      </div>
+                    </TableCell>
+                    <TableCell className="font-medium flex items-center gap-4">
+                      <Image src={item.imageUrl} alt={localized.name || ''} width={40} height={40} className="rounded-md object-contain bg-zinc-700 p-1" />
+                      {localized.name}
+                    </TableCell>
+                    <TableCell>RM{item.price.toFixed(2)}</TableCell>
+                    <TableCell>
+                      <Badge variant={item.status === 'published' ? 'default' : 'secondary'} className={item.status === 'published' ? 'bg-green-600 text-white' : 'bg-zinc-600 text-zinc-200'}>
+                        {item.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Button variant="ghost" size="icon" onClick={() => handleEdit(item)}>
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="ghost" size="icon"><Trash2 className="h-4 w-4 text-red-500" /></Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
+                          <AlertDialogHeader>
+                              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                              <AlertDialogDescription className="text-zinc-400">This will permanently delete the item "{localized.name}".</AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
+                            <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleDelete(item.id)}>Delete</AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
             </Fragment>
           ))}
         </TableBody>
@@ -207,7 +215,7 @@ export default function MenuItemsManager() {
           <DialogHeader>
             <DialogTitle>{selectedItem ? 'Edit Menu Item' : 'Add New Menu Item'}</DialogTitle>
             <DialogDescription className="text-zinc-400">
-              {selectedItem ? `Editing "${selectedItem.name}".` : 'Create a new item for your menu.'}
+              {selectedItem ? `Editing "${getLocalized(selectedItem, 'en').name}".` : 'Create a new item for your menu.'}
             </DialogDescription>
           </DialogHeader>
           <MenuItemForm menuItem={selectedItem} allItems={menuItems || []} onSuccess={() => setIsDialogOpen(false)} />
