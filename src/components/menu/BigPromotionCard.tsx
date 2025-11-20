@@ -8,7 +8,8 @@ import { Button } from '@/components/ui/button';
 import { ArrowUpRight, Star, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '../ui/badge';
-import { getDiscountDisplay } from '@/lib/utils';
+import { getDiscountDisplay, getLocalized } from '@/lib/utils';
+import { useLanguage } from '../layout/LanguageProvider';
 
 interface BigPromotionCardProps {
   drink: MenuItem;
@@ -16,11 +17,14 @@ interface BigPromotionCardProps {
 }
 
 export default function BigPromotionCard({ drink, promotions }: BigPromotionCardProps) {
+  const { language } = useLanguage();
+  const localized = getLocalized(drink, language);
+
   const promotion = promotions.find(p => p.menuItemIds?.includes(drink.id));
   const offerText = promotion ? getDiscountDisplay(promotion) : null;
 
   const getDiscountedPrice = () => {
-    if (!promotion) return drink.price;
+    if (!promotion || !promotion.discountValue) return drink.price;
     if (promotion.discountType === 'flat') {
       return drink.price - promotion.discountValue;
     }
@@ -45,7 +49,7 @@ export default function BigPromotionCard({ drink, promotions }: BigPromotionCard
           )}
           <Image
             src={drink.imageUrl}
-            alt={drink.name}
+            alt={localized.name || ''}
             fill
             sizes="(max-width: 768px) 90vw, 50vw"
             className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -53,8 +57,8 @@ export default function BigPromotionCard({ drink, promotions }: BigPromotionCard
         </div>
         <CardContent className="p-4 sm:p-6 flex flex-col flex-grow">
           <div className="flex-grow">
-            <h3 className="font-bold text-xl sm:text-2xl text-black truncate">{drink.name}</h3>
-            <p className="text-sm sm:text-base text-black/60 mt-1 hidden sm:block">{drink.description}</p>
+            <h3 className="font-bold text-xl sm:text-2xl text-black truncate">{localized.name}</h3>
+            <p className="text-sm sm:text-base text-black/60 mt-1 hidden sm:block">{localized.description}</p>
             <div className="flex items-center gap-1 mt-2">
               {[...Array(5)].map((_, i) => (
                 <Star key={i} className="w-4 h-4 text-orange-400 fill-orange-400" />
