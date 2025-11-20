@@ -3,7 +3,7 @@
 
 import { useState, useMemo } from 'react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, doc, deleteDoc, orderBy, query, getDocs, where, writeBatch } from 'firebase/firestore';
+import { collection, doc, deleteDoc, orderBy, query, getDocs, where, writeBatch, setDoc } from 'firebase/firestore';
 import type { MenuGroup } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import {
@@ -38,6 +38,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
+import { getLocalized } from '@/lib/utils';
 
 export default function GroupsManager() {
   const firestore = useFirestore();
@@ -56,7 +57,7 @@ export default function GroupsManager() {
   const filteredGroups = useMemo(() => {
     if (!groups) return [];
     if (!searchQuery) return groups;
-    return groups.filter(g => g.name.toLowerCase().includes(searchQuery.toLowerCase()));
+    return groups.filter(g => getLocalized(g, 'en').name?.toLowerCase().includes(searchQuery.toLowerCase()));
   }, [groups, searchQuery]);
 
   const handleAddNew = () => {
@@ -98,8 +99,8 @@ export default function GroupsManager() {
     const groupRef = doc(firestore, 'menuGroups', group.id);
     const newStatus = group.status === 'published' ? 'draft' : 'published';
     try {
-        await writeBatch(firestore).update(groupRef, { status: newStatus }).commit();
-        toast({ title: 'Status Updated', description: `${group.name} is now ${newStatus}.` });
+        await setDoc(groupRef, { status: newStatus }, { merge: true });
+        toast({ title: 'Status Updated', description: `${getLocalized(group, 'en').name} is now ${newStatus}.` });
     } catch (error: any) {
         toast({ variant: 'destructive', title: 'Error', description: `Could not update status: ${error.message}` });
     }
@@ -168,44 +169,47 @@ export default function GroupsManager() {
         <TableBody>
           {isLoading && <TableRow><TableCell colSpan={4} className="text-center"><Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" /></TableCell></TableRow>}
           {!isLoading && filteredGroups.length === 0 && <TableRow><TableCell colSpan={4} className="text-center text-zinc-400 py-8">No groups found. Add one to get started.</TableCell></TableRow>}
-          {filteredGroups?.map((g, index) => (
-            <TableRow key={g.id} className="border-zinc-700 hover:bg-zinc-800">
-              <TableCell className="w-28">
-                  <div className="flex items-center gap-1">
-                      <Button variant="ghost" size="icon" disabled={index === 0} onClick={() => handleReorder(g, 'up')}><ArrowUp className="h-4 w-4"/></Button>
-                      <Button variant="ghost" size="icon" disabled={index === filteredGroups.length - 1} onClick={() => handleReorder(g, 'down')}><ArrowDown className="h-4 w-4"/></Button>
-                  </div>
-              </TableCell>
-              <TableCell className="font-medium">{g.name}</TableCell>
-              <TableCell>
-                 <Switch
-                    checked={g.status === 'published'}
-                    onCheckedChange={() => handleToggleStatus(g)}
-                    aria-label={`Publish status for ${g.name}`}
-                 />
-              </TableCell>
-              <TableCell className="text-right">
-                <Button variant="ghost" size="icon" onClick={() => handleEdit(g)}>
-                  <Edit className="h-4 w-4" />
-                </Button>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="ghost" size="icon"><Trash2 className="h-4 w-4 text-red-500" /></Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                        <AlertDialogDescription className="text-zinc-400">This will permanently delete the "{g.name}" group and all categories and items within it.</AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
-                      <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleDelete(g.id)}>Delete</AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </TableCell>
-            </TableRow>
-          ))}
+          {filteredGroups?.map((g, index) => {
+            const localized = getLocalized(g, 'en');
+            return (
+              <TableRow key={g.id} className="border-zinc-700 hover:bg-zinc-800">
+                <TableCell className="w-28">
+                    <div className="flex items-center gap-1">
+                        <Button variant="ghost" size="icon" disabled={index === 0} onClick={() => handleReorder(g, 'up')}><ArrowUp className="h-4 w-4"/></Button>
+                        <Button variant="ghost" size="icon" disabled={index === filteredGroups.length - 1} onClick={() => handleReorder(g, 'down')}><ArrowDown className="h-4 w-4"/></Button>
+                    </div>
+                </TableCell>
+                <TableCell className="font-medium">{localized.name}</TableCell>
+                <TableCell>
+                   <Switch
+                      checked={g.status === 'published'}
+                      onCheckedChange={() => handleToggleStatus(g)}
+                      aria-label={`Publish status for ${localized.name}`}
+                   />
+                </TableCell>
+                <TableCell className="text-right">
+                  <Button variant="ghost" size="icon" onClick={() => handleEdit(g)}>
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="ghost" size="icon"><Trash2 className="h-4 w-4 text-red-500" /></Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
+                      <AlertDialogHeader>
+                          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                          <AlertDialogDescription className="text-zinc-400">This will permanently delete the "{localized.name}" group and all categories and items within it.</AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
+                        <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleDelete(g.id)}>Delete</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </TableCell>
+              </TableRow>
+            )
+          })}
         </TableBody>
       </Table>
 
@@ -214,7 +218,7 @@ export default function GroupsManager() {
           <DialogHeader>
             <DialogTitle>{selectedGroup ? 'Edit Group' : 'Add New Group'}</DialogTitle>
             <DialogDescription className="text-zinc-400">
-              {selectedGroup ? `Editing the "${selectedGroup.name}" group.` : 'Create a new group for your menu.'}
+              {selectedGroup ? `Editing the "${getLocalized(selectedGroup, 'en').name}" group.` : 'Create a new group for your menu.'}
             </DialogDescription>
           </DialogHeader>
           <GroupForm group={selectedGroup} allGroups={groups || []} onSuccess={() => setIsDialogOpen(false)} />

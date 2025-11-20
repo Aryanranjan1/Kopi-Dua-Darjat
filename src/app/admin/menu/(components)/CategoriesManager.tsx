@@ -38,6 +38,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
+import { getLocalized } from '@/lib/utils';
 
 export default function CategoriesManager() {
   const firestore = useFirestore();
@@ -66,7 +67,7 @@ export default function CategoriesManager() {
     groups.forEach(group => {
       const groupCategories = categories
         .filter(cat => cat.groupId === group.id)
-        .filter(cat => cat.name.toLowerCase().includes(searchQuery.toLowerCase()));
+        .filter(cat => getLocalized(cat, 'en').name?.toLowerCase().includes(searchQuery.toLowerCase()));
       if (groupCategories.length > 0 || searchQuery === '') {
         grouped.set(group.id, groupCategories);
       }
@@ -115,7 +116,7 @@ export default function CategoriesManager() {
     const newStatus = category.status === 'published' ? 'draft' : 'published';
     try {
       await setDoc(catRef, { status: newStatus }, { merge: true });
-      toast({ title: 'Status Updated', description: `${category.name} is now ${newStatus}.` });
+      toast({ title: 'Status Updated', description: `${getLocalized(category, 'en').name} is now ${newStatus}.` });
     } catch (error: any) {
       toast({ variant: 'destructive', title: 'Error', description: `Could not update status: ${error.message}` });
     }
@@ -149,7 +150,7 @@ export default function CategoriesManager() {
     }
   };
 
-  const groupMap = useMemo(() => new Map(groups?.map(g => [g.id, g.name])), [groups]);
+  const groupMap = useMemo(() => new Map(groups?.map(g => [g.id, getLocalized(g, 'en').name])), [groups]);
 
   return (
     <>
@@ -187,7 +188,9 @@ export default function CategoriesManager() {
                   {groupMap.get(groupId) || 'Uncategorized'}
                 </TableCell>
               </TableRow>
-              {groupCategories.map((cat, index) => (
+              {groupCategories.map((cat, index) => {
+                 const localized = getLocalized(cat, 'en');
+                return (
                 <TableRow key={cat.id} className="border-zinc-700 hover:bg-zinc-800/80">
                   <TableCell>
                      <div className="flex items-center gap-1">
@@ -195,12 +198,12 @@ export default function CategoriesManager() {
                       <Button variant="ghost" size="icon" disabled={index === groupCategories.length - 1} onClick={() => handleReorder(cat, 'down')}><ArrowDown className="h-4 w-4"/></Button>
                     </div>
                   </TableCell>
-                  <TableCell className="font-medium">{cat.name}</TableCell>
+                  <TableCell className="font-medium">{localized.name}</TableCell>
                   <TableCell>
                     <Switch
                       checked={cat.status === 'published'}
                       onCheckedChange={() => handleToggleStatus(cat)}
-                      aria-label={`Publish status for ${cat.name}`}
+                      aria-label={`Publish status for ${localized.name}`}
                     />
                   </TableCell>
                   <TableCell className="text-right">
@@ -214,7 +217,7 @@ export default function CategoriesManager() {
                       <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
                         <AlertDialogHeader>
                             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                            <AlertDialogDescription className="text-zinc-400">This will permanently delete the "{cat.name}" category and all menu items within it.</AlertDialogDescription>
+                            <AlertDialogDescription className="text-zinc-400">This will permanently delete the "{localized.name}" category and all menu items within it.</AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
@@ -224,7 +227,7 @@ export default function CategoriesManager() {
                     </AlertDialog>
                   </TableCell>
                 </TableRow>
-              ))}
+              )})}
             </Fragment>
           ))}
         </TableBody>
@@ -235,7 +238,7 @@ export default function CategoriesManager() {
           <DialogHeader>
             <DialogTitle>{selectedCategory ? 'Edit Category' : 'Add New Category'}</DialogTitle>
             <DialogDescription className="text-zinc-400">
-              {selectedCategory ? `Editing the "${selectedCategory.name}" category.` : 'Create a new category for your menu items.'}
+              {selectedCategory ? `Editing the "${getLocalized(selectedCategory, 'en').name}" category.` : 'Create a new category for your menu items.'}
             </DialogDescription>
           </DialogHeader>
           <CategoryForm category={selectedCategory} allCategories={categories || []} onSuccess={() => setIsDialogOpen(false)} />
