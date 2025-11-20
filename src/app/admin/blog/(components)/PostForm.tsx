@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useForm, useFieldArray } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
@@ -18,30 +18,20 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Trash2, PlusCircle } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { useFirestore } from '@/firebase';
-import { collection, addDoc, doc, setDoc, serverTimestamp, Timestamp } from 'firebase/firestore';
+import { collection, addDoc, doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import type { Blog } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import slugify from 'slugify';
-import { useEffect, useState } from 'react';
-import { useAdminLanguage } from '../../(components)/AdminLanguageContext';
-import { getLocalized } from '@/lib/localization';
-
+import { useEffect } from 'react';
+import { getLocalized } from '@/lib/utils';
 
 interface PostFormProps {
   post?: Blog;
   onSuccess: (postId: string) => void;
 }
 
-// Schema for the translatable part of the form
-const translationSchema = z.object({
-  title: z.string().min(3, 'Title is required.'),
-  excerpt: z.string().min(10, 'Excerpt is required.'),
-  content: z.string().min(10, 'Content cannot be empty.'),
-});
-
-// Main form schema including non-translated fields
 const formSchema = z.object({
   slug: z.string().min(3, 'Slug is required.'),
   coverImage: z.object({
@@ -63,7 +53,18 @@ const formSchema = z.object({
     description: z.string().optional(),
     keywords: z.string().optional(),
   }),
-  translations: translationSchema,
+  translations: z.object({
+    en: z.object({
+      title: z.string().min(3, 'English title is required.'),
+      excerpt: z.string().min(10, 'English excerpt is required.'),
+      content: z.string().min(10, 'English content cannot be empty.'),
+    }),
+    ms: z.object({
+      title: z.string().optional(),
+      excerpt: z.string().optional(),
+      content: z.string().optional(),
+    }),
+  }),
 });
 
 
@@ -72,13 +73,10 @@ type FormValues = z.infer<typeof formSchema>;
 export default function PostForm({ post, onSuccess }: PostFormProps) {
   const { toast } = useToast();
   const firestore = useFirestore();
-  const { language } = useAdminLanguage();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    // `values` is used to re-evaluate the form when `post` or `language` changes
     values: post ? {
-        // Non-translated fields
         slug: post.slug,
         coverImage: {
           url: post.coverImage.url || '',
@@ -99,10 +97,11 @@ export default function PostForm({ post, onSuccess }: PostFormProps) {
             description: post.seo?.description || '',
             keywords: post.seo?.keywords?.join(', ') || '',
         },
-        // Translated fields
-        translations: getLocalized(post, language, 'en'),
+        translations: {
+          en: getLocalized(post, 'en'),
+          ms: getLocalized(post, 'ms'),
+        }
     } : {
-        // Default values for a new post
         slug: '',
         coverImage: { url: '', alt: '', caption: '' },
         author: { name: '', photo: '', bio: '' },
@@ -111,26 +110,24 @@ export default function PostForm({ post, onSuccess }: PostFormProps) {
         status: 'draft',
         isFeatured: false,
         seo: { title: '', description: '', keywords: '' },
-        translations: { title: '', excerpt: '', content: '' },
+        translations: { en: { title: '', excerpt: '', content: '' }, ms: { title: '', excerpt: '', content: '' } },
     }
   });
 
-  const { isSubmitting, watch, setValue, getValues } = form;
-  const watchedTitle = watch('translations.title');
+  const { isSubmitting, watch, setValue } = form;
+  const watchedTitle = watch('translations.en.title');
 
-  // Auto-generate slug from the title of the default language
   useEffect(() => {
-    if (watchedTitle && !getValues('slug')) { 
+    if (watchedTitle) {
       const newSlug = slugify(watchedTitle, { lower: true, strict: true });
       setValue('slug', newSlug);
     }
-  }, [watchedTitle, setValue, getValues]);
-
-  const handleCopyToLanguage = () => {
-    if (!post) return;
-    const englishContent = getLocalized(post, 'en');
-    setValue('translations', englishContent);
-    toast({ title: "Content Copied", description: "English content has been copied to the current form." });
+  }, [watchedTitle, setValue]);
+  
+  const handleCopyToMalay = () => {
+    const en = form.getValues('translations.en');
+    form.setValue('translations.ms', en);
+    toast({ title: "Content Copied", description: "English content has been copied to the Malay fields." });
   }
 
   const onSubmit = async (values: FormValues) => {
@@ -138,9 +135,7 @@ export default function PostForm({ post, onSuccess }: PostFormProps) {
 
     try {
       const isPublished = values.status === 'published';
-      // Structure the data for saving, separating non-translated from translated
       const dataToSave = {
-        // Non-translated fields
         slug: values.slug,
         coverImage: values.coverImage,
         author: values.author,
@@ -152,8 +147,7 @@ export default function PostForm({ post, onSuccess }: PostFormProps) {
             ...values.seo,
             keywords: values.seo.keywords ? values.seo.keywords.split(',').map(kw => kw.trim()) : [],
         },
-        // Translated fields are handled via the translations object
-        [`translations.${language}`]: values.translations,
+        translations: values.translations,
         updatedAt: serverTimestamp(),
         ...(isPublished && !post?.publishedAt && { publishedAt: serverTimestamp() }),
       };
@@ -163,7 +157,7 @@ export default function PostForm({ post, onSuccess }: PostFormProps) {
 
       if (post) {
         await setDoc(postRef, dataToSave, { merge: true });
-        toast({ title: 'Post Updated', description: `"${values.translations.title}" has been saved.` });
+        toast({ title: 'Post Updated', description: `"${values.translations.en.title}" has been saved.` });
         onSuccess(docId);
       } else {
         await setDoc(postRef, {
@@ -171,8 +165,8 @@ export default function PostForm({ post, onSuccess }: PostFormProps) {
           createdAt: serverTimestamp(),
           views: 0,
           likes: 0,
-        }, { merge: true }); // Use merge true to create or update
-        toast({ title: 'Post Created', description: `"${values.translations.title}" has been saved.` });
+        }, { merge: true }); 
+        toast({ title: 'Post Created', description: `"${values.translations.en.title}" has been saved.` });
         onSuccess(docId);
       }
     } catch (error: any) {
@@ -191,22 +185,38 @@ export default function PostForm({ post, onSuccess }: PostFormProps) {
           <div className="lg:col-span-2 space-y-6">
             <Card className="bg-zinc-900 border-zinc-800 text-white">
                 <CardHeader>
-                    <div className="flex justify-between items-center">
-                        <CardTitle>Main Content ({language.toUpperCase()})</CardTitle>
-                        {language !== 'en' && post && (
-                            <Button type="button" variant="outline" size="sm" onClick={handleCopyToLanguage}>Copy from English</Button>
-                        )}
-                    </div>
+                    <CardTitle>Content</CardTitle>
+                    <CardDescription>Fill in the content for both languages.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    <FormField control={form.control} name="translations.title" render={({ field }) => (
-                        <FormItem><FormLabel>Title</FormLabel><FormControl><Input placeholder="Your Awesome Post Title" {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-4">
+                           <h3 className="font-medium text-lg text-zinc-300">English (EN)</h3>
+                           <FormField control={form.control} name="translations.en.title" render={({ field }) => (
+                               <FormItem><FormLabel>Title</FormLabel><FormControl><Input placeholder="Awesome Post Title" {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                           )} />
+                           <FormField control={form.control} name="translations.en.excerpt" render={({ field }) => (
+                               <FormItem><FormLabel>Excerpt</FormLabel><FormControl><Textarea placeholder="Short summary..." {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                           )} />
+                        </div>
+                        <div className="space-y-4">
+                           <div className="flex justify-between items-center">
+                             <h3 className="font-medium text-lg text-zinc-300">Malay (MS)</h3>
+                             <Button type="button" variant="outline" size="sm" onClick={handleCopyToMalay}>Copy from EN</Button>
+                           </div>
+                           <FormField control={form.control} name="translations.ms.title" render={({ field }) => (
+                               <FormItem><FormLabel>Tajuk</FormLabel><FormControl><Input placeholder="Tajuk Hebat" {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                           )} />
+                           <FormField control={form.control} name="translations.ms.excerpt" render={({ field }) => (
+                               <FormItem><FormLabel>Petikan</FormLabel><FormControl><Textarea placeholder="Ringkasan pendek..." {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                           )} />
+                        </div>
+                    </div>
+                     <FormField control={form.control} name="translations.en.content" render={({ field }) => (
+                        <FormItem><FormLabel>Content (EN)</FormLabel><FormControl><Textarea placeholder="Start writing the English post..." {...field} className={inputStyles} rows={15} /></FormControl><FormMessage /></FormItem>
                     )} />
-                    <FormField control={form.control} name="translations.excerpt" render={({ field }) => (
-                        <FormItem><FormLabel>Excerpt</FormLabel><FormControl><Textarea placeholder="A short summary of your post..." {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
-                    )} />
-                    <FormField control={form.control} name="translations.content" render={({ field }) => (
-                        <FormItem><FormLabel>Body</FormLabel><FormControl><Textarea placeholder="Start writing your post here. You can use Markdown for formatting." {...field} className={inputStyles} rows={20} /></FormControl><FormDescription>Full rich-text editor coming soon. For now, Markdown is supported.</FormDescription><FormMessage /></FormItem>
+                     <FormField control={form.control} name="translations.ms.content" render={({ field }) => (
+                        <FormItem><FormLabel>Kandungan (MS)</FormLabel><FormControl><Textarea placeholder="Mula menulis post dalam Bahasa Melayu..." {...field} className={inputStyles} rows={15} /></FormControl><FormMessage /></FormItem>
                     )} />
                 </CardContent>
             </Card>
@@ -311,5 +321,3 @@ export default function PostForm({ post, onSuccess }: PostFormProps) {
     </Form>
   );
 }
-
-    

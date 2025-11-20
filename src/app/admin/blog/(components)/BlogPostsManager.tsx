@@ -40,14 +40,12 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
-import { useAdminLanguage } from '../../(components)/AdminLanguageContext';
-import { getLocalized } from '@/lib/localization';
+import { getLocalized } from '@/lib/utils';
 
 
 export default function BlogPostsManager() {
   const firestore = useFirestore();
   const { toast } = useToast();
-  const { language } = useAdminLanguage();
   
   const postsQuery = useMemoFirebase(
     () => firestore ? query(collection(firestore, 'blogs'), orderBy('publishedAt', 'desc')) : null,
@@ -61,12 +59,12 @@ export default function BlogPostsManager() {
   const filteredPosts = useMemo(() => {
     if (!posts) return [];
     return posts.filter(post => {
-      const localized = getLocalized(post, language, 'en');
+      const localized = getLocalized(post, 'en');
       const matchesSearch = localized.title?.toLowerCase().includes(searchQuery.toLowerCase()) || false;
       const matchesStatus = statusFilter === 'all' || post.status === statusFilter;
       return matchesSearch && matchesStatus;
     });
-  }, [posts, searchQuery, statusFilter, language]);
+  }, [posts, searchQuery, statusFilter]);
 
   const handleDelete = async (id: string) => {
     if (!firestore) return;
@@ -113,7 +111,7 @@ export default function BlogPostsManager() {
         <TableHeader>
           <TableRow className="border-zinc-700 hover:bg-zinc-800/80">
             <TableHead>Cover</TableHead>
-            <TableHead>Title ({language.toUpperCase()})</TableHead>
+            <TableHead>Title</TableHead>
             <TableHead>Category</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Published On</TableHead>
@@ -124,7 +122,7 @@ export default function BlogPostsManager() {
           {isLoading && <TableRow><TableCell colSpan={6} className="text-center"><Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" /></TableCell></TableRow>}
           {!isLoading && filteredPosts.length === 0 && <TableRow><TableCell colSpan={6} className="text-center text-zinc-400 py-8">No posts found.</TableCell></TableRow>}
           {filteredPosts?.map(post => {
-            const localized = getLocalized(post, language, 'en');
+            const localized = getLocalized(post, 'en');
             return (
               <TableRow key={post.id} className="border-zinc-700 hover:bg-zinc-800/80">
                 <TableCell>

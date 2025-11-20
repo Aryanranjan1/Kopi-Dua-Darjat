@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, doc, deleteDoc, query, orderBy } from 'firebase/firestore';
 import type { FaqItem } from '@/lib/types';
@@ -19,7 +19,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from '@/components/ui/dialog';
 import {
   AlertDialog,
@@ -36,13 +35,11 @@ import { Loader2, PlusCircle, Edit, Trash2 } from 'lucide-react';
 import FaqForm from './FaqForm';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
-import { useAdminLanguage } from '../../(components)/AdminLanguageContext';
-import { getLocalized } from '@/lib/localization';
+import { getLocalized } from '@/lib/utils';
 
 export default function FaqManager() {
   const firestore = useFirestore();
   const { toast } = useToast();
-  const { language } = useAdminLanguage();
 
   const faqQuery = useMemoFirebase(
     () => firestore ? query(collection(firestore, 'faq'), orderBy('category')) : null,
@@ -84,7 +81,7 @@ export default function FaqManager() {
       <Table>
         <TableHeader>
           <TableRow className="border-zinc-700 hover:bg-zinc-800">
-            <TableHead>Question ({language.toUpperCase()})</TableHead>
+            <TableHead>Question</TableHead>
             <TableHead>Category</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
@@ -93,7 +90,7 @@ export default function FaqManager() {
           {isLoading && <TableRow><TableCell colSpan={3} className="text-center"><Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" /></TableCell></TableRow>}
           {!isLoading && faqItems?.length === 0 && <TableRow><TableCell colSpan={3} className="text-center text-zinc-400 py-8">No FAQ items found.</TableCell></TableRow>}
           {faqItems?.map(faq => {
-            const localized = getLocalized(faq, language, 'en');
+            const localized = getLocalized(faq, 'en');
             return (
               <TableRow key={faq.id} className="border-zinc-700 hover:bg-zinc-800">
                 <TableCell className="font-medium">{localized.question}</TableCell>
@@ -124,7 +121,7 @@ export default function FaqManager() {
         </TableBody>
       </Table>
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-lg">
+        <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-2xl">
           <DialogHeader>
             <DialogTitle>{selectedFaq ? 'Edit FAQ' : 'Add New FAQ'}</DialogTitle>
           </DialogHeader>

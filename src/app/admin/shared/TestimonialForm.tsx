@@ -21,35 +21,39 @@ import { Loader2 } from 'lucide-react';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, addDoc, doc, setDoc, serverTimestamp, query } from 'firebase/firestore';
 import type { Testimonial, Media, Review } from '@/lib/types';
-import { useAdminLanguage } from '../(components)/AdminLanguageContext';
-import { getLocalized } from '@/lib/localization';
+import { getLocalized } from '@/lib/utils';
 
 interface TestimonialFormProps {
   testimonial?: Testimonial | Review;
   onSuccess: () => void;
-  // Use a more specific callback for saving reviews if needed
   onSave?: (reviewData: Omit<Review, 'source' | 'time'> & { id?: string }) => void;
   onCancel?: () => void;
 }
 
-const translationSchema = z.object({
-  name: z.string().min(2, 'Name is required.'),
-  quote: z.string().min(10, 'Quote is too short.').optional(),
-  designation: z.string().min(2, 'Designation is required.').optional(),
-  text: z.string().min(10, 'Review text is too short.').optional(),
-});
-
 const formSchema = z.object({
-  image: z.string().min(1, 'Image is required.').optional(),
+  image: z.string().optional(),
   company: z.string().optional(),
   rating: z.coerce.number().min(1).max(5).optional(),
-  translations: translationSchema,
+  translations: z.object({
+    en: z.object({
+      name: z.string().min(2, 'English name is required.'),
+      quote: z.string().optional(),
+      designation: z.string().optional(),
+      text: z.string().optional(),
+    }),
+    ms: z.object({
+      name: z.string().optional(),
+      quote: z.string().optional(),
+      designation: z.string().optional(),
+      text: z.string().optional(),
+    }),
+  }),
 });
+
 
 export default function TestimonialForm({ testimonial, onSuccess, onSave, onCancel }: TestimonialFormProps) {
   const { toast } = useToast();
   const firestore = useFirestore();
-  const { language } = useAdminLanguage();
   const { data: media, isLoading: isLoadingMedia } = useCollection<Media>(useMemoFirebase(() => firestore ? query(collection(firestore, 'media')) : null, [firestore]));
 
   const isReview = testimonial && 'source' in testimonial;
@@ -61,36 +65,44 @@ export default function TestimonialForm({ testimonial, onSuccess, onSave, onCanc
       company: 'company' in testimonial ? testimonial.company || '' : '',
       rating: testimonial.rating || 4,
       translations: {
-          name: testimonial.author_name || ('translations' in testimonial ? getLocalized(testimonial, language, 'en').name : ''),
-          quote: 'quote' in getLocalized(testimonial, language, 'en') ? getLocalized(testimonial, language, 'en').quote : '',
-          designation: 'designation' in getLocalized(testimonial, language, 'en') ? getLocalized(testimonial, language, 'en').designation : '',
-          text: 'text' in getLocalized(testimonial, language, 'en') ? getLocalized(testimonial, language, 'en').text : '',
+          en: {
+            name: 'author_name' in testimonial ? testimonial.author_name || '' : getLocalized(testimonial, 'en').name || '',
+            quote: 'quote' in getLocalized(testimonial, 'en') ? getLocalized(testimonial, 'en').quote : '',
+            designation: 'designation' in getLocalized(testimonial, 'en') ? getLocalized(testimonial, 'en').designation : '',
+            text: 'text' in getLocalized(testimonial, 'en') ? getLocalized(testimonial, 'en').text : '',
+          },
+          ms: {
+            name: 'author_name' in testimonial ? testimonial.author_name || '' : getLocalized(testimonial, 'ms').name || '',
+            quote: 'quote' in getLocalized(testimonial, 'ms') ? getLocalized(testimonial, 'ms').quote : '',
+            designation: 'designation' in getLocalized(testimonial, 'ms') ? getLocalized(testimonial, 'ms').designation : '',
+            text: 'text' in getLocalized(testimonial, 'ms') ? getLocalized(testimonial, 'ms').text : '',
+          },
       }
     } : {
       image: '',
       company: '',
       rating: 4,
-      translations: { name: '', quote: '', designation: '', text: '' },
+      translations: { en: { name: '', quote: '', designation: '', text: '' }, ms: { name: '', quote: '', designation: '', text: '' } },
     }
   });
 
   const { isSubmitting } = form.formState;
 
-  const handleCopyToLanguage = () => {
-    if (!testimonial) return;
-    form.setValue('translations', getLocalized(testimonial, 'en'));
-    toast({ title: "Content Copied", description: "English content has been copied to the current form." });
+  const handleCopyToMalay = () => {
+    const en = form.getValues('translations.en');
+    form.setValue('translations.ms', en);
+    toast({ title: "Content Copied", description: "English content has been copied to the Malay fields." });
   }
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    if (onSave) {
+    if (onSave) { // Handling manual review for an outlet
         onSave({
             id: isReview ? (testimonial as Review).id : undefined,
-            author_name: values.translations.name,
+            author_name: values.translations.en.name,
             rating: values.rating || 5,
             translations: {
-                en: { text: values.translations.text || '' },
-                ms: { text: values.translations.text || '' }
+                en: { text: values.translations.en.text || '' },
+                ms: { text: values.translations.ms.text || '' }
             }
         })
         return;
@@ -102,7 +114,7 @@ export default function TestimonialForm({ testimonial, onSuccess, onSave, onCanc
         image: values.image,
         company: values.company || null,
         rating: values.rating,
-        [`translations.${language}`]: values.translations,
+        translations: values.translations,
         updatedAt: serverTimestamp(),
       };
 
@@ -124,52 +136,52 @@ export default function TestimonialForm({ testimonial, onSuccess, onSave, onCanc
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        {language !== 'en' && testimonial && (
-            <Button type="button" variant="outline" size="sm" onClick={handleCopyToLanguage} className="w-full">Copy from English</Button>
-        )}
-        
-        {isReview ? (
-             <FormField
-                control={form.control}
-                name="translations.text"
-                render={({ field }) => (
-                    <FormItem>
-                    <FormLabel>Review Text ({language.toUpperCase()})</FormLabel>
-                    <FormControl><Textarea {...field} className={inputStyles} rows={4} /></FormControl>
-                    <FormMessage />
-                    </FormItem>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-4">
+                 <h3 className="font-medium text-lg text-zinc-300">English (EN)</h3>
+                 <FormField control={form.control} name="translations.en.name" render={({ field }) => (
+                    <FormItem><FormLabel>Name</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                )} />
+                 {!isReview && <FormField control={form.control} name="translations.en.designation" render={({ field }) => (
+                    <FormItem><FormLabel>Designation</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                )} />}
+                {isReview ? (
+                    <FormField control={form.control} name="translations.en.text" render={({ field }) => (
+                        <FormItem><FormLabel>Review Text</FormLabel><FormControl><Textarea {...field} className={inputStyles} rows={4} /></FormControl><FormMessage /></FormItem>
+                    )} />
+                ) : (
+                    <FormField control={form.control} name="translations.en.quote" render={({ field }) => (
+                        <FormItem><FormLabel>Quote</FormLabel><FormControl><Textarea {...field} className={inputStyles} rows={4} /></FormControl><FormMessage /></FormItem>
+                    )} />
                 )}
-            />
-        ) : (
-           <>
-            <FormField
-            control={form.control}
-            name="translations.name"
-            render={({ field }) => (
-                <FormItem>
-                <FormLabel>Name ({language.toUpperCase()})</FormLabel>
-                <FormControl><Input {...field} className={inputStyles} /></FormControl>
-                <FormMessage />
-                </FormItem>
-            )}
-            />
-            <FormField
-            control={form.control}
-            name="translations.designation"
-            render={({ field }) => (
-                <FormItem>
-                <FormLabel>Designation ({language.toUpperCase()})</FormLabel>
-                <FormControl><Input {...field} className={inputStyles} /></FormControl>
-                <FormMessage />
-                </FormItem>
-            )}
-            />
-            <FormField
-            control={form.control}
-            name="image"
-            render={({ field }) => (
-                <FormItem>
-                <FormLabel>Image</FormLabel>
+            </div>
+            <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                    <h3 className="font-medium text-lg text-zinc-300">Malay (MS)</h3>
+                    <Button type="button" variant="outline" size="sm" onClick={handleCopyToMalay}>Copy from EN</Button>
+                </div>
+                 <FormField control={form.control} name="translations.ms.name" render={({ field }) => (
+                    <FormItem><FormLabel>Nama</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                )} />
+                {!isReview && <FormField control={form.control} name="translations.ms.designation" render={({ field }) => (
+                    <FormItem><FormLabel>Jawatan</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                )} />}
+                {isReview ? (
+                    <FormField control={form.control} name="translations.ms.text" render={({ field }) => (
+                        <FormItem><FormLabel>Teks Ulasan</FormLabel><FormControl><Textarea {...field} className={inputStyles} rows={4} /></FormControl><FormMessage /></FormItem>
+                    )} />
+                ) : (
+                    <FormField control={form.control} name="translations.ms.quote" render={({ field }) => (
+                        <FormItem><FormLabel>Petikan</FormLabel><FormControl><Textarea {...field} className={inputStyles} rows={4} /></FormControl><FormMessage /></FormItem>
+                    )} />
+                )}
+            </div>
+        </div>
+        
+        <div className="grid grid-cols-2 gap-6">
+            {!isReview && <FormField control={form.control} name="image" render={({ field }) => (
+                <FormItem><FormLabel>Image</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl><SelectTrigger className={inputStyles}><SelectValue placeholder="Select an image asset" /></SelectTrigger></FormControl>
                     <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
@@ -178,23 +190,13 @@ export default function TestimonialForm({ testimonial, onSuccess, onSave, onCanc
                     ))}
                     </SelectContent>
                 </Select>
-                <FormMessage />
-                </FormItem>
-            )}
-            />
-            <FormField
-            control={form.control}
-            name="translations.quote"
-            render={({ field }) => (
-                <FormItem>
-                <FormLabel>Quote ({language.toUpperCase()})</FormLabel>
-                <FormControl><Textarea {...field} className={inputStyles} rows={4} /></FormControl>
-                <FormMessage />
-                </FormItem>
-            )}
-            />
-          </>
-        )}
+                <FormMessage /></FormItem>
+            )} />}
+            
+            <FormField control={form.control} name="rating" render={({ field }) => (
+                <FormItem><FormLabel>Rating (1-5)</FormLabel><FormControl><Input type="number" min="1" max="5" step="1" {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+            )}/>
+        </div>
         
         <div className="flex justify-end gap-2">
             {onCancel && <Button type="button" variant="ghost" onClick={onCancel}>Cancel</Button>}
@@ -207,5 +209,3 @@ export default function TestimonialForm({ testimonial, onSuccess, onSave, onCanc
     </Form>
   );
 }
-
-    

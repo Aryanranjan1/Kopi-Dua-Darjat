@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, doc, deleteDoc, query, orderBy } from 'firebase/firestore';
 import type { Testimonial } from '@/lib/types';
@@ -19,7 +19,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from '@/components/ui/dialog';
 import {
   AlertDialog,
@@ -38,8 +37,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useMediaAsset } from '@/lib/media';
 import Image from 'next/image';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useAdminLanguage } from '../../(components)/AdminLanguageContext';
-import { getLocalized } from '@/lib/localization';
+import { getLocalized } from '@/lib/utils';
 
 const TestimonialImage = ({ imageId }: { imageId: string }) => {
     const { asset, isLoading } = useMediaAsset(imageId);
@@ -51,7 +49,6 @@ const TestimonialImage = ({ imageId }: { imageId: string }) => {
 export default function TestimonialsManager() {
   const firestore = useFirestore();
   const { toast } = useToast();
-  const { language } = useAdminLanguage();
 
   const testimonialsQuery = useMemoFirebase(
     () => firestore ? query(collection(firestore, 'testimonials'), orderBy('createdAt', 'desc')) : null,
@@ -104,7 +101,7 @@ export default function TestimonialsManager() {
           {isLoading && <TableRow><TableCell colSpan={5} className="text-center"><Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" /></TableCell></TableRow>}
           {!isLoading && testimonials?.length === 0 && <TableRow><TableCell colSpan={5} className="text-center text-zinc-400 py-8">No testimonials found.</TableCell></TableRow>}
           {testimonials?.map(testimonial => {
-            const localized = getLocalized(testimonial, language, 'en');
+            const localized = getLocalized(testimonial, 'en');
             return (
               <TableRow key={testimonial.id} className="border-zinc-700 hover:bg-zinc-800">
                 <TableCell><TestimonialImage imageId={testimonial.image} /></TableCell>
@@ -135,7 +132,7 @@ export default function TestimonialsManager() {
         </TableBody>
       </Table>
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-lg">
+        <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-2xl">
           <DialogHeader>
             <DialogTitle>{selectedTestimonial ? 'Edit Testimonial' : 'Add New Testimonial'}</DialogTitle>
           </DialogHeader>

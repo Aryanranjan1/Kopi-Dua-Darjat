@@ -15,7 +15,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { AdminLanguageSwitcher } from './AdminLanguageSwitcher';
 
 export default function AdminHeader({ onMenuClick }: { onMenuClick: () => void }) {
   const { user } = useUser();
@@ -46,7 +45,6 @@ export default function AdminHeader({ onMenuClick }: { onMenuClick: () => void }
       <div className="flex-1">
         {/* Can add breadcrumbs or search here later */}
       </div>
-       <AdminLanguageSwitcher />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="relative h-8 w-8 rounded-full">
