@@ -1,9 +1,12 @@
+
 'use client';
 
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { DollarSign, Award, Users, Megaphone, TrendingUp, CheckCircle } from 'lucide-react';
 import { siteContentData } from '@/lib/site-content';
+import { siteContentDataMs } from '@/lib/site-content-ms';
+import { useLanguage } from '../layout/LanguageProvider';
 
 const iconMap: { [key: string]: React.ElementType } = {
     'Strong Brand Identity': Award,
@@ -11,10 +14,17 @@ const iconMap: { [key: string]: React.ElementType } = {
     'Full Training Provided': Users,
     'Marketing Support': Megaphone,
     'High Return Potential': TrendingUp,
+    'Identiti Jenama yang Kukuh': Award,
+    'Kos Permulaan yang Rendah': DollarSign,
+    'Latihan Penuh Disediakan': Users,
+    'Sokongan Pemasaran': Megaphone,
+    'Potensi Pulangan Tinggi': TrendingUp,
 };
 
 export default function ValueProposition() {
-  const { title, subtitle, features } = siteContentData.franchise.valueProposition;
+  const { language } = useLanguage();
+  const content = language === 'ms' ? siteContentDataMs.franchise.valueProposition : siteContentData.franchise.valueProposition;
+  const { title, subtitle, features } = content;
 
   return (
     <section className="py-24 sm:py-32 bg-black text-white">

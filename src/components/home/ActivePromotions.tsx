@@ -10,12 +10,15 @@ import { useMediaAsset } from '@/lib/media';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { Skeleton } from '../ui/skeleton';
 import { siteContentData } from '@/lib/site-content';
+import { siteContentDataMs } from '@/lib/site-content-ms';
+import { useLanguage } from '../layout/LanguageProvider';
 
 export default function ActivePromotions() {
   const { asset: communityImage, isLoading: isLoadingCommunity } = useMediaAsset('community-event-1');
   const { asset: parallaxBg, isLoading: isLoadingParallax } = useMediaAsset('parallax-promo-bg');
 
-  const content = siteContentData.home.activePromotions;
+  const { language } = useLanguage();
+  const content = language === 'ms' ? siteContentDataMs.home.activePromotions : siteContentData.home.activePromotions;
 
   return (
     <section className="py-24 sm:py-32 bg-black">

@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -7,10 +8,14 @@ import { Button } from '@/components/ui/button';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { Skeleton } from '../ui/skeleton';
 import { siteContentData } from '@/lib/site-content';
+import { siteContentDataMs } from '@/lib/site-content-ms';
+import { useLanguage } from '../layout/LanguageProvider';
 
 export default function FinalCta() {
   const { asset: ctaImage, isLoading } = useMediaAsset('franchise-cta');
-  const { title, subtitle, buttonText, buttonLink } = siteContentData.franchise.finalCta;
+  const { language } = useLanguage();
+  const content = language === 'ms' ? siteContentDataMs.franchise.finalCta : siteContentData.franchise.finalCta;
+  const { title, subtitle, buttonText, buttonLink } = content;
 
   return (
     <section className="bg-background">

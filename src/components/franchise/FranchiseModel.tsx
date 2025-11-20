@@ -4,6 +4,8 @@
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { FileText, UserCheck, Warehouse, Rocket, BarChart2 } from 'lucide-react';
 import { siteContentData } from '@/lib/site-content';
+import { siteContentDataMs } from '@/lib/site-content-ms';
+import { useLanguage } from '../layout/LanguageProvider';
 
 const iconMap: { [key: string]: React.ElementType } = {
     'Apply': FileText,
@@ -11,11 +13,18 @@ const iconMap: { [key: string]: React.ElementType } = {
     'Setup': Warehouse,
     'Launch': Rocket,
     'Grow': BarChart2,
+    'Mohon': FileText,
+    'Temuduga': UserCheck,
+    'Persediaan': Warehouse,
+    'Pelancaran': Rocket,
+    'Berkembang': BarChart2,
 };
 
 
 export default function FranchiseModel() {
-  const { title, subtitle, steps } = siteContentData.franchise.franchiseModel;
+  const { language } = useLanguage();
+  const content = language === 'ms' ? siteContentDataMs.franchise.franchiseModel : siteContentData.franchise.franchiseModel;
+  const { title, subtitle, steps } = content;
 
   return (
     <section className="py-24 sm:py-32 bg-primary text-black">

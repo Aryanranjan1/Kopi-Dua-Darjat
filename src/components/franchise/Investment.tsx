@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -7,10 +8,14 @@ import { Button } from '@/components/ui/button';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { Skeleton } from '../ui/skeleton';
 import { siteContentData } from '@/lib/site-content';
+import { siteContentDataMs } from '@/lib/site-content-ms';
+import { useLanguage } from '../layout/LanguageProvider';
 
 export default function Investment() {
   const { asset: stallImage, isLoading } = useMediaAsset('franchise-stall');
-  const { title, subtitle, content, buttonText, buttonLink } = siteContentData.franchise.investment;
+  const { language } = useLanguage();
+  const content = language === 'ms' ? siteContentDataMs.franchise.investment : siteContentData.franchise.investment;
+  const { title, subtitle, content: investmentContent, buttonText, buttonLink } = content;
 
   return (
     <section className="py-24 sm:py-32 bg-background">
@@ -22,7 +27,7 @@ export default function Investment() {
             </h2>
             <p className="mt-4 text-xl text-muted-foreground" dangerouslySetInnerHTML={{ __html: subtitle.replace('RM25,000', '<span class="font-bold text-accent">RM25,000</span>') }} />
             <p className="mt-4 text-muted-foreground">
-              {content}
+              {investmentContent}
             </p>
             <Button asChild size="lg" className="mt-8 rounded-full">
               <Link href={buttonLink}>{buttonText}</Link>

@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -10,11 +11,15 @@ import { ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { siteContentData } from '@/lib/site-content';
+import { siteContentDataMs } from '@/lib/site-content-ms';
+import { useLanguage } from '../layout/LanguageProvider';
 
 const DesktopHero = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const h1Ref = useFitText<HTMLHeadingElement>(containerRef);
-  const { title, subtitle } = siteContentData.home.hero;
+  const { language } = useLanguage();
+  const content = language === 'ms' ? siteContentDataMs.home.hero : siteContentData.home.hero;
+  const { title, subtitle } = content;
 
   return (
     <>
@@ -90,7 +95,9 @@ const DesktopHero = () => {
 };
 
 const MobileHero = () => {
-  const { title, subtitle } = siteContentData.home.hero;
+  const { language } = useLanguage();
+  const content = language === 'ms' ? siteContentDataMs.home.hero : siteContentData.home.hero;
+  const { title, subtitle } = content;
 
   return (
     <div className="container mx-auto px-6 pt-24 pb-20 text-center">

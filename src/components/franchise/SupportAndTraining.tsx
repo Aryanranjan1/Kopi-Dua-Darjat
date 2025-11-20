@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -8,11 +9,14 @@ import { CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 import { Skeleton } from '../ui/skeleton';
 import { siteContentData } from '@/lib/site-content';
-
+import { siteContentDataMs } from '@/lib/site-content-ms';
+import { useLanguage } from '../layout/LanguageProvider';
 
 export default function SupportAndTraining() {
   const { asset: trainingImage, isLoading } = useMediaAsset('franchise-training');
-  const { title, subtitle, items, buttonText, buttonLink } = siteContentData.franchise.support;
+  const { language } = useLanguage();
+  const content = language === 'ms' ? siteContentDataMs.franchise.support : siteContentData.franchise.support;
+  const { title, subtitle, items, buttonText, buttonLink } = content;
 
   return (
     <section className="py-24 sm:py-32 bg-background">

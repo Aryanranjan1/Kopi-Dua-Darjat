@@ -89,7 +89,7 @@ export default function Header() {
 
         {/* Right Actions */}
         <div className="flex items-center gap-2">
-            <LanguageSwitcher />
+            <LanguageSwitcher className="text-[#fecd0b]" />
             <Button asChild className="hidden lg:flex rounded-full bg-black text-white hover:bg-white hover:text-black">
               <Link href="/outlets">
                 <MapPin className="mr-2 h-4 w-4" />

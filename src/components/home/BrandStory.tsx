@@ -6,9 +6,13 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { AnimateOnScroll } from "@/components/animations/AnimateOnScroll"
 import { siteContentData } from "@/lib/site-content"
+import { siteContentDataMs } from "@/lib/site-content-ms"
+import { useLanguage } from "../layout/LanguageProvider"
 
 export default function BrandStory() {
-  const { title, content, buttonText, buttonLink } = siteContentData.home.brandStory;
+  const { language } = useLanguage();
+  const content = language === 'ms' ? siteContentDataMs.home.brandStory : siteContentData.home.brandStory;
+  const { title, content: storyContent, buttonText, buttonLink } = content;
 
   return (
     <section className="bg-[#F7F4EF] text-foreground overflow-hidden">
@@ -38,7 +42,7 @@ export default function BrandStory() {
               {title}
             </h2>
             <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-lg mx-auto lg:mx-0">
-              {content}
+              {storyContent}
             </p>
             <div className="mt-8 flex justify-center lg:justify-start">
               <Button size="lg" asChild className="bg-accent hover:bg-accent/90 text-accent-foreground rounded-full">
