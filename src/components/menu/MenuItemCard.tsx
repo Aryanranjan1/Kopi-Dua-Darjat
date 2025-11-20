@@ -33,6 +33,10 @@ export default function MenuItemCard({ drink, promotions, dailySpecials }: MenuI
   };
 
   const offerText = getOfferBadge();
+  
+  // Safely access potentially multilingual fields
+  const drinkName = typeof drink.name === 'object' ? (drink.name as any).en : drink.name;
+  const drinkDescription = typeof drink.description === 'object' ? (drink.description as any).en : drink.description;
 
   return (
     <div className="p-1 h-full">
@@ -44,7 +48,7 @@ export default function MenuItemCard({ drink, promotions, dailySpecials }: MenuI
         <div className="relative w-full aspect-square group">
           <Image
             src={drink.imageUrl}
-            alt={drink.name}
+            alt={drinkName}
             fill
             sizes="(max-width: 768px) 90vw, (max-width: 1200px) 45vw, 30vw"
             className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -57,8 +61,8 @@ export default function MenuItemCard({ drink, promotions, dailySpecials }: MenuI
         {/* Content Section */}
         <CardContent className="p-4 flex flex-col flex-grow">
           <div className="flex-grow">
-            <h3 className="font-bold text-lg text-black truncate">{drink.name}</h3>
-            <p className="text-sm text-black/60 mt-1 hidden sm:block">{drink.description}</p>
+            <h3 className="font-bold text-lg text-black truncate">{drinkName}</h3>
+            <p className="text-sm text-black/60 mt-1 hidden sm:block">{drinkDescription}</p>
             <div className="flex items-center gap-1 mt-2">
               {[...Array(5)].map((_, i) => (
                 <Star key={i} className="w-4 h-4 text-orange-400 fill-orange-400" />
