@@ -1,5 +1,4 @@
 
-
 import type { Metadata } from 'next';
 import './globals.css';
 import { cn } from '@/lib/utils';
@@ -7,8 +6,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { Montserrat, Nunito_Sans as Nunito_Sans_Condensed } from 'next/font/google';
 import { FirebaseClientProvider } from '@/firebase';
 import AppLayout from './AppLayout';
-import { SettingsProvider } from '@/components/layout/SettingsProvider';
-import { doc, getDoc } from 'firebase/firestore';
+import { getDoc, doc } from 'firebase/firestore';
 import { initializeServerSideFirebase } from '@/firebase/server-init';
 import type { SiteSettings, Media } from '@/lib/types';
 
@@ -96,10 +94,8 @@ export default function RootLayout({
         )}
       >
         <FirebaseClientProvider>
-            <SettingsProvider>
-                <AppLayout>{children}</AppLayout>
-            </SettingsProvider>
-            <Toaster />
+          <AppLayout>{children}</AppLayout>
+          <Toaster />
         </FirebaseClientProvider>
       </body>
     </html>

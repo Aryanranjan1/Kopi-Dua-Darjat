@@ -1,37 +1,33 @@
 
-
 'use client';
 
-import { useSettings } from '@/components/layout/SettingsProvider';
+import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import LoadingScreen from '@/components/layout/LoadingScreen';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
-  const { settings, isLoading: isSettingsLoading } = useSettings();
   const [isClientLoaded, setIsClientLoaded] = useState(false);
-
-  // Dynamically update theme colors from settings
-  useEffect(() => {
-    if (settings?.brand?.primaryColor && settings?.brand?.accentColor) {
-      document.documentElement.style.setProperty('--primary', settings.brand.primaryColor);
-      document.documentElement.style.setProperty('--accent', settings.brand.accentColor);
-    }
-  }, [settings]);
+  const pathname = usePathname();
+  const isAdminPage = pathname.startsWith('/admin');
 
   // This effect runs once on the client after initial hydration
   useEffect(() => {
-    setIsClientLoaded(true);
+    // We use a short timeout to ensure all initial rendering is complete
+    // before we consider the app "loaded".
+    const timer = setTimeout(() => {
+      setIsClientLoaded(true);
+    }, 500); 
+    return () => clearTimeout(timer);
   }, []);
   
-  // The site is considered "loading" until both settings are loaded from Firebase
-  // AND the client has mounted and run its initial effects.
-  const isLoading = isSettingsLoading || !isClientLoaded;
-
+  // The site is considered "loading" only on the first client-side load and not for admin pages.
+  const isAppLoading = !isClientLoaded && !isAdminPage;
 
   return (
     <>
-      <LoadingScreen isLoading={isLoading} />
-      {!isLoading && children}
+      <LoadingScreen isLoading={isAppLoading} />
+      {/* We render children immediately, the loading screen will cover it */}
+      {children}
     </>
   );
 }
