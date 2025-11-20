@@ -6,6 +6,7 @@ import { AlertTriangle, Database } from 'lucide-react';
 import MigrationManager from './(components)/MigrationManager';
 import DemoDataSeeder from './(components)/DemoDataSeeder';
 import MasterDataSeeder from './(components)/MasterDataSeeder';
+import MenuDataSeeder from './(components)/MenuDataSeeder';
 
 export default function DataSeedingPage() {
   return (
@@ -26,9 +27,10 @@ export default function DataSeedingPage() {
             </CardContent>
         </Card>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <DemoDataSeeder />
             <MasterDataSeeder />
+            <MenuDataSeeder />
         </div>
         <MigrationManager />
     </div>
