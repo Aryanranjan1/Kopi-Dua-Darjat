@@ -60,8 +60,7 @@ export default function BlogPostsManager() {
     if (!posts) return [];
     return posts.filter(post => {
       const localized = getLocalized(post, 'en');
-      const title = localized.title || '';
-      const matchesSearch = title.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSearch = localized.title?.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesStatus = statusFilter === 'all' || post.status === statusFilter;
       return matchesSearch && matchesStatus;
     });
