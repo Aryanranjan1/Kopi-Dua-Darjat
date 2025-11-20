@@ -26,9 +26,9 @@ export default function MasterDataSeeder() {
     const result = await masterSeed(firestore);
     
     if (result.success) {
-      toast({ title: 'Success!', description: result.message });
+      toast({ title: 'Success!', description: result.message, duration: 8000 });
     } else {
-      toast({ variant: 'destructive', title: 'Master Seed Failed', description: result.message });
+      toast({ variant: 'destructive', title: 'Master Seed Failed', description: result.message, duration: 8000 });
       console.error("Master Seed Error:", result.message);
     }
     setIsSeeding(false);
@@ -39,7 +39,7 @@ export default function MasterDataSeeder() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2"><Database /> Master Data Reset</CardTitle>
         <CardDescription className="text-zinc-400">
-          Use this tool to completely wipe and re-seed all content collections with the original sample data.
+          Use this tool to completely wipe all content collections and re-seed them with the original multilingual sample data.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -63,12 +63,12 @@ export default function MasterDataSeeder() {
             <AlertDialogHeader>
               <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
               <AlertDialogDescription className="text-zinc-400">
-                This will delete all content and reset it to the default state. Any custom changes will be permanently lost.
+                This will delete all content and reset it to the default multilingual state. Any custom changes will be permanently lost.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
-              <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={handleMasterSeed}>Yes, I understand. Wipe everything.</AlertDialogAction>
+              <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={handleMasterSeed}>Yes, I understand. Wipe and seed.</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>

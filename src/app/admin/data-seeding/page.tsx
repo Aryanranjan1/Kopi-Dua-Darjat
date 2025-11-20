@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { AlertTriangle, Database } from 'lucide-react';
 import MigrationManager from './(components)/MigrationManager';
 import DemoDataSeeder from './(components)/DemoDataSeeder';
+import MasterDataSeeder from './(components)/MasterDataSeeder';
 
 export default function DataSeedingPage() {
   return (
@@ -20,12 +21,15 @@ export default function DataSeedingPage() {
             </CardHeader>
             <CardContent>
                 <p>
-                    This area is for migrating and seeding database content. These are powerful tools that can modify or delete large amounts of data. Use with extreme caution.
+                    These are powerful tools that can modify or delete large amounts of data. Use with extreme caution.
                 </p>
             </CardContent>
         </Card>
 
-        <DemoDataSeeder />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <DemoDataSeeder />
+            <MasterDataSeeder />
+        </div>
         <MigrationManager />
     </div>
   );
