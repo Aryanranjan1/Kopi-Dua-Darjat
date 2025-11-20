@@ -1,11 +1,14 @@
 
+
 'use client';
 
 import { useSettings } from '@/components/layout/SettingsProvider';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import LoadingScreen from '@/components/layout/LoadingScreen';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { settings } = useSettings();
+  const [isLoading, setIsLoading] = useState(true);
 
   // Dynamically update theme colors from settings
   useEffect(() => {
@@ -15,9 +18,19 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     }
   }, [settings]);
 
+  // Hide loading screen after initial mount and a short delay
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500); // Adjust delay as needed
+
+    return () => clearTimeout(timer);
+  }, []);
+
 
   return (
     <>
+      <LoadingScreen isLoading={isLoading} />
       {children}
     </>
   );
