@@ -9,6 +9,7 @@ import AppLayout from './AppLayout';
 import { getDoc, doc } from 'firebase/firestore';
 import { initializeServerSideFirebase } from '@/firebase/server-init';
 import type { SiteSettings, Media } from '@/lib/types';
+import { SettingsProvider } from '@/components/layout/SettingsProvider';
 
 
 const montserrat = Montserrat({
@@ -94,7 +95,9 @@ export default function RootLayout({
         )}
       >
         <FirebaseClientProvider>
-          <AppLayout>{children}</AppLayout>
+          <SettingsProvider>
+            <AppLayout>{children}</AppLayout>
+          </SettingsProvider>
           <Toaster />
         </FirebaseClientProvider>
       </body>
