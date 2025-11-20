@@ -89,7 +89,7 @@ export default function Header() {
 
         {/* Right Actions */}
         <div className="flex items-center gap-2">
-            <LanguageSwitcher className="hidden lg:flex" />
+            <LanguageSwitcher />
             <Button asChild className="hidden lg:flex rounded-full bg-black text-white hover:bg-white hover:text-black">
               <Link href="/outlets">
                 <MapPin className="mr-2 h-4 w-4" />
@@ -100,7 +100,7 @@ export default function Header() {
             {/* Mobile Navigation Trigger */}
             <Sheet>
                 <SheetTrigger asChild>
-                    <Button variant="ghost" size="icon" className="lg:hidden">
+                    <Button variant="ghost" size="icon" className="lg:hidden text-black hover:bg-black/10">
                     <Menu className="h-6 w-6" />
                     <span className="sr-only">Toggle Menu</span>
                     </Button>
@@ -115,7 +115,6 @@ export default function Header() {
                           <Link href="/" className="p-0 m-0 flex items-center">
                             <Logo className="filter brightness-0" />
                           </Link>
-                          <LanguageSwitcher />
                         </div>
                         <div className="flex flex-col space-y-4 mt-8">
                             {navItems.map((item) => (

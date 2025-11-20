@@ -21,7 +21,7 @@ export function LanguageSwitcher({ className }: { className?: string }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className={cn("h-10 w-10 text-background", className)}>
+        <Button variant="outline" size="icon" className={cn("h-10 w-10 rounded-full border-black/20 text-black bg-black/5 hover:bg-black/10", className)}>
           <Languages className="h-5 w-5" />
           <span className="sr-only">Toggle Language</span>
         </Button>
