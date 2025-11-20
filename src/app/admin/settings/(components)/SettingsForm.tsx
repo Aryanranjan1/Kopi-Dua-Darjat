@@ -26,6 +26,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useMedia } from '@/lib/media';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const founderSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -195,29 +196,33 @@ export default function SettingsForm() {
                 <Card className="bg-transparent border-none">
                     <CardHeader><CardTitle className="text-primary">Founders</CardTitle><CardDescription className="text-zinc-400">Manage information about the company founders.</CardDescription></CardHeader>
                     <CardContent className="space-y-6">
-                        {fields.map((field, index) => (
-                        <div key={field.id} className="p-4 border border-zinc-700 rounded-lg space-y-4 relative">
-                            <h4 className="text-lg font-semibold text-primary">Founder {index + 1}</h4>
-                             <FormField control={form.control} name={`founders.${index}.name`} render={({ field }) => (
-                                <FormItem><FormLabel className="text-white">Name</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
-                            )} />
-                             <FormField control={form.control} name={`founders.${index}.role`} render={({ field }) => (
-                                <FormItem><FormLabel className="text-white">Role</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
-                            )} />
-                            <FormField control={form.control} name={`founders.${index}.imageId`} render={({ field }) => (
-                                <FormItem><FormLabel className="text-white">Image</FormLabel>
-                                <Select onValueChange={field.onChange} value={field.value}>
-                                    <FormControl><SelectTrigger className={inputStyles}><SelectValue placeholder="Select an image" /></SelectTrigger></FormControl>
-                                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white">{media?.map(m => <SelectItem key={m.id} value={m.id}>{m.id}</SelectItem>)}</SelectContent>
-                                </Select>
-                                <FormMessage /></FormItem>
-                            )} />
-                            <FormField control={form.control} name={`founders.${index}.quote`} render={({ field }) => (
-                                <FormItem><FormLabel className="text-white">Quote</FormLabel><FormControl><Textarea {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
-                            )} />
-                             <Button type="button" variant="destructive" size="icon" className="absolute top-4 right-4" onClick={() => remove(index)}><Trash2 className="h-4 w-4" /></Button>
-                        </div>
-                        ))}
+                        <ScrollArea className="h-[60vh] pr-4">
+                            <div className="space-y-6">
+                                {fields.map((field, index) => (
+                                <div key={field.id} className="p-4 border border-zinc-700 rounded-lg space-y-4 relative">
+                                    <h4 className="text-lg font-semibold text-primary">Founder {index + 1}</h4>
+                                    <FormField control={form.control} name={`founders.${index}.name`} render={({ field }) => (
+                                        <FormItem><FormLabel className="text-white">Name</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                                    )} />
+                                    <FormField control={form.control} name={`founders.${index}.role`} render={({ field }) => (
+                                        <FormItem><FormLabel className="text-white">Role</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                                    )} />
+                                    <FormField control={form.control} name={`founders.${index}.imageId`} render={({ field }) => (
+                                        <FormItem><FormLabel className="text-white">Image</FormLabel>
+                                        <Select onValueChange={field.onChange} value={field.value}>
+                                            <FormControl><SelectTrigger className={inputStyles}><SelectValue placeholder="Select an image" /></SelectTrigger></FormControl>
+                                            <SelectContent className="bg-zinc-900 border-zinc-800 text-white">{media?.map(m => <SelectItem key={m.id} value={m.id}>{m.id}</SelectItem>)}</SelectContent>
+                                        </Select>
+                                        <FormMessage /></FormItem>
+                                    )} />
+                                    <FormField control={form.control} name={`founders.${index}.quote`} render={({ field }) => (
+                                        <FormItem><FormLabel className="text-white">Quote</FormLabel><FormControl><Textarea {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                                    )} />
+                                    <Button type="button" variant="destructive" size="icon" className="absolute top-4 right-4" onClick={() => remove(index)}><Trash2 className="h-4 w-4" /></Button>
+                                </div>
+                                ))}
+                            </div>
+                        </ScrollArea>
                         <Button type="button" variant="outline" onClick={() => append({ name: '', role: '', imageId: '', quote: '', contact: '' })}><Plus className="mr-2 h-4 w-4" /> Add Founder</Button>
                     </CardContent>
                 </Card>
@@ -334,3 +339,4 @@ export default function SettingsForm() {
     </Form>
   );
 }
+
