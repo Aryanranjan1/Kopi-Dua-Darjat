@@ -77,9 +77,9 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ isLoading }) => {
           {/* Logo */}
           <div className="absolute inset-0 flex items-center justify-center">
             <motion.div
-              className="w-48 h-48 sm:w-64 sm:h-64"
+              className="w-48 sm:w-64"
             >
-                <Logo className="w-full h-full filter brightness-0 invert sepia saturate-[5000%] hue-rotate-[3deg] animate-spin-slow" />
+                <Logo className="w-full h-auto filter brightness-0 invert sepia saturate-[5000%] hue-rotate-[3deg] animate-spin-slow" />
             </motion.div>
           </div>
 
