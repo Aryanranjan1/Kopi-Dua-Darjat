@@ -25,7 +25,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, addDoc, doc, setDoc, serverTimestamp, writeBatch, getDoc, query } from 'firebase/firestore';
 import type { Promotion, MenuItem, Outlet } from '@/lib/types';
-import { cn } from '@/lib/utils';
+import { cn, getLocalized } from '@/lib/utils';
 import { format } from 'date-fns';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -264,7 +264,7 @@ export default function PromotionForm({ promotion, outletId, onSuccess }: Promot
               <FormLabel>Linked Menu Items</FormLabel>
               <MultiSelectPopover
                 title="Menu Items"
-                options={menuItems?.map(item => ({ value: item.id, label: item.name })) || []}
+                options={menuItems?.map(item => ({ value: item.id, label: getLocalized(item, 'en').name || '' })) || []}
                 selected={field.value || []}
                 onChange={field.onChange}
               />
@@ -283,7 +283,7 @@ export default function PromotionForm({ promotion, outletId, onSuccess }: Promot
                 <FormLabel>Linked Outlets</FormLabel>
                 <MultiSelectPopover
                     title="Outlets"
-                    options={outlets?.map(outlet => ({ value: outlet.id, label: outlet.name })) || []}
+                    options={outlets?.map(outlet => ({ value: outlet.id, label: getLocalized(outlet, 'en').name || '' })) || []}
                     selected={field.value || []}
                     onChange={field.onChange}
                 />
