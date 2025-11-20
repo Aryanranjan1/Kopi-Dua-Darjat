@@ -25,6 +25,7 @@ import { useEffect } from 'react';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { getLocalized } from '@/lib/utils';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface CategoryFormProps {
   category?: MenuCategory;
@@ -139,98 +140,101 @@ export default function CategoryForm({ category, allCategories, onSuccess }: Cat
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 text-white">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-4">
-                <h3 className="font-medium text-lg text-zinc-300">English (EN)</h3>
-                 <FormField control={form.control} name="translations.en.name" render={({ field }) => (
-                    <FormItem><FormLabel>Category Name</FormLabel><FormControl><Input placeholder="e.g., Darjat Series" {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
-                )} />
-                 <FormField control={form.control} name="translations.en.description" render={({ field }) => (
-                    <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea placeholder="Short description..." {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
-                )} />
-            </div>
-            <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                     <h3 className="font-medium text-lg text-zinc-300">Malay (MS)</h3>
-                     <Button type="button" size="sm" onClick={handleCopyToMalay} className="bg-primary text-primary-foreground border border-black hover:bg-primary">Copy from EN</Button>
+        <ScrollArea className="h-[60vh] pr-4">
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                    <h3 className="font-medium text-lg text-zinc-300">English (EN)</h3>
+                    <FormField control={form.control} name="translations.en.name" render={({ field }) => (
+                        <FormItem><FormLabel>Category Name</FormLabel><FormControl><Input placeholder="e.g., Darjat Series" {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                    )} />
+                    <FormField control={form.control} name="translations.en.description" render={({ field }) => (
+                        <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea placeholder="Short description..." {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                    )} />
                 </div>
-                 <FormField control={form.control} name="translations.ms.name" render={({ field }) => (
-                    <FormItem><FormLabel>Nama Kategori</FormLabel><FormControl><Input placeholder="e.g., Siri Darjat" {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
-                )} />
-                 <FormField control={form.control} name="translations.ms.description" render={({ field }) => (
-                    <FormItem><FormLabel>Penerangan</FormLabel><FormControl><Textarea placeholder="Penerangan ringkas..." {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
-                )} />
+                <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                        <h3 className="font-medium text-lg text-zinc-300">Malay (MS)</h3>
+                        <Button type="button" size="sm" onClick={handleCopyToMalay} className="bg-yellow-400 text-black border border-black">Copy from EN</Button>
+                    </div>
+                    <FormField control={form.control} name="translations.ms.name" render={({ field }) => (
+                        <FormItem><FormLabel>Nama Kategori</FormLabel><FormControl><Input placeholder="e.g., Siri Darjat" {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                    )} />
+                    <FormField control={form.control} name="translations.ms.description" render={({ field }) => (
+                        <FormItem><FormLabel>Penerangan</FormLabel><FormControl><Textarea placeholder="Penerangan ringkas..." {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                    )} />
+                </div>
             </div>
-        </div>
-        
-        <FormField
+            
+            <FormField
+                control={form.control}
+                name="slug"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Slug</FormLabel>
+                    <FormControl>
+                        <Input placeholder="e.g., darjat-series" {...field} value={field.value || ''} className={inputStyles} />
+                    </FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
+            />
+            <FormField
+                control={form.control}
+                name="groupId"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Group</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoadingGroups}>
+                        <FormControl><SelectTrigger className={inputStyles}><SelectValue placeholder="Select a parent group..." /></SelectTrigger></FormControl>
+                        <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                            {groups?.map(g => {
+                                const localized = getLocalized(g, 'en');
+                                return <SelectItem key={g.id} value={g.id}>{localized.name}</SelectItem>
+                            })}
+                        </SelectContent>
+                    </Select>
+                    <FormDescription>Assigns this category to a top-level group.</FormDescription>
+                    <FormMessage />
+                    </FormItem>
+                )}
+            />
+            
+            <FormField
             control={form.control}
-            name="slug"
+            name="imageUrl"
             render={({ field }) => (
                 <FormItem>
-                <FormLabel>Slug</FormLabel>
+                <FormLabel>Image URL (Optional)</FormLabel>
                 <FormControl>
-                    <Input placeholder="e.g., darjat-series" {...field} value={field.value || ''} className={inputStyles} />
+                    <Input type="url" placeholder="https://..." {...field} value={field.value || ''} className={inputStyles} />
                 </FormControl>
+                <FormDescription>Image used for the category grid on microsites.</FormDescription>
                 <FormMessage />
                 </FormItem>
             )}
-        />
-        <FormField
-            control={form.control}
-            name="groupId"
-            render={({ field }) => (
-                <FormItem>
-                <FormLabel>Group</FormLabel>
-                 <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoadingGroups}>
-                    <FormControl><SelectTrigger className={inputStyles}><SelectValue placeholder="Select a parent group..." /></SelectTrigger></FormControl>
-                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                        {groups?.map(g => {
-                            const localized = getLocalized(g, 'en');
-                            return <SelectItem key={g.id} value={g.id}>{localized.name}</SelectItem>
-                        })}
-                    </SelectContent>
-                </Select>
-                <FormDescription>Assigns this category to a top-level group.</FormDescription>
-                <FormMessage />
+            />
+            
+            <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border border-zinc-700 p-4">
+                    <div className="space-y-0.5">
+                    <FormLabel className="text-base">Publish</FormLabel>
+                    <FormDescription>Make this category visible on the public menu.</FormDescription>
+                    </div>
+                    <FormControl>
+                    <Switch
+                        checked={field.value === 'published'}
+                        onCheckedChange={(checked) => field.onChange(checked ? 'published' : 'draft')}
+                    />
+                    </FormControl>
                 </FormItem>
-            )}
-        />
-        
-        <FormField
-          control={form.control}
-          name="imageUrl"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Image URL (Optional)</FormLabel>
-              <FormControl>
-                <Input type="url" placeholder="https://..." {...field} value={field.value || ''} className={inputStyles} />
-              </FormControl>
-               <FormDescription>Image used for the category grid on microsites.</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        
-        <FormField
-            control={form.control}
-            name="status"
-            render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border border-zinc-700 p-4">
-                <div className="space-y-0.5">
-                <FormLabel className="text-base">Publish</FormLabel>
-                <FormDescription>Make this category visible on the public menu.</FormDescription>
-                </div>
-                <FormControl>
-                <Switch
-                    checked={field.value === 'published'}
-                    onCheckedChange={(checked) => field.onChange(checked ? 'published' : 'draft')}
-                />
-                </FormControl>
-            </FormItem>
-            )}
-        />
-
+                )}
+            />
+          </div>
+        </ScrollArea>
         <Button type="submit" disabled={isSubmitting} className="w-full">
           {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {category ? 'Save Changes' : 'Create Category'}
