@@ -24,6 +24,7 @@ import type { MenuCategory, MenuGroup } from '@/lib/types';
 import { useEffect } from 'react';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
+import { getLocalized } from '@/lib/utils';
 
 interface CategoryFormProps {
   category?: MenuCategory;
@@ -32,12 +33,20 @@ interface CategoryFormProps {
 }
 
 const formSchema = z.object({
-    name: z.string().min(2, 'Category name must be at least 2 characters.'),
     slug: z.string().min(2, 'Slug must be at least 2 characters.').regex(/^[a-z0-9-]+$/, 'Slug can only contain lowercase letters, numbers, and hyphens.'),
-    description: z.string().optional(),
     imageUrl: z.string().url('Must be a valid URL').optional().or(z.literal('')),
     groupId: z.string({ required_error: 'Please select a group.' }),
     status: z.enum(['draft', 'published']),
+    translations: z.object({
+        en: z.object({
+            name: z.string().min(2, 'English category name is required.'),
+            description: z.string().optional(),
+        }),
+        ms: z.object({
+            name: z.string().optional(),
+            description: z.string().optional(),
+        }),
+    }),
 });
 
 
@@ -54,42 +63,65 @@ export default function CategoryForm({ category, allCategories, onSuccess }: Cat
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: category ? {
-        ...category,
-        description: category.description || '',
+        slug: category.slug,
         imageUrl: category.imageUrl || '',
+        groupId: category.groupId,
+        status: category.status,
+        translations: {
+            en: getLocalized(category, 'en'),
+            ms: getLocalized(category, 'ms'),
+        }
     } : {
-        name: '',
         slug: '',
-        description: '',
         imageUrl: '',
         groupId: undefined,
         status: 'draft',
+        translations: {
+            en: { name: '', description: '' },
+            ms: { name: '', description: '' },
+        },
     },
   });
 
-  const { isSubmitting } = form;
+  const { isSubmitting, watch, setValue, formState: { dirtyFields } } = form;
+  const watchedEnName = watch('translations.en.name');
+
+  useEffect(() => {
+    if (watchedEnName && !dirtyFields.slug) {
+        const newSlug = watchedEnName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+        setValue('slug', newSlug);
+    }
+  }, [watchedEnName, setValue, dirtyFields.slug]);
+
+  const handleCopyToMalay = () => {
+    const en = form.getValues('translations.en');
+    form.setValue('translations.ms', en);
+    toast({ title: "Content Copied", description: "English content has been copied to the Malay fields." });
+  }
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (!firestore) return;
 
     try {
+      const dataToSave = {
+          ...values,
+          updatedAt: serverTimestamp(),
+      };
+
       if (category) {
         const categoryRef = doc(firestore, 'menuCategories', category.id);
-        await setDoc(categoryRef, { 
-            ...values,
-            updatedAt: serverTimestamp(),
-        }, { merge: true });
-        toast({ title: 'Category Updated', description: `"${values.name}" has been successfully updated.` });
+        await setDoc(categoryRef, dataToSave, { merge: true });
+        toast({ title: 'Category Updated', description: `"${values.translations.en.name}" has been successfully updated.` });
       } else {
         const categoriesRef = collection(firestore, 'menuCategories');
         const categoriesInGroup = allCategories.filter(c => c.groupId === values.groupId);
         const nextOrder = categoriesInGroup.length > 0 ? Math.max(...categoriesInGroup.map(c => c.displayOrder)) + 1 : 1;
         await addDoc(categoriesRef, {
-          ...values,
+          ...dataToSave,
           displayOrder: nextOrder,
           createdAt: serverTimestamp(),
         });
-        toast({ title: 'Category Created', description: `"${values.name}" has been successfully created.` });
+        toast({ title: 'Category Created', description: `"${values.translations.en.name}" has been successfully created.` });
       }
       onSuccess();
     } catch (error: any) {
@@ -108,20 +140,30 @@ export default function CategoryForm({ category, allCategories, onSuccess }: Cat
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 text-white">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-                <FormItem>
-                <FormLabel>Category Name</FormLabel>
-                <FormControl>
-                    <Input placeholder="e.g., Darjat Series" {...field} className={inputStyles} />
-                </FormControl>
-                <FormMessage />
-                </FormItem>
-            )}
-            />
-            <FormField
+            <div className="space-y-4">
+                <h3 className="font-medium text-lg text-zinc-300">English (EN)</h3>
+                 <FormField control={form.control} name="translations.en.name" render={({ field }) => (
+                    <FormItem><FormLabel>Category Name</FormLabel><FormControl><Input placeholder="e.g., Darjat Series" {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                )} />
+                 <FormField control={form.control} name="translations.en.description" render={({ field }) => (
+                    <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea placeholder="Short description..." {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                )} />
+            </div>
+            <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                     <h3 className="font-medium text-lg text-zinc-300">Malay (MS)</h3>
+                     <Button type="button" variant="outline" size="sm" onClick={handleCopyToMalay}>Copy from EN</Button>
+                </div>
+                 <FormField control={form.control} name="translations.ms.name" render={({ field }) => (
+                    <FormItem><FormLabel>Nama Kategori</FormLabel><FormControl><Input placeholder="e.g., Siri Darjat" {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                )} />
+                 <FormField control={form.control} name="translations.ms.description" render={({ field }) => (
+                    <FormItem><FormLabel>Penerangan</FormLabel><FormControl><Textarea placeholder="Penerangan ringkas..." {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                )} />
+            </div>
+        </div>
+        
+        <FormField
             control={form.control}
             name="slug"
             render={({ field }) => (
@@ -133,8 +175,7 @@ export default function CategoryForm({ category, allCategories, onSuccess }: Cat
                 <FormMessage />
                 </FormItem>
             )}
-            />
-        </div>
+        />
         <FormField
             control={form.control}
             name="groupId"
@@ -144,9 +185,10 @@ export default function CategoryForm({ category, allCategories, onSuccess }: Cat
                  <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoadingGroups}>
                     <FormControl><SelectTrigger className={inputStyles}><SelectValue placeholder="Select a parent group..." /></SelectTrigger></FormControl>
                     <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                        {groups?.map(g => (
-                            <SelectItem key={g.id} value={g.id}>{g.name}</SelectItem>
-                        ))}
+                        {groups?.map(g => {
+                            const localized = getLocalized(g, 'en');
+                            return <SelectItem key={g.id} value={g.id}>{localized.name}</SelectItem>
+                        })}
                     </SelectContent>
                 </Select>
                 <FormDescription>Assigns this category to a top-level group.</FormDescription>
@@ -155,20 +197,6 @@ export default function CategoryForm({ category, allCategories, onSuccess }: Cat
             )}
         />
         
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description (Optional)</FormLabel>
-              <FormControl>
-                <Textarea placeholder="A short description of the category" {...field} className={inputStyles} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
         <FormField
           control={form.control}
           name="imageUrl"

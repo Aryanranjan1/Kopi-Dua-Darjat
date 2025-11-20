@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -21,6 +22,7 @@ import { collection, addDoc, doc, setDoc, serverTimestamp } from 'firebase/fires
 import type { MenuGroup } from '@/lib/types';
 import { useEffect } from 'react';
 import { Switch } from '@/components/ui/switch';
+import { getLocalized } from '@/lib/utils';
 
 interface GroupFormProps {
   group?: MenuGroup;
@@ -29,9 +31,16 @@ interface GroupFormProps {
 }
 
 const formSchema = z.object({
-    name: z.string().min(2, 'Group name must be at least 2 characters.'),
     slug: z.string().min(2, 'Slug must be at least 2 characters.').regex(/^[a-z0-9-]+$/, 'Slug can only contain lowercase letters, numbers, and hyphens.'),
     status: z.enum(['draft', 'published']),
+    translations: z.object({
+        en: z.object({
+            name: z.string().min(2, 'English group name is required.'),
+        }),
+        ms: z.object({
+            name: z.string().optional(),
+        }),
+    }),
 });
 
 
@@ -42,39 +51,57 @@ export default function GroupForm({ group, allGroups, onSuccess }: GroupFormProp
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: group ? {
-        name: group.name,
         slug: group.slug,
         status: group.status,
+        translations: {
+            en: getLocalized(group, 'en'),
+            ms: getLocalized(group, 'ms'),
+        }
     } : {
-        name: '',
         slug: '',
         status: 'draft',
+        translations: {
+            en: { name: '' },
+            ms: { name: '' },
+        }
     },
   });
 
-  const { isSubmitting } = form.formState;
+  const { isSubmitting, watch, setValue, formState: { dirtyFields } } = form;
+  const watchedEnName = watch('translations.en.name');
+
+  useEffect(() => {
+    if (watchedEnName && !dirtyFields.slug) {
+        const newSlug = watchedEnName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+        setValue('slug', newSlug);
+    }
+  }, [watchedEnName, setValue, dirtyFields.slug]);
+
+  const handleCopyToMalay = () => {
+    const en = form.getValues('translations.en');
+    form.setValue('translations.ms', en);
+    toast({ title: "Content Copied", description: "English content has been copied to the Malay fields." });
+  }
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (!firestore) return;
 
     try {
+      const dataToSave = { ...values, updatedAt: serverTimestamp() };
+
       if (group) {
         const groupRef = doc(firestore, 'menuGroups', group.id);
-        await setDoc(groupRef, { 
-            ...values,
-            updatedAt: serverTimestamp(),
-        }, { merge: true });
-        toast({ title: 'Group Updated', description: `"${values.name}" has been successfully updated.` });
+        await setDoc(groupRef, dataToSave, { merge: true });
+        toast({ title: 'Group Updated', description: `"${values.translations.en.name}" has been successfully updated.` });
       } else {
         const groupsRef = collection(firestore, 'menuGroups');
         const nextOrder = allGroups.length > 0 ? Math.max(...allGroups.map(g => g.displayOrder)) + 1 : 1;
         await addDoc(groupsRef, {
-          ...values,
+          ...dataToSave,
           displayOrder: nextOrder,
           createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
         });
-        toast({ title: 'Group Created', description: `"${values.name}" has been successfully created.` });
+        toast({ title: 'Group Created', description: `"${values.translations.en.name}" has been successfully created.` });
       }
       onSuccess();
     } catch (error: any) {
@@ -92,19 +119,24 @@ export default function GroupForm({ group, allGroups, onSuccess }: GroupFormProp
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 text-white">
-        <FormField
-        control={form.control}
-        name="name"
-        render={({ field }) => (
-            <FormItem>
-            <FormLabel>Group Name</FormLabel>
-            <FormControl>
-                <Input placeholder="e.g., Nak Kopi" {...field} className={inputStyles} />
-            </FormControl>
-            <FormMessage />
-            </FormItem>
-        )}
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-4">
+                <h3 className="font-medium text-lg text-zinc-300">English (EN)</h3>
+                <FormField control={form.control} name="translations.en.name" render={({ field }) => (
+                    <FormItem><FormLabel>Group Name</FormLabel><FormControl><Input placeholder="e.g., Nak Kopi" {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                )} />
+            </div>
+            <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                    <h3 className="font-medium text-lg text-zinc-300">Malay (MS)</h3>
+                    <Button type="button" variant="outline" size="sm" onClick={handleCopyToMalay}>Copy from EN</Button>
+                </div>
+                <FormField control={form.control} name="translations.ms.name" render={({ field }) => (
+                    <FormItem><FormLabel>Nama Kumpulan</FormLabel><FormControl><Input placeholder="e.g., Nak Kopi" {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                )} />
+            </div>
+        </div>
+        
         <FormField
         control={form.control}
         name="slug"
