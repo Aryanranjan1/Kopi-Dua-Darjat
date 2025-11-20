@@ -12,10 +12,34 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, Suspense } from 'react';
 import MenuItemCard from '../menu/MenuItemCard';
+import { Skeleton } from '../ui/skeleton';
 
-export default function FeaturedDrinks() {
+export const FeaturedDrinksSkeleton = () => {
+    return (
+        <section className="py-24 sm:py-32 bg-[#F7F4EF] text-foreground">
+            <div className="container mx-auto px-4 sm:px-12">
+                <div className="text-center mb-16">
+                    <Skeleton className="h-12 w-1/2 mx-auto" />
+                </div>
+                <div className="relative">
+                    <div className="flex -ml-4 py-16">
+                        {[...Array(3)].map((_, index) => (
+                             <div key={index} className="basis-1/2 md:basis-1/2 lg:basis-1/3 pl-4 overflow-visible">
+                                <div className="p-1">
+                                    <Skeleton className="h-[450px] w-full rounded-3xl" />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </section>
+    )
+}
+
+function FeaturedDrinksContent() {
   const firestore = useFirestore();
   const [promotions, setPromotions] = useState<Promotion[]>([]);
   const [dailySpecials, setDailySpecials] = useState<DailySpecial[]>([]);
@@ -61,8 +85,11 @@ export default function FeaturedDrinks() {
   const isLoading = isLoadingPopular || isLoadingGeneric;
 
   if (isLoading) {
-    // You can return a skeleton loader here if you want
-    return null;
+    return <FeaturedDrinksSkeleton />;
+  }
+  
+  if (!drinksToShow || drinksToShow.length === 0) {
+      return null;
   }
 
   return (
@@ -104,4 +131,12 @@ export default function FeaturedDrinks() {
       </div>
     </section>
   );
+}
+
+export default function FeaturedDrinks() {
+    return (
+        <Suspense fallback={<FeaturedDrinksSkeleton />}>
+            <FeaturedDrinksContent />
+        </Suspense>
+    )
 }

@@ -1,5 +1,4 @@
 
-
 import dynamic from 'next/dynamic';
 import Hero from '@/components/home/Hero';
 import { Skeleton } from '@/components/ui/skeleton';
