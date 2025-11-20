@@ -16,13 +16,15 @@ import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { getDiscountDisplay, getLocalized } from '@/lib/utils';
 import { Skeleton } from '../ui/skeleton';
+import { useLanguage } from '../layout/LanguageProvider';
 
 const ITEMS_PER_PAGE = 10;
 
 type SortOption = 'default' | 'price-asc' | 'price-desc' | 'name-asc';
 
 const DrinkCard = ({ item }: { item: MenuItem }) => {
-  const localized = getLocalized(item, 'en');
+  const { language } = useLanguage();
+  const localized = getLocalized(item, language);
   return (
     <Card className="rounded-3xl overflow-hidden group bg-primary border-black/10 transition-all duration-300 transform hover:shadow-xl hover:-translate-y-1 h-full flex flex-col">
       <div className="relative aspect-square w-full">
@@ -50,6 +52,7 @@ const DrinkCard = ({ item }: { item: MenuItem }) => {
 
 export default function MenuShowcase() {
   const firestore = useFirestore();
+  const { language } = useLanguage();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState<SortOption>('default');
@@ -74,7 +77,7 @@ export default function MenuShowcase() {
     
     if (searchQuery) {
       filtered = filtered.filter(item => {
-        const localized = getLocalized(item, 'en');
+        const localized = getLocalized(item, language);
         return localized.name?.toLowerCase().includes(searchQuery.toLowerCase());
       });
     }
@@ -88,8 +91,8 @@ export default function MenuShowcase() {
         break;
       case 'name-asc':
         filtered.sort((a, b) => {
-          const nameA = getLocalized(a, 'en').name || '';
-          const nameB = getLocalized(b, 'en').name || '';
+          const nameA = getLocalized(a, language).name || '';
+          const nameB = getLocalized(b, language).name || '';
           return nameA.localeCompare(nameB);
         });
         break;
@@ -99,7 +102,7 @@ export default function MenuShowcase() {
     }
     
     return filtered;
-  }, [items, searchQuery, sortOrder, selectedCategory]);
+  }, [items, searchQuery, sortOrder, selectedCategory, language]);
 
   const totalPages = Math.ceil(filteredAndSortedItems.length / ITEMS_PER_PAGE);
   const paginatedItems = filteredAndSortedItems.slice(
@@ -135,7 +138,7 @@ export default function MenuShowcase() {
                     <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
                         <SelectItem value="all">All Categories</SelectItem>
                         {categories?.map(cat => {
-                          const localized = getLocalized(cat, 'en');
+                          const localized = getLocalized(cat, language);
                           return (
                             <SelectItem key={cat.id} value={cat.id}>{localized.name}</SelectItem>
                           )

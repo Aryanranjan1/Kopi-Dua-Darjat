@@ -10,7 +10,7 @@ import { getDoc, doc } from 'firebase/firestore';
 import { initializeServerSideFirebase } from '@/firebase/server-init';
 import type { SiteSettings, Media } from '@/lib/types';
 import { SettingsProvider } from '@/components/layout/SettingsProvider';
-
+import { LanguageProvider } from '@/components/layout/LanguageProvider';
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -95,9 +95,11 @@ export default function RootLayout({
         )}
       >
         <FirebaseClientProvider>
-          <SettingsProvider>
-            <AppLayout>{children}</AppLayout>
-          </SettingsProvider>
+            <SettingsProvider>
+              <LanguageProvider>
+                <AppLayout>{children}</AppLayout>
+              </LanguageProvider>
+            </SettingsProvider>
           <Toaster />
         </FirebaseClientProvider>
       </body>

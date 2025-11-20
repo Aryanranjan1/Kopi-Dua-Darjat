@@ -10,11 +10,13 @@ import { Card, CardContent } from '@/components/ui/card';
 import React from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Loader2, MessageSquare } from 'lucide-react';
+import { useLanguage } from '@/components/layout/LanguageProvider';
 import { getLocalized } from '@/lib/utils';
 import { useMediaAsset } from '@/lib/media';
 
 const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
-  const localized = getLocalized(testimonial, 'en');
+  const { language } = useLanguage();
+  const localized = getLocalized(testimonial, language);
   const { asset: companyLogo, isLoading: isLoadingLogo } = useMediaAsset('logo-symbol');
 
   return (

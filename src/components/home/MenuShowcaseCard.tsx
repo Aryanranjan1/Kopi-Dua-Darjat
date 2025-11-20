@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Badge } from '../ui/badge';
 import { getDiscountDisplay, getLocalized } from '@/lib/utils';
+import { useLanguage } from '../layout/LanguageProvider';
 
 interface MenuShowcaseCardProps {
   drink: MenuItem;
@@ -18,7 +19,8 @@ interface MenuShowcaseCardProps {
 
 export default function MenuShowcaseCard({ drink, promotions, dailySpecials }: MenuShowcaseCardProps) {
   
-  const localized = getLocalized(drink, 'en');
+  const { language } = useLanguage();
+  const localized = getLocalized(drink, language);
 
   const getOfferBadge = (): string | null => {
     const promotion = promotions.find(p => p.menuItemIds?.includes(drink.id));

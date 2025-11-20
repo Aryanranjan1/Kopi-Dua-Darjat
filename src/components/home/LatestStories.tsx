@@ -14,16 +14,21 @@ import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { BookOpen } from 'lucide-react';
 import { useMemo } from 'react';
 import { siteContentData } from '@/lib/site-content';
+import { useLanguage } from '../layout/LanguageProvider';
 import { getLocalized } from '@/lib/localization';
 
 export default function LatestStories() {
     const firestore = useFirestore();
+    const { language } = useLanguage();
+
     const blogsQuery = useMemoFirebase(
       () => firestore ? query(collection(firestore, 'blogs'), where('status', '==', 'published'), limit(10)) : null,
       [firestore]
     );
     const { data: blogPosts, isLoading: isLoadingBlogs } = useCollection<Blog>(blogsQuery);
-    const { title, buttonText, buttonLink } = siteContentData.home.latestStories;
+
+    const localizedContent = getLocalized(siteContentData.home.latestStories, language);
+    const { title, buttonText, buttonLink } = localizedContent;
 
     const sortedBlogPosts = useMemo(() => {
         if (!blogPosts) return [];
@@ -67,7 +72,7 @@ export default function LatestStories() {
     const featuredPost = sortedBlogPosts[0];
     const otherPosts = sortedBlogPosts.slice(1, 4);
 
-    const localizedFeatured = getLocalized(featuredPost, 'en');
+    const localizedFeatured = getLocalized(featuredPost, language);
     
     return (
         <section className="py-24 sm:py-40 bg-black">
@@ -76,7 +81,7 @@ export default function LatestStories() {
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-12">
                         <h2 className="text-4xl md:text-5xl font-headline text-white inline-block underline decoration-primary decoration-4 underline-offset-8 mb-6 sm:mb-0">{title}</h2>
                         <Button asChild variant="outline" className="rounded-full bg-transparent text-white border-white/50 hover:border-primary hover:text-primary">
-                            <Link href={buttonLink}>{buttonText}</Link>
+                            <Link href={buttonLink || '/news'}>{buttonText}</Link>
                         </Button>
                     </div>
                 </AnimateOnScroll>
@@ -107,7 +112,7 @@ export default function LatestStories() {
                     {/* Other Posts */}
                     <div className="space-y-6">
                         {otherPosts.map((post, index) => {
-                            const localizedPost = getLocalized(post, 'en');
+                            const localizedPost = getLocalized(post, language);
                             return (
                                 <AnimateOnScroll key={post.id} animationType="slideInFromRight" delay={index * 0.1}>
                                     <Link href={`/news/${post.slug}`} className="group flex items-center gap-4 sm:gap-6 rounded-2xl p-2 transition-all hover:ring-2 hover:ring-white/50">

@@ -17,11 +17,13 @@ import Autoplay from "embla-carousel-autoplay"
 import type { Testimonial } from '@/lib/types';
 import { useMediaAsset } from '@/lib/media';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useLanguage } from '@/components/layout/LanguageProvider';
 import { getLocalized } from '@/lib/localization';
 
 const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
   const { asset: companyLogo, isLoading: isLoadingLogo } = useMediaAsset('logo-symbol');
-  const localized = getLocalized(testimonial, 'en');
+  const { language } = useLanguage();
+  const localized = getLocalized(testimonial, language);
 
   return (
     <Card className="bg-white border-zinc-200 rounded-3xl h-full shadow-sm flex flex-col mx-2">

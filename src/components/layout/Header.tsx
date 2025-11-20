@@ -19,6 +19,7 @@ import Image from 'next/image';
 import { useSettings } from './SettingsProvider';
 import { Skeleton } from '../ui/skeleton';
 import { Logo } from './Logo';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 const navItems = [
   { title: 'Home', href: '/' },
@@ -88,6 +89,7 @@ export default function Header() {
 
         {/* Right Actions */}
         <div className="flex items-center gap-2">
+            <LanguageSwitcher className="hidden lg:flex" />
             <Button asChild className="hidden lg:flex rounded-full bg-black text-white hover:bg-white hover:text-black">
               <Link href="/outlets">
                 <MapPin className="mr-2 h-4 w-4" />
@@ -109,9 +111,12 @@ export default function Header() {
                       <SheetDescription>Navigation links for Kopi Dua Darjat</SheetDescription>
                     </SheetHeader>
                     <div className="flex flex-col h-full p-4">
-                        <Link href="/" className="h-20 flex items-center p-0 m-0">
-                           <Logo className="filter brightness-0" />
-                        </Link>
+                        <div className="flex justify-between items-center h-20">
+                          <Link href="/" className="p-0 m-0 flex items-center">
+                            <Logo className="filter brightness-0" />
+                          </Link>
+                          <LanguageSwitcher />
+                        </div>
                         <div className="flex flex-col space-y-4 mt-8">
                             {navItems.map((item) => (
                                 <Link
