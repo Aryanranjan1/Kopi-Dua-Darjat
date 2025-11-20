@@ -23,12 +23,11 @@ const PostItem = ({ post, className }: { post: PublicInstaPost; className: strin
       {isReel ? (
         <video
           src={post.mediaUrl}
+          autoPlay
           muted
           loop
           playsInline
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-          onMouseEnter={(e) => e.currentTarget.play()}
-          onMouseLeave={(e) => e.currentTarget.pause()}
         />
       ) : (
         <img
