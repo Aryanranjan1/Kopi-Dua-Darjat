@@ -47,7 +47,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ isLoading }) => {
         // Stagger the animation of columns
         await animateStagger(
           "div.loader-column",
-          { y: "-30vh" },
+          { y: "-100%" },
           { duration: 0.4, delay: (i) => i * 0.1, ease: "easeInOut" }
         );
         // Fade out the entire container
@@ -75,18 +75,13 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ isLoading }) => {
           </div>
           
           {/* Logo */}
-          <motion.div
-            className="absolute z-20 w-48 h-48 sm:w-64 sm:h-64"
-            style={{ 
-              top: '50%', 
-              left: '50%', 
-              x: '-50%',
-              y: '-50%',
-              scale: 2,
-            }}
-          >
-              <Logo className="filter brightness-0 invert sepia saturate-[5000%] hue-rotate-[3deg] animate-spin-slow" />
-          </motion.div>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <motion.div
+              className="w-48 h-48 sm:w-64 sm:h-64"
+            >
+                <Logo className="w-full h-full filter brightness-0 invert sepia saturate-[5000%] hue-rotate-[3deg] animate-spin-slow" />
+            </motion.div>
+          </div>
 
           {/* Counter */}
            <motion.div className="absolute bottom-6 left-6 z-30 font-mono text-7xl md:text-9xl text-white mix-blend-difference font-bold">
