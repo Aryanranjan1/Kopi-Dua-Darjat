@@ -98,7 +98,7 @@ export async function masterSeed(firestore: Firestore): Promise<{ success: boole
 
         // --- Testimonials ---
         const testimonials = [...Array(5)].map((_, i) => ({
-          image: `testimonial-${i+1}`,
+          image: `https://i.pravatar.cc/150?img=${i+1}`,
           rating: 4.5,
           translations: {
             en: { name: `Customer ${i+1}`, quote: `This is an amazing English testimonial from a very happy customer, number ${i+1}.`, designation: 'Loyal Patron' },

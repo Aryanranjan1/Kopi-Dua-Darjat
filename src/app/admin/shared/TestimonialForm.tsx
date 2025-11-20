@@ -15,12 +15,11 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
-import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, addDoc, doc, setDoc, serverTimestamp, query } from 'firebase/firestore';
-import type { Testimonial, Media, Review } from '@/lib/types';
+import { useFirestore } from '@/firebase';
+import { collection, addDoc, doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import type { Testimonial, Review } from '@/lib/types';
 import { getLocalized } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
@@ -32,7 +31,7 @@ interface TestimonialFormProps {
 }
 
 const formSchema = z.object({
-  image: z.string().optional(),
+  image: z.string().url({ message: "Please enter a valid URL." }).optional().or(z.literal('')),
   company: z.string().optional(),
   rating: z.coerce.number().min(1).max(5).optional(),
   translations: z.object({
@@ -55,14 +54,13 @@ const formSchema = z.object({
 export default function TestimonialForm({ testimonial, onSuccess, onSave, onCancel }: TestimonialFormProps) {
   const { toast } = useToast();
   const firestore = useFirestore();
-  const { data: media, isLoading: isLoadingMedia } = useCollection<Media>(useMemoFirebase(() => firestore ? query(collection(firestore, 'media')) : null, [firestore]));
 
   const isReview = testimonial && 'source' in testimonial;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: testimonial ? {
-      image: 'image' in testimonial ? testimonial.image : '',
+      image: 'image' in testimonial ? testimonial.image : ('profile_photo_url' in testimonial ? testimonial.profile_photo_url : ''),
       company: 'company' in testimonial ? testimonial.company || '' : '',
       rating: testimonial.rating || 4,
       translations: {
@@ -101,6 +99,7 @@ export default function TestimonialForm({ testimonial, onSuccess, onSave, onCanc
             id: isReview ? (testimonial as Review).id : undefined,
             author_name: values.translations.en.name,
             rating: values.rating || 5,
+            profile_photo_url: values.image,
             translations: {
                 en: { text: values.translations.en.text || '' },
                 ms: { text: values.translations.ms.text || '' }
@@ -183,16 +182,11 @@ export default function TestimonialForm({ testimonial, onSuccess, onSave, onCanc
             
             <div className="grid grid-cols-2 gap-6">
                 {!isReview && <FormField control={form.control} name="image" render={({ field }) => (
-                    <FormItem><FormLabel>Image</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl><SelectTrigger className={inputStyles}><SelectValue placeholder="Select an image asset" /></SelectTrigger></FormControl>
-                        <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                        {isLoadingMedia ? <SelectItem value="loading" disabled>Loading...</SelectItem> : media?.map(m => (
-                            <SelectItem key={m.id} value={m.id}>{m.id}</SelectItem>
-                        ))}
-                        </SelectContent>
-                    </Select>
-                    <FormMessage /></FormItem>
+                  <FormItem>
+                    <FormLabel>Image URL</FormLabel>
+                    <FormControl><Input type="url" placeholder="https://..." {...field} value={field.value || ''} className={inputStyles} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
                 )} />}
                 
                 <FormField control={form.control} name="rating" render={({ field }) => (

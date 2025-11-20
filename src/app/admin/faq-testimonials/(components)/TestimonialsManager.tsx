@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, doc, deleteDoc, query, orderBy } from 'firebase/firestore';
 import type { Testimonial } from '@/lib/types';
@@ -34,17 +34,8 @@ import {
 import { Loader2, PlusCircle, Edit, Trash2 } from 'lucide-react';
 import TestimonialForm from '../../shared/TestimonialForm';
 import { useToast } from '@/hooks/use-toast';
-import { useMediaAsset } from '@/lib/media';
 import Image from 'next/image';
-import { Skeleton } from '@/components/ui/skeleton';
 import { getLocalized } from '@/lib/utils';
-
-const TestimonialImage = ({ imageId }: { imageId: string }) => {
-    const { asset, isLoading } = useMediaAsset(imageId);
-    if(isLoading) return <Skeleton className="h-10 w-10 rounded-full" />;
-    if(!asset) return <div className="h-10 w-10 rounded-full bg-zinc-700" />;
-    return <Image src={asset.imageUrl} alt={asset.description} width={40} height={40} className="rounded-full object-cover" />;
-}
 
 export default function TestimonialsManager() {
   const firestore = useFirestore();
@@ -104,7 +95,11 @@ export default function TestimonialsManager() {
             const localized = getLocalized(testimonial, 'en');
             return (
               <TableRow key={testimonial.id} className="border-zinc-700 hover:bg-zinc-800">
-                <TableCell><TestimonialImage imageId={testimonial.image} /></TableCell>
+                <TableCell>
+                  {testimonial.image && (
+                    <Image src={testimonial.image} alt={localized.name || ''} width={40} height={40} className="rounded-full object-cover bg-zinc-700" />
+                  )}
+                </TableCell>
                 <TableCell className="font-medium">{localized.name}</TableCell>
                 <TableCell>{localized.designation}</TableCell>
                 <TableCell className="text-zinc-400 truncate max-w-xs">"{localized.quote}"</TableCell>

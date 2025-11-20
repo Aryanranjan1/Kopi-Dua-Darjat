@@ -5,34 +5,32 @@ import Image from 'next/image';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, limit } from 'firebase/firestore';
 import type { Testimonial } from '@/lib/types';
-import { useMediaAsset } from '@/lib/media';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import { Card, CardContent } from '@/components/ui/card';
 import React from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Loader2, MessageSquare } from 'lucide-react';
+import { getLocalized } from '@/lib/utils';
+import { useMediaAsset } from '@/lib/media';
 
 const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
-  const { asset: image, isLoading: isLoadingImage } = useMediaAsset(testimonial.image);
+  const localized = getLocalized(testimonial, 'en');
   const { asset: companyLogo, isLoading: isLoadingLogo } = useMediaAsset('logo-symbol');
 
-  const isLoading = isLoadingImage || isLoadingLogo;
-  
   return (
       <Card className="bg-white border-zinc-200 rounded-3xl h-full shadow-sm flex flex-col">
           <CardContent className="p-8 flex flex-col flex-grow">
             <div className="flex justify-between items-start mb-4">
               <div className="flex items-center gap-4">
                 <div className="relative w-14 h-14 rounded-full overflow-hidden">
-                    {isLoading ? <Skeleton className="w-full h-full rounded-full" /> : image && (
+                    {testimonial.image ? (
                         <Image
-                            src={image.imageUrl}
-                            alt={testimonial.name}
+                            src={testimonial.image}
+                            alt={localized.name || ''}
                             fill
                             className="object-cover"
-                            data-ai-hint={image.imageHint}
                         />
-                    )}
+                    ) : <Skeleton className="w-full h-full rounded-full" /> }
                 </div>
                  <div className="relative w-16 h-10">
                     <MessageSquare className="w-16 h-16 text-zinc-200" strokeWidth={1} />
@@ -40,7 +38,7 @@ const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
               </div>
                <div className="flex items-center gap-2 border rounded-full px-3 py-1 text-sm">
                  <div className="w-12 h-12 relative">
-                  {isLoading ? <Skeleton className="w-full h-full rounded-full" /> : companyLogo && (
+                  {isLoadingLogo ? <Skeleton className="w-full h-full rounded-full" /> : companyLogo && (
                     <Image src={companyLogo.imageUrl} alt="Company Logo" fill className="object-contain p-2 filter grayscale" data-ai-hint={companyLogo.imageHint} />
                   )}
                  </div>
@@ -49,12 +47,12 @@ const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
             </div>
 
             <blockquote className="text-xl font-medium text-zinc-800 flex-grow my-4">
-            “{testimonial.quote}”
+            “{localized.quote}”
             </blockquote>
             
             <div className="border-t border-zinc-200 pt-4">
-              <p className="font-bold text-zinc-900 text-lg">{testimonial.name}</p>
-              <p className="text-zinc-600">{testimonial.designation}</p>
+              <p className="font-bold text-zinc-900 text-lg">{localized.name}</p>
+              <p className="text-zinc-600">{localized.designation}</p>
             </div>
           </CardContent>
       </Card>

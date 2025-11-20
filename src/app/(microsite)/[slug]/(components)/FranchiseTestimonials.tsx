@@ -20,11 +20,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { getLocalized } from '@/lib/localization';
 
 const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
-  const { asset: image, isLoading: isLoadingImage } = useMediaAsset(testimonial.image);
   const { asset: companyLogo, isLoading: isLoadingLogo } = useMediaAsset('logo-symbol');
   const localized = getLocalized(testimonial, 'en');
-
-  const isLoading = isLoadingImage || isLoadingLogo;
 
   return (
     <Card className="bg-white border-zinc-200 rounded-3xl h-full shadow-sm flex flex-col mx-2">
@@ -32,15 +29,14 @@ const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
           <div className="flex justify-between items-start mb-4">
             <div className="flex items-center gap-4">
               <div className="relative w-14 h-14 rounded-full overflow-hidden">
-                  {isLoading ? <Skeleton className="w-full h-full rounded-full" /> : image && (
+                  {testimonial.image ? (
                       <Image
-                          src={image.imageUrl}
+                          src={testimonial.image}
                           alt={localized.name || ''}
                           fill
                           className="object-cover"
-                          data-ai-hint={image.imageHint}
                       />
-                  )}
+                  ) : <Skeleton className="w-full h-full rounded-full" /> }
               </div>
                <div className="relative w-16 h-10">
                   <MessageSquare className="w-16 h-16 text-zinc-200" strokeWidth={1} />
@@ -48,7 +44,7 @@ const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
             </div>
              <div className="flex items-center gap-2 border rounded-full px-3 py-1 text-sm">
                <div className="w-12 h-12 relative">
-                {isLoading ? <Skeleton className="w-full h-full rounded-full" /> : companyLogo && (
+                {isLoadingLogo ? <Skeleton className="w-full h-full rounded-full" /> : companyLogo && (
                   <Image src={companyLogo.imageUrl} alt="Company Logo" fill className="object-contain p-2 filter grayscale" data-ai-hint={companyLogo.imageHint} />
                 )}
                </div>
