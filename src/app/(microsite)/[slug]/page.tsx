@@ -1,11 +1,13 @@
 
 
+import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import MicrositePageClient from './MicrositePageClient';
 import type { Outlet, MenuItem, Promotion, MenuCategory, SiteSettings, Blog, PublicInstaPost, ReviewDocument, Review, Media } from '@/lib/types';
 import { initializeServerSideFirebase } from '@/firebase/server-init';
 import { collection, getDocs, query, Timestamp, doc, getDoc, limit, orderBy, where } from 'firebase/firestore';
+import { Skeleton } from '@/components/ui/skeleton';
 
 
 // This remains a Server Component.
@@ -33,6 +35,19 @@ const serializeTimestamps = (obj: any): any => {
     }
     return obj;
 };
+
+const MicrositePageSkeleton = () => (
+    <div className="bg-[#f7f4ef] text-black">
+      <Skeleton className="h-screen w-full" />
+      <main>
+        <Skeleton className="h-[60vh] w-full" />
+        <Skeleton className="h-[80vh] w-full" />
+        <Skeleton className="h-[70vh] w-full" />
+        <Skeleton className="h-[70vh] w-full" />
+      </main>
+    </div>
+);
+
 
 // --- SERVER-SIDE DATA FETCHING ---
 async function getMicrositeData(slug: string) {
@@ -185,7 +200,9 @@ export default async function OutletMicrositePage({ params }: Props) {
                 dangerouslySetInnerHTML={{ __html: jsonLd }}
             />
         )}
-        <MicrositePageClient {...data} />
+        <Suspense fallback={<MicrositePageSkeleton />}>
+            <MicrositePageClient {...data} />
+        </Suspense>
     </>
   );
 }
