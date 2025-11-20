@@ -2,6 +2,7 @@
 'use client';
 
 import { siteContentData } from '@/lib/site-content';
+import { siteContentDataMs } from '@/lib/site-content-ms';
 import ContentForm from './ContentForm';
 
 export default function StaticContentManager() {
@@ -11,7 +12,8 @@ export default function StaticContentManager() {
             This section allows you to edit the hardcoded text content from across your website. Make your changes and click "Save Changes" at the bottom to update the content file on the server.
         </p>
         <ContentForm
-            initialData={siteContentData}
+            initialDataEn={siteContentData}
+            initialDataMs={siteContentDataMs}
         />
     </div>
   );

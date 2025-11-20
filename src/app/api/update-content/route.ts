@@ -3,42 +3,29 @@ import { NextResponse } from 'next/server';
 import { promises as fs } from 'fs';
 import path from 'path';
 
-// This is a simple in-memory check. In a real app, this should be a robust
-// authentication and authorization check (e.g., checking a user's Firebase session and custom claims).
-function isAdminRequest(request: Request): boolean {
-  // For this development environment, we will trust requests coming from the admin panel.
-  // In a production scenario, you MUST implement proper auth checks here.
-  const referer = request.headers.get('referer');
-  // A simple check that the request is coming from the admin section of the app.
-  return !!referer && new URL(referer).pathname.startsWith('/admin');
-}
-
 export async function POST(request: Request) {
-  // A real application MUST have proper authentication and authorization here.
-  // if (!isAdminRequest(request)) {
-  //   return NextResponse.json({ message: 'Unauthorized' }, { status: 403 });
-  // }
-
   try {
     const data = await request.json();
 
-    // Basic validation to ensure we're not writing garbage
-    if (typeof data !== 'object' || !data.home || !data.about || !data.franchise) {
-        return NextResponse.json({ message: 'Invalid content structure.' }, { status: 400 });
+    if (typeof data !== 'object' || !data.en || !data.ms) {
+        return NextResponse.json({ message: 'Invalid content structure. Expecting "en" and "ms" keys.' }, { status: 400 });
     }
 
-    // Format the data into a TypeScript module string
-    const fileContent = `
-export const siteContentData = ${JSON.stringify(data, null, 2)};
-`;
+    const fileContentEn = `export const siteContentData = ${JSON.stringify(data.en, null, 2)};`;
+    const fileContentMs = `export const siteContentDataMs = ${JSON.stringify(data.ms, null, 2)};`;
 
-    const filePath = path.join(process.cwd(), 'src', 'lib', 'site-content.ts');
-    const tempFilePath = `${filePath}.tmp`;
+    const filePathEn = path.join(process.cwd(), 'src', 'lib', 'site-content.ts');
+    const filePathMs = path.join(process.cwd(), 'src', 'lib', 'site-content-ms.ts');
+    
+    const tempFilePathEn = `${filePathEn}.tmp`;
+    const tempFilePathMs = `${filePathMs}.tmp`;
 
-    // Atomically write the file to prevent race conditions with Next.js dev server
-    await fs.writeFile(tempFilePath, fileContent.trim(), 'utf8');
-    await fs.rename(tempFilePath, filePath);
-
+    // Atomically write both files
+    await fs.writeFile(tempFilePathEn, fileContentEn.trim(), 'utf8');
+    await fs.rename(tempFilePathEn, filePathEn);
+    
+    await fs.writeFile(tempFilePathMs, fileContentMs.trim(), 'utf8');
+    await fs.rename(tempFilePathMs, filePathMs);
 
     return NextResponse.json({ message: 'Content updated successfully.' }, { status: 200 });
 
