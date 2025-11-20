@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useMemo, useState } from 'react';
@@ -11,14 +12,16 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
 import Image from 'next/image';
+import { getLocalized } from '@/lib/utils';
 
 const SpecialsItemRow = ({ item, isSpecial, onToggle }: { item: MenuItem; isSpecial: boolean; onToggle: (itemId: string, isCurrentlySpecial: boolean) => void; }) => {
+  const localized = getLocalized(item, 'en');
   return (
     <div className="flex items-center justify-between p-4 border-b border-zinc-800 last:border-b-0">
       <div className="flex items-center gap-4">
-        <Image src={item.imageUrl} alt={item.name} width={40} height={40} className="rounded-md object-contain bg-zinc-700 p-1" />
+        <Image src={item.imageUrl} alt={localized.name || ''} width={40} height={40} className="rounded-md object-contain bg-zinc-700 p-1" />
         <div>
-            <p className="font-medium text-white">{item.name}</p>
+            <p className="font-medium text-white">{localized.name}</p>
             <p className="text-sm text-zinc-400">RM{item.price.toFixed(2)}</p>
         </div>
       </div>
@@ -88,7 +91,10 @@ export default function DailySpecialsPage() {
         if (!menuItems) return [];
         if (!searchTerm) return menuItems;
         const lowercasedQuery = searchTerm.toLowerCase();
-        return menuItems.filter(item => item.name.toLowerCase().includes(lowercasedQuery));
+        return menuItems.filter(item => {
+            const localized = getLocalized(item, 'en');
+            return localized.name?.toLowerCase().includes(lowercasedQuery);
+        });
     }, [menuItems, searchTerm]);
 
 
