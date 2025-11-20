@@ -28,7 +28,11 @@ export default function LatestStories() {
     const sortedBlogPosts = useMemo(() => {
         if (!blogPosts) return [];
         return blogPosts
-            .sort((a, b) => b.publishedAt.toDate().getTime() - a.publishedAt.toDate().getTime())
+            .sort((a, b) => {
+                const timeA = a.publishedAt ? a.publishedAt.toDate().getTime() : 0;
+                const timeB = b.publishedAt ? b.publishedAt.toDate().getTime() : 0;
+                return timeB - timeA;
+            })
             .slice(0, 4);
     }, [blogPosts]);
 
