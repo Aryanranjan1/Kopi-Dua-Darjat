@@ -130,13 +130,9 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
 
   useEffect(() => {
     // When group changes, reset category if it's not in the new group
-    if (menuItem && watchedGroupId && allCategories) {
-        const currentCategory = allCategories.find(c => c.id === menuItem.categoryId);
-        if (currentCategory && currentCategory.groupId !== watchedGroupId) {
-            setValue('categoryId', '');
-        }
-    } else if (!menuItem) {
-      setValue('categoryId', '');
+    const currentCategory = allCategories?.find(c => c.id === menuItem?.categoryId);
+    if (watchedGroupId && currentCategory && currentCategory.groupId !== watchedGroupId) {
+        setValue('categoryId', '');
     }
   }, [watchedGroupId, menuItem, allCategories, setValue]);
 
@@ -386,7 +382,7 @@ function MultiSelectPopover({ title, options, selected, onChange }: {
     onChange: (selected: string[]) => void;
 }) {
     const [open, setOpen] = React.useState(false);
-    const [searchQuery, setSearchQuery = React.useState('');
+    const [searchQuery, setSearchQuery] = React.useState('');
 
     const filteredOptions = options.filter(option => 
         option.label?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -468,5 +464,3 @@ function MultiSelectPopover({ title, options, selected, onChange }: {
         </Popover>
     );
 }
-
-    
