@@ -48,7 +48,7 @@ export default function BlogPostsManager() {
   const { toast } = useToast();
   
   const postsQuery = useMemoFirebase(
-    () => firestore ? query(collection(firestore, 'blogs'), orderBy('publishedAt', 'desc')) : null,
+    () => firestore ? query(collection(firestore, 'blogs'), orderBy('createdAt', 'desc')) : null,
     [firestore]
   );
   const { data: posts, isLoading } = useCollection<Blog>(postsQuery);
