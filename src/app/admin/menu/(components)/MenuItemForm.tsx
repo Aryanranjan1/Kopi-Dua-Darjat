@@ -87,12 +87,12 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    values: menuItem ? {
+    values: menuItem && allCategories ? {
         slug: menuItem.slug,
         price: menuItem.price,
         imageUrl: menuItem.imageUrl,
         categoryId: menuItem.categoryId,
-        groupId: allCategories?.find(c => c.id === menuItem.categoryId)?.groupId || '',
+        groupId: allCategories.find(c => c.id === menuItem.categoryId)?.groupId || '',
         status: menuItem.status,
         isPopular: menuItem.isPopular || false,
         tags: menuItem.tags?.join(', ') || '',
@@ -305,7 +305,7 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
                   <FormLabel>Linked Outlets</FormLabel>
                    <MultiSelectPopover
                     title="Outlets"
-                    options={outlets?.map(outlet => ({ value: outlet.id, label: getLocalized(outlet, 'en').name })) || []}
+                    options={outlets?.map(outlet => ({ value: outlet.id, label: getLocalized(outlet, 'en').name || '' })) || []}
                     selected={field.value || []}
                     onChange={field.onChange}
                   />
@@ -386,7 +386,7 @@ function MultiSelectPopover({ title, options, selected, onChange }: {
     onChange: (selected: string[]) => void;
 }) {
     const [open, setOpen] = React.useState(false);
-    const [searchQuery, setSearchQuery] = React.useState('');
+    const [searchQuery, setSearchQuery = React.useState('');
 
     const filteredOptions = options.filter(option => 
         option.label?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -468,3 +468,5 @@ function MultiSelectPopover({ title, options, selected, onChange }: {
         </Popover>
     );
 }
+
+    
