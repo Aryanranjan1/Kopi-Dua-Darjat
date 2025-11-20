@@ -13,11 +13,13 @@ import {
 import { Badge } from '../ui/badge';
 import Image from 'next/image';
 import { Skeleton } from '../ui/skeleton';
-import { getDiscountDisplay } from '@/lib/utils';
+import { getDiscountDisplay, getLocalized } from '@/lib/utils';
 import { useMemo } from 'react';
+import { useLanguage } from '../layout/LanguageProvider';
 
 const DailySpecialsContent = () => {
   const firestore = useFirestore();
+  const { language } = useLanguage();
   const specialsQuery = useMemoFirebase(
     () => firestore ? query(collection(firestore, 'dailySpecials'), limit(7)) : null,
     [firestore]
@@ -76,68 +78,74 @@ const DailySpecialsContent = () => {
         Daily Specials
       </h2>
       <div className="max-w-4xl mx-auto">
-        {visibleSpecials.map((drink) => (
-          <div
-            key={drink.id}
-            className="flex items-center justify-between py-3 border-b border-border"
-          >
-            <div className="flex items-center gap-4">
-              <Image
-                src={drink.imageUrl}
-                alt={drink.name}
-                width={48}
-                height={48}
-                className="rounded-full object-contain bg-primary/20 p-1"
-              />
-              <div>
-                <h4 className="font-semibold text-lg">{drink.name}</h4>
-                <p className="text-sm text-muted-foreground">
-                  {drink.description}
+        {visibleSpecials.map((drink) => {
+          const localizedDrink = getLocalized(drink, language);
+          return (
+            <div
+              key={drink.id}
+              className="flex items-center justify-between py-3 border-b border-border"
+            >
+              <div className="flex items-center gap-4">
+                <Image
+                  src={drink.imageUrl}
+                  alt={localizedDrink.name || ''}
+                  width={48}
+                  height={48}
+                  className="rounded-full object-contain bg-primary/20 p-1"
+                />
+                <div>
+                  <h4 className="font-semibold text-lg">{localizedDrink.name}</h4>
+                  <p className="text-sm text-muted-foreground">
+                    {localizedDrink.description}
+                  </p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="font-bold text-lg text-accent">
+                  RM{drink.price.toFixed(2)}
                 </p>
+                <Badge variant="secondary" className="bg-accent/20 text-accent font-semibold mt-1">{getOfferBadge(drink)}</Badge>
               </div>
             </div>
-            <div className="text-right">
-              <p className="font-bold text-lg text-accent">
-                RM{drink.price.toFixed(2)}
-              </p>
-              <Badge variant="secondary" className="bg-accent/20 text-accent font-semibold mt-1">{getOfferBadge(drink)}</Badge>
-            </div>
-          </div>
-        ))}
+          )
+        })}
 
         {hiddenSpecials.length > 0 && (
           <Accordion type="single" collapsible>
             <AccordionItem value="item-1" className="border-b-0">
               <AccordionContent>
                 <div className="space-y-3 pt-3">
-                  {hiddenSpecials.map((drink) => (
-                    <div
-                      key={drink.id}
-                      className="flex items-center justify-between pt-3 border-t border-border"
-                    >
-                       <div className="flex items-center gap-4">
-                          <Image
-                          src={drink.imageUrl}
-                          alt={drink.name}
-                          width={48}
-                          height={48}
-                          className="rounded-full object-contain bg-primary/20 p-1"
-                          />
-                          <div>
-                          <h4 className="font-semibold text-lg">{drink.name}</h4>
-                          <p className="text-sm text-muted-foreground">
-                              {drink.description}
-                          </p>
-                          </div>
+                  {hiddenSpecials.map((drink) => {
+                    const localizedDrink = getLocalized(drink, language);
+                    return (
+                      <div
+                        key={drink.id}
+                        className="flex items-center justify-between pt-3 border-t border-border"
+                      >
+                         <div className="flex items-center gap-4">
+                            <Image
+                            src={drink.imageUrl}
+                            alt={localizedDrink.name || ''}
+                            width={48}
+                            height={48}
+                            className="rounded-full object-contain bg-primary/20 p-1"
+                            />
+                            <div>
+                            <h4 className="font-semibold text-lg">{localizedDrink.name}</h4>
+                            <p className="text-sm text-muted-foreground">
+                                {localizedDrink.description}
+                            </p>
+                            </div>
+                        </div>
+                        <div className="text-right">
+                            <p className="font-bold text-lg text-accent">
+                            RM{drink.price.toFixed(2)}
+                            </p>
+                            <Badge variant="secondary" className="bg-accent/20 text-accent font-semibold mt-1">{getOfferBadge(drink)}</Badge>
+                        </div>
                       </div>
-                      <div className="text-right">
-                          <p className="font-bold text-lg text-accent">
-                          RM{drink.price.toFixed(2)}
-                          </p>
-                          <Badge variant="secondary" className="bg-accent/20 text-accent font-semibold mt-1">{getOfferBadge(drink)}</Badge>
-                      </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               </AccordionContent>
               <AccordionTrigger className="font-semibold text-accent hover:no-underline justify-center">
