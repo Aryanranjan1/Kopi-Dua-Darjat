@@ -22,7 +22,7 @@ import { Loader2 } from 'lucide-react';
 import { useFirestore } from '@/firebase';
 import { collection, addDoc, doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import type { Blog } from '@/lib/types';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import slugify from 'slugify';
 import { useEffect } from 'react';
 import { getLocalized } from '@/lib/utils';
@@ -95,7 +95,7 @@ export default function PostForm({ post, onSuccess }: PostFormProps) {
         seo: {
             title: post.seo?.title || '',
             description: post.seo?.description || '',
-            keywords: post.seo?.keywords?.join(', ') || '',
+            keywords: post.seo?.keywords ? (Array.isArray(post.seo.keywords) ? post.seo.keywords.join(', ') : post.seo.keywords) : '',
         },
         translations: {
           en: getLocalized(post, 'en'),
@@ -104,7 +104,7 @@ export default function PostForm({ post, onSuccess }: PostFormProps) {
     } : {
         slug: '',
         coverImage: { url: '', alt: '', caption: '' },
-        author: { name: '', photo: '', bio: '' },
+        author: { name: 'Admin', photo: '', bio: '' },
         tags: '',
         category: '',
         status: 'draft',
@@ -193,10 +193,10 @@ export default function PostForm({ post, onSuccess }: PostFormProps) {
                         <div className="space-y-4">
                            <h3 className="font-medium text-lg text-zinc-300">English (EN)</h3>
                            <FormField control={form.control} name="translations.en.title" render={({ field }) => (
-                               <FormItem><FormLabel>Title</FormLabel><FormControl><Input placeholder="Awesome Post Title" {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                               <FormItem><FormLabel>Title</FormLabel><FormControl><Input placeholder="Awesome Post Title" {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                            )} />
                            <FormField control={form.control} name="translations.en.excerpt" render={({ field }) => (
-                               <FormItem><FormLabel>Excerpt</FormLabel><FormControl><Textarea placeholder="Short summary..." {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                               <FormItem><FormLabel>Excerpt</FormLabel><FormControl><Textarea placeholder="Short summary..." {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                            )} />
                         </div>
                         <div className="space-y-4">
@@ -205,18 +205,18 @@ export default function PostForm({ post, onSuccess }: PostFormProps) {
                              <Button type="button" variant="outline" size="sm" onClick={handleCopyToMalay}>Copy from EN</Button>
                            </div>
                            <FormField control={form.control} name="translations.ms.title" render={({ field }) => (
-                               <FormItem><FormLabel>Tajuk</FormLabel><FormControl><Input placeholder="Tajuk Hebat" {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                               <FormItem><FormLabel>Tajuk</FormLabel><FormControl><Input placeholder="Tajuk Hebat" {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                            )} />
                            <FormField control={form.control} name="translations.ms.excerpt" render={({ field }) => (
-                               <FormItem><FormLabel>Petikan</FormLabel><FormControl><Textarea placeholder="Ringkasan pendek..." {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                               <FormItem><FormLabel>Petikan</FormLabel><FormControl><Textarea placeholder="Ringkasan pendek..." {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                            )} />
                         </div>
                     </div>
                      <FormField control={form.control} name="translations.en.content" render={({ field }) => (
-                        <FormItem><FormLabel>Content (EN)</FormLabel><FormControl><Textarea placeholder="Start writing the English post..." {...field} className={inputStyles} rows={15} /></FormControl><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Content (EN)</FormLabel><FormControl><Textarea placeholder="Start writing the English post..." {...field} value={field.value || ''} className={inputStyles} rows={15} /></FormControl><FormMessage /></FormItem>
                     )} />
                      <FormField control={form.control} name="translations.ms.content" render={({ field }) => (
-                        <FormItem><FormLabel>Kandungan (MS)</FormLabel><FormControl><Textarea placeholder="Mula menulis post dalam Bahasa Melayu..." {...field} className={inputStyles} rows={15} /></FormControl><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Kandungan (MS)</FormLabel><FormControl><Textarea placeholder="Mula menulis post dalam Bahasa Melayu..." {...field} value={field.value || ''} className={inputStyles} rows={15} /></FormControl><FormMessage /></FormItem>
                     )} />
                 </CardContent>
             </Card>
@@ -224,13 +224,13 @@ export default function PostForm({ post, onSuccess }: PostFormProps) {
                 <CardHeader><CardTitle>SEO & Metadata</CardTitle></CardHeader>
                 <CardContent className="space-y-4">
                     <FormField control={form.control} name="seo.title" render={({ field }) => (
-                        <FormItem><FormLabel>SEO Title</FormLabel><FormControl><Input placeholder="Custom title for search engines" {...field} className={inputStyles} /></FormControl><FormDescription>If empty, the post title will be used.</FormDescription><FormMessage /></FormItem>
+                        <FormItem><FormLabel>SEO Title</FormLabel><FormControl><Input placeholder="Custom title for search engines" {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormDescription>If empty, the post title will be used.</FormDescription><FormMessage /></FormItem>
                     )} />
                     <FormField control={form.control} name="seo.description" render={({ field }) => (
-                        <FormItem><FormLabel>SEO Description</FormLabel><FormControl><Textarea placeholder="Custom description for search engines" {...field} className={inputStyles} /></FormControl><FormDescription>If empty, the excerpt will be used.</FormDescription><FormMessage /></FormItem>
+                        <FormItem><FormLabel>SEO Description</FormLabel><FormControl><Textarea placeholder="Custom description for search engines" {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormDescription>If empty, the excerpt will be used.</FormDescription><FormMessage /></FormItem>
                     )} />
                     <FormField control={form.control} name="seo.keywords" render={({ field }) => (
-                        <FormItem><FormLabel>Keywords</FormLabel><FormControl><Input placeholder="coffee, kopi, franchise" {...field} className={inputStyles} /></FormControl><FormDescription>Comma-separated keywords.</FormDescription><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Keywords</FormLabel><FormControl><Input placeholder="coffee, kopi, franchise" {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormDescription>Comma-separated keywords.</FormDescription><FormMessage /></FormItem>
                     )} />
                 </CardContent>
             </Card>
@@ -280,7 +280,7 @@ export default function PostForm({ post, onSuccess }: PostFormProps) {
                         <FormItem><FormLabel>Category</FormLabel><FormControl><Input placeholder="e.g. Behind The Cup" {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                     )} />
                     <FormField control={form.control} name="tags" render={({ field }) => (
-                        <FormItem><FormLabel>Tags</FormLabel><FormControl><Input placeholder="coffee, story, tips" {...field} className={inputStyles} /></FormControl><FormDescription>Comma-separated tags.</FormDescription><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Tags</FormLabel><FormControl><Input placeholder="coffee, story, tips" {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormDescription>Comma-separated tags.</FormDescription><FormMessage /></FormItem>
                     )} />
                 </CardContent>
             </Card>
@@ -289,13 +289,13 @@ export default function PostForm({ post, onSuccess }: PostFormProps) {
                 <CardHeader><CardTitle>Cover Image</CardTitle></CardHeader>
                 <CardContent className="space-y-4">
                     <FormField control={form.control} name="coverImage.url" render={({ field }) => (
-                        <FormItem><FormLabel>Image URL</FormLabel><FormControl><Input type="url" placeholder="https://..." {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Image URL</FormLabel><FormControl><Input type="url" placeholder="https://..." {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                     )} />
                     <FormField control={form.control} name="coverImage.alt" render={({ field }) => (
-                        <FormItem><FormLabel>Alt Text</FormLabel><FormControl><Input placeholder="Descriptive text for accessibility" {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Alt Text</FormLabel><FormControl><Input placeholder="Descriptive text for accessibility" {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                     )} />
                      <FormField control={form.control} name="coverImage.caption" render={({ field }) => (
-                        <FormItem><FormLabel>Caption</FormLabel><FormControl><Input placeholder="Optional image caption" {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Caption</FormLabel><FormControl><Input placeholder="Optional image caption" {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                     )} />
                 </CardContent>
             </Card>
@@ -304,7 +304,7 @@ export default function PostForm({ post, onSuccess }: PostFormProps) {
                 <CardHeader><CardTitle>Author</CardTitle></CardHeader>
                 <CardContent className="space-y-4">
                     <FormField control={form.control} name="author.name" render={({ field }) => (
-                        <FormItem><FormLabel>Author Name</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Author Name</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                     )} />
                     <FormField control={form.control} name="author.photo" render={({ field }) => (
                         <FormItem><FormLabel>Author Photo URL</FormLabel><FormControl><Input type="url" placeholder="https://..." value={field.value || ''} onChange={field.onChange} className={inputStyles} /></FormControl><FormMessage /></FormItem>
