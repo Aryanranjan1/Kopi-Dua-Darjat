@@ -22,6 +22,7 @@ import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, addDoc, doc, setDoc, serverTimestamp, query } from 'firebase/firestore';
 import type { Testimonial, Media, Review } from '@/lib/types';
 import { getLocalized } from '@/lib/utils';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface TestimonialFormProps {
   testimonial?: Testimonial | Review;
@@ -136,69 +137,72 @@ export default function TestimonialForm({ testimonial, onSuccess, onSave, onCanc
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-4">
-                 <h3 className="font-medium text-lg text-zinc-300">English (EN)</h3>
-                 <FormField control={form.control} name="translations.en.name" render={({ field }) => (
-                    <FormItem><FormLabel>Name</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
-                )} />
-                 {!isReview && <FormField control={form.control} name="translations.en.designation" render={({ field }) => (
-                    <FormItem><FormLabel>Designation</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
-                )} />}
-                {isReview ? (
-                    <FormField control={form.control} name="translations.en.text" render={({ field }) => (
-                        <FormItem><FormLabel>Review Text</FormLabel><FormControl><Textarea {...field} value={field.value || ''} className={inputStyles} rows={4} /></FormControl><FormMessage /></FormItem>
+        <ScrollArea className="h-[60vh] pr-4">
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                    <h3 className="font-medium text-lg text-zinc-300">English (EN)</h3>
+                    <FormField control={form.control} name="translations.en.name" render={({ field }) => (
+                        <FormItem><FormLabel>Name</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                     )} />
-                ) : (
-                    <FormField control={form.control} name="translations.en.quote" render={({ field }) => (
-                        <FormItem><FormLabel>Quote</FormLabel><FormControl><Textarea {...field} value={field.value || ''} className={inputStyles} rows={4} /></FormControl><FormMessage /></FormItem>
-                    )} />
-                )}
-            </div>
-            <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                    <h3 className="font-medium text-lg text-zinc-300">Malay (MS)</h3>
-                    <Button type="button" size="sm" onClick={handleCopyToMalay} className="bg-primary text-primary-foreground border border-black hover:bg-primary">Copy from EN</Button>
+                    {!isReview && <FormField control={form.control} name="translations.en.designation" render={({ field }) => (
+                        <FormItem><FormLabel>Designation</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                    )} />}
+                    {isReview ? (
+                        <FormField control={form.control} name="translations.en.text" render={({ field }) => (
+                            <FormItem><FormLabel>Review Text</FormLabel><FormControl><Textarea {...field} value={field.value || ''} className={inputStyles} rows={4} /></FormControl><FormMessage /></FormItem>
+                        )} />
+                    ) : (
+                        <FormField control={form.control} name="translations.en.quote" render={({ field }) => (
+                            <FormItem><FormLabel>Quote</FormLabel><FormControl><Textarea {...field} value={field.value || ''} className={inputStyles} rows={4} /></FormControl><FormMessage /></FormItem>
+                        )} />
+                    )}
                 </div>
-                 <FormField control={form.control} name="translations.ms.name" render={({ field }) => (
-                    <FormItem><FormLabel>Nama</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
-                )} />
-                {!isReview && <FormField control={form.control} name="translations.ms.designation" render={({ field }) => (
-                    <FormItem><FormLabel>Jawatan</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
-                )} />}
-                {isReview ? (
-                    <FormField control={form.control} name="translations.ms.text" render={({ field }) => (
-                        <FormItem><FormLabel>Teks Ulasan</FormLabel><FormControl><Textarea {...field} value={field.value || ''} className={inputStyles} rows={4} /></FormControl><FormMessage /></FormItem>
+                <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                        <h3 className="font-medium text-lg text-zinc-300">Malay (MS)</h3>
+                        <Button type="button" size="sm" onClick={handleCopyToMalay} className="bg-primary text-primary-foreground border border-black hover:bg-primary">Copy from EN</Button>
+                    </div>
+                    <FormField control={form.control} name="translations.ms.name" render={({ field }) => (
+                        <FormItem><FormLabel>Nama</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                     )} />
-                ) : (
-                    <FormField control={form.control} name="translations.ms.quote" render={({ field }) => (
-                        <FormItem><FormLabel>Petikan</FormLabel><FormControl><Textarea {...field} value={field.value || ''} className={inputStyles} rows={4} /></FormControl><FormMessage /></FormItem>
-                    )} />
-                )}
+                    {!isReview && <FormField control={form.control} name="translations.ms.designation" render={({ field }) => (
+                        <FormItem><FormLabel>Jawatan</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                    )} />}
+                    {isReview ? (
+                        <FormField control={form.control} name="translations.ms.text" render={({ field }) => (
+                            <FormItem><FormLabel>Teks Ulasan</FormLabel><FormControl><Textarea {...field} value={field.value || ''} className={inputStyles} rows={4} /></FormControl><FormMessage /></FormItem>
+                        )} />
+                    ) : (
+                        <FormField control={form.control} name="translations.ms.quote" render={({ field }) => (
+                            <FormItem><FormLabel>Petikan</FormLabel><FormControl><Textarea {...field} value={field.value || ''} className={inputStyles} rows={4} /></FormControl><FormMessage /></FormItem>
+                        )} />
+                    )}
+                </div>
             </div>
-        </div>
-        
-        <div className="grid grid-cols-2 gap-6">
-            {!isReview && <FormField control={form.control} name="image" render={({ field }) => (
-                <FormItem><FormLabel>Image</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl><SelectTrigger className={inputStyles}><SelectValue placeholder="Select an image asset" /></SelectTrigger></FormControl>
-                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                    {isLoadingMedia ? <SelectItem value="loading" disabled>Loading...</SelectItem> : media?.map(m => (
-                        <SelectItem key={m.id} value={m.id}>{m.id}</SelectItem>
-                    ))}
-                    </SelectContent>
-                </Select>
-                <FormMessage /></FormItem>
-            )} />}
             
-            <FormField control={form.control} name="rating" render={({ field }) => (
-                <FormItem><FormLabel>Rating (1-5)</FormLabel><FormControl><Input type="number" min="1" max="5" step="1" {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
-            )}/>
-        </div>
+            <div className="grid grid-cols-2 gap-6">
+                {!isReview && <FormField control={form.control} name="image" render={({ field }) => (
+                    <FormItem><FormLabel>Image</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl><SelectTrigger className={inputStyles}><SelectValue placeholder="Select an image asset" /></SelectTrigger></FormControl>
+                        <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                        {isLoadingMedia ? <SelectItem value="loading" disabled>Loading...</SelectItem> : media?.map(m => (
+                            <SelectItem key={m.id} value={m.id}>{m.id}</SelectItem>
+                        ))}
+                        </SelectContent>
+                    </Select>
+                    <FormMessage /></FormItem>
+                )} />}
+                
+                <FormField control={form.control} name="rating" render={({ field }) => (
+                    <FormItem><FormLabel>Rating (1-5)</FormLabel><FormControl><Input type="number" min="1" max="5" step="1" {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                )}/>
+            </div>
+          </div>
+        </ScrollArea>
         
-        <div className="flex justify-end gap-2">
+        <div className="flex justify-end gap-2 pt-4">
             {onCancel && <Button type="button" variant="ghost" onClick={onCancel}>Cancel</Button>}
             <Button type="submit" disabled={isSubmitting}>
             {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
