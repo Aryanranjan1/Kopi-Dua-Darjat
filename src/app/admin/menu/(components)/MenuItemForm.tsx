@@ -34,7 +34,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import * as React from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ChevronsUpDown } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn, getLocalized } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface MenuItemFormProps {
@@ -44,17 +44,25 @@ interface MenuItemFormProps {
 }
 
 const formSchema = z.object({
-    name: z.string().min(2, 'Name must be at least 2 characters.'),
-    slug: z.string().min(2, 'Slug must be at least 2 characters.'),
-    description: z.string().min(10, 'Description must be at least 10 characters.'),
-    price: z.coerce.number().min(0, 'Price must be a positive number.'),
-    imageUrl: z.string().url('Please enter a valid image URL.'),
-    groupId: z.string({ required_error: 'Please select a group.' }),
-    categoryId: z.string({ required_error: 'Please select a category.' }),
-    status: z.enum(['draft', 'published']),
-    isPopular: z.boolean().default(false),
-    tags: z.string().optional(),
-    outletIds: z.array(z.string()).optional(),
+  slug: z.string().min(2, 'Slug must be at least 2 characters.'),
+  price: z.coerce.number().min(0, 'Price must be a positive number.'),
+  imageUrl: z.string().url('Please enter a valid image URL.'),
+  groupId: z.string({ required_error: 'Please select a group.' }),
+  categoryId: z.string({ required_error: 'Please select a category.' }),
+  status: z.enum(['draft', 'published']),
+  isPopular: z.boolean().default(false),
+  tags: z.string().optional(),
+  outletIds: z.array(z.string()).optional(),
+  translations: z.object({
+    en: z.object({
+        name: z.string().min(2, 'English name must be at least 2 characters.'),
+        description: z.string().min(10, 'English description must be at least 10 characters.'),
+    }),
+    ms: z.object({
+        name: z.string().optional(),
+        description: z.string().optional(),
+    })
+  })
 });
 
 
@@ -78,10 +86,8 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: menuItem ? {
-        name: menuItem.name,
+    values: menuItem ? {
         slug: menuItem.slug,
-        description: menuItem.description,
         price: menuItem.price,
         imageUrl: menuItem.imageUrl,
         categoryId: menuItem.categoryId,
@@ -90,10 +96,13 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
         isPopular: menuItem.isPopular || false,
         tags: menuItem.tags?.join(', ') || '',
         outletIds: menuItem.outletIds || [],
-    } : {
-        name: '',
+        translations: {
+            en: getLocalized(menuItem, 'en'),
+            ms: getLocalized(menuItem, 'ms'),
+        }
+    } : undefined,
+    defaultValues: {
         slug: '',
-        description: '',
         price: 0,
         imageUrl: '',
         groupId: undefined,
@@ -102,11 +111,16 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
         isPopular: false,
         tags: '',
         outletIds: [],
+        translations: {
+            en: { name: '', description: '' },
+            ms: { name: '', description: '' }
+        }
     }
   });
 
-  const { isSubmitting, watch, setValue } = form;
+  const { isSubmitting, watch, setValue, formState } = form;
   const watchedGroupId = watch('groupId');
+  const watchedEnName = watch('translations.en.name');
 
   const filteredCategories = useMemo(() => {
     if (!watchedGroupId || !allCategories) return [];
@@ -125,14 +139,24 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
     }
   }, [watchedGroupId, menuItem, allCategories, setValue]);
 
+  useEffect(() => {
+    if (watchedEnName && !formState.dirtyFields.slug) {
+        setValue('slug', slugify(watchedEnName, { lower: true, strict: true }));
+    }
+  }, [watchedEnName, setValue, formState.dirtyFields.slug]);
+
+  const handleCopyToMalay = () => {
+    const en = form.getValues('translations.en');
+    form.setValue('translations.ms', en);
+    toast({ title: "Content Copied", description: "English content has been copied to the Malay fields." });
+  }
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (!firestore) return;
 
     try {
       const dataToSave = {
-        name: values.name,
         slug: values.slug,
-        description: values.description,
         price: values.price,
         imageUrl: values.imageUrl,
         categoryId: values.categoryId,
@@ -141,13 +165,14 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
         tags: values.tags ? values.tags.split(',').map(tag => tag.trim()) : [],
         outletIds: values.outletIds || [],
         isGeneral: (values.outletIds || []).length === 0,
+        translations: values.translations,
         updatedAt: serverTimestamp(),
       };
 
       if (menuItem) {
         const itemRef = doc(firestore, 'menuItems', menuItem.id);
         await setDoc(itemRef, dataToSave, { merge: true });
-        toast({ title: 'Menu Item Updated', description: `"${values.name}" has been successfully updated.` });
+        toast({ title: 'Menu Item Updated', description: `"${values.translations.en.name}" has been successfully updated.` });
       } else {
         const itemsRef = collection(firestore, 'menuItems');
         const itemsInCategory = allItems.filter(item => item.categoryId === values.categoryId);
@@ -159,7 +184,7 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
           createdAt: serverTimestamp(),
           promotionIds: [],
         });
-        toast({ title: 'Menu Item Created', description: `"${values.name}" has been successfully added.` });
+        toast({ title: 'Menu Item Created', description: `"${values.translations.en.name}" has been successfully added.` });
       }
       onSuccess();
     } catch (error: any) {
@@ -180,41 +205,31 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
         <ScrollArea className="h-[70vh] pr-4">
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                    <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl><Input placeholder="e.g., Darjat Caramel" {...field} className={inputStyles} /></FormControl>
-                    <FormMessage />
-                    </FormItem>
-                )}
-                />
-                <FormField
-                control={form.control}
-                name="slug"
-                render={({ field }) => (
-                    <FormItem>
-                    <FormLabel>Slug</FormLabel>
-                    <FormControl><Input placeholder="e.g., darjat-caramel" {...field} className={inputStyles} /></FormControl>
-                    <FormMessage />
-                    </FormItem>
-                )}
-                />
+                <div className="space-y-4">
+                    <h3 className="font-medium text-lg text-zinc-300">English (EN)</h3>
+                    <FormField control={form.control} name="translations.en.name" render={({ field }) => (
+                        <FormItem><FormLabel>Name</FormLabel><FormControl><Input placeholder="e.g., Darjat Caramel" {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                    )} />
+                    <FormField control={form.control} name="translations.en.description" render={({ field }) => (
+                        <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea placeholder="A short, tasty description..." {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                    )} />
+                </div>
+                <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                        <h3 className="font-medium text-lg text-zinc-300">Malay (MS)</h3>
+                        <Button type="button" variant="outline" size="sm" onClick={handleCopyToMalay}>Copy from EN</Button>
+                    </div>
+                    <FormField control={form.control} name="translations.ms.name" render={({ field }) => (
+                        <FormItem><FormLabel>Nama</FormLabel><FormControl><Input placeholder="e.g., Karamel Darjat" {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                    )} />
+                    <FormField control={form.control} name="translations.ms.description" render={({ field }) => (
+                        <FormItem><FormLabel>Penerangan</FormLabel><FormControl><Textarea placeholder="Penerangan ringkas dan lazat..." {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                    )} />
+                </div>
             </div>
-            
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl><Textarea placeholder="A short, tasty description..." {...field} className={inputStyles} /></FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <FormField control={form.control} name="slug" render={({ field }) => (
+                <FormItem><FormLabel>Slug</FormLabel><FormControl><Input placeholder="e.g., darjat-caramel" {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+            )} />
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
@@ -226,9 +241,10 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger className={inputStyles}><SelectValue placeholder="Select a group" /></SelectTrigger></FormControl>
                         <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                            {groups?.map(g => (
-                                <SelectItem key={g.id} value={g.id}>{g.name}</SelectItem>
-                            ))}
+                            {groups?.map(g => {
+                                const localized = getLocalized(g, 'en');
+                                return <SelectItem key={g.id} value={g.id}>{localized.name}</SelectItem>
+                            })}
                         </SelectContent>
                     </Select>
                     <FormMessage />
@@ -244,9 +260,10 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
                     <Select onValueChange={field.onChange} value={field.value} disabled={!watchedGroupId || filteredCategories.length === 0}>
                         <FormControl><SelectTrigger className={inputStyles}><SelectValue placeholder="Select a category" /></SelectTrigger></FormControl>
                         <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                            {filteredCategories.map(cat => (
-                                <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
-                            ))}
+                            {filteredCategories.map(cat => {
+                                const localized = getLocalized(cat, 'en');
+                                return <SelectItem key={cat.id} value={cat.id}>{localized.name}</SelectItem>
+                            })}
                         </SelectContent>
                     </Select>
                     <FormMessage />
@@ -287,7 +304,7 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
                   <FormLabel>Linked Outlets</FormLabel>
                    <MultiSelectPopover
                     title="Outlets"
-                    options={outlets?.map(outlet => ({ value: outlet.id, label: outlet.name })) || []}
+                    options={outlets?.map(outlet => ({ value: outlet.id, label: getLocalized(outlet, 'en').name || '' })) || []}
                     selected={field.value || []}
                     onChange={field.onChange}
                   />
@@ -371,7 +388,7 @@ function MultiSelectPopover({ title, options, selected, onChange }: {
     const [searchQuery, setSearchQuery] = React.useState('');
 
     const filteredOptions = options.filter(option => 
-        option.label.toLowerCase().includes(searchQuery.toLowerCase())
+        option.label?.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     const handleSelectAll = () => {
