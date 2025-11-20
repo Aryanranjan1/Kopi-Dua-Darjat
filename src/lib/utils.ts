@@ -26,36 +26,37 @@ export function getDiscountDisplay(promo: Promotion): string {
 
 /**
  * Retrieves the localized version of a field from a document.
- * It tries the requested language, then the fallback language, then the first available language.
- * @param doc The document containing the translations field.
+ * It tries the requested language, then the fallback language, then the first available language,
+ * and finally falls back to top-level fields for non-migrated documents.
+ * @param doc The document containing the translations field or legacy top-level fields.
  * @param lang The desired language code.
  * @param fallbackLang The fallback language code.
  * @returns The localized content, or an empty object if no translation is found.
  */
 export function getLocalized<T>(
-  doc: Localized<T>,
+  doc: any, // Use `any` to handle both new and legacy structures
   lang: LangCode,
   fallbackLang: LangCode = DEFAULT_LANGUAGE
 ): Partial<T> {
   if (!doc) return {};
-  if (doc?.translations?.[lang]) {
+
+  // 1. Try the requested language in the new `translations` structure
+  if (doc.translations?.[lang]) {
     return doc.translations[lang] as Partial<T>;
   }
-  if (doc?.translations?.[fallbackLang]) {
+
+  // 2. Try the fallback language in the new `translations` structure
+  if (doc.translations?.[fallbackLang]) {
     return doc.translations[fallbackLang] as Partial<T>;
   }
-  // If specific and fallback languages are not found, try the first available translation.
-  if (doc?.translations) {
-      const availableLangs = Object.keys(doc.translations);
-      if (availableLangs.length > 0) {
-          return doc.translations[availableLangs[0] as LangCode] as Partial<T>;
-      }
-  }
-  // Fallback for documents that have not been migrated yet.
+
+  // 3. Fallback for documents that have not been migrated yet.
+  // This checks for common top-level fields to determine if it's a legacy document.
   // @ts-ignore
-  if (doc.name || doc.title || doc.question) {
+  if (doc.name || doc.title || doc.question || doc.quote || doc.content) {
     return doc as Partial<T>;
   }
 
+  // 4. If nothing else is found, return an empty object.
   return {};
 }
