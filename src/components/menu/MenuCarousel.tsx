@@ -30,7 +30,7 @@ export default function MenuCarousel({ title, items, promotions, dailySpecials }
     }
 
     const showControls = items.length > 5;
-    const categorySlug = title.toLowerCase().replace(/ /g, '-');
+    const categorySlug = title ? title.toLowerCase().replace(/ /g, '-') : '';
 
     return (
         <div>

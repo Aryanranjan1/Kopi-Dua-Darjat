@@ -1,5 +1,4 @@
 
-
 'use client';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, where, orderBy, getDocs } from 'firebase/firestore';
@@ -10,9 +9,12 @@ import { DailySpecials } from '@/components/menu/DailySpecials';
 import NewsletterSignUp from '@/components/home/NewsletterSignUp';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useMemo, useState, useEffect } from 'react';
+import { useLanguage } from '@/components/layout/LanguageProvider';
+import { getLocalized } from '@/lib/utils';
 
 export default function MenuPage() {
     const firestore = useFirestore();
+    const { language } = useLanguage();
 
     const groupsQuery = useMemoFirebase(
       () => firestore ? query(collection(firestore, 'menuGroups'), where('status', '==', 'published')) : null,
@@ -122,20 +124,22 @@ export default function MenuPage() {
                         {sortedMenuGroups?.map((group, index) => {
                             const groupCategories = getCategoriesByGroupId(group.id);
                             if (groupCategories.length === 0) return null; // Don't render group if it has no visible categories
+                            const localizedGroup = getLocalized(group, language);
                             return (
                             <div key={group.id}>
                                 <section className="container mx-auto px-4">
                                     <h2 className="text-5xl font-headline text-center font-bold tracking-widest text-foreground mb-12 underline decoration-primary decoration-4 underline-offset-8 uppercase">
-                                        {group.name}
+                                        {localizedGroup.name}
                                     </h2>
                                     <div className="space-y-12">
                                         {groupCategories.map(cat => {
                                             const categoryItems = getItemsByCategoryId(cat.id);
                                             if (categoryItems.length === 0) return null; // Don't render category if it has no items
+                                            const localizedCategory = getLocalized(cat, language);
                                             return (
                                                 <MenuCarousel 
                                                     key={cat.id}
-                                                    title={cat.name}
+                                                    title={localizedCategory.name || ''}
                                                     items={categoryItems}
                                                     promotions={promotions}
                                                     dailySpecials={dailySpecials}
