@@ -84,6 +84,11 @@ const formSchema = z.object({
     description: z.string().optional(),
     keywords: z.string().optional(),
   }).optional(),
+  socials: z.object({
+    instagram: z.string().url('Must be a valid URL.').optional().or(z.literal('')),
+    tiktok: z.string().url('Must be a valid URL.').optional().or(z.literal('')),
+    facebook: z.string().url('Must be a valid URL.').optional().or(z.literal('')),
+  }).optional(),
   translations: z.object({
     en: z.object({
         name: z.string().min(3, 'Outlet name is required'),
@@ -295,6 +300,7 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
       status: 'active', heroImage: '', interiorImage: '', cardImage: '', mapsLink: '', whatsappLink: '',
       chatbotEmbed: '', isChatbotEnabled: false, placeId: '', menuItemIds: [],
       seo: { title: '', description: '', keywords: '' },
+      socials: { instagram: '', tiktok: '', facebook: '' },
       translations: { en: { name: '', address: '', city: '', state: '', hours: '', tagline: ''}, ms: { name: '', address: '', city: '', state: '', hours: '', tagline: ''}},
     },
   });
@@ -322,6 +328,11 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
           description: outlet.seo?.description || '',
           keywords: outlet.seo?.keywords || '',
         },
+        socials: {
+          instagram: outlet.socials?.instagram || '',
+          tiktok: outlet.socials?.tiktok || '',
+          facebook: outlet.socials?.facebook || '',
+        },
         translations: {
             en: getLocalized(outlet, 'en'),
             ms: getLocalized(outlet, 'ms'),
@@ -333,6 +344,7 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
             status: 'active', heroImage: '', interiorImage: '', cardImage: '', mapsLink: '', whatsappLink: '',
             chatbotEmbed: '', isChatbotEnabled: false, placeId: '', menuItemIds: [],
             seo: { title: '', description: '', keywords: '' },
+            socials: { instagram: '', tiktok: '', facebook: '' },
             translations: { en: { name: '', address: '', city: '', state: '', hours: '', tagline: ''}, ms: { name: '', address: '', city: '', state: '', hours: '', tagline: ''}},
         })
     }
@@ -380,6 +392,7 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
       chatbotEmbed: values.chatbotEmbed || null,
       isChatbotEnabled: values.isChatbotEnabled,
       placeId: values.placeId || null,
+      socials: values.socials || null,
       seo: {
         title: values.seo?.title || null,
         description: values.seo?.description || null,
@@ -505,6 +518,7 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
           <Tabs defaultValue="general" className="w-full">
               <TabsList className="grid w-full grid-cols-4 md:grid-cols-5 bg-zinc-800">
                 <TabsTrigger value="general">General</TabsTrigger>
+                <TabsTrigger value="socials">Socials</TabsTrigger>
                 <TabsTrigger value="seo">SEO</TabsTrigger>
                 <TabsTrigger value="menu">Menu</TabsTrigger>
                 <TabsTrigger value="promotions" disabled={!outlet}>Promotions</TabsTrigger>
@@ -642,6 +656,20 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
                           )}/>
                     </div>
                 </TabsContent>
+                <TabsContent value="socials">
+                   <div className="space-y-6">
+                    <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2">Outlet Social Media</h3>
+                    <FormField control={form.control} name="socials.instagram" render={({ field }) => (
+                        <FormItem><FormLabel>Instagram URL</FormLabel><FormControl><Input placeholder="https://instagram.com/..." {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                    )} />
+                    <FormField control={form.control} name="socials.tiktok" render={({ field }) => (
+                        <FormItem><FormLabel>TikTok URL</FormLabel><FormControl><Input placeholder="https://tiktok.com/..." {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                    )} />
+                    <FormField control={form.control} name="socials.facebook" render={({ field }) => (
+                        <FormItem><FormLabel>Facebook URL</FormLabel><FormControl><Input placeholder="https://facebook.com/..." {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                    )} />
+                  </div>
+                </TabsContent>
                 <TabsContent value="seo">
                   <div className="space-y-6">
                     <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2">Search Engine Optimization</h3>
@@ -711,7 +739,6 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
                      <div className="space-y-2">
                         {promotions?.map(promo => {
                             const status = promo.status;
-                            const localizedPromo = getLocalized(promo, 'en');
                             return (
                             <div key={promo.id} className="bg-zinc-800 rounded-lg p-3 flex items-center justify-between">
                                 <div className="flex items-center gap-3">
@@ -719,7 +746,7 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
                                     {status}
                                 </Badge>
                                 <div>
-                                    <p className="font-semibold">{localizedPromo.title}</p>
+                                    <p className="font-semibold">{promo.title}</p>
                                     <p className="text-sm text-zinc-400">{getDiscountDisplay(promo)} | Expires: {format(promo.endDate.toDate(), 'PPP')}</p>
                                 </div>
                                 </div>
@@ -732,7 +759,7 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
                                             <Button type="button" variant="ghost" size="icon"><Trash2 className="h-4 w-4 text-red-500" /></Button>
                                         </AlertDialogTrigger>
                                         <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
-                                            <AlertDialogHeader><AlertDialogTitle>Are you sure?</AlertDialogTitle><AlertDialogDescription className="text-zinc-400">This will permanently delete "{localizedPromo.title}".</AlertDialogDescription></AlertDialogHeader>
+                                            <AlertDialogHeader><AlertDialogTitle>Are you sure?</AlertDialogTitle><AlertDialogDescription className="text-zinc-400">This will permanently delete "{promo.title}".</AlertDialogDescription></AlertDialogHeader>
                                             <AlertDialogFooter>
                                                 <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
                                                 <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleDeletePromotion(promo.id)}>Delete</AlertDialogAction>
@@ -851,3 +878,4 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
     
 
     
+

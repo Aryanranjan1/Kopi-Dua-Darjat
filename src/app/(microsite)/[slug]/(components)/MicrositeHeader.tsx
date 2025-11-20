@@ -16,8 +16,9 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { Logo } from '@/components/layout/Logo';
-import type { Outlet } from '@/lib/types';
+import type { Outlet, SiteSettings } from '@/lib/types';
 import { FaTiktok, FaFacebook } from 'react-icons/fa';
+import { useSettings } from '@/components/layout/SettingsProvider';
 
 const navItems = [
   { title: 'Home', href: '#home' },
@@ -34,7 +35,7 @@ export default function MicrositeHeader({ outlet }: MicrositeHeaderProps) {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = React.useState(false);
   const [activeSection, setActiveSection] = React.useState('home');
-
+  const { settings } = useSettings();
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -58,6 +59,10 @@ export default function MicrositeHeader({ outlet }: MicrositeHeaderProps) {
   
   const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${outlet.lat},${outlet.lng}`;
 
+  const instagramUrl = outlet.socials?.instagram || settings?.socials?.instagram;
+  const tiktokUrl = outlet.socials?.tiktok || settings?.socials?.tiktok;
+  const facebookUrl = outlet.socials?.facebook || settings?.socials?.facebook;
+  
   return (
     <header
       className={cn(
@@ -104,18 +109,18 @@ export default function MicrositeHeader({ outlet }: MicrositeHeaderProps) {
                       <Phone className="h-5 w-5" />
                   </a>
                 )}
-                {outlet.socials?.instagram && (
-                  <a href={outlet.socials.instagram} target="_blank" rel="noopener noreferrer" className={cn('text-sm font-medium transition-colors', isScrolled ? 'text-black hover:text-black/70' : 'text-white hover:text-white/70')}>
+                {instagramUrl && (
+                  <a href={instagramUrl} target="_blank" rel="noopener noreferrer" className={cn('text-sm font-medium transition-colors', isScrolled ? 'text-black hover:text-black/70' : 'text-white hover:text-white/70')}>
                       <Instagram className="h-5 w-5" />
                   </a>
                 )}
-                {outlet.socials?.tiktok && (
-                    <a href={outlet.socials.tiktok} target="_blank" rel="noopener noreferrer" className={cn('text-sm font-medium transition-colors', isScrolled ? 'text-black hover:text-black/70' : 'text-white hover:text-white/70')}>
+                {tiktokUrl && (
+                    <a href={tiktokUrl} target="_blank" rel="noopener noreferrer" className={cn('text-sm font-medium transition-colors', isScrolled ? 'text-black hover:text-black/70' : 'text-white hover:text-white/70')}>
                         <FaTiktok className="h-5 w-5" />
                     </a>
                 )}
-                {outlet.socials?.facebook && (
-                    <a href={outlet.socials.facebook} target="_blank" rel="noopener noreferrer" className={cn('text-sm font-medium transition-colors', isScrolled ? 'text-black hover:text-black/70' : 'text-white hover:text-white/70')}>
+                {facebookUrl && (
+                    <a href={facebookUrl} target="_blank" rel="noopener noreferrer" className={cn('text-sm font-medium transition-colors', isScrolled ? 'text-black hover:text-black/70' : 'text-white hover:text-white/70')}>
                         <FaFacebook className="h-5 w-5" />
                     </a>
                 )}

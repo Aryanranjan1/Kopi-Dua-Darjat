@@ -79,12 +79,12 @@ export type DailySpecial = {
 };
 
 export type Promotion = {
-  id:string;
+  id: string;
   title: string;
   description?: string;
   customDiscountDescription?: string;
   discountType: 'percentage' | 'flat' | 'bogo' | 'custom';
-  discountValue: number;
+  discountValue?: number;
   startDate: any; // Firestore Timestamp
   endDate: any; // Firestore Timestamp
   menuItemIds?: string[];
@@ -94,6 +94,7 @@ export type Promotion = {
   createdAt: any; // Firestore Timestamp
   updatedAt: any; // Firestore Timestamp
 };
+
 
 
 // --- OUTLETS & REVIEWS ---
