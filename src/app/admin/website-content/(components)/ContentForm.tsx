@@ -20,6 +20,7 @@ const createSchemaFromObject = (obj: any): z.ZodType<any> => {
     if (obj.length > 0 && typeof obj[0] === 'object') {
       return z.array(createSchemaFromObject(obj[0])).optional();
     }
+    // Handle array of strings
     return z.array(z.string()).optional();
   }
   if (typeof obj === 'object' && obj !== null) {
@@ -67,7 +68,69 @@ const RenderField = ({ path, label }: { path: string; label: string }) => {
     );
 }
 
-const FieldArrayManager = ({ path, title, newItemShape, ItemComponent }: { path: string; title: string; newItemShape: any, ItemComponent: React.FC<any> }) => {
+// Specific component for handling arrays of strings
+const StringArrayManager = ({ path, title }: { path: string; title: string }) => {
+    const { control, getValues, setValue } = useFormContext();
+    const { toast } = useToast();
+    const pathEn = `en.${path}`;
+    const pathMs = `ms.${path}`;
+
+    const handleCopy = () => {
+        const enValue = getValues(pathEn);
+        setValue(pathMs, enValue);
+        toast({ title: "Copied!", description: `Copied ${title} from English to Malay.` });
+    };
+
+    return (
+        <div className="space-y-4 p-4 border border-zinc-800 rounded-lg">
+            <div className="flex justify-between items-center">
+                <h4 className="font-semibold capitalize text-lg text-primary">{title}</h4>
+                <Button type="button" onClick={handleCopy} size="sm" className="bg-yellow-400 text-black border border-black hover:bg-yellow-400">Copy EN to MS</Button>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+                 <FormField
+                    control={control}
+                    name={pathEn}
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel className="text-xs text-zinc-400">English (One item per line)</FormLabel>
+                            <FormControl>
+                                <Textarea
+                                    className={inputStyles}
+                                    rows={5}
+                                    value={Array.isArray(field.value) ? field.value.join('\n') : ''}
+                                    onChange={(e) => field.onChange(e.target.value.split('\n'))}
+                                />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                 <FormField
+                    control={control}
+                    name={pathMs}
+                    render={({ field }) => (
+                        <FormItem>
+                             <FormLabel className="text-xs text-zinc-400">Malay (Satu item setiap baris)</FormLabel>
+                            <FormControl>
+                                <Textarea
+                                    className={inputStyles}
+                                    rows={5}
+                                    value={Array.isArray(field.value) ? field.value.join('\n') : ''}
+                                    onChange={(e) => field.onChange(e.target.value.split('\n'))}
+                                />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+            </div>
+        </div>
+    );
+};
+
+
+const ObjectArrayManager = ({ path, title, newItemShape, ItemComponent }: { path: string; title: string; newItemShape: any, ItemComponent: React.FC<any> }) => {
     const { control, getValues, setValue } = useFormContext();
     const { toast } = useToast();
 
@@ -121,7 +184,12 @@ const RenderObjectFields = ({ path, data }: { path: string; data: any }) => {
                 const label = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
                 
                 if (Array.isArray(value)) {
-                    return <FieldArrayManager 
+                     // Check if it's an array of strings or objects
+                    if (value.length > 0 && typeof value[0] === 'string') {
+                         return <StringArrayManager key={currentPath} path={currentPath} title={label} />;
+                    }
+                    // It's an array of objects
+                    return <ObjectArrayManager 
                               key={currentPath} 
                               path={currentPath} 
                               title={label} 
