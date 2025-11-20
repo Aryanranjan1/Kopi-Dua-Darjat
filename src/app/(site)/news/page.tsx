@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState, useMemo, Suspense } from 'react';
@@ -201,8 +202,21 @@ function NewsPageClient() {
     
     if (isLoading || !allPosts) {
         return (
-            <div className="flex h-screen items-center justify-center bg-background">
-                <Loader2 className="h-12 w-12 animate-spin text-primary" />
+            <div className="bg-background">
+                <HeroSection />
+                <div className="container mx-auto px-6 py-16">
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {[...Array(6)].map((_, i) => (
+                            <div key={i} className="space-y-4">
+                                <Skeleton className="aspect-video w-full rounded-lg" />
+                                <Skeleton className="h-4 w-1/4" />
+                                <Skeleton className="h-6 w-3/4" />
+                                <Skeleton className="h-4 w-1/2" />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                 <CtaSection />
             </div>
         );
     }

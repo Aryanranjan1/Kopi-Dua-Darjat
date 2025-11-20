@@ -16,7 +16,46 @@ export const metadata: Metadata = {
 };
 
 function OutletShowcaseSkeleton() {
-  return <Skeleton className="h-[600px] w-full rounded-2xl" />;
+  return (
+    <div className="py-24 sm:py-32">
+        <div className="container mx-auto px-6">
+            <div className="flex flex-wrap gap-4 mb-8 justify-center items-center">
+                <Skeleton className="h-10 w-full md:flex-grow rounded-full" />
+                <Skeleton className="h-10 w-44 rounded-full" />
+                <Skeleton className="h-10 w-44 rounded-full" />
+                <Skeleton className="h-10 w-44 rounded-full" />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {[...Array(8)].map((_, i) => (
+                    <Skeleton key={i} className="h-96 w-full rounded-3xl" />
+                ))}
+            </div>
+        </div>
+    </div>
+  );
+}
+
+function TopRatedSkeleton() {
+    return (
+        <div className="py-24 sm:py-32 bg-white">
+            <div className="container mx-auto px-6 sm:px-12">
+                <div className="grid lg:grid-cols-5 gap-8 lg:gap-12">
+                    <div className="lg:col-span-2 flex flex-col">
+                        <Skeleton className="h-12 w-2/3" />
+                        <Skeleton className="h-6 w-full mt-4" />
+                        <div className="mt-8 flex-grow space-y-4">
+                            <Skeleton className="h-24 w-full rounded-3xl" />
+                            <Skeleton className="h-24 w-full rounded-3xl" />
+                            <Skeleton className="h-24 w-full rounded-3xl" />
+                        </div>
+                    </div>
+                    <div className="lg:col-span-3 min-h-[400px] sm:min-h-[600px] h-full mt-8 lg:mt-0">
+                         <Skeleton className="h-full w-full rounded-3xl" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
 }
 
 export default function OutletsPage() {
@@ -35,10 +74,13 @@ export default function OutletsPage() {
           </div>
         </section>
         
-        {/* Our Presence Section */}
-        <OutletShowcase />
+        <Suspense fallback={<OutletShowcaseSkeleton />}>
+            <OutletShowcase />
+        </Suspense>
         
-        <TopRatedOutlets />
+        <Suspense fallback={<TopRatedSkeleton />}>
+            <TopRatedOutlets />
+        </Suspense>
         
         {/* Franchise CTA */}
         <FranchiseCta />

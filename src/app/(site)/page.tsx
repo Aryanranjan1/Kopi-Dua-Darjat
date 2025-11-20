@@ -10,7 +10,16 @@ const ActivePromotions = dynamic(() => import('@/components/home/ActivePromotion
   loading: () => <Skeleton className="h-[80vh] w-full" />,
 });
 const MenuShowcase = dynamic(() => import('@/components/home/MenuShowcase'), {
-  loading: () => <Skeleton className="h-[70vh] w-full bg-black" />,
+  loading: () => (
+    <div className="bg-black py-20 md:py-32">
+        <div className="container mx-auto px-6 max-w-7xl">
+            <Skeleton className="h-12 w-1/3 mb-12" />
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+                {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-96 rounded-3xl bg-zinc-800" />)}
+            </div>
+        </div>
+    </div>
+  ),
 });
 const BrandStory = dynamic(() => import('@/components/home/BrandStory'), {
     loading: () => <Skeleton className="h-[60vh] w-full" />,
@@ -39,7 +48,16 @@ const OutletFinder = dynamic(() => import('@/components/home/OutletFinder'), {
   ),
 });
 const Community = dynamic(() => import('@/components/home/Community'), {
-  loading: () => <Skeleton className="h-[80vh] w-full" />,
+  loading: () => (
+     <div className="py-24 sm:py-32 bg-white">
+        <div className="container mx-auto px-4 sm:px-6">
+            <Skeleton className="h-12 w-1/3 mx-auto mb-16" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                {[...Array(8)].map((_, i) => <Skeleton key={i} className="aspect-square rounded-2xl bg-gray-200" />)}
+            </div>
+        </div>
+    </div>
+  ),
 });
 const LatestStories = dynamic(() => import('@/components/home/LatestStories'), {
   loading: () => (
