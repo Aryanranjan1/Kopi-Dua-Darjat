@@ -143,22 +143,22 @@ export default function CategoryForm({ category, allCategories, onSuccess }: Cat
             <div className="space-y-4">
                 <h3 className="font-medium text-lg text-zinc-300">English (EN)</h3>
                  <FormField control={form.control} name="translations.en.name" render={({ field }) => (
-                    <FormItem><FormLabel>Category Name</FormLabel><FormControl><Input placeholder="e.g., Darjat Series" {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                    <FormItem><FormLabel>Category Name</FormLabel><FormControl><Input placeholder="e.g., Darjat Series" {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                 )} />
                  <FormField control={form.control} name="translations.en.description" render={({ field }) => (
-                    <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea placeholder="Short description..." {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                    <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea placeholder="Short description..." {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                 )} />
             </div>
             <div className="space-y-4">
                 <div className="flex justify-between items-center">
                      <h3 className="font-medium text-lg text-zinc-300">Malay (MS)</h3>
-                     <Button type="button" variant="outline" size="sm" onClick={handleCopyToMalay}>Copy from EN</Button>
+                     <Button type="button" size="sm" onClick={handleCopyToMalay} className="bg-primary text-primary-foreground border border-black hover:bg-primary">Copy from EN</Button>
                 </div>
                  <FormField control={form.control} name="translations.ms.name" render={({ field }) => (
-                    <FormItem><FormLabel>Nama Kategori</FormLabel><FormControl><Input placeholder="e.g., Siri Darjat" {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                    <FormItem><FormLabel>Nama Kategori</FormLabel><FormControl><Input placeholder="e.g., Siri Darjat" {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                 )} />
                  <FormField control={form.control} name="translations.ms.description" render={({ field }) => (
-                    <FormItem><FormLabel>Penerangan</FormLabel><FormControl><Textarea placeholder="Penerangan ringkas..." {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                    <FormItem><FormLabel>Penerangan</FormLabel><FormControl><Textarea placeholder="Penerangan ringkas..." {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                 )} />
             </div>
         </div>
@@ -170,7 +170,7 @@ export default function CategoryForm({ category, allCategories, onSuccess }: Cat
                 <FormItem>
                 <FormLabel>Slug</FormLabel>
                 <FormControl>
-                    <Input placeholder="e.g., darjat-series" {...field} className={inputStyles} />
+                    <Input placeholder="e.g., darjat-series" {...field} value={field.value || ''} className={inputStyles} />
                 </FormControl>
                 <FormMessage />
                 </FormItem>
@@ -204,7 +204,7 @@ export default function CategoryForm({ category, allCategories, onSuccess }: Cat
             <FormItem>
               <FormLabel>Image URL (Optional)</FormLabel>
               <FormControl>
-                <Input type="url" placeholder="https://..." {...field} className={inputStyles} />
+                <Input type="url" placeholder="https://..." {...field} value={field.value || ''} className={inputStyles} />
               </FormControl>
                <FormDescription>Image used for the category grid on microsites.</FormDescription>
               <FormMessage />

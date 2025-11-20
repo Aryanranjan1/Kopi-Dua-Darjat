@@ -123,16 +123,16 @@ export default function GroupForm({ group, allGroups, onSuccess }: GroupFormProp
             <div className="space-y-4">
                 <h3 className="font-medium text-lg text-zinc-300">English (EN)</h3>
                 <FormField control={form.control} name="translations.en.name" render={({ field }) => (
-                    <FormItem><FormLabel>Group Name</FormLabel><FormControl><Input placeholder="e.g., Nak Kopi" {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                    <FormItem><FormLabel>Group Name</FormLabel><FormControl><Input placeholder="e.g., Nak Kopi" {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                 )} />
             </div>
             <div className="space-y-4">
                 <div className="flex justify-between items-center">
                     <h3 className="font-medium text-lg text-zinc-300">Malay (MS)</h3>
-                    <Button type="button" variant="outline" size="sm" onClick={handleCopyToMalay}>Copy from EN</Button>
+                    <Button type="button" size="sm" onClick={handleCopyToMalay} className="bg-primary text-primary-foreground border border-black hover:bg-primary">Copy from EN</Button>
                 </div>
                 <FormField control={form.control} name="translations.ms.name" render={({ field }) => (
-                    <FormItem><FormLabel>Nama Kumpulan</FormLabel><FormControl><Input placeholder="e.g., Nak Kopi" {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                    <FormItem><FormLabel>Nama Kumpulan</FormLabel><FormControl><Input placeholder="e.g., Nak Kopi" {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                 )} />
             </div>
         </div>
@@ -144,7 +144,7 @@ export default function GroupForm({ group, allGroups, onSuccess }: GroupFormProp
             <FormItem>
             <FormLabel>Slug</FormLabel>
             <FormControl>
-                <Input placeholder="e.g., nak-kopi" {...field} className={inputStyles} />
+                <Input placeholder="e.g., nak-kopi" {...field} value={field.value || ''} className={inputStyles} />
             </FormControl>
             <FormMessage />
             </FormItem>

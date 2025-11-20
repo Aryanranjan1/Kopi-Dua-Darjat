@@ -141,39 +141,39 @@ export default function TestimonialForm({ testimonial, onSuccess, onSave, onCanc
             <div className="space-y-4">
                  <h3 className="font-medium text-lg text-zinc-300">English (EN)</h3>
                  <FormField control={form.control} name="translations.en.name" render={({ field }) => (
-                    <FormItem><FormLabel>Name</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                    <FormItem><FormLabel>Name</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                 )} />
                  {!isReview && <FormField control={form.control} name="translations.en.designation" render={({ field }) => (
-                    <FormItem><FormLabel>Designation</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                    <FormItem><FormLabel>Designation</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                 )} />}
                 {isReview ? (
                     <FormField control={form.control} name="translations.en.text" render={({ field }) => (
-                        <FormItem><FormLabel>Review Text</FormLabel><FormControl><Textarea {...field} className={inputStyles} rows={4} /></FormControl><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Review Text</FormLabel><FormControl><Textarea {...field} value={field.value || ''} className={inputStyles} rows={4} /></FormControl><FormMessage /></FormItem>
                     )} />
                 ) : (
                     <FormField control={form.control} name="translations.en.quote" render={({ field }) => (
-                        <FormItem><FormLabel>Quote</FormLabel><FormControl><Textarea {...field} className={inputStyles} rows={4} /></FormControl><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Quote</FormLabel><FormControl><Textarea {...field} value={field.value || ''} className={inputStyles} rows={4} /></FormControl><FormMessage /></FormItem>
                     )} />
                 )}
             </div>
             <div className="space-y-4">
                 <div className="flex justify-between items-center">
                     <h3 className="font-medium text-lg text-zinc-300">Malay (MS)</h3>
-                    <Button type="button" variant="outline" size="sm" onClick={handleCopyToMalay}>Copy from EN</Button>
+                    <Button type="button" size="sm" onClick={handleCopyToMalay} className="bg-primary text-primary-foreground border border-black hover:bg-primary">Copy from EN</Button>
                 </div>
                  <FormField control={form.control} name="translations.ms.name" render={({ field }) => (
-                    <FormItem><FormLabel>Nama</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                    <FormItem><FormLabel>Nama</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                 )} />
                 {!isReview && <FormField control={form.control} name="translations.ms.designation" render={({ field }) => (
-                    <FormItem><FormLabel>Jawatan</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                    <FormItem><FormLabel>Jawatan</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                 )} />}
                 {isReview ? (
                     <FormField control={form.control} name="translations.ms.text" render={({ field }) => (
-                        <FormItem><FormLabel>Teks Ulasan</FormLabel><FormControl><Textarea {...field} className={inputStyles} rows={4} /></FormControl><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Teks Ulasan</FormLabel><FormControl><Textarea {...field} value={field.value || ''} className={inputStyles} rows={4} /></FormControl><FormMessage /></FormItem>
                     )} />
                 ) : (
                     <FormField control={form.control} name="translations.ms.quote" render={({ field }) => (
-                        <FormItem><FormLabel>Petikan</FormLabel><FormControl><Textarea {...field} className={inputStyles} rows={4} /></FormControl><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Petikan</FormLabel><FormControl><Textarea {...field} value={field.value || ''} className={inputStyles} rows={4} /></FormControl><FormMessage /></FormItem>
                     )} />
                 )}
             </div>
@@ -194,7 +194,7 @@ export default function TestimonialForm({ testimonial, onSuccess, onSave, onCanc
             )} />}
             
             <FormField control={form.control} name="rating" render={({ field }) => (
-                <FormItem><FormLabel>Rating (1-5)</FormLabel><FormControl><Input type="number" min="1" max="5" step="1" {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                <FormItem><FormLabel>Rating (1-5)</FormLabel><FormControl><Input type="number" min="1" max="5" step="1" {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
             )}/>
         </div>
         

@@ -41,7 +41,7 @@ import Image from 'next/image';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import PromotionForm from '../../promotions/(components)/PromotionForm';
 import { Badge } from '@/components/ui/badge';
-import { cn, getDiscountDisplay } from '@/lib/utils';
+import { cn, getDiscountDisplay, getLocalized } from '@/lib/utils';
 import { format, fromUnixTime } from 'date-fns';
 import {
   AlertDialog,
@@ -85,12 +85,22 @@ const formSchema = z.object({
     keywords: z.string().optional(),
   }).optional(),
   translations: z.object({
-    name: z.string().min(3, 'Outlet name is required'),
-    address: z.string().min(10, 'Full address is required'),
-    city: z.string().min(2, 'City is required'),
-    state: z.string().min(2, 'State is required'),
-    hours: z.string().min(5, 'Operating hours are required'),
-    tagline: z.string().optional(),
+    en: z.object({
+        name: z.string().min(3, 'Outlet name is required'),
+        address: z.string().min(10, 'Full address is required'),
+        city: z.string().min(2, 'City is required'),
+        state: z.string().min(2, 'State is required'),
+        hours: z.string().min(5, 'Operating hours are required'),
+        tagline: z.string().optional(),
+    }),
+    ms: z.object({
+        name: z.string().optional(),
+        address: z.string().optional(),
+        city: z.string().optional(),
+        state: z.string().optional(),
+        hours: z.string().optional(),
+        tagline: z.string().optional(),
+    })
   }),
 });
 
@@ -190,7 +200,6 @@ function MultiSelectPopover({ title, options, selected, onChange }: {
 export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormProps) {
   const { toast } = useToast();
   const firestore = useFirestore();
-  const { language } = useAdminLanguage();
   const [isFetching, setIsFetching] = useState(false);
   
   const [isPromoDialogOpen, setIsPromoDialogOpen] = useState(false);
@@ -237,11 +246,14 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
             ...form.getValues(),
             translations: {
               ...currentTranslations,
-              name: data.name || currentTranslations.name,
-              address: data.address || currentTranslations.address,
-              city: data.city || currentTranslations.city,
-              state: data.state || currentTranslations.state,
-              hours: data.hours || currentTranslations.hours,
+              en: {
+                ...currentTranslations.en,
+                name: data.name || currentTranslations.en.name,
+                address: data.address || currentTranslations.en.address,
+                city: data.city || currentTranslations.en.city,
+                state: data.state || currentTranslations.en.state,
+                hours: data.hours || currentTranslations.en.hours,
+              }
             },
             lat: data.lat || form.getValues('lat'),
             lng: data.lng || form.getValues('lng'),
@@ -283,7 +295,7 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
       status: 'active', heroImage: '', interiorImage: '', cardImage: '', mapsLink: '', whatsappLink: '',
       chatbotEmbed: '', isChatbotEnabled: false, placeId: '', menuItemIds: [],
       seo: { title: '', description: '', keywords: '' },
-      translations: { name: '', address: '', city: '', state: '', hours: '', tagline: ''},
+      translations: { en: { name: '', address: '', city: '', state: '', hours: '', tagline: ''}, ms: { name: '', address: '', city: '', state: '', hours: '', tagline: ''}},
     },
   });
   
@@ -310,7 +322,10 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
           description: outlet.seo?.description || '',
           keywords: outlet.seo?.keywords || '',
         },
-        translations: getLocalized(outlet, language, 'en')
+        translations: {
+            en: getLocalized(outlet, 'en'),
+            ms: getLocalized(outlet, 'ms'),
+        }
       });
     } else {
         form.reset({
@@ -318,14 +333,14 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
             status: 'active', heroImage: '', interiorImage: '', cardImage: '', mapsLink: '', whatsappLink: '',
             chatbotEmbed: '', isChatbotEnabled: false, placeId: '', menuItemIds: [],
             seo: { title: '', description: '', keywords: '' },
-            translations: { name: '', address: '', city: '', state: '', hours: '', tagline: ''},
+            translations: { en: { name: '', address: '', city: '', state: '', hours: '', tagline: ''}, ms: { name: '', address: '', city: '', state: '', hours: '', tagline: ''}},
         })
     }
-  }, [outlet, allItems, form, language]);
+  }, [outlet, allItems, form]);
 
 
   const { isSubmitting, watch, setValue, formState } = form;
-  const watchedName = watch('translations.name');
+  const watchedName = watch('translations.en.name');
   const watchedMenuItemIds = watch('menuItemIds') || [];
 
   useEffect(() => {
@@ -333,6 +348,12 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
         setValue('slug', slugify(watchedName, { lower: true, strict: true }));
     }
   }, [watchedName, setValue, formState.dirtyFields.slug]);
+
+  const handleCopyToMalay = () => {
+    const en = form.getValues('translations.en');
+    form.setValue('translations.ms', en);
+    toast({ title: "Content Copied", description: "English content has been copied to the Malay fields." });
+  }
 
   const onSubmit = async (values: FormValues) => {
     if (!firestore) return;
@@ -368,8 +389,11 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
       rating: aggregateRating,
       reviewCount: currentReviews.length,
       reviewsPath: `reviews/${docId}`,
+      translations: {
+          en: values.translations.en,
+          ms: values.translations.ms
+      },
       ...(outlet ? {} : { createdAt: serverTimestamp() }),
-      [`translations.${language}`]: values.translations,
     };
     
     const batch = writeBatch(firestore);
@@ -420,7 +444,7 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
       await batch.commit();
       toast({
         title: `Outlet ${outlet ? 'Updated' : 'Created'}`,
-        description: `"${values.translations.name}" has been successfully saved.`,
+        description: `"${values.translations.en.name}" has been successfully saved.`,
       });
       onSuccess();
     } catch (error) {
@@ -469,13 +493,6 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
       setIsTestimonialDialogOpen(false);
   }
 
-  const handleCopyToLanguage = () => {
-    if (!outlet) return;
-    const englishContent = getLocalized(outlet, 'en');
-    form.setValue('translations', englishContent);
-    toast({ title: "Content Copied", description: "English content has been copied to the current form." });
-  }
-
   const [selectedTestimonial, setSelectedTestimonial] = useState<Review | undefined>(undefined);
 
   const inputStyles = "bg-zinc-800 border-zinc-700 text-white focus-visible:ring-primary";
@@ -498,28 +515,64 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
                     <div className="space-y-6">
                       <div className="flex justify-between items-center border-b border-primary/50 pb-2">
                         <h3 className="text-lg font-medium text-primary">Core Information</h3>
-                        {language !== 'en' && outlet && <Button type="button" variant="outline" size="sm" onClick={handleCopyToLanguage}>Copy from English</Button>}
                       </div>
                       
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <FormField control={form.control} name="translations.name" render={({ field }) => (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-4">
+                           <h3 className="font-medium text-lg text-zinc-300">English (EN)</h3>
+                           <FormField control={form.control} name="translations.en.name" render={({ field }) => (
                               <FormItem><FormLabel>Outlet Name</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
-                          )}/>
-                          <FormField control={form.control} name="slug" render={({ field }) => (
-                              <FormItem><FormLabel>Slug (URL Identifier)</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormDescription>Auto-generated from name. Must be unique.</FormDescription><FormMessage/></FormItem>
-                          )}/>
+                            )}/>
+                            <FormField control={form.control} name="translations.en.address" render={({ field }) => (
+                                <FormItem><FormLabel>Full Address</FormLabel><FormControl><Textarea {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                            )}/>
+                            <div className="grid grid-cols-2 gap-4">
+                                <FormField control={form.control} name="translations.en.city" render={({ field }) => (
+                                    <FormItem><FormLabel>City</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                                )}/>
+                                <FormField control={form.control} name="translations.en.state" render={({ field }) => (
+                                    <FormItem><FormLabel>State</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                                )}/>
+                            </div>
+                             <FormField control={form.control} name="translations.en.hours" render={({ field }) => (
+                              <FormItem><FormLabel>Operating Hours</FormLabel><FormControl><Input placeholder="e.g. 8 AM - 10 PM" {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                            )}/>
+                             <FormField control={form.control} name="translations.en.tagline" render={({ field }) => (
+                                <FormItem><FormLabel>Tagline</FormLabel><FormControl><Input placeholder="A catchy tagline for this outlet" {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                            )}/>
+                        </div>
+                        <div className="space-y-4">
+                           <div className="flex justify-between items-center">
+                             <h3 className="font-medium text-lg text-zinc-300">Malay (MS)</h3>
+                             <Button type="button" size="sm" onClick={handleCopyToMalay} className="bg-primary text-primary-foreground border border-black hover:bg-primary">Copy from EN</Button>
+                           </div>
+                           <FormField control={form.control} name="translations.ms.name" render={({ field }) => (
+                              <FormItem><FormLabel>Nama Outlet</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                            )}/>
+                            <FormField control={form.control} name="translations.ms.address" render={({ field }) => (
+                                <FormItem><FormLabel>Alamat Penuh</FormLabel><FormControl><Textarea {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                            )}/>
+                            <div className="grid grid-cols-2 gap-4">
+                                <FormField control={form.control} name="translations.ms.city" render={({ field }) => (
+                                    <FormItem><FormLabel>Bandar</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                                )}/>
+                                <FormField control={form.control} name="translations.ms.state" render={({ field }) => (
+                                    <FormItem><FormLabel>Negeri</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                                )}/>
+                            </div>
+                             <FormField control={form.control} name="translations.ms.hours" render={({ field }) => (
+                              <FormItem><FormLabel>Waktu Operasi</FormLabel><FormControl><Input placeholder="cth. 8 PG - 10 MLM" {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                            )}/>
+                             <FormField control={form.control} name="translations.ms.tagline" render={({ field }) => (
+                                <FormItem><FormLabel>Tagline</FormLabel><FormControl><Input placeholder="Tagline menarik untuk outlet ini" {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                            )}/>
+                        </div>
                       </div>
-                      <FormField control={form.control} name="translations.address" render={({ field }) => (
-                          <FormItem><FormLabel>Full Address</FormLabel><FormControl><Textarea {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+
+                      <FormField control={form.control} name="slug" render={({ field }) => (
+                          <FormItem><FormLabel>Slug (URL Identifier)</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormDescription>Auto-generated from name. Must be unique.</FormDescription><FormMessage/></FormItem>
                       )}/>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <FormField control={form.control} name="translations.city" render={({ field }) => (
-                              <FormItem><FormLabel>City</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
-                          )}/>
-                          <FormField control={form.control} name="translations.state" render={({ field }) => (
-                              <FormItem><FormLabel>State</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
-                          )}/>
-                      </div>
+                      
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <FormField control={form.control} name="lat" render={({ field }) => (
                               <FormItem><FormLabel>Latitude</FormLabel><FormControl><Input type="number" {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
@@ -529,28 +582,22 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
                           )}/>
                       </div>
 
-                      <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">Contact & Hours</h3>
+                      <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">Contact & Links</h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <FormField control={form.control} name="translations.hours" render={({ field }) => (
-                              <FormItem><FormLabel>Operating Hours</FormLabel><FormControl><Input placeholder="e.g. 8 AM - 10 PM" {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
-                          )}/>
                           <FormField control={form.control} name="phone" render={({ field }) => (
                               <FormItem><FormLabel>Phone Number</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
                           )}/>
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <FormField control={form.control} name="email" render={({ field }) => (
                               <FormItem><FormLabel>Email</FormLabel><FormControl><Input type="email" {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
                           )}/>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <FormField control={form.control} name="whatsappLink" render={({ field }) => (
                               <FormItem><FormLabel>WhatsApp Link</FormLabel><FormControl><Input placeholder="https://wa.me/..." {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
                           )}/>
                       </div>
 
-                      <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">Microsite & Card Content</h3>
-                      <FormField control={form.control} name="translations.tagline" render={({ field }) => (
-                          <FormItem><FormLabel>Tagline</FormLabel><FormControl><Input placeholder="A catchy tagline for this outlet" {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
-                      )}/>
+                      <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">Microsite & Card Images</h3>
                       <div className="space-y-4">
                           <FormField control={form.control} name="heroImage" render={({ field }) => (
                               <ImageUpload label="Microsite Hero Image" value={field.value || ''} onChange={field.onChange} folderName={`outlets/${outlet?.slug || 'new'}/hero`} />
@@ -562,27 +609,8 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
                               <ImageUpload label="Interior/Secondary Image" value={field.value || ''} onChange={field.onChange} folderName={`outlets/${outlet?.slug || 'new'}/interior`} />
                           )}/>
                       </div>
-                      <FormField control={form.control} name="chatbotEmbed" render={({ field }) => (
-                          <FormItem>
-                              <div className="flex items-center justify-between">
-                                  <FormLabel>Chatbot Embed Code</FormLabel>
-                                  <FormField
-                                      control={form.control}
-                                      name="isChatbotEnabled"
-                                      render={({ field }) => (
-                                          <FormItem className="flex items-center gap-2 space-y-0">
-                                              <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
-                                              <FormLabel className="text-sm !mt-0">{field.value ? "Enabled" : "Disabled"}</FormLabel>
-                                          </FormItem>
-                                      )}
-                                  />
-                              </div>
-                              <FormControl><Textarea placeholder="<script>...</script>" {...field} value={field.value || ''} className={`${inputStyles} font-mono`} /></FormControl>
-                              <FormDescription>Paste the full embed code for a chatbot if applicable.</FormDescription>
-                              <FormMessage/>
-                          </FormItem>
-                      )}/>
-                       <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">Google Places Integration</h3>
+                      
+                      <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">Google Places Integration</h3>
                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <FormField control={form.control} name="placeId" render={({ field }) => (
                             <FormItem>
@@ -639,7 +667,7 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
                               <FormLabel>Link Menu Items</FormLabel>
                               <MultiSelectPopover
                                 title="Menu Items"
-                                options={allItems?.map(item => ({ value: item.id, label: getLocalized(item, 'en').name || '' })) || []}
+                                options={allItems?.map(item => ({ value: item.id, label: getLocalized(item, 'en').name })) || []}
                                 selected={field.value || []}
                                 onChange={field.onChange}
                               />

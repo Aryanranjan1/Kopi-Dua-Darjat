@@ -36,6 +36,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { ChevronsUpDown } from 'lucide-react';
 import { cn, getLocalized } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import slugify from 'slugify';
 
 interface MenuItemFormProps {
   menuItem?: MenuItem;
@@ -208,27 +209,27 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
                 <div className="space-y-4">
                     <h3 className="font-medium text-lg text-zinc-300">English (EN)</h3>
                     <FormField control={form.control} name="translations.en.name" render={({ field }) => (
-                        <FormItem><FormLabel>Name</FormLabel><FormControl><Input placeholder="e.g., Darjat Caramel" {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Name</FormLabel><FormControl><Input placeholder="e.g., Darjat Caramel" {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                     )} />
                     <FormField control={form.control} name="translations.en.description" render={({ field }) => (
-                        <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea placeholder="A short, tasty description..." {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea placeholder="A short, tasty description..." {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                     )} />
                 </div>
                 <div className="space-y-4">
                     <div className="flex justify-between items-center">
                         <h3 className="font-medium text-lg text-zinc-300">Malay (MS)</h3>
-                        <Button type="button" variant="outline" size="sm" onClick={handleCopyToMalay}>Copy from EN</Button>
+                        <Button type="button" size="sm" onClick={handleCopyToMalay} className="bg-primary text-primary-foreground border border-black hover:bg-primary">Copy from EN</Button>
                     </div>
                     <FormField control={form.control} name="translations.ms.name" render={({ field }) => (
-                        <FormItem><FormLabel>Nama</FormLabel><FormControl><Input placeholder="e.g., Karamel Darjat" {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Nama</FormLabel><FormControl><Input placeholder="e.g., Karamel Darjat" {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                     )} />
                     <FormField control={form.control} name="translations.ms.description" render={({ field }) => (
-                        <FormItem><FormLabel>Penerangan</FormLabel><FormControl><Textarea placeholder="Penerangan ringkas dan lazat..." {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Penerangan</FormLabel><FormControl><Textarea placeholder="Penerangan ringkas dan lazat..." {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                     )} />
                 </div>
             </div>
             <FormField control={form.control} name="slug" render={({ field }) => (
-                <FormItem><FormLabel>Slug</FormLabel><FormControl><Input placeholder="e.g., darjat-caramel" {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                <FormItem><FormLabel>Slug</FormLabel><FormControl><Input placeholder="e.g., darjat-caramel" {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
             )} />
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -290,7 +291,7 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Image URL</FormLabel>
-                  <FormControl><Input placeholder="https://example.com/image.png" {...field} className={inputStyles} /></FormControl>
+                  <FormControl><Input placeholder="https://example.com/image.png" {...field} value={field.value || ''} className={inputStyles} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -304,7 +305,7 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
                   <FormLabel>Linked Outlets</FormLabel>
                    <MultiSelectPopover
                     title="Outlets"
-                    options={outlets?.map(outlet => ({ value: outlet.id, label: getLocalized(outlet, 'en').name || '' })) || []}
+                    options={outlets?.map(outlet => ({ value: outlet.id, label: getLocalized(outlet, 'en').name })) || []}
                     selected={field.value || []}
                     onChange={field.onChange}
                   />
@@ -320,7 +321,7 @@ export default function MenuItemForm({ menuItem, allItems, onSuccess }: MenuItem
             render={({ field }) => (
                 <FormItem>
                 <FormLabel>Tags (Optional)</FormLabel>
-                <FormControl><Input placeholder="e.g., featured, new" {...field} className={inputStyles} /></FormControl>
+                <FormControl><Input placeholder="e.g., featured, new" {...field} value={field.value || ''} className={inputStyles} /></FormControl>
                 <FormDescription>Comma-separated tags for filtering (e.g. for homepage showcase).</FormDescription>
                 <FormMessage />
                 </FormItem>

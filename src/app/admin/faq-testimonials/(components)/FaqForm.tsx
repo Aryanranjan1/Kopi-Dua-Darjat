@@ -119,22 +119,22 @@ export default function FaqForm({ faqItem, onSuccess }: FaqFormProps) {
             <div className="space-y-4">
                 <h3 className="font-medium text-lg text-zinc-300">English (EN)</h3>
                  <FormField control={form.control} name="translations.en.question" render={({ field }) => (
-                    <FormItem><FormLabel>Question</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                    <FormItem><FormLabel>Question</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                 )} />
                  <FormField control={form.control} name="translations.en.answer" render={({ field }) => (
-                    <FormItem><FormLabel>Answer</FormLabel><FormControl><Textarea {...field} className={inputStyles} rows={5} /></FormControl><FormMessage /></FormItem>
+                    <FormItem><FormLabel>Answer</FormLabel><FormControl><Textarea {...field} value={field.value || ''} className={inputStyles} rows={5} /></FormControl><FormMessage /></FormItem>
                 )} />
             </div>
              <div className="space-y-4">
                 <div className="flex justify-between items-center">
                     <h3 className="font-medium text-lg text-zinc-300">Malay (MS)</h3>
-                    <Button type="button" variant="outline" size="sm" onClick={handleCopyToMalay}>Copy from EN</Button>
+                    <Button type="button" size="sm" onClick={handleCopyToMalay} className="bg-primary text-primary-foreground border border-black hover:bg-primary">Copy from EN</Button>
                 </div>
                  <FormField control={form.control} name="translations.ms.question" render={({ field }) => (
-                    <FormItem><FormLabel>Soalan</FormLabel><FormControl><Input {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                    <FormItem><FormLabel>Soalan</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                 )} />
                  <FormField control={form.control} name="translations.ms.answer" render={({ field }) => (
-                    <FormItem><FormLabel>Jawapan</FormLabel><FormControl><Textarea {...field} className={inputStyles} rows={5} /></FormControl><FormMessage /></FormItem>
+                    <FormItem><FormLabel>Jawapan</FormLabel><FormControl><Textarea {...field} value={field.value || ''} className={inputStyles} rows={5} /></FormControl><FormMessage /></FormItem>
                 )} />
             </div>
         </div>

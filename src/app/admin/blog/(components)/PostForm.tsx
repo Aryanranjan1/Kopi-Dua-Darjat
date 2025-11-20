@@ -118,11 +118,11 @@ export default function PostForm({ post, onSuccess }: PostFormProps) {
   const watchedTitle = watch('translations.en.title');
 
   useEffect(() => {
-    if (watchedTitle) {
+    if (watchedTitle && !form.formState.dirtyFields.slug) {
       const newSlug = slugify(watchedTitle, { lower: true, strict: true });
       setValue('slug', newSlug);
     }
-  }, [watchedTitle, setValue]);
+  }, [watchedTitle, setValue, form.formState.dirtyFields.slug]);
   
   const handleCopyToMalay = () => {
     const en = form.getValues('translations.en');
@@ -136,18 +136,12 @@ export default function PostForm({ post, onSuccess }: PostFormProps) {
     try {
       const isPublished = values.status === 'published';
       const dataToSave = {
-        slug: values.slug,
-        coverImage: values.coverImage,
-        author: values.author,
+        ...values,
         tags: values.tags ? values.tags.split(',').map(tag => tag.trim()) : [],
-        category: values.category,
-        status: values.status,
-        isFeatured: values.isFeatured,
         seo: {
             ...values.seo,
             keywords: values.seo.keywords ? values.seo.keywords.split(',').map(kw => kw.trim()) : [],
         },
-        translations: values.translations,
         updatedAt: serverTimestamp(),
         ...(isPublished && !post?.publishedAt && { publishedAt: serverTimestamp() }),
       };
@@ -202,7 +196,7 @@ export default function PostForm({ post, onSuccess }: PostFormProps) {
                         <div className="space-y-4">
                            <div className="flex justify-between items-center">
                              <h3 className="font-medium text-lg text-zinc-300">Malay (MS)</h3>
-                             <Button type="button" variant="outline" size="sm" onClick={handleCopyToMalay}>Copy from EN</Button>
+                             <Button type="button" size="sm" onClick={handleCopyToMalay} className="bg-primary text-primary-foreground border border-black hover:bg-primary">Copy from EN</Button>
                            </div>
                            <FormField control={form.control} name="translations.ms.title" render={({ field }) => (
                                <FormItem><FormLabel>Tajuk</FormLabel><FormControl><Input placeholder="Tajuk Hebat" {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
