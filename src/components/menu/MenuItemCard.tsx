@@ -34,9 +34,8 @@ export default function MenuItemCard({ drink, promotions, dailySpecials }: MenuI
 
   const offerText = getOfferBadge();
   
-  // Safely access potentially multilingual fields
-  const drinkName = typeof drink.name === 'object' ? (drink.name as any).en : drink.name;
-  const drinkDescription = typeof drink.description === 'object' ? (drink.description as any).en : drink.description;
+  const drinkName = drink.name;
+  const drinkDescription = drink.description;
 
   return (
     <div className="p-1 h-full">
