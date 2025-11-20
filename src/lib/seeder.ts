@@ -4,84 +4,88 @@
 import { collection, writeBatch, getDocs, doc, Firestore } from 'firebase/firestore';
 import { outlets as outletSeedData } from '@/lib/data';
 import mediaSeedData from './placeholder-images.json';
-import { MenuItem, Outlet } from './types';
+import { siteContentData } from './site-content';
 
+// Define all collections that should be managed by the seeder.
+const MANAGED_COLLECTIONS = [
+  'blogs',
+  'community_items',
+  'contactMessages',
+  'dailySpecials',
+  'faq',
+  'franchiseApplications',
+  'media',
+  'menuCategories',
+  'menuGroups',
+  'menuItems',
+  'newsletterSubscribers',
+  'outlets',
+  'promotions',
+  'public_insta_feed',
+  'reviews',
+  'sync_logs',
+  'testimonials'
+];
 
-// Seeder for Outlets
-export async function seedOutlets(firestore: Firestore | null): Promise<{ success: boolean, count: number, error?: string }> {
+/**
+ * A master seeder function to wipe and re-seed all managed collections.
+ * This is a destructive operation.
+ */
+export async function masterSeed(firestore: Firestore | null): Promise<{ success: boolean, message: string }> {
   if (!firestore) {
-    return { success: false, count: 0, error: 'Firestore is not initialized.' };
+    return { success: false, message: 'Firestore is not initialized.' };
   }
 
-  const outletsCollectionRef = collection(firestore, 'outlets');
-  
+  // --- WIPE PHASE ---
   try {
-    // 1. Delete all existing documents in the collection
-    const existingSnapshot = await getDocs(outletsCollectionRef);
     const deleteBatch = writeBatch(firestore);
-    existingSnapshot.forEach(doc => deleteBatch.delete(doc.ref));
+    for (const collectionName of MANAGED_COLLECTIONS) {
+      const collectionRef = collection(firestore, collectionName);
+      const existingSnapshot = await getDocs(collectionRef);
+      existingSnapshot.forEach(doc => deleteBatch.delete(doc.ref));
+    }
     await deleteBatch.commit();
-  } catch (error) {
-     return { success: false, count: 0, error: `Failed to clear existing outlets: ${(error as Error).message}` };
+  } catch (error: any) {
+    console.error("Error wiping collections: ", error);
+    return { success: false, message: `Failed to wipe collections: ${error.message}` };
   }
 
-  // 2. Seed new data
+  // --- SEED PHASE ---
   const seedBatch = writeBatch(firestore);
-  let count = 0;
-  
-  outletSeedData.forEach(outletData => {
-    const docRef = doc(outletsCollectionRef, outletData.slug); // Use slug as document ID
-    const cardImage = `https://picsum.photos/seed/${outletData.slug}/600/400`;
-    seedBatch.set(docRef, { 
-      ...outletData, 
-      cardImage: cardImage,
-      heroImage: cardImage, // Set heroImage to be same as cardImage
-      createdAt: new Date(), 
-      updatedAt: new Date() 
+  let seededCount = 0;
+
+  try {
+    // Seed Outlets
+    outletSeedData.forEach(outletData => {
+      const docRef = doc(collection(firestore, 'outlets'), outletData.slug);
+      const cardImage = `https://picsum.photos/seed/${outletData.slug}/600/400`;
+      seedBatch.set(docRef, { 
+        ...outletData, 
+        cardImage: cardImage,
+        heroImage: cardImage,
+        createdAt: new Date(), 
+        updatedAt: new Date() 
+      });
+      seededCount++;
     });
-    count++;
-  });
 
-  try {
+    // Seed Media
+    mediaSeedData.placeholderImages.forEach((mediaItem) => {
+      const docRef = doc(collection(firestore, 'media'), mediaItem.id);
+      seedBatch.set(docRef, mediaItem);
+      seededCount++;
+    });
+    
+    // Seed Site Settings (as a baseline)
+    const settingsRef = doc(firestore, 'settings', 'main');
+    seedBatch.set(settingsRef, siteContentData, { merge: true }); // Use merge to not overwrite sensitive keys if they exist
+    seededCount++;
+
     await seedBatch.commit();
-    return { success: true, count };
-  } catch (error) {
-    return { success: false, count: 0, error: (error as Error).message };
-  }
-}
+    return { success: true, message: `${seededCount} total documents were seeded across all collections.` };
 
-// Seeder for Media
-export async function seedMediaData(firestore: Firestore | null): Promise<{ success: boolean, count: number, error?: string }> {
-  if (!firestore) {
-    return { success: false, count: 0, error: 'Firestore is not initialized.' };
-  }
-  
-  const mediaCollectionRef = collection(firestore, 'media');
-
-  try {
-    // 1. Delete all existing documents
-    const existingSnapshot = await getDocs(mediaCollectionRef);
-    const deleteBatch = writeBatch(firestore);
-    existingSnapshot.forEach(doc => deleteBatch.delete(doc.ref));
-    await deleteBatch.commit();
-  } catch (error) {
-     return { success: false, count: 0, error: `Failed to clear existing media: ${(error as Error).message}` };
-  }
-
-  // 2. Seed new data
-  const seedBatch = writeBatch(firestore);
-  let count = 0;
-  
-  mediaSeedData.placeholderImages.forEach((mediaItem) => {
-    const docRef = doc(mediaCollectionRef, mediaItem.id);
-    seedBatch.set(docRef, mediaItem);
-    count++;
-  });
-
-  try {
-    await seedBatch.commit();
-    return { success: true, count };
-  } catch (error) {
-    return { success: false, count: 0, error: (error as Error).message };
+  } catch (error: any) {
+    console.error("Error seeding data: ", error);
+    return { success: false, message: `Failed to seed data: ${error.message}` };
   }
 }
