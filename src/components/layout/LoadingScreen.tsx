@@ -1,3 +1,4 @@
+
 'use client';
 
 import { motion, AnimatePresence, useAnimate, animate } from 'framer-motion';
@@ -10,9 +11,9 @@ interface LoadingScreenProps {
 }
 
 const LoadingScreen: React.FC<LoadingScreenProps> = ({ isLoading }) => {
-  const [isAnimationComplete, setIsAnimationComplete] = useState(false);
+  const [isCounterAnimationComplete, setIsCounterAnimationComplete] = useState(false);
   const [show, setShow] = useState(true);
-  const [scope, animateStagger] = useAnimate();
+  const [scope, animate] = useAnimate();
 
   const counter = useMotionValue(0);
   const roundedCounter = useMotionValue(0);
@@ -23,7 +24,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ isLoading }) => {
       roundedCounter.set(Math.min(100, Math.floor(latest)));
     });
     return unsub;
-  }, []);
+  }, [roundedCounter, counter]);
 
   useEffect(() => {
     const controls = animate(counter, 100, {
@@ -31,53 +32,29 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ isLoading }) => {
       ease: "easeInOut"
     });
 
-    controls.then(() => setIsAnimationComplete(true));
+    controls.then(() => setIsCounterAnimationComplete(true));
     return () => controls.stop();
-  }, []);
+  }, [counter]);
 
   /* 🧩 -------- EXIT SLICE ANIMATION LOGIC ---------- */
   useEffect(() => {
-    if (!isAnimationComplete || isLoading) return;
+    // This effect runs when either the counter finishes or the app stops loading
+    if (isCounterAnimationComplete && !isLoading) {
+      const runExit = async () => {
+        // Stagger the animation of columns
+        await animate(
+          "div.loader-column",
+          { y: "-100%" },
+          { duration: 0.4, delay: (i) => i * 0.1, ease: "easeInOut" }
+        );
+        // Fade out the entire container
+        await animate(scope.current, { opacity: 0 }, { duration: 0.5 });
+        setShow(false);
+      };
 
-    const runExit = async () => {
-      const columns = scope.current?.querySelectorAll('.loader-column');
-      if (!columns) return;
-
-      let prevColumn = null;
-
-      for (let i = 0; i < columns.length; i++) {
-        const col = columns[i];
-
-        // Start animating column i
-        const controls = animate(col, { y: "-100%" }, { duration: 0.7, ease: "easeInOut" });
-
-        // Wait until this column reaches 30% of screen height
-        await new Promise(resolve => {
-          const interval = setInterval(() => {
-            const transform = col.style.transform;
-            if (transform.includes("matrix")) {
-              const value = parseFloat(transform.split(",")[5]) || 0;
-              const percent = Math.abs(value) / window.innerHeight;
-
-              if (percent >= 0.3) {
-                clearInterval(interval);
-                resolve(null);
-              }
-            }
-          }, 10);
-        });
-
-        // Now trigger the next column
-        if (i < columns.length - 1) continue;
-      }
-
-      // Fade out wrapper
-      await animate(scope.current, { opacity: 0 }, { duration: 0.5 });
-      setShow(false);
-    };
-
-    runExit();
-  }, [isAnimationComplete, isLoading, scope]);
+      runExit();
+    }
+  }, [isCounterAnimationComplete, isLoading, animate, scope]);
 
   /* ---------------------- RENDER ---------------------- */
 
