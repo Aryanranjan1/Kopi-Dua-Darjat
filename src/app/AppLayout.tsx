@@ -7,8 +7,8 @@ import { useEffect, useState } from 'react';
 import LoadingScreen from '@/components/layout/LoadingScreen';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
-  const { settings } = useSettings();
-  const [isLoading, setIsLoading] = useState(true);
+  const { settings, isLoading: isSettingsLoading } = useSettings();
+  const [isClientLoaded, setIsClientLoaded] = useState(false);
 
   // Dynamically update theme colors from settings
   useEffect(() => {
@@ -18,14 +18,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     }
   }, [settings]);
 
-  // Hide loading screen after initial mount and a short delay
+  // This effect runs once on the client after initial hydration
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1500); // Adjust delay as needed
-
-    return () => clearTimeout(timer);
+    setIsClientLoaded(true);
   }, []);
+  
+  // The site is considered "loading" until both settings are loaded from Firebase
+  // AND the client has mounted and run its initial effects.
+  const isLoading = isSettingsLoading || !isClientLoaded;
 
 
   return (
