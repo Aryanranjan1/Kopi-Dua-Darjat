@@ -70,12 +70,13 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ isLoading }) => {
           {/* Logo */}
           <motion.div
             ref={scope}
-            className="absolute z-20 w-48 h-48 sm:w-64 sm:h-64" // 200% bigger
+            className="absolute z-20 w-48 h-48 sm:w-64 sm:h-64"
             style={{ 
-              top: '50%', 
+              top: '60%', 
               left: '50%', 
               x: x, 
               y: "-50%",
+              scale: 2,
             }}
           >
               <Logo className="filter brightness-0 invert sepia saturate-[5000%] hue-rotate-[3deg] animate-spin-slow" />
@@ -87,4 +88,3 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ isLoading }) => {
 };
 
 export default LoadingScreen;
-
