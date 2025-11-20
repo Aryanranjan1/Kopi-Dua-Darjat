@@ -60,26 +60,19 @@ import TestimonialForm from '../../shared/TestimonialForm';
 interface OutletFormProps {
   outlet?: Outlet;
   allItems: MenuItem[];
-  allTestimonials: Testimonial[];
   onSuccess: () => void;
 }
 
 const formSchema = z.object({
-  name: z.string().min(3, 'Outlet name is required'),
   slug: z.string().min(3, 'Slug is required').regex(/^[a-z0-9-]+$/, 'Slug must be lowercase with no spaces'),
-  address: z.string().min(10, 'Full address is required'),
-  city: z.string().min(2, 'City is required'),
-  state: z.string().min(2, 'State is required'),
   lat: z.coerce.number().min(-90).max(90),
   lng: z.coerce.number().min(-180).max(180),
-  hours: z.string().min(5, 'Operating hours are required'),
   phone: z.string().optional(),
   email: z.string().email('Must be a valid email').optional().or(z.literal('')),
   status: z.enum(['active', 'inactive']),
   heroImage: z.string().url('Must be a valid URL').optional().or(z.literal('')),
   interiorImage: z.string().url('Must be a valid URL').optional().or(z.literal('')),
   cardImage: z.string().url('Must be a valid URL').optional().or(z.literal('')),
-  tagline: z.string().optional(),
   mapsLink: z.string().url('Must be a valid URL').optional().or(z.literal('')),
   whatsappLink: z.string().url('Must be a valid URL').optional().or(z.literal('')),
   chatbotEmbed: z.string().optional(),
@@ -91,6 +84,14 @@ const formSchema = z.object({
     description: z.string().optional(),
     keywords: z.string().optional(),
   }).optional(),
+  translations: z.object({
+    name: z.string().min(3, 'Outlet name is required'),
+    address: z.string().min(10, 'Full address is required'),
+    city: z.string().min(2, 'City is required'),
+    state: z.string().min(2, 'State is required'),
+    hours: z.string().min(5, 'Operating hours are required'),
+    tagline: z.string().optional(),
+  }),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -186,9 +187,10 @@ function MultiSelectPopover({ title, options, selected, onChange }: {
 }
 
 
-export default function OutletForm({ outlet, allItems, allTestimonials, onSuccess }: OutletFormProps) {
+export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormProps) {
   const { toast } = useToast();
   const firestore = useFirestore();
+  const { language } = useAdminLanguage();
   const [isFetching, setIsFetching] = useState(false);
   
   const [isPromoDialogOpen, setIsPromoDialogOpen] = useState(false);
@@ -199,7 +201,6 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
   );
   
   const [isTestimonialDialogOpen, setIsTestimonialDialogOpen] = useState(false);
-  const [selectedTestimonial, setSelectedTestimonial] = useState<Review | undefined>(undefined);
   
   const reviewDocRef = useMemoFirebase(() => (outlet?.id && firestore) ? doc(firestore, 'reviews', outlet.id) : null, [outlet, firestore]);
   const { data: reviewData, isLoading: isLoadingReviews } = useDoc<ReviewDocument>(reviewDocRef);
@@ -231,15 +232,19 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
           const data = await response.json();
           if (!response.ok) throw new Error(data.message);
 
+          const currentTranslations = form.getValues('translations');
           form.reset({
             ...form.getValues(),
-            name: data.name || form.getValues('name'),
-            address: data.address || form.getValues('address'),
-            city: data.city || form.getValues('city'),
-            state: data.state || form.getValues('state'),
+            translations: {
+              ...currentTranslations,
+              name: data.name || currentTranslations.name,
+              address: data.address || currentTranslations.address,
+              city: data.city || currentTranslations.city,
+              state: data.state || currentTranslations.state,
+              hours: data.hours || currentTranslations.hours,
+            },
             lat: data.lat || form.getValues('lat'),
             lng: data.lng || form.getValues('lng'),
-            hours: data.hours || form.getValues('hours'),
             phone: data.phone || form.getValues('phone'),
             mapsLink: data.mapsLink || form.getValues('mapsLink'),
           });
@@ -249,10 +254,13 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
                 source: 'google',
                 author_name: r.author_name,
                 rating: r.rating,
-                text: r.text,
                 time: r.time,
                 profile_photo_url: r.profile_photo_url,
                 relative_time_description: r.relative_time_description,
+                translations: {
+                  en: { text: r.text },
+                  ms: { text: r.text },
+                },
             }));
             
             const manualReviews = currentReviews.filter(r => r.source === 'manual');
@@ -271,26 +279,30 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: '', slug: '', address: '', city: '', state: '', lat: 0, lng: 0, hours: '', phone: '', email: '',
-      status: 'active', heroImage: '', interiorImage: '', cardImage: '', tagline: '', mapsLink: '', whatsappLink: '',
+      slug: '', lat: 0, lng: 0, phone: '', email: '',
+      status: 'active', heroImage: '', interiorImage: '', cardImage: '', mapsLink: '', whatsappLink: '',
       chatbotEmbed: '', isChatbotEnabled: false, placeId: '', menuItemIds: [],
       seo: { title: '', description: '', keywords: '' },
+      translations: { name: '', address: '', city: '', state: '', hours: '', tagline: ''},
     },
   });
   
   useEffect(() => {
-    if (outlet && allItems) {
+    if (outlet) {
       form.reset({
-        ...outlet,
+        slug: outlet.slug,
+        lat: outlet.lat,
+        lng: outlet.lng,
         phone: outlet.phone || '',
         email: outlet.email || '',
+        status: outlet.status,
         heroImage: outlet.heroImage || '',
         interiorImage: outlet.interiorImage || '',
         cardImage: outlet.cardImage || '',
-        tagline: outlet.tagline || '',
         mapsLink: outlet.mapsLink || '',
         whatsappLink: outlet.whatsappLink || '',
         chatbotEmbed: outlet.chatbotEmbed || '',
+        isChatbotEnabled: outlet.isChatbotEnabled || false,
         placeId: outlet.placeId || '',
         menuItemIds: allItems.filter(item => item.outletIds?.includes(outlet.id)).map(item => item.id),
         seo: {
@@ -298,20 +310,22 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
           description: outlet.seo?.description || '',
           keywords: outlet.seo?.keywords || '',
         },
+        translations: getLocalized(outlet, language, 'en')
       });
     } else {
         form.reset({
-            name: '', slug: '', address: '', city: '', state: '', lat: 0, lng: 0, hours: '', phone: '', email: '',
-            status: 'active', heroImage: '', interiorImage: '', cardImage: '', tagline: '', mapsLink: '', whatsappLink: '',
+            slug: '', lat: 0, lng: 0, phone: '', email: '',
+            status: 'active', heroImage: '', interiorImage: '', cardImage: '', mapsLink: '', whatsappLink: '',
             chatbotEmbed: '', isChatbotEnabled: false, placeId: '', menuItemIds: [],
             seo: { title: '', description: '', keywords: '' },
+            translations: { name: '', address: '', city: '', state: '', hours: '', tagline: ''},
         })
     }
-  }, [outlet, allItems, form]);
+  }, [outlet, allItems, form, language]);
 
 
   const { isSubmitting, watch, setValue, formState } = form;
-  const watchedName = watch('name');
+  const watchedName = watch('translations.name');
   const watchedMenuItemIds = watch('menuItemIds') || [];
 
   useEffect(() => {
@@ -331,16 +345,19 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
     const aggregateRating = currentReviews.length > 0 ? totalRating / currentReviews.length : 0;
 
     const dataToSave = {
-      ...values,
+      slug: values.slug,
+      lat: values.lat,
+      lng: values.lng,
       phone: values.phone || null,
       email: values.email || null,
+      status: values.status,
       heroImage: values.heroImage || null,
       interiorImage: values.interiorImage || null,
       cardImage: values.cardImage || null,
-      tagline: values.tagline || null,
       mapsLink: values.mapsLink || null,
       whatsappLink: values.whatsappLink || null,
       chatbotEmbed: values.chatbotEmbed || null,
+      isChatbotEnabled: values.isChatbotEnabled,
       placeId: values.placeId || null,
       seo: {
         title: values.seo?.title || null,
@@ -352,15 +369,13 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
       reviewCount: currentReviews.length,
       reviewsPath: `reviews/${docId}`,
       ...(outlet ? {} : { createdAt: serverTimestamp() }),
+      [`translations.${language}`]: values.translations,
     };
-
-    delete (dataToSave as any).menuItemIds;
     
     const batch = writeBatch(firestore);
 
     // --- Menu Item Linking Logic ---
     const newLinkedIds = new Set(values.menuItemIds || []);
-    // Correctly determine old linked items for the specific outlet being edited
     const oldLinkedIds = new Set(outlet ? allItems.filter(i => i.outletIds?.includes(outlet.id)).map(i => i.id) : []);
 
     const allAffectedItemIds = new Set([...newLinkedIds, ...oldLinkedIds]);
@@ -374,9 +389,9 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
       const shouldBeLinked = newLinkedIds.has(itemId);
 
       if (shouldBeLinked) {
-        currentOutletIds.add(docId); // Use current outlet's ID (slug)
+        currentOutletIds.add(docId);
       } else {
-        currentOutletIds.delete(docId); // Use current outlet's ID (slug)
+        currentOutletIds.delete(docId);
       }
       
       const updatedOutletIds = Array.from(currentOutletIds);
@@ -397,7 +412,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
             reviewCount: currentReviews.length
         },
         reviews: currentReviews,
-    });
+    }, { merge: true });
 
     batch.set(outletRef, dataToSave, { merge: true });
 
@@ -405,7 +420,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
       await batch.commit();
       toast({
         title: `Outlet ${outlet ? 'Updated' : 'Created'}`,
-        description: `"${values.name}" has been successfully saved.`,
+        description: `"${values.translations.name}" has been successfully saved.`,
       });
       onSuccess();
     } catch (error) {
@@ -427,30 +442,41 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
 
   const handleDeleteReview = (reviewToDelete: Review) => {
     const isGoogleReview = reviewToDelete.source === 'google';
-    const identifier = isGoogleReview ? reviewToDelete.time : reviewToDelete.id;
+    const identifier = isGoogleReview ? reviewToDelete.time.toString() : reviewToDelete.id;
 
     setCurrentReviews(prev => prev.filter(r => {
-        const currentIdentifier = r.source === 'google' ? r.time : r.id;
+        const currentIdentifier = r.source === 'google' ? r.time.toString() : r.id;
         return currentIdentifier !== identifier;
     }));
     toast({ title: "Review Removed", description: "The review will be permanently deleted when you save." });
   };
   
-  const handleSaveTestimonial = (review: Omit<Review, 'source' | 'time'>) => {
+  const handleSaveTestimonial = (review: Omit<Review, 'source' | 'time' | 'id'> & { id?: string }) => {
       const newReview: Review = {
         ...review,
+        id: review.id || `manual_${Date.now()}`,
         source: 'manual',
         time: serverTimestamp(),
       };
       
-      if(selectedTestimonial) { // Editing existing
-          setCurrentReviews(prev => prev.map(r => r.id === newReview.id ? newReview : r));
+      const existingIndex = currentReviews.findIndex(r => r.id === newReview.id);
+
+      if(existingIndex > -1) { // Editing existing
+          setCurrentReviews(prev => prev.map((r, index) => index === existingIndex ? newReview : r));
       } else { // Adding new
           setCurrentReviews(prev => [...prev, newReview]);
       }
       setIsTestimonialDialogOpen(false);
   }
 
+  const handleCopyToLanguage = () => {
+    if (!outlet) return;
+    const englishContent = getLocalized(outlet, 'en');
+    form.setValue('translations', englishContent);
+    toast({ title: "Content Copied", description: "English content has been copied to the current form." });
+  }
+
+  const [selectedTestimonial, setSelectedTestimonial] = useState<Review | undefined>(undefined);
 
   const inputStyles = "bg-zinc-800 border-zinc-700 text-white focus-visible:ring-primary";
 
@@ -470,42 +496,27 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
               <div className="mt-4">
                 <TabsContent value="general">
                     <div className="space-y-6">
-                      <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2">Google Places Integration</h3>
-                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <FormField control={form.control} name="placeId" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Google Place ID</FormLabel>
-                                <FormControl><Input placeholder="Starts with ChIJ..." {...field} value={field.value || ''} className={inputStyles}/></FormControl>
-                                <FormDescription>Used to fetch ratings and reviews.</FormDescription>
-                                <FormMessage/>
-                            </FormItem>
-                        )}/>
-                        <div className="self-end">
-                            <Button type="button" onClick={handleFetchFromGoogle} disabled={isFetching} className="w-full">
-                                {isFetching && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                Fetch from Google
-                            </Button>
-                        </div>
+                      <div className="flex justify-between items-center border-b border-primary/50 pb-2">
+                        <h3 className="text-lg font-medium text-primary">Core Information</h3>
+                        {language !== 'en' && outlet && <Button type="button" variant="outline" size="sm" onClick={handleCopyToLanguage}>Copy from English</Button>}
                       </div>
-
-                      <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">Core Information</h3>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <FormField control={form.control} name="name" render={({ field }) => (
+                          <FormField control={form.control} name="translations.name" render={({ field }) => (
                               <FormItem><FormLabel>Outlet Name</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
                           )}/>
                           <FormField control={form.control} name="slug" render={({ field }) => (
                               <FormItem><FormLabel>Slug (URL Identifier)</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormDescription>Auto-generated from name. Must be unique.</FormDescription><FormMessage/></FormItem>
                           )}/>
                       </div>
-                      <FormField control={form.control} name="address" render={({ field }) => (
+                      <FormField control={form.control} name="translations.address" render={({ field }) => (
                           <FormItem><FormLabel>Full Address</FormLabel><FormControl><Textarea {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
                       )}/>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <FormField control={form.control} name="city" render={({ field }) => (
+                          <FormField control={form.control} name="translations.city" render={({ field }) => (
                               <FormItem><FormLabel>City</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
                           )}/>
-                          <FormField control={form.control} name="state" render={({ field }) => (
+                          <FormField control={form.control} name="translations.state" render={({ field }) => (
                               <FormItem><FormLabel>State</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
                           )}/>
                       </div>
@@ -520,7 +531,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
 
                       <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">Contact & Hours</h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <FormField control={form.control} name="hours" render={({ field }) => (
+                          <FormField control={form.control} name="translations.hours" render={({ field }) => (
                               <FormItem><FormLabel>Operating Hours</FormLabel><FormControl><Input placeholder="e.g. 8 AM - 10 PM" {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
                           )}/>
                           <FormField control={form.control} name="phone" render={({ field }) => (
@@ -537,46 +548,19 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
                       </div>
 
                       <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">Microsite & Card Content</h3>
-                      <FormField control={form.control} name="tagline" render={({ field }) => (
+                      <FormField control={form.control} name="translations.tagline" render={({ field }) => (
                           <FormItem><FormLabel>Tagline</FormLabel><FormControl><Input placeholder="A catchy tagline for this outlet" {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
                       )}/>
                       <div className="space-y-4">
-                          <FormField
-                              control={form.control}
-                              name="heroImage"
-                              render={({ field }) => (
-                                  <ImageUpload
-                                      label="Microsite Hero Image"
-                                      value={field.value || ''}
-                                      onChange={field.onChange}
-                                      folderName={`outlets/${outlet?.slug || 'new'}/hero`}
-                                  />
-                              )}
-                          />
-                           <FormField
-                              control={form.control}
-                              name="cardImage"
-                              render={({ field }) => (
-                                  <ImageUpload
-                                      label="Outlet Card Image"
-                                      value={field.value || ''}
-                                      onChange={field.onChange}
-                                      folderName={`outlets/${outlet?.slug || 'new'}/card`}
-                                  />
-                              )}
-                          />
-                          <FormField
-                              control={form.control}
-                              name="interiorImage"
-                              render={({ field }) => (
-                                  <ImageUpload
-                                      label="Interior/Secondary Image"
-                                      value={field.value || ''}
-                                      onChange={field.onChange}
-                                      folderName={`outlets/${outlet?.slug || 'new'}/interior`}
-                                  />
-                              )}
-                          />
+                          <FormField control={form.control} name="heroImage" render={({ field }) => (
+                              <ImageUpload label="Microsite Hero Image" value={field.value || ''} onChange={field.onChange} folderName={`outlets/${outlet?.slug || 'new'}/hero`} />
+                          )}/>
+                           <FormField control={form.control} name="cardImage" render={({ field }) => (
+                              <ImageUpload label="Outlet Card Image" value={field.value || ''} onChange={field.onChange} folderName={`outlets/${outlet?.slug || 'new'}/card`} />
+                           )}/>
+                          <FormField control={form.control} name="interiorImage" render={({ field }) => (
+                              <ImageUpload label="Interior/Secondary Image" value={field.value || ''} onChange={field.onChange} folderName={`outlets/${outlet?.slug || 'new'}/interior`} />
+                          )}/>
                       </div>
                       <FormField control={form.control} name="chatbotEmbed" render={({ field }) => (
                           <FormItem>
@@ -598,6 +582,23 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
                               <FormMessage/>
                           </FormItem>
                       )}/>
+                       <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">Google Places Integration</h3>
+                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField control={form.control} name="placeId" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Google Place ID</FormLabel>
+                                <FormControl><Input placeholder="Starts with ChIJ..." {...field} value={field.value || ''} className={inputStyles}/></FormControl>
+                                <FormDescription>Used to fetch ratings and reviews.</FormDescription>
+                                <FormMessage/>
+                            </FormItem>
+                        )}/>
+                        <div className="self-end">
+                            <Button type="button" onClick={handleFetchFromGoogle} disabled={isFetching} className="w-full">
+                                {isFetching && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                Fetch from Google
+                            </Button>
+                        </div>
+                      </div>
 
                       <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">System</h3>
                       <FormField control={form.control} name="status" render={({ field }) => (
@@ -638,7 +639,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
                               <FormLabel>Link Menu Items</FormLabel>
                               <MultiSelectPopover
                                 title="Menu Items"
-                                options={allItems?.map(item => ({ value: item.id, label: item.name })) || []}
+                                options={allItems?.map(item => ({ value: item.id, label: getLocalized(item, 'en').name || '' })) || []}
                                 selected={field.value || []}
                                 onChange={field.onChange}
                               />
@@ -651,12 +652,13 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
                             {watchedMenuItemIds?.map(itemId => {
                                 const item = allItems.find(i => i.id === itemId);
                                 if (!item) return null;
+                                const localizedItem = getLocalized(item, 'en');
                                 return (
                                     <div key={item.id} className="bg-zinc-800 rounded-lg p-3 flex items-center justify-between">
                                         <div className="flex items-center gap-3">
-                                            <Image src={item.imageUrl} alt={item.name} width={40} height={40} className="rounded-md object-contain p-1 bg-zinc-700"/>
+                                            <Image src={item.imageUrl} alt={localizedItem.name || ''} width={40} height={40} className="rounded-md object-contain p-1 bg-zinc-700"/>
                                             <div>
-                                                <p className="font-semibold">{item.name}</p>
+                                                <p className="font-semibold">{localizedItem.name}</p>
                                                 <p className="text-sm text-zinc-400">RM{item.price.toFixed(2)}</p>
                                             </div>
                                         </div>
@@ -681,6 +683,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
                      <div className="space-y-2">
                         {promotions?.map(promo => {
                             const status = promo.status;
+                            const localizedPromo = getLocalized(promo, 'en');
                             return (
                             <div key={promo.id} className="bg-zinc-800 rounded-lg p-3 flex items-center justify-between">
                                 <div className="flex items-center gap-3">
@@ -688,7 +691,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
                                     {status}
                                 </Badge>
                                 <div>
-                                    <p className="font-semibold">{promo.title}</p>
+                                    <p className="font-semibold">{localizedPromo.title}</p>
                                     <p className="text-sm text-zinc-400">{getDiscountDisplay(promo)} | Expires: {format(promo.endDate.toDate(), 'PPP')}</p>
                                 </div>
                                 </div>
@@ -701,7 +704,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
                                             <Button type="button" variant="ghost" size="icon"><Trash2 className="h-4 w-4 text-red-500" /></Button>
                                         </AlertDialogTrigger>
                                         <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
-                                            <AlertDialogHeader><AlertDialogTitle>Are you sure?</AlertDialogTitle><AlertDialogDescription className="text-zinc-400">This will permanently delete "{promo.title}".</AlertDialogDescription></AlertDialogHeader>
+                                            <AlertDialogHeader><AlertDialogTitle>Are you sure?</AlertDialogTitle><AlertDialogDescription className="text-zinc-400">This will permanently delete "{localizedPromo.title}".</AlertDialogDescription></AlertDialogHeader>
                                             <AlertDialogFooter>
                                                 <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
                                                 <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleDeletePromotion(promo.id)}>Delete</AlertDialogAction>
@@ -718,12 +721,21 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
                  <TabsContent value="reviews">
                     <div className="space-y-4">
                         <div className="flex justify-between items-center">
-                            <h3 className="text-lg font-medium text-primary">Reviews for {outlet?.name}</h3>
+                            <h3 className="text-lg font-medium text-primary">Reviews for {getLocalized(outlet || {}, 'en').name}</h3>
+                            <Button type="button" size="sm" onClick={() => { setSelectedTestimonial(undefined); setIsTestimonialDialogOpen(true); }}>
+                              <PlusCircle className="mr-2 h-4 w-4" /> Add Manual Review
+                            </Button>
                         </div>
                         {isLoadingReviews && <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin"/></div>}
                         
                         <div className="max-h-[400px] overflow-y-auto pr-2 space-y-2">
-                            {currentReviews.sort((a,b) => (typeof b.time === 'number' ? b.time : b.time.seconds) - (typeof a.time === 'number' ? a.time : a.time.seconds)).map((review, index) => (
+                            {currentReviews.sort((a,b) => {
+                                const timeA = typeof a.time === 'number' ? a.time : a.time.seconds;
+                                const timeB = typeof b.time === 'number' ? b.time : b.time.seconds;
+                                return timeB - timeA;
+                            }).map((review, index) => {
+                                const localizedReview = getLocalized(review, 'en');
+                                return (
                                 <div key={review.id || index} className="bg-zinc-800 p-3 rounded-lg flex justify-between items-start">
                                     <div>
                                         <div className="flex items-center gap-2">
@@ -732,11 +744,11 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
                                             </Badge>
                                             <p className="font-semibold">{review.author_name}</p>
                                         </div>
-                                        <p className="text-sm text-zinc-300 mt-2">"{review.text}"</p>
+                                        <p className="text-sm text-zinc-300 mt-2">"{localizedReview.text}"</p>
                                         <div className="flex items-center gap-2 mt-2">
                                             <StarIcon className="w-4 h-4 text-yellow-400 fill-yellow-400" />
                                             <span>{review.rating}</span>
-                                            <span className="text-xs text-zinc-500">{format(fromUnixTime(typeof review.time === 'number' ? review.time : review.time.seconds), 'PPP')}</span>
+                                            <span className="text-xs text-zinc-500">{review.time ? format(fromUnixTime(typeof review.time === 'number' ? review.time : review.time.seconds), 'PPP') : ''}</span>
                                         </div>
                                     </div>
                                     <div className="flex">
@@ -759,7 +771,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
                                     </AlertDialog>
                                     </div>
                                 </div>
-                            ))}
+                            )})}
                         </div>
                     </div>
                  </TabsContent>
@@ -780,7 +792,7 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
           <DialogHeader>
             <DialogTitle>{selectedPromo ? 'Edit Promotion' : 'Create New Promotion'}</DialogTitle>
             <DialogDescription>
-              This promotion will be exclusive to {outlet?.name || 'this outlet'}.
+              This promotion will be exclusive to {getLocalized(outlet || {}, 'en').name || 'this outlet'}.
             </DialogDescription>
           </DialogHeader>
           <PromotionForm 
@@ -796,13 +808,14 @@ export default function OutletForm({ outlet, allItems, allTestimonials, onSucces
           <DialogHeader>
             <DialogTitle>{selectedTestimonial ? 'Edit Manual Review' : 'Add New Manual Review'}</DialogTitle>
           </DialogHeader>
-          <TestimonialForm 
+           <TestimonialForm 
             testimonial={selectedTestimonial}
-            onSave={handleSaveTestimonial}
-            onCancel={() => setIsTestimonialDialogOpen(false)}
+            onSuccess={() => setIsTestimonialDialogOpen(false)}
           />
         </DialogContent>
       </Dialog>
     </>
   );
 }
+
+    

@@ -80,16 +80,24 @@ export default function PostForm({ post, onSuccess }: PostFormProps) {
     values: post ? {
         // Non-translated fields
         slug: post.slug,
-        coverImage: post.coverImage,
-        author: { ...post.author, photo: post.author.photo || '', bio: post.author.bio || '' },
-        tags: post.tags?.join(', '),
+        coverImage: {
+          url: post.coverImage.url || '',
+          alt: post.coverImage.alt || '',
+          caption: post.coverImage.caption || '',
+        },
+        author: { 
+          name: post.author.name || '',
+          photo: post.author.photo || '', 
+          bio: post.author.bio || '' 
+        },
+        tags: post.tags?.join(', ') || '',
         category: post.category,
         status: post.status,
         isFeatured: post.isFeatured || false,
         seo: {
             title: post.seo?.title || '',
             description: post.seo?.description || '',
-            keywords: post.seo?.keywords?.join(', '),
+            keywords: post.seo?.keywords?.join(', ') || '',
         },
         // Translated fields
         translations: getLocalized(post, language, 'en'),
@@ -303,3 +311,5 @@ export default function PostForm({ post, onSuccess }: PostFormProps) {
     </Form>
   );
 }
+
+    
