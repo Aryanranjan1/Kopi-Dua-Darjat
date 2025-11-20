@@ -5,7 +5,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, doc, deleteDoc, orderBy, query } from 'firebase/firestore';
-import type { Outlet, MenuItem, Testimonial } from '@/lib/types';
+import type { Outlet, MenuItem } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -37,7 +37,7 @@ import {
 import { Loader2, PlusCircle, Edit, Trash2, Search, ExternalLink } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
+import { cn, getLocalized } from '@/lib/utils';
 import Link from 'next/link';
 import { Pagination } from '@/components/shared/Pagination';
 import OutletForm from './OutletForm';
@@ -52,7 +52,7 @@ export default function OutletsManager() {
   const [selectedOutlet, setSelectedOutlet] = useState<Outlet | undefined>(undefined);
   
   const outletsQuery = useMemoFirebase(
-    () => firestore ? query(collection(firestore, 'outlets'), orderBy('name', 'asc')) : null,
+    () => firestore ? query(collection(firestore, 'outlets')) : null,
     [firestore]
   );
   const { data: outlets, isLoading: isLoadingOutlets } = useCollection<Outlet>(outletsQuery);
@@ -61,23 +61,32 @@ export default function OutletsManager() {
     useMemoFirebase(() => firestore ? query(collection(firestore, 'menuItems')) : null, [firestore])
   );
   
-  const { data: testimonials, isLoading: isLoadingTestimonials } = useCollection<Testimonial>(
-    useMemoFirebase(() => firestore ? query(collection(firestore, 'testimonials')) : null, [firestore])
-  );
-
-
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
 
   const filteredOutlets = useMemo(() => {
     if (!outlets) return [];
-    if (!searchQuery) return outlets;
-    return outlets.filter(outlet => 
-      outlet.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      outlet.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      outlet.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      outlet.state.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    
+    const sortedByName = [...outlets].sort((a, b) => {
+        const nameA = getLocalized(a, 'en').name || '';
+        const nameB = getLocalized(b, 'en').name || '';
+        return nameA.localeCompare(nameB);
+    });
+
+    if (!searchQuery) return sortedByName;
+
+    return sortedByName.filter(outlet => {
+      const localized = getLocalized(outlet, 'en');
+      const name = localized.name || '';
+      const address = localized.address || '';
+      const city = localized.city || '';
+      const state = localized.state || '';
+      
+      return name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+             address.toLowerCase().includes(searchQuery.toLowerCase()) ||
+             city.toLowerCase().includes(searchQuery.toLowerCase()) ||
+             state.toLowerCase().includes(searchQuery.toLowerCase());
+    });
   }, [outlets, searchQuery]);
 
   const totalPages = Math.ceil(filteredOutlets.length / OUTLETS_PER_PAGE);
@@ -106,7 +115,7 @@ export default function OutletsManager() {
     }
   };
   
-  const isDataLoading = isLoadingOutlets || isLoadingItems || isLoadingTestimonials;
+  const isDataLoading = isLoadingOutlets || isLoadingItems;
   
   // Effect to close dialog if the selected outlet is deleted
   useEffect(() => {
@@ -147,11 +156,13 @@ export default function OutletsManager() {
           <TableBody>
             {isLoadingOutlets && <TableRow><TableCell colSpan={5} className="text-center"><Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" /></TableCell></TableRow>}
             {!isLoadingOutlets && paginatedOutlets.length === 0 && <TableRow><TableCell colSpan={5} className="text-center text-zinc-400 py-8">No outlets found.</TableCell></TableRow>}
-            {paginatedOutlets?.map(outlet => (
+            {paginatedOutlets?.map(outlet => {
+                const localized = getLocalized(outlet, 'en');
+                return (
               <TableRow key={outlet.id} className="border-zinc-700 hover:bg-zinc-800/80">
-                <TableCell className="font-medium">{outlet.name}</TableCell>
-                <TableCell>{outlet.city}</TableCell>
-                <TableCell>{outlet.state}</TableCell>
+                <TableCell className="font-medium">{localized.name}</TableCell>
+                <TableCell>{localized.city}</TableCell>
+                <TableCell>{localized.state}</TableCell>
                 <TableCell>
                   <Badge variant={outlet.status === 'active' ? 'default' : 'destructive'} className={cn(
                     outlet.status === 'active' ? 'bg-green-600' : 'bg-red-700'
@@ -171,7 +182,7 @@ export default function OutletsManager() {
                     <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
                       <AlertDialogHeader>
                           <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                          <AlertDialogDescription className="text-zinc-400">This will permanently delete the "{outlet.name}" outlet.</AlertDialogDescription>
+                          <AlertDialogDescription className="text-zinc-400">This will permanently delete the "{localized.name}" outlet.</AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
@@ -181,7 +192,7 @@ export default function OutletsManager() {
                   </AlertDialog>
                 </TableCell>
               </TableRow>
-            ))}
+            )})}
           </TableBody>
         </Table>
       </div>
@@ -197,7 +208,7 @@ export default function OutletsManager() {
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-4xl h-[90vh] flex flex-col">
                 <DialogHeader>
-                    <DialogTitle>{selectedOutlet ? `Edit: ${selectedOutlet.name}` : 'Create New Outlet'}</DialogTitle>
+                    <DialogTitle>{selectedOutlet ? `Edit: ${getLocalized(selectedOutlet, 'en').name}` : 'Create New Outlet'}</DialogTitle>
                     <DialogDescription className="text-zinc-400">
                         Manage all details for this outlet and its microsite.
                     </DialogDescription>
@@ -211,7 +222,6 @@ export default function OutletsManager() {
                         <OutletForm 
                             outlet={selectedOutlet} 
                             allItems={menuItems || []} 
-                            allTestimonials={testimonials || []}
                             onSuccess={() => setIsDialogOpen(false)} 
                         />
                     )}

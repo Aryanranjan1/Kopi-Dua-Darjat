@@ -513,6 +513,24 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
               <div className="mt-4">
                 <TabsContent value="general">
                     <div className="space-y-6">
+                       <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">Google Places Integration</h3>
+                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField control={form.control} name="placeId" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Google Place ID</FormLabel>
+                                <FormControl><Input placeholder="Starts with ChIJ..." {...field} value={field.value || ''} className={inputStyles}/></FormControl>
+                                <FormDescription>Used to fetch ratings and reviews.</FormDescription>
+                                <FormMessage/>
+                            </FormItem>
+                        )}/>
+                        <div className="self-end">
+                            <Button type="button" onClick={handleFetchFromGoogle} disabled={isFetching} className="w-full">
+                                {isFetching && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                Fetch from Google
+                            </Button>
+                        </div>
+                      </div>
+
                       <div className="flex justify-between items-center border-b border-primary/50 pb-2">
                         <h3 className="text-lg font-medium text-primary">Core Information</h3>
                       </div>
@@ -610,24 +628,6 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
                           )}/>
                       </div>
                       
-                      <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">Google Places Integration</h3>
-                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <FormField control={form.control} name="placeId" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Google Place ID</FormLabel>
-                                <FormControl><Input placeholder="Starts with ChIJ..." {...field} value={field.value || ''} className={inputStyles}/></FormControl>
-                                <FormDescription>Used to fetch ratings and reviews.</FormDescription>
-                                <FormMessage/>
-                            </FormItem>
-                        )}/>
-                        <div className="self-end">
-                            <Button type="button" onClick={handleFetchFromGoogle} disabled={isFetching} className="w-full">
-                                {isFetching && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                Fetch from Google
-                            </Button>
-                        </div>
-                      </div>
-
                       <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">System</h3>
                       <FormField control={form.control} name="status" render={({ field }) => (
                               <FormItem><FormLabel>Status</FormLabel>
@@ -667,7 +667,7 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
                               <FormLabel>Link Menu Items</FormLabel>
                               <MultiSelectPopover
                                 title="Menu Items"
-                                options={allItems?.map(item => ({ value: item.id, label: getLocalized(item, 'en').name })) || []}
+                                options={allItems?.map(item => ({ value: item.id, label: getLocalized(item, 'en').name || '' })) || []}
                                 selected={field.value || []}
                                 onChange={field.onChange}
                               />
@@ -838,12 +838,16 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
           </DialogHeader>
            <TestimonialForm 
             testimonial={selectedTestimonial}
-            onSuccess={() => setIsTestimonialDialogOpen(false)}
+            onSave={handleSaveTestimonial}
+            onSuccess={() => {}}
+            onCancel={() => setIsTestimonialDialogOpen(false)}
           />
         </DialogContent>
       </Dialog>
     </>
   );
 }
+
+    
 
     
