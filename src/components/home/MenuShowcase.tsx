@@ -14,7 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { getDiscountDisplay, getLocalized } from '@/lib/utils';
+import { getLocalized } from '@/lib/utils';
 import { Skeleton } from '../ui/skeleton';
 import { useLanguage } from '../layout/LanguageProvider';
 

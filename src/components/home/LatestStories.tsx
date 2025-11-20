@@ -15,7 +15,7 @@ import { BookOpen } from 'lucide-react';
 import { useMemo } from 'react';
 import { siteContentData } from '@/lib/site-content';
 import { useLanguage } from '../layout/LanguageProvider';
-import { getLocalized } from '@/lib/localization';
+import { getLocalized } from '@/lib/utils';
 
 export default function LatestStories() {
     const firestore = useFirestore();

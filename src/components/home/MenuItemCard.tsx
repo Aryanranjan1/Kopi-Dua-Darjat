@@ -8,8 +8,9 @@ import { Button } from '@/components/ui/button';
 import { Star, ArrowUpRight, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '../ui/badge';
-import { getDiscountDisplay, getLocalized } from '@/lib/utils';
+import { getDiscountDisplay } from '@/lib/utils';
 import { useLanguage } from '../layout/LanguageProvider';
+import { getLocalized } from '@/lib/utils';
 
 interface MenuItemCardProps {
   drink: MenuItem;

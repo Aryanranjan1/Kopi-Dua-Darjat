@@ -18,7 +18,7 @@ import type { Testimonial } from '@/lib/types';
 import { useMediaAsset } from '@/lib/media';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useLanguage } from '@/components/layout/LanguageProvider';
-import { getLocalized } from '@/lib/localization';
+import { getLocalized } from '@/lib/utils';
 
 const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
   const { asset: companyLogo, isLoading: isLoadingLogo } = useMediaAsset('logo-symbol');

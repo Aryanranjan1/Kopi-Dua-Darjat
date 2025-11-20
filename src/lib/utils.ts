@@ -9,16 +9,15 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function getDiscountDisplay(promo: Promotion): string {
-    const localized = getLocalized(promo, 'en');
     switch (promo.discountType) {
         case 'percentage':
             return `${promo.discountValue}% OFF`;
         case 'flat':
-            return `RM${promo.discountValue.toFixed(2)} OFF`;
+            return `RM${promo.discountValue?.toFixed(2)} OFF`;
         case 'bogo':
             return 'BOGO';
         case 'custom':
-            return localized.customDiscountDescription || 'Special Offer';
+            return promo.customDiscountDescription || 'Special Offer';
         default:
             return 'On Offer';
     }
