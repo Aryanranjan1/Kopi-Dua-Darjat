@@ -25,7 +25,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, addDoc, doc, setDoc, serverTimestamp, writeBatch, getDoc, query } from 'firebase/firestore';
 import type { Promotion, MenuItem, Outlet } from '@/lib/types';
-import { cn } from '@/lib/utils';
+import { cn, getLocalized } from '@/lib/utils';
 import { format } from 'date-fns';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -38,12 +38,21 @@ interface PromotionFormProps {
 }
 
 const formSchema = z.object({
-  title: z.string().min(3, 'Title must be at least 3 characters.'),
-  description: z.string().optional(),
+  translations: z.object({
+    en: z.object({
+      title: z.string().min(3, 'English title must be at least 3 characters.'),
+      description: z.string().optional(),
+      customDiscountDescription: z.string().optional(),
+    }),
+    ms: z.object({
+      title: z.string().optional(),
+      description: z.string().optional(),
+      customDiscountDescription: z.string().optional(),
+    })
+  }),
   bannerImage: z.string().url('Must be a valid URL.').optional().or(z.literal('')),
   discountType: z.enum(['percentage', 'flat', 'bogo', 'custom']),
   discountValue: z.coerce.number().positive('Discount value must be positive.').optional(),
-  customDiscountDescription: z.string().optional(),
   startDate: z.date({ required_error: "A start date is required." }),
   endDate: z.date({ required_error: "An end date is required." }),
   menuItemIds: z.array(z.string()).optional(),
@@ -60,12 +69,13 @@ const formSchema = z.object({
     path: ['discountValue'],
 }).refine(data => {
     if (data.discountType === 'custom') {
-        return data.customDiscountDescription && data.customDiscountDescription.length > 0;
+        const localized = getLocalized({ translations: data.translations } as any, 'en');
+        return localized.customDiscountDescription && localized.customDiscountDescription.length > 0;
     }
     return true;
 }, {
     message: 'Custom description is required for this discount type.',
-    path: ['customDiscountDescription'],
+    path: ['translations.en.customDiscountDescription'],
 });
 
 
@@ -81,21 +91,29 @@ export default function PromotionForm({ promotion, outletId, onSuccess }: Promot
     resolver: zodResolver(formSchema),
     defaultValues: promotion ? {
       ...promotion,
+      translations: {
+        en: getLocalized(promotion, 'en'),
+        ms: getLocalized(promotion, 'ms'),
+      },
       startDate: promotion.startDate.toDate(),
       endDate: promotion.endDate.toDate(),
     } : {
-      title: '',
-      description: '',
+      translations: { en: { title: '', description: '', customDiscountDescription: '' }, ms: { title: '', description: '', customDiscountDescription: '' } },
       bannerImage: '',
       discountType: 'percentage',
       discountValue: 10,
-      customDiscountDescription: '',
       menuItemIds: [],
     },
   });
 
   const { isSubmitting, watch, control } = form;
   const discountType = watch("discountType");
+  
+  const handleCopyToMalay = () => {
+    const en = form.getValues('translations.en');
+    form.setValue('translations.ms', en);
+    toast({ title: "Content Copied", description: "English content has been copied to the Malay fields." });
+  }
 
   const getStatus = (start: Date, end: Date): 'scheduled' | 'active' | 'expired' => {
       const now = new Date();
@@ -159,7 +177,7 @@ export default function PromotionForm({ promotion, outletId, onSuccess }: Promot
 
       await batch.commit();
 
-      toast({ title: `Promotion ${promotion ? 'Updated' : 'Created'}`, description: `"${values.title}" has been saved.` });
+      toast({ title: `Promotion ${promotion ? 'Updated' : 'Created'}`, description: `"${getLocalized({translations: values.translations} as any, 'en').title}" has been saved.` });
       onSuccess();
 
     } catch (error: any) {
@@ -175,28 +193,31 @@ export default function PromotionForm({ promotion, outletId, onSuccess }: Promot
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 text-white">
         <ScrollArea className="h-[60vh] pr-4">
         <div className="space-y-6">
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Title</FormLabel>
-              <FormControl><Input placeholder="e.g., Weekend Special" {...field} className={inputStyles} /></FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description (Optional)</FormLabel>
-              <FormControl><Textarea placeholder="Describe the promotion" {...field} className={inputStyles} /></FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-4">
+            <h3 className="font-medium text-lg text-zinc-300">English (EN)</h3>
+            <FormField control={form.control} name="translations.en.title" render={({ field }) => (
+              <FormItem><FormLabel>Title</FormLabel><FormControl><Input placeholder="e.g., Weekend Special" {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+            )} />
+            <FormField control={form.control} name="translations.en.description" render={({ field }) => (
+              <FormItem><FormLabel>Description (Optional)</FormLabel><FormControl><Textarea placeholder="Describe the promotion" {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+            )} />
+          </div>
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="font-medium text-lg text-zinc-300">Malay (MS)</h3>
+              <Button type="button" size="sm" onClick={handleCopyToMalay} className="bg-primary text-primary-foreground border border-black hover:bg-primary">Copy from EN</Button>
+            </div>
+             <FormField control={form.control} name="translations.ms.title" render={({ field }) => (
+              <FormItem><FormLabel>Tajuk</FormLabel><FormControl><Input placeholder="cth., Istimewa Hujung Minggu" {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+            )} />
+            <FormField control={form.control} name="translations.ms.description" render={({ field }) => (
+              <FormItem><FormLabel>Penerangan (Pilihan)</FormLabel><FormControl><Textarea placeholder="Terangkan promosi" {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+            )} />
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
             control={form.control}
@@ -233,18 +254,14 @@ export default function PromotionForm({ promotion, outletId, onSuccess }: Promot
         </div>
 
         {discountType === 'custom' && (
-            <FormField
-              control={form.control}
-              name="customDiscountDescription"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Custom Discount Description</FormLabel>
-                  <FormControl><Input placeholder="e.g. Buy 3, Get 1 Free" {...field} className={inputStyles} /></FormControl>
-                  <FormDescription>Describe the unique offer.</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField control={form.control} name="translations.en.customDiscountDescription" render={({ field }) => (
+                  <FormItem><FormLabel>Custom Discount Description (EN)</FormLabel><FormControl><Input placeholder="e.g. Buy 3, Get 1 Free" {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+              )} />
+              <FormField control={form.control} name="translations.ms.customDiscountDescription" render={({ field }) => (
+                  <FormItem><FormLabel>Custom Discount Description (MS)</FormLabel><FormControl><Input placeholder="cth. Beli 3, Dapat 1 Percuma" {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+              )} />
+            </div>
         )}
 
 
@@ -261,7 +278,7 @@ export default function PromotionForm({ promotion, outletId, onSuccess }: Promot
               <FormLabel>Linked Menu Items</FormLabel>
               <MultiSelectPopover
                 title="Menu Items"
-                options={menuItems?.map(item => ({ value: item.id, label: item.name })) || []}
+                options={menuItems?.map(item => ({ value: item.id, label: getLocalized(item, 'en').name || '' })) || []}
                 selected={field.value || []}
                 onChange={field.onChange}
               />
@@ -335,7 +352,7 @@ function MultiSelectPopover({ title, options, selected, onChange }: {
     const [searchQuery, setSearchQuery] = React.useState('');
 
     const filteredOptions = options.filter(option => 
-        option.label.toLowerCase().includes(searchQuery.toLowerCase())
+        option.label?.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     return (

@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo } from 'react';
@@ -44,7 +45,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { cn } from '@/lib/utils';
+import { cn, getLocalized, getDiscountDisplay } from '@/lib/utils';
+
 
 const getStatus = (promo: Promotion): 'active' | 'scheduled' | 'expired' => {
   const now = new Date();
@@ -54,22 +56,6 @@ const getStatus = (promo: Promotion): 'active' | 'scheduled' | 'expired' => {
   if (now > endDate) return 'expired';
   return 'active';
 }
-
-const getDiscountDisplay = (promo: Promotion) => {
-    switch (promo.discountType) {
-        case 'percentage':
-            return `${promo.discountValue}% Off`;
-        case 'flat':
-            return `RM${promo.discountValue.toFixed(2)} Off`;
-        case 'bogo':
-            return 'Buy 1 Get 1';
-        case 'custom':
-            return promo.customDiscountDescription || 'Custom Offer';
-        default:
-            return 'N/A';
-    }
-}
-
 
 export default function PromotionsManager() {
   const firestore = useFirestore();
@@ -89,7 +75,8 @@ export default function PromotionsManager() {
   const filteredPromotions = useMemo(() => {
     if (!promotions) return [];
     return promotions.filter(promo => {
-      const matchesSearch = promo.title.toLowerCase().includes(searchQuery.toLowerCase());
+      const localized = getLocalized(promo, 'en');
+      const matchesSearch = localized.title?.toLowerCase().includes(searchQuery.toLowerCase());
       if (statusFilter === 'all') return matchesSearch;
       return getStatus(promo) === statusFilter && matchesSearch;
     });
@@ -161,9 +148,10 @@ export default function PromotionsManager() {
           {!isLoading && filteredPromotions.length === 0 && <TableRow><TableCell colSpan={6} className="text-center text-zinc-400 py-8">No promotions found.</TableCell></TableRow>}
           {filteredPromotions?.map(promo => {
             const status = getStatus(promo);
+            const localized = getLocalized(promo, 'en');
             return (
             <TableRow key={promo.id} className="border-zinc-700 hover:bg-zinc-800/80">
-              <TableCell className="font-medium">{promo.title}</TableCell>
+              <TableCell className="font-medium">{localized.title}</TableCell>
               <TableCell>
                 {getDiscountDisplay(promo)}
               </TableCell>
@@ -194,7 +182,7 @@ export default function PromotionsManager() {
                   <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
                     <AlertDialogHeader>
                         <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                        <AlertDialogDescription className="text-zinc-400">This will permanently delete the "{promo.title}" promotion.</AlertDialogDescription>
+                        <AlertDialogDescription className="text-zinc-400">This will permanently delete the "{localized.title}" promotion.</AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                       <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
@@ -213,7 +201,7 @@ export default function PromotionsManager() {
           <DialogHeader>
             <DialogTitle>{selectedPromotion ? 'Edit Promotion' : 'Add New Promotion'}</DialogTitle>
             <DialogDescription className="text-zinc-400">
-              {selectedPromotion ? `Editing "${selectedPromotion.title}".` : 'Create a new campaign.'}
+              {selectedPromotion ? `Editing "${getLocalized(selectedPromotion, 'en').title}".` : 'Create a new campaign.'}
             </DialogDescription>
           </DialogHeader>
           <PromotionForm promotion={selectedPromotion} onSuccess={() => setIsDialogOpen(false)} />
