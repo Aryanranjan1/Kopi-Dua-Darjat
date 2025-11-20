@@ -1,13 +1,15 @@
 
 'use client';
 
-import { collection, writeBatch, getDocs, doc, Firestore, getDoc, deleteField, serverTimestamp, query, where, addDoc } from 'firebase/firestore';
+import { collection, writeBatch, getDocs, doc, Firestore, getDoc, deleteField, serverTimestamp, query, where, addDoc, limit } from 'firebase/firestore';
 import { siteContentData } from './site-content';
-import { Blog, CommunityItem, FaqItem, Media, MenuCategory, MenuGroup, MenuItem, Outlet, Promotion, Testimonial } from './types';
+import { Blog, CommunityItem, FaqItem, Media, MenuCategory, MenuGroup, MenuItem, Outlet, Promotion, Testimonial, ReviewDocument, Review } from './types';
+import originalMediaData from './placeholder-images.json';
+
 
 const COLLECTIONS_TO_MIGRATE = [
     'blogs', 'menuCategories', 'menuGroups', 'menuItems', 
-    'outlets', 'promotions', 'testimonials', 'faq', 'community_items'
+    'outlets', 'promotions', 'testimonials', 'faq'
 ];
 
 const FIELDS_TO_TRANSLATE: Record<string, string[]> = {
@@ -17,9 +19,8 @@ const FIELDS_TO_TRANSLATE: Record<string, string[]> = {
     menuItems: ['name', 'description'],
     outlets: ['name', 'address', 'city', 'state', 'hours', 'tagline'],
     promotions: ['title', 'description', 'customDiscountDescription'],
-    testimonials: ['name', 'quote', 'designation'],
+    testimonials: ['name', 'quote'],
     faq: ['question', 'answer'],
-    community_items: ['name', 'quote', 'role'],
 };
 
 
@@ -45,6 +46,7 @@ export async function migrateAllToTranslations(firestore: Firestore | null, dryR
             const data = docSnap.data();
             
             if (data.translations) {
+                logs.push(`[SKIPPED] ${collectionName}/${docSnap.id} already has a 'translations' field.`);
                 continue;
             }
 
@@ -77,7 +79,7 @@ export async function migrateAllToTranslations(firestore: Firestore | null, dryR
                 }
             }
         }
-        if (!dryRun) {
+        if (!dryRun && batch.size > 0) {
            await batch.commit();
         }
     }
@@ -124,25 +126,6 @@ export async function clearAllCollections(firestore: Firestore | null): Promise<
   }
 }
 
-async function seedCollection<T>(firestore: Firestore, collectionName: string, data: T[], idField: keyof T) {
-    const batch = writeBatch(firestore);
-    const collectionRef = collection(firestore, collectionName);
-
-    // Check if collection is empty
-    const snapshot = await getDocs(query(collectionRef, where('__name__', '!=', '')));
-    if (!snapshot.empty) {
-        console.log(`Collection '${collectionName}' is not empty. Skipping seed.`);
-        return 0; // Skip seeding if not empty
-    }
-    
-    data.forEach((item: any) => {
-        const docId = item[idField];
-        const docRef = doc(collectionRef, docId);
-        batch.set(docRef, { ...item, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
-    });
-    await batch.commit();
-    return data.length;
-}
 
 export async function masterSeed(firestore: Firestore | null): Promise<{ success: boolean, message: string }> {
     if (!firestore) {
@@ -174,17 +157,18 @@ export async function seedDemoDataset(firestore: Firestore): Promise<{ success: 
   
       // Helper to check if a collection is empty before seeding
       const isCollectionEmpty = async (name: string) => {
-        const snapshot = await getDocs(query(collection(firestore, name), where('__name__', '!=', '')));
+        const q = query(collection(firestore, name), limit(1));
+        const snapshot = await getDocs(q);
         return snapshot.empty;
       };
   
       // --- Seed Logic ---
-      const menuGroupsData: Omit<MenuGroup, 'id' | 'createdAt' | 'updatedAt'>[] = [
-        { displayOrder: 1, slug: 'kopi-series', status: 'published', translations: { en: { name: 'Kopi Series' }, ms: { name: 'Siri Kopi' } }},
-        { displayOrder: 2, slug: 'non-kopi', status: 'published', translations: { en: { name: 'Non-Kopi' }, ms: { name: 'Bukan Kopi' } }},
-        { displayOrder: 3, slug: 'menet', status: 'published', translations: { en: { name: 'Menet Series' }, ms: { name: 'Siri Menet' } }},
-      ];
       if (await isCollectionEmpty('menuGroups')) {
+        const menuGroupsData: Omit<MenuGroup, 'id' | 'createdAt' | 'updatedAt'>[] = [
+            { displayOrder: 1, slug: 'kopi-series', status: 'published', translations: { en: { name: 'Kopi Series' }, ms: { name: 'Siri Kopi' } }},
+            { displayOrder: 2, slug: 'non-kopi', status: 'published', translations: { en: { name: 'Non-Kopi' }, ms: { name: 'Bukan Kopi' } }},
+            { displayOrder: 3, slug: 'menet', status: 'published', translations: { en: { name: 'Menet Series' }, ms: { name: 'Siri Menet' } }},
+        ];
         menuGroupsData.forEach(item => {
             const docRef = doc(collection(firestore, 'menuGroups'));
             batch.set(docRef, item);
@@ -192,38 +176,46 @@ export async function seedDemoDataset(firestore: Firestore): Promise<{ success: 
         })
       }
       
-      const outletsData: Partial<Outlet>[] = [
-         {
-            slug: "kopi-kl-sentral",
-            lat: 3.134,
-            lng: 101.686,
-            status: "active",
-            translations: {
-                en: { name: "Kopi Dua Darjat - KL Sentral", address: "1, Jalan Stesen Sentral, Kuala Lumpur Sentral, 50470 Kuala Lumpur", city: "Kuala Lumpur", state: "Kuala Lumpur", hours: "7 AM - 9 PM", tagline: "Your daily brew stop at the heart of the city." },
-                ms: { name: "Kopi Dua Darjat - KL Sentral", address: "1, Jalan Stesen Sentral, Kuala Lumpur Sentral, 50470 Kuala Lumpur", city: "Kuala Lumpur", state: "Kuala Lumpur", hours: "7 PG - 9 MLM", tagline: "Hentian kopi harian anda di nadi kota." }
-            }
-        },
-        {
-            slug: "kopi-bangsar-village",
-            lat: 3.129,
-            lng: 101.671,
-            status: "active",
-            translations: {
-                en: { name: "Kopi Dua Darjat - Bangsar Village", address: "1, Jalan Telawi 1, Bangsar, 59100 Kuala Lumpur", city: "Kuala Lumpur", state: "Kuala Lumpur", hours: "8 AM - 10 PM", tagline: "The perfect spot for your coffee fix in Bangsar." },
-                ms: { name: "Kopi Dua Darjat - Bangsar Village", address: "1, Jalan Telawi 1, Bangsar, 59100 Kuala Lumpur", city: "Kuala Lumpur", state: "Kuala Lumpur", hours: "8 PG - 10 MLM", tagline: "Tempat terbaik untuk kopi anda di Bangsar." }
-            }
-        },
-      ];
        if (await isCollectionEmpty('outlets')) {
+        const outletsData: Partial<Outlet>[] = [
+            {
+                slug: "kopi-kl-sentral",
+                lat: 3.134,
+                lng: 101.686,
+                status: "active",
+                translations: {
+                    en: { name: "Kopi Dua Darjat - KL Sentral", address: "1, Jalan Stesen Sentral, Kuala Lumpur Sentral, 50470 Kuala Lumpur", city: "Kuala Lumpur", state: "Kuala Lumpur", hours: "7 AM - 9 PM", tagline: "Your daily brew stop at the heart of the city." },
+                    ms: { name: "Kopi Dua Darjat - KL Sentral", address: "1, Jalan Stesen Sentral, Kuala Lumpur Sentral, 50470 Kuala Lumpur", city: "Kuala Lumpur", state: "Kuala Lumpur", hours: "7 PG - 9 MLM", tagline: "Hentian kopi harian anda di nadi kota." }
+                }
+            },
+            {
+                slug: "kopi-bangsar-village",
+                lat: 3.129,
+                lng: 101.671,
+                status: "active",
+                translations: {
+                    en: { name: "Kopi Dua Darjat - Bangsar Village", address: "1, Jalan Telawi 1, Bangsar, 59100 Kuala Lumpur", city: "Kuala Lumpur", state: "Kuala Lumpur", hours: "8 AM - 10 PM", tagline: "The perfect spot for your coffee fix in Bangsar." },
+                    ms: { name: "Kopi Dua Darjat - Bangsar Village", address: "1, Jalan Telawi 1, Bangsar, 59100 Kuala Lumpur", city: "Kuala Lumpur", state: "Kuala Lumpur", hours: "8 PG - 10 MLM", tagline: "Tempat terbaik untuk kopi anda di Bangsar." }
+                }
+            },
+        ];
         outletsData.forEach(item => {
             const docRef = doc(firestore, 'outlets', item.slug!);
             batch.set(docRef, item);
             totalCount++;
         })
       }
+
+      if (await isCollectionEmpty('media')) {
+         originalMediaData.placeholderImages.forEach((mediaItem) => {
+            const docRef = doc(collection(firestore, 'media'), mediaItem.id);
+            batch.set(docRef, mediaItem);
+            totalCount++;
+        });
+      }
   
       await batch.commit();
-      return { success: true, message: `Successfully seeded ${totalCount} documents.` };
+      return { success: true, message: `Successfully seeded ${totalCount} documents into empty collections.` };
   
     } catch (error: any) {
       console.error("Error seeding demo data:", error);
