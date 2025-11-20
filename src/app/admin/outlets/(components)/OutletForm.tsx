@@ -518,7 +518,6 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
           <Tabs defaultValue="general" className="w-full">
               <TabsList className="grid w-full grid-cols-4 md:grid-cols-5 bg-zinc-800">
                 <TabsTrigger value="general">General</TabsTrigger>
-                <TabsTrigger value="socials">Socials</TabsTrigger>
                 <TabsTrigger value="seo">SEO</TabsTrigger>
                 <TabsTrigger value="menu">Menu</TabsTrigger>
                 <TabsTrigger value="promotions" disabled={!outlet}>Promotions</TabsTrigger>
@@ -614,7 +613,7 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
                           )}/>
                       </div>
 
-                      <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">Contact & Links</h3>
+                      <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">Contact & Socials</h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <FormField control={form.control} name="phone" render={({ field }) => (
                               <FormItem><FormLabel>Phone Number</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
@@ -622,12 +621,22 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
                           <FormField control={form.control} name="email" render={({ field }) => (
                               <FormItem><FormLabel>Email</FormLabel><FormControl><Input type="email" {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
                           )}/>
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <FormField control={form.control} name="whatsappLink" render={({ field }) => (
                               <FormItem><FormLabel>WhatsApp Link</FormLabel><FormControl><Input placeholder="https://wa.me/..." {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
                           )}/>
                       </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                         <FormField control={form.control} name="socials.instagram" render={({ field }) => (
+                            <FormItem><FormLabel>Instagram URL</FormLabel><FormControl><Input placeholder="https://instagram.com/..." {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                        )} />
+                        <FormField control={form.control} name="socials.tiktok" render={({ field }) => (
+                            <FormItem><FormLabel>TikTok URL</FormLabel><FormControl><Input placeholder="https://tiktok.com/..." {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                        )} />
+                        <FormField control={form.control} name="socials.facebook" render={({ field }) => (
+                            <FormItem><FormLabel>Facebook URL</FormLabel><FormControl><Input placeholder="https://facebook.com/..." {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                        )} />
+                      </div>
+
 
                       <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2 pt-4">Microsite & Card Images</h3>
                       <div className="space-y-4">
@@ -655,20 +664,6 @@ export default function OutletForm({ outlet, allItems, onSuccess }: OutletFormPr
                               <FormMessage/></FormItem>
                           )}/>
                     </div>
-                </TabsContent>
-                <TabsContent value="socials">
-                   <div className="space-y-6">
-                    <h3 className="text-lg font-medium text-primary border-b border-primary/50 pb-2">Outlet Social Media</h3>
-                    <FormField control={form.control} name="socials.instagram" render={({ field }) => (
-                        <FormItem><FormLabel>Instagram URL</FormLabel><FormControl><Input placeholder="https://instagram.com/..." {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
-                    )} />
-                    <FormField control={form.control} name="socials.tiktok" render={({ field }) => (
-                        <FormItem><FormLabel>TikTok URL</FormLabel><FormControl><Input placeholder="https://tiktok.com/..." {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
-                    )} />
-                    <FormField control={form.control} name="socials.facebook" render={({ field }) => (
-                        <FormItem><FormLabel>Facebook URL</FormLabel><FormControl><Input placeholder="https://facebook.com/..." {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
-                    )} />
-                  </div>
                 </TabsContent>
                 <TabsContent value="seo">
                   <div className="space-y-6">
