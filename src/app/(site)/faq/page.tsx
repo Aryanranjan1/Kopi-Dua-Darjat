@@ -2,13 +2,11 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query } from 'firebase/firestore';
 import type { FaqItem } from '@/lib/types';
-import { useMediaAsset } from '@/lib/media';
 import {
   Accordion,
   AccordionContent,
@@ -22,29 +20,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useLanguage } from '@/components/layout/LanguageProvider';
 import { getLocalized } from '@/lib/utils';
 
-// export const metadata: Metadata = {
-//   title: 'FAQ',
-//   description: 'Find answers to frequently asked questions about Kopi Dua Darjat.',
-// };
-
-const faqCategories = [
-  {
-    title: 'General FAQs',
-    tag: 'General',
-    description: 'Everything you need to know about our brand and how it works.',
-  },
-  {
-    title: 'Product FAQs',
-    tag: 'Product',
-    description: 'Details about our delicious coffee and other menu items.',
-  },
-  {
-    title: 'Franchise FAQs',
-    tag: 'Franchise',
-    description: 'Information for aspiring entrepreneurs who want to join our family.',
-  },
-];
-
 export default function FaqPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const firestore = useFirestore();
@@ -52,19 +27,42 @@ export default function FaqPage() {
   const faqQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'faq')) : null, [firestore]);
   const { data: faqItems, isLoading: isLoadingFaqs } = useCollection<FaqItem>(faqQuery);
 
-  const { asset: heroImage, isLoading: isLoadingImage } = useMediaAsset('faq-hero');
+  // Temporary placeholder image
+  const heroImage = {
+    imageUrl: "https://images.unsplash.com/photo-1626097116802-708db5be6b00?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1175",
+    description: "A close up of a cup of coffee on a table.",
+    imageHint: "cup of coffee"
+  };
+  const isLoadingImage = false;
+
+  const faqCategories = useMemo(() => [
+    {
+      title: language === 'ms' ? 'Soalan Lazim Umum' : 'General FAQs',
+      tag: 'General',
+      description: language === 'ms' ? 'Semua yang anda perlu tahu tentang jenama kami dan cara ia berfungsi.' : 'Everything you need to know about our brand and how it works.',
+    },
+    {
+      title: language === 'ms' ? 'Soalan Lazim Produk' : 'Product FAQs',
+      tag: 'Product',
+      description: language === 'ms' ? 'Butiran tentang kopi lazat kami dan item menu lain.' : 'Details about our delicious coffee and other menu items.',
+    },
+    {
+      title: language === 'ms' ? 'Soalan Lazim Francais' : 'Franchise FAQs',
+      tag: 'Franchise',
+      description: language === 'ms' ? 'Maklumat untuk bakal usahawan yang ingin menyertai keluarga kami.' : 'Information for aspiring entrepreneurs who want to join our family.',
+    },
+  ], [language]);
 
   const filteredFaqItems = useMemo(() => {
     if (!faqItems) return [];
-    if (!searchTerm) {
-      return faqItems;
-    }
+    const lowercasedSearchTerm = searchTerm.toLowerCase();
+    
     return faqItems.filter(
       (item) => {
         const localized = getLocalized(item, language);
         return (
-            localized.question?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            localized.answer?.toLowerCase().includes(searchTerm.toLowerCase())
+            localized.question?.toLowerCase().includes(lowercasedSearchTerm) ||
+            localized.answer?.toLowerCase().includes(lowercasedSearchTerm)
         );
       }
     );
@@ -84,19 +82,18 @@ export default function FaqPage() {
           <div className="container mx-auto px-6">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div>
-                <p className="font-semibold text-primary">Support</p>
+                <p className="font-semibold text-primary">Sokongan</p>
                 <h1 className="mt-2 text-4xl md:text-6xl font-headline font-bold">
-                  Frequently Asked Questions
+                  Soalan Lazim
                 </h1>
                 <p className="mt-4 text-lg text-white/80">
-                  Need help with something? Here are our most frequently asked
-                  questions.
+                  Perlukan bantuan? Berikut adalah soalan yang paling kerap ditanya.
                 </p>
                 <div className="relative mt-8 max-w-sm">
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-white/50" />
                   <Input
                     type="search"
-                    placeholder="Search questions..."
+                    placeholder="Cari soalan..."
                     className="w-full rounded-full bg-white/10 border-white/20 text-white pl-12 placeholder:text-white/50"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
@@ -146,9 +143,9 @@ export default function FaqPage() {
                         {category.title}
                       </h2>
                       <p className="mt-2 text-muted-foreground">
-                        {category.description} Can't find an answer?{' '}
+                        {category.description} {language === 'ms' ? 'Tidak jumpa jawapan?' : "Can't find an answer?"}{' '}
                         <Link href="/contact" className="text-accent hover:underline">
-                          Chat to our team
+                          {language === 'ms' ? 'Berbual dengan pasukan kami' : 'Chat to our team'}
                         </Link>
                         .
                       </p>
@@ -181,9 +178,9 @@ export default function FaqPage() {
               })}
               {filteredFaqItems.length === 0 && searchTerm && (
                   <div className="text-center py-16">
-                    <h3 className="text-2xl font-bold">No results found</h3>
+                    <h3 className="text-2xl font-bold">Tiada hasil ditemui</h3>
                     <p className="text-muted-foreground mt-2">
-                      We couldn't find any answers for "{searchTerm}". Try a different search.
+                      Kami tidak dapat mencari sebarang jawapan untuk "{searchTerm}". Cuba carian lain.
                     </p>
                   </div>
               )}

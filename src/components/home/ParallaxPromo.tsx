@@ -3,7 +3,6 @@
 
 import { useRef } from 'react';
 import Image from 'next/image';
-import { useMediaAsset } from '@/lib/media';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
@@ -18,7 +17,14 @@ export function ParallaxPromo() {
   });
 
   const y = useTransform(scrollYProgress, [0, 1], ['-20%', '20%']);
-  const { asset: bgImage, isLoading } = useMediaAsset('parallax-promo-bg');
+  
+  // Temporary placeholder image
+  const bgImage = {
+      imageUrl: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjb2ZmZWV8ZW58MHx8fHwxNzYyMDAwNDgwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      description: "A close-up shot of rich, dark coffee beans.",
+      imageHint: "coffee"
+  };
+  const isLoading = false;
 
   return (
     <div

@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { useState, useMemo, Suspense } from 'react';
@@ -15,7 +14,6 @@ import { format } from 'date-fns';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import { CtaSection } from '@/components/shared/CtaSection';
 import { Pagination } from '@/components/shared/Pagination';
-import { useMediaAsset } from '@/lib/media';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useLanguage } from '@/components/layout/LanguageProvider';
 import { getLocalized } from '@/lib/utils';
@@ -24,7 +22,12 @@ import { getLocalized } from '@/lib/utils';
 const POSTS_PER_PAGE = 6;
 
 const HeroSection = () => {
-    const { asset: heroImage, isLoading } = useMediaAsset('brewing-method');
+    const heroImage = {
+        imageUrl: "https://images.unsplash.com/photo-1627902520211-73c980850fe8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjb2ZmZWUlMjBicmV3aW5nfGVufDB8fHx8fDE3NjIwMTM3NDV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+        description: "Image showing traditional coffee brewing.",
+        imageHint: "coffee brewing"
+    };
+    const isLoading = false;
     return (
         <section className="bg-primary py-24 sm:py-32">
             <div className="container mx-auto px-6">
@@ -226,7 +229,7 @@ function NewsPageClient() {
                             </div>
                         ))}
                     </div>
-                </div>
+                 </div>
                  <CtaSection />
             </div>
         );
