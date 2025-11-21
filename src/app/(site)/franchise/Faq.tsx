@@ -1,6 +1,7 @@
 
 'use client';
 
+import { useMemo } from 'react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, where } from 'firebase/firestore';
 import type { FaqItem } from '@/lib/types';
@@ -10,7 +11,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
+import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { Loader2 } from 'lucide-react';
 import { useLanguage } from '@/components/layout/LanguageProvider';
 import { getLocalized } from '@/lib/utils';
@@ -24,6 +25,15 @@ export default function Faq() {
     [firestore]
   );
   const { data: faqItems, isLoading } = useCollection<FaqItem>(faqQuery);
+
+  // Memoize the localized data to prevent re-computation on every render
+  const localizedFaqItems = useMemo(() => {
+    if (!faqItems) return [];
+    return faqItems.map(item => ({
+      ...item,
+      localized: getLocalized(item, language)
+    }));
+  }, [faqItems, language]);
 
   return (
     <section className="py-24 sm:py-32 bg-black text-white">
@@ -44,19 +54,17 @@ export default function Faq() {
             </div>
           ) : (
             <Accordion type="single" collapsible className="w-full space-y-4">
-              {faqItems?.map((item) => {
-                const localized = getLocalized(item, language);
-                return (
+              {localizedFaqItems.map((item) => (
                   <AccordionItem key={item.id} value={item.id} className="bg-zinc-900 border-zinc-800 rounded-2xl px-6 border-none shadow-sm">
                     <AccordionTrigger className="text-lg font-headline text-left hover:no-underline text-white">
-                      {localized.question}
+                      {item.localized.question}
                     </AccordionTrigger>
                     <AccordionContent className="text-white/60">
-                      {localized.answer}
+                      {item.localized.answer}
                     </AccordionContent>
                   </AccordionItem>
                 )
-              })}
+              )}
             </Accordion>
           )}
         </AnimateOnScroll>
@@ -64,4 +72,3 @@ export default function Faq() {
     </section>
   );
 }
-
