@@ -11,9 +11,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { AnimateOnScroll } from '../animations/AnimateOnScroll';
+import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import { Loader2 } from 'lucide-react';
-import { useLanguage } from '../layout/LanguageProvider';
+import { useLanguage } from '@/components/layout/LanguageProvider';
 import { getLocalized } from '@/lib/utils';
 import { siteContentData } from '@/lib/site-content';
 import { siteContentDataMs } from '@/lib/site-content-ms';
