@@ -8,6 +8,7 @@ import type { Outlet, MenuItem, Promotion, MenuCategory, SiteSettings, Blog, Pub
 import { initializeServerSideFirebase } from '@/firebase/server-init';
 import { collection, getDocs, query, Timestamp, doc, getDoc, limit, orderBy, where } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
+import { getLocalized } from '@/lib/utils';
 
 
 // This remains a Server Component.
@@ -113,17 +114,18 @@ function generateJsonLd(outlet: Outlet, reviewData: ReviewDocument | null) {
   if (!reviewData || !reviewData.aggregate || reviewData.reviews.length === 0) {
     return null;
   }
+  const localizedOutlet = getLocalized(outlet, 'en');
 
   const schema = {
     "@context": "https://schema.org",
     "@type": "CafeOrCoffeeShop",
-    "name": outlet.name,
+    "name": localizedOutlet.name,
     "image": outlet.heroImage || "",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": outlet.address,
-      "addressLocality": outlet.city,
-      "addressRegion": outlet.state,
+      "streetAddress": localizedOutlet.address,
+      "addressLocality": localizedOutlet.city,
+      "addressRegion": localizedOutlet.state,
       "addressCountry": "MY"
     },
     "aggregateRating": {
@@ -131,16 +133,19 @@ function generateJsonLd(outlet: Outlet, reviewData: ReviewDocument | null) {
       "ratingValue": String(reviewData.aggregate.ratingValue.toFixed(1)),
       "reviewCount": String(reviewData.aggregate.reviewCount)
     },
-    "review": reviewData.reviews.map((review: Review) => ({
-      "@type": "Review",
-      "author": { "@type": "Person", "name": review.author_name },
-      "reviewRating": {
-        "@type": "Rating",
-        "ratingValue": String(review.rating)
-      },
-      "reviewBody": review.text,
-      "publisher": { "@type": "Organization", "name": review.attribution || (review.source === 'google' ? 'Google' : 'Kopi Dua Darjat') }
-    }))
+    "review": reviewData.reviews.map((review: Review) => {
+        const localizedReview = getLocalized(review, 'en');
+        return {
+            "@type": "Review",
+            "author": { "@type": "Person", "name": review.author_name },
+            "reviewRating": {
+                "@type": "Rating",
+                "ratingValue": String(review.rating)
+            },
+            "reviewBody": localizedReview.text,
+            "publisher": { "@type": "Organization", "name": review.attribution || (review.source === 'google' ? 'Google' : 'Kopi Dua Darjat') }
+        }
+    })
   };
 
   return JSON.stringify(schema);
@@ -157,11 +162,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: 'Outlet Not Found' };
   }
   
-  const outlet = outletDoc.data() as Outlet & { seo?: { title?: string, description?: string, keywords?: string } };
+  const outlet = outletDoc.data() as Outlet;
+  const localizedOutlet = getLocalized(outlet, 'en');
   
-  const metaTitle = outlet.seo?.title || `${outlet.name} | Kopi Dua Darjat`;
-  const metaDescription = outlet.seo?.description || `Visit ${outlet.name} in ${outlet.city || ''} — serving Kopi Dua Darjat from ${outlet.hours || ''}.`;
-  const metaKeywords = outlet.seo?.keywords || `${outlet.name}, Kopi Dua Darjat, coffee in ${outlet.city}`;
+  const metaTitle = outlet.seo?.title || `${localizedOutlet.name} | Kopi Dua Darjat`;
+  const metaDescription = outlet.seo?.description || `Visit ${localizedOutlet.name} in ${localizedOutlet.city || ''} — serving Kopi Dua Darjat from ${localizedOutlet.hours || ''}.`;
+  const metaKeywords = outlet.seo?.keywords || `${localizedOutlet.name}, Kopi Dua Darjat, coffee in ${localizedOutlet.city}`;
 
 
   return {

@@ -8,16 +8,17 @@ import { Mouse } from 'lucide-react';
 interface MicrositeHeroProps {
   outletName: string;
   heroImageUrl?: string | null;
+  altText?: string;
 }
 
-export default function MicrositeHero({ outletName, heroImageUrl }: MicrositeHeroProps) {
+export default function MicrositeHero({ outletName, heroImageUrl, altText }: MicrositeHeroProps) {
   
   return (
     <section id="home" className="relative w-full h-screen bg-zinc-900">
       {heroImageUrl ? (
         <Image
           src={heroImageUrl}
-          alt={outletName}
+          alt={altText || outletName}
           fill
           className="object-cover"
           priority

@@ -14,6 +14,8 @@ import MicrositeNewsletterSignUp from './(components)/MicrositeNewsletterSignUp'
 import MenuShowcaseSection from './(components)/MenuShowcaseSection';
 import PopularProductsCarousel from './(components)/PopularProductsCarousel';
 import CustomerReviews from './(components)/CustomerReviews';
+import { getLocalized } from '@/lib/utils';
+import { useLanguage } from '@/components/layout/LanguageProvider';
 
 
 // --- TYPES ---
@@ -32,6 +34,7 @@ interface PageData {
 // MAIN CLIENT PAGE COMPONENT
 export default function MicrositePageClient(data: PageData) {
   const { outlet, menuCategories, featuredItems, promotions, reviewData, siteSettings, allMenuItems, latestBlog, instaPosts } = data;
+  const { language } = useLanguage();
 
   if (!outlet) {
     // This case should ideally be handled by the server component, but as a fallback:
@@ -39,10 +42,15 @@ export default function MicrositePageClient(data: PageData) {
   }
   
   const hasReviews = reviewData && reviewData.reviews && reviewData.reviews.length > 0;
+  const localizedOutlet = getLocalized(outlet, language);
 
   return (
     <div className="bg-[#f7f4ef] text-black">
-      <MicrositeHero outletName={outlet.name} heroImageUrl={outlet.heroImage} />
+      <MicrositeHero 
+        outletName={localizedOutlet.name || outlet.name} 
+        heroImageUrl={outlet.heroImage} 
+        altText={localizedOutlet.name || outlet.name}
+      />
       <main>
         <PopularProductsCarousel items={featuredItems} />
         <MenuShowcaseSection items={allMenuItems} categories={menuCategories} />
