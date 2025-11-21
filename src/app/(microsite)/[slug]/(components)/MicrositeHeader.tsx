@@ -73,6 +73,10 @@ export default function MicrositeHeader({ outlet }: MicrositeHeaderProps) {
     >
       <div className="container mx-auto px-6 h-20 flex items-center justify-between">
         
+        <Link href="/" className="p-0 m-0 h-20 flex items-center lg:hidden">
+            <Logo className={cn("filter", isScrolled ? 'brightness-0' : 'brightness-0 invert')} />
+        </Link>
+        
         {/* Desktop Navigation */}
         <nav className="hidden lg:flex items-center gap-8">
           {navItems.map((item) => (
@@ -95,8 +99,8 @@ export default function MicrositeHeader({ outlet }: MicrositeHeaderProps) {
           ))}
         </nav>
         
-        {/* Logo */}
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+        {/* Logo for Desktop */}
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden lg:block">
             <Link href="/" className="p-0 m-0 h-20 flex items-center">
                 <Logo className={cn("filter", isScrolled ? 'brightness-0' : 'brightness-0 invert')} />
             </Link>
@@ -140,7 +144,7 @@ export default function MicrositeHeader({ outlet }: MicrositeHeaderProps) {
         </div>
 
         {/* Mobile Navigation Trigger */}
-        <div className="flex items-center gap-2 lg:hidden ml-auto">
+        <div className="flex items-center gap-2 lg:hidden">
             <LanguageSwitcher className={cn(isScrolled ? 'text-black border-black/20 bg-black/5 hover:bg-black/10' : 'text-white border-white/20 bg-white/5 hover:bg-white/10')} />
             <Sheet>
                 <SheetTrigger asChild>
