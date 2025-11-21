@@ -1,9 +1,11 @@
+
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertTriangle, Database } from 'lucide-react';
 import MasterDataSeeder from './(components)/MasterDataSeeder';
 import MediaDataSeeder from './(components)/MediaDataSeeder';
+import BlogDataSeeder from './(components)/BlogDataSeeder';
 
 
 export default function DataSeedingPage() {
@@ -27,8 +29,11 @@ export default function DataSeedingPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <MediaDataSeeder />
+            <BlogDataSeeder />
             <MasterDataSeeder />
         </div>
     </div>
   );
 }
+
+    
