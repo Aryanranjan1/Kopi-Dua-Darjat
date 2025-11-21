@@ -2,31 +2,50 @@
 'use client';
 
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, doc, query, setDoc, writeBatch, getDocs, where } from 'firebase/firestore';
+import { collection, doc, query, setDoc, writeBatch, getDocs, where, DocumentData, QuerySnapshot } from 'firebase/firestore';
 import type { Media } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { useMemo, useEffect } from 'react';
 import originalMediaData from './placeholder-images.json';
 
 // Function to seed media data from JSON to Firestore
-export async function seedMediaData(firestore: any): Promise<{ success: boolean, count: number, error?: string }> {
+export async function seedMediaData(firestore: any): Promise<{ success: boolean, count: number, message?: string, error?: string }> {
   if (!firestore) {
     throw new Error('Firestore is not initialized.');
   }
   
   const mediaCollectionRef = collection(firestore, 'media');
+  const allItemIds = originalMediaData.placeholderImages.map(item => item.id);
 
   try {
-    const existingSnapshot = await getDocs(query(mediaCollectionRef, where('id', 'in', originalMediaData.placeholderImages.map(item => item.id))));
-    if (existingSnapshot.docs.length === originalMediaData.placeholderImages.length) {
-      // Data seems to be seeded already.
-      return { success: true, count: 0, message: "Media data already seems to be seeded." };
+    // Batch the check for existing documents to avoid the 30-item 'in' query limit
+    const existingIds = new Set<string>();
+    const idChunks: string[][] = [];
+    for (let i = 0; i < allItemIds.length; i += 30) {
+      idChunks.push(allItemIds.slice(i, i + 30));
+    }
+
+    const checkPromises = idChunks.map(chunk => 
+      getDocs(query(mediaCollectionRef, where('id', 'in', chunk)))
+    );
+
+    const snapshots = await Promise.all(checkPromises);
+    snapshots.forEach(snapshot => {
+      snapshot.forEach(doc => {
+        existingIds.add(doc.id);
+      });
+    });
+
+    const itemsToSeed = originalMediaData.placeholderImages.filter(item => !existingIds.has(item.id));
+    
+    if (itemsToSeed.length === 0) {
+      return { success: true, count: 0, message: "Media assets are already up to date." };
     }
 
     const batch = writeBatch(firestore);
     let count = 0;
     
-    originalMediaData.placeholderImages.forEach((mediaItem) => {
+    itemsToSeed.forEach((mediaItem) => {
       const docRef = doc(mediaCollectionRef, mediaItem.id);
       batch.set(docRef, mediaItem);
       count++;
@@ -87,3 +106,4 @@ export async function updateMediaUrl(firestore: any, id: string, newUrl: string)
     return { success: false, error: (error as Error).message };
   }
 }
+
