@@ -9,12 +9,13 @@ import { Skeleton } from '../ui/skeleton';
 const GalleryColumn = ({ images, className }: { images: any[]; className?: string }) => (
   <div className={`grid gap-2 ${className}`}>
     {images.map((image, index) => (
-      <figure key={index} className="w-full aspect-[4/5] relative">
+      <figure key={image ? image.id : index} className="w-full aspect-[4/5] relative">
         {image ? (
           <Image
             src={image.imageUrl}
             alt={image.description}
             fill
+            sizes="(max-width: 768px) 33vw, 25vw"
             className="object-cover"
             data-ai-hint={image.imageHint}
           />
@@ -29,12 +30,14 @@ const GalleryColumn = ({ images, className }: { images: any[]; className?: strin
 const StickyGallery = () => {
   const { data: media, isLoading } = useMedia();
 
-  const galleryImages = media?.filter(m => m.id.startsWith('gallery-')).slice(0, 13) || [];
+  const galleryImages = React.useMemo(() => {
+    if (isLoading) return Array(13).fill(null);
+    return media?.filter(m => m.id.startsWith('gallery-')).slice(0, 13) || [];
+  }, [media, isLoading]);
   
-  // Distribute images into three columns
-  const col1Images = isLoading ? Array(5).fill(null) : galleryImages.slice(0, 5);
-  const col2Images = isLoading ? Array(3).fill(null) : galleryImages.slice(5, 8);
-  const col3Images = isLoading ? Array(5).fill(null) : galleryImages.slice(8, 13);
+  const col1Images = galleryImages.slice(0, 5);
+  const col2Images = galleryImages.slice(5, 8);
+  const col3Images = galleryImages.slice(8, 13);
   
   return (
       <main className='bg-white'>
@@ -44,12 +47,13 @@ const StickyGallery = () => {
               
               <div className="sticky top-0 h-fit space-y-2">
                  {col2Images.map((image, index) => (
-                    <figure key={index} className="w-full aspect-[4/5] relative">
+                    <figure key={image ? image.id : `col2-${index}`} className="w-full aspect-[4/5] relative">
                         {image ? (
                         <Image
                             src={image.imageUrl}
                             alt={image.description}
                             fill
+                            sizes="(max-width: 768px) 33vw, 25vw"
                             className="object-cover"
                             data-ai-hint={image.imageHint}
                         />

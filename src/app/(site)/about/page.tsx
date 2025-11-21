@@ -96,8 +96,6 @@ export default function AboutPage() {
   const { data: media, isLoading: isLoadingMedia } = useMedia();
   const content = siteContentData.about;
 
-  const getAsset = (id: string) => media?.find(m => m.id === id);
-
   return (
     <>
     <div className="bg-background text-foreground">
@@ -132,7 +130,7 @@ export default function AboutPage() {
                 {isLoadingMedia ? (
                     [...Array(5)].map((_, i) => <MilestoneSkeleton key={i} />)
                 ) : content.milestones.items.map((milestone, index) => {
-                  const image = getAsset(milestone.imageId);
+                  const image = media?.find(m => m.id === milestone.imageId);
                   return image ? (
                     <div key={index} className="relative">
                         <div className="hidden md:block absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-accent ring-8 ring-background"></div>
@@ -167,25 +165,33 @@ export default function AboutPage() {
             ) : (
                 <>
                 <AnimateOnScroll animationType="slideInFromLeft">
-                {content.founders.items[0] && getAsset(content.founders.items[0].imageId) && (
-                    <FounderMessage 
-                        name={content.founders.items[0].name}
-                        quote={content.founders.items[0].quote}
-                        imageUrl={getAsset(content.founders.items[0].imageId)!.imageUrl}
-                        imageHint={getAsset(content.founders.items[0].imageId)!.imageHint}
-                    />
-                )}
+                {(() => {
+                    const founder = content.founders.items[0];
+                    const image = media?.find(m => m.id === founder?.imageId);
+                    return (founder && image) ? (
+                        <FounderMessage 
+                            name={founder.name}
+                            quote={founder.quote}
+                            imageUrl={image.imageUrl}
+                            imageHint={image.imageHint}
+                        />
+                    ) : null;
+                })()}
                 </AnimateOnScroll>
                 <AnimateOnScroll animationType="slideInFromRight">
-                {content.founders.items[1] && getAsset(content.founders.items[1].imageId) && (
-                    <FounderMessage 
-                        name={content.founders.items[1].name}
-                        quote={content.founders.items[1].quote}
-                        imageUrl={getAsset(content.founders.items[1].imageId)!.imageUrl}
-                        imageHint={getAsset(content.founders.items[1].imageId)!.imageHint}
-                        reverse
-                    />
-                )}
+                {(() => {
+                    const founder = content.founders.items[1];
+                    const image = media?.find(m => m.id === founder?.imageId);
+                    return (founder && image) ? (
+                        <FounderMessage 
+                            name={founder.name}
+                            quote={founder.quote}
+                            imageUrl={image.imageUrl}
+                            imageHint={image.imageHint}
+                            reverse
+                        />
+                    ) : null;
+                })()}
                 </AnimateOnScroll>
                 </>
             )}
