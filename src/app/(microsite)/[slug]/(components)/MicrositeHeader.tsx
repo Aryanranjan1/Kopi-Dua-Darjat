@@ -73,12 +73,12 @@ export default function MicrositeHeader({ outlet }: MicrositeHeaderProps) {
     >
       <div className="container mx-auto px-6 h-20 flex items-center justify-between">
         
-        <Link href="/" className="p-0 m-0 h-20 flex items-center lg:hidden">
+        <Link href="/" className="p-0 m-0 h-20 flex items-center">
             <Logo className={cn("filter", isScrolled ? 'brightness-0' : 'brightness-0 invert')} />
         </Link>
         
         {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-8">
+        <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
           {navItems.map((item) => (
             <Link
               key={item.href}
@@ -98,14 +98,6 @@ export default function MicrositeHeader({ outlet }: MicrositeHeaderProps) {
             </Link>
           ))}
         </nav>
-        
-        {/* Logo for Desktop */}
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden lg:block">
-            <Link href="/" className="p-0 m-0 h-20 flex items-center">
-                <Logo className={cn("filter", isScrolled ? 'brightness-0' : 'brightness-0 invert')} />
-            </Link>
-        </div>
-
 
         <div className="hidden lg:flex items-center gap-4">
             <div className="flex items-center gap-4">
@@ -130,7 +122,7 @@ export default function MicrositeHeader({ outlet }: MicrositeHeaderProps) {
                     </a>
                 )}
             </div>
-             <LanguageSwitcher className={cn(isScrolled ? 'text-black border-black/20 bg-black/5 hover:bg-black/10' : 'text-white border-white/20 bg-white/5 hover:bg-white/10')} />
+             <LanguageSwitcher className={cn('bg-transparent border-none', isScrolled ? 'text-black hover:bg-black/10' : 'text-white hover:bg-white/10')} />
              <Button asChild variant="outline" className={cn(
                'rounded-full ml-4',
                 isScrolled 
@@ -145,7 +137,7 @@ export default function MicrositeHeader({ outlet }: MicrositeHeaderProps) {
 
         {/* Mobile Navigation Trigger */}
         <div className="flex items-center gap-2 lg:hidden">
-            <LanguageSwitcher className={cn(isScrolled ? 'text-black border-black/20 bg-black/5 hover:bg-black/10' : 'text-white border-white/20 bg-white/5 hover:bg-white/10')} />
+            <LanguageSwitcher className={cn('bg-transparent border-none', isScrolled ? 'text-black hover:bg-black/10' : 'text-white hover:bg-white/10')} />
             <Sheet>
                 <SheetTrigger asChild>
                     <Button variant="ghost" size="icon" className={cn('lg:hidden', isScrolled ? 'text-black hover:text-black' : 'text-white hover:text-white')}>
