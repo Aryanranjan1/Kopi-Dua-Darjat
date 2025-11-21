@@ -12,40 +12,48 @@ import { ArrowUpRight, Star, Search } from 'lucide-react';
 import { Pagination } from '@/components/shared/Pagination';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useLanguage } from '@/components/layout/LanguageProvider';
+import { getLocalized } from '@/lib/utils';
 
 const ITEMS_PER_PAGE = 10;
 
 type SortOption = 'default' | 'price-asc' | 'price-desc' | 'name-asc';
 
-const DrinkCard = ({ item }: { item: MenuItem }) => (
-  <Card className="rounded-3xl overflow-hidden group bg-primary border-black/10 transition-all duration-300 transform hover:shadow-xl hover:-translate-y-1 h-full flex flex-col">
-    <div className="relative aspect-square w-full">
-      <Image src={item.imageUrl} alt={item.name} fill className="object-cover transition-transform duration-300 group-hover:scale-105" />
-      {item.isPopular && <Badge className="absolute top-3 left-3 bg-white/80 backdrop-blur-sm text-black shadow-md">Popular</Badge>}
-    </div>
-    <CardContent className="p-4 flex flex-col flex-grow text-black">
-      <h4 className="font-headline font-bold text-base sm:text-lg truncate">{item.name}</h4>
-      <p className="text-sm text-black/70 line-clamp-2 mt-1 flex-grow hidden sm:block">{item.description}</p>
-      <div className="flex items-center gap-2 mt-2">
-        {[...Array(5)].map((_, i) => (
-          <Star key={i} className="w-3 h-3 sm:w-4 sm:h-4 text-black/80 fill-black/80" />
-        ))}
-      </div>
-      <div className="flex justify-between items-center mt-2">
-        <p className="font-semibold text-black text-base sm:text-lg">RM{item.price.toFixed(2)}</p>
-        <Link href="#" className="bg-black text-white rounded-full p-1.5 sm:p-2 hover:bg-neutral-800">
-            <ArrowUpRight className="h-4 w-4 sm:h-5 sm:w-5" />
-        </Link>
-      </div>
-    </CardContent>
-  </Card>
-);
+const DrinkCard = ({ item }: { item: MenuItem }) => {
+    const { language } = useLanguage();
+    const localized = getLocalized(item, language);
+
+    return (
+        <Card className="rounded-3xl overflow-hidden group bg-primary border-black/10 transition-all duration-300 transform hover:shadow-xl hover:-translate-y-1 h-full flex flex-col">
+            <div className="relative aspect-square w-full">
+            <Image src={item.imageUrl} alt={localized.name || ''} fill className="object-cover transition-transform duration-300 group-hover:scale-105" />
+            {item.isPopular && <Badge className="absolute top-3 left-3 bg-white/80 backdrop-blur-sm text-black shadow-md">Popular</Badge>}
+            </div>
+            <CardContent className="p-4 flex flex-col flex-grow text-black">
+            <h4 className="font-headline font-bold text-base sm:text-lg truncate">{localized.name}</h4>
+            <p className="text-sm text-black/70 line-clamp-2 mt-1 flex-grow hidden sm:block">{localized.description}</p>
+            <div className="flex items-center gap-2 mt-2">
+                {[...Array(5)].map((_, i) => (
+                <Star key={i} className="w-3 h-3 sm:w-4 sm:h-4 text-black/80 fill-black/80" />
+                ))}
+            </div>
+            <div className="flex justify-between items-center mt-2">
+                <p className="font-semibold text-black text-base sm:text-lg">RM{item.price.toFixed(2)}</p>
+                <Link href="#" className="bg-black text-white rounded-full p-1.5 sm:p-2 hover:bg-neutral-800">
+                    <ArrowUpRight className="h-4 w-4 sm:h-5 sm:w-5" />
+                </Link>
+            </div>
+            </CardContent>
+        </Card>
+    );
+};
 
 export default function MenuShowcaseSection({ items, categories }: { items: MenuItem[]; categories: MenuCategory[] }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState<SortOption>('default');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const { language } = useLanguage();
 
   const filteredAndSortedItems = useMemo(() => {
     let filtered = [...items];
@@ -57,7 +65,10 @@ export default function MenuShowcaseSection({ items, categories }: { items: Menu
     
     // Filter by search query
     if (searchQuery) {
-      filtered = filtered.filter(item => item.name.toLowerCase().includes(searchQuery.toLowerCase()));
+      filtered = filtered.filter(item => {
+          const localized = getLocalized(item, language);
+          return localized.name?.toLowerCase().includes(searchQuery.toLowerCase());
+      });
     }
 
     // Sort items
@@ -69,7 +80,11 @@ export default function MenuShowcaseSection({ items, categories }: { items: Menu
         filtered.sort((a, b) => b.price - a.price);
         break;
       case 'name-asc':
-        filtered.sort((a, b) => a.name.localeCompare(b.name));
+        filtered.sort((a, b) => {
+            const localizedA = getLocalized(a, language);
+            const localizedB = getLocalized(b, language);
+            return (localizedA.name || '').localeCompare(localizedB.name || '');
+        });
         break;
       case 'default':
       default:
@@ -78,7 +93,7 @@ export default function MenuShowcaseSection({ items, categories }: { items: Menu
     }
     
     return filtered;
-  }, [items, searchQuery, sortOrder, selectedCategory]);
+  }, [items, searchQuery, sortOrder, selectedCategory, language]);
 
   const totalPages = Math.ceil(filteredAndSortedItems.length / ITEMS_PER_PAGE);
   const paginatedItems = filteredAndSortedItems.slice(
@@ -111,9 +126,10 @@ export default function MenuShowcaseSection({ items, categories }: { items: Menu
                     </SelectTrigger>
                     <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
                         <SelectItem value="all">All Categories</SelectItem>
-                        {categories.map(cat => (
-                        <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
-                        ))}
+                        {categories.map(cat => {
+                          const localized = getLocalized(cat, language);
+                          return <SelectItem key={cat.id} value={cat.id}>{localized.name}</SelectItem>
+                        })}
                     </SelectContent>
                     </Select>
                     <Select value={sortOrder} onValueChange={(value) => setSortOrder(value as SortOption)}>
