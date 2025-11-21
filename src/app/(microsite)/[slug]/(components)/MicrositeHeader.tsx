@@ -19,6 +19,7 @@ import { Logo } from '@/components/layout/Logo';
 import type { Outlet, SiteSettings } from '@/lib/types';
 import { FaTiktok, FaFacebook } from 'react-icons/fa';
 import { useSettings } from '@/components/layout/SettingsProvider';
+import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
 
 const navItems = [
   { title: 'Home', href: '#home' },
@@ -125,6 +126,7 @@ export default function MicrositeHeader({ outlet }: MicrositeHeaderProps) {
                     </a>
                 )}
             </div>
+             <LanguageSwitcher className={cn(isScrolled ? 'text-black border-black/20 bg-black/5 hover:bg-black/10' : 'text-white border-white/20 bg-white/5 hover:bg-white/10')} />
              <Button asChild variant="outline" className={cn(
                'rounded-full ml-4',
                 isScrolled 
@@ -139,6 +141,7 @@ export default function MicrositeHeader({ outlet }: MicrositeHeaderProps) {
 
         {/* Mobile Navigation Trigger */}
         <div className="flex items-center gap-2 lg:hidden ml-auto">
+            <LanguageSwitcher className={cn(isScrolled ? 'text-black border-black/20 bg-black/5 hover:bg-black/10' : 'text-white border-white/20 bg-white/5 hover:bg-white/10')} />
             <Sheet>
                 <SheetTrigger asChild>
                     <Button variant="ghost" size="icon" className={cn('lg:hidden', isScrolled ? 'text-black hover:text-black' : 'text-white hover:text-white')}>
