@@ -7,19 +7,14 @@ import { useRef } from 'react';
 import type { SiteSettings, Media } from '@/lib/types';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useMediaAsset } from '@/lib/media';
 
 interface BrandStorySectionProps {
   settings: SiteSettings;
 }
 
 export default function BrandStorySection({ settings }: BrandStorySectionProps) {
-  // Temporary placeholder image
-  const imageToDisplay = {
-      imageUrl: 'https://images.unsplash.com/photo-1511920170033-f8396924c348?w=500&auto=format&fit=crop',
-      description: 'A barista making coffee',
-      imageHint: 'barista coffee'
-  };
-  const isLoading = false; // Set to false as we are using a placeholder
+  const { asset: imageToDisplay, isLoading } = useMediaAsset('about-microsite-image');
 
   const story = {
       title: "Antara Warisan & Artisan",

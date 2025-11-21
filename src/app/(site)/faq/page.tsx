@@ -19,6 +19,7 @@ import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useLanguage } from '@/components/layout/LanguageProvider';
 import { getLocalized } from '@/lib/utils';
+import { useMediaAsset } from '@/lib/media';
 
 export default function FaqPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -27,13 +28,7 @@ export default function FaqPage() {
   const faqQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'faq')) : null, [firestore]);
   const { data: faqItems, isLoading: isLoadingFaqs } = useCollection<FaqItem>(faqQuery);
 
-  // Temporary placeholder image
-  const heroImage = {
-    imageUrl: "https://images.unsplash.com/photo-1626097116802-708db5be6b00?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1175",
-    description: "A close up of a cup of coffee on a table.",
-    imageHint: "cup of coffee"
-  };
-  const isLoadingImage = false;
+  const { asset: heroImage, isLoading: isLoadingImage } = useMediaAsset('faq-hero');
 
   const faqCategories = useMemo(() => [
     {

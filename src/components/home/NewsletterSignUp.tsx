@@ -12,16 +12,12 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { z } from "zod";
 import { Skeleton } from "../ui/skeleton";
+import { useMediaAsset } from "@/lib/media";
 
 const emailSchema = z.string().email({ message: "Please enter a valid email." });
 
 export default function NewsletterSignUp({ disableAnimations = false }: { disableAnimations?: boolean }) {
-  // Temporary placeholder data
-  const bgImage = {
-      imageUrl: "https://images.unsplash.com/photo-1506619216599-9d16d0903dfd?w=1080",
-      description: "A flat lay of different coffee cups.",
-      imageHint: "coffee"
-  };
+  const { asset: bgImage, isLoading: isLoadingImage } = useMediaAsset('newsletter-background');
 
   // firestore and UI
   const firestore = useFirestore();
@@ -80,14 +76,16 @@ export default function NewsletterSignUp({ disableAnimations = false }: { disabl
     <section className="relative py-24 sm:py-32 text-white">
       {/* Background layer */}
       <div className="absolute inset-0 z-[-20]">
-        <Image
-          src={bgImage.imageUrl}
-          alt={bgImage.description}
-          fill
-          className="object-cover"
-          data-ai-hint={bgImage.imageHint}
-          unoptimized
-        />
+        {isLoadingImage ? <Skeleton className="w-full h-full" /> : bgImage && (
+          <Image
+            src={bgImage.imageUrl}
+            alt={bgImage.description}
+            fill
+            className="object-cover"
+            data-ai-hint={bgImage.imageHint}
+            unoptimized
+          />
+        )}
       </div>
 
       {/* overlay */}

@@ -18,14 +18,10 @@ import type { Testimonial } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useLanguage } from '@/components/layout/LanguageProvider';
 import { getLocalized } from '@/lib/utils';
+import { useMediaAsset } from '@/lib/media';
 
 const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
-  // Temporary placeholder for the logo
-  const companyLogo = {
-    imageUrl: '/image/1.svg', // Using the main logo as a placeholder
-    imageHint: 'company logo'
-  };
-  const isLoadingLogo = false;
+  const { asset: companyLogo, isLoading: isLoadingLogo } = useMediaAsset('logo-symbol');
 
   const { language } = useLanguage();
   const localized = getLocalized(testimonial, language);

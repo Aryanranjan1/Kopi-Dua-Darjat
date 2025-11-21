@@ -11,17 +11,13 @@ import { Skeleton } from '../ui/skeleton';
 import { siteContentData } from '@/lib/site-content';
 import { siteContentDataMs } from '@/lib/site-content-ms';
 import { useLanguage } from '../layout/LanguageProvider';
+import { useMediaAsset } from '@/lib/media';
 
 export default function ActivePromotions() {
   const { language } = useLanguage();
   const content = language === 'ms' ? siteContentDataMs.home.activePromotions : siteContentData.home.activePromotions;
   
-  // Temporary placeholder data
-  const communityImage = {
-      imageUrl: "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyiMJ52MUSY_CNH9Dh1egxh9z3ttBk2sAVqVXPznavKOluy0nzFDfzdVPT9tUTJAB2nnC994eEYb4oql4r0pINfXu3oZS5ND36uF5ABl6UqUj_bN1aYsX0p9xeY9PN10zeH6yHADQ=w408-h544-k-no",
-      description: "People at a Kopi Dua Darjat community event.",
-      imageHint: "cafe community"
-  };
+  const { asset: communityImage, isLoading } = useMediaAsset('community-event-1');
 
   return (
     <section className="py-24 sm:py-32 bg-black">
@@ -81,14 +77,16 @@ export default function ActivePromotions() {
               <Card className="bg-zinc-900 shadow-lg rounded-3xl p-6 sm:p-8 flex flex-col justify-between min-h-[220px] sm:min-h-[210px] relative overflow-hidden">
                   <div className="absolute bottom-0 right-0 h-full w-1/2">
                       <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900 to-transparent"></div>
-                      <Image
-                          src={communityImage.imageUrl}
-                          alt={communityImage.description}
-                          fill
-                          sizes="(max-width: 1024px) 50vw, 25vw"
-                          className="object-cover object-center z-[-1]"
-                          data-ai-hint={communityImage.imageHint}
-                      />
+                      {isLoading || !communityImage ? <Skeleton className="w-full h-full" /> : (
+                        <Image
+                            src={communityImage.imageUrl}
+                            alt={communityImage.description}
+                            fill
+                            sizes="(max-width: 1024px) 50vw, 25vw"
+                            className="object-cover object-center z-[-1]"
+                            data-ai-hint={communityImage.imageHint}
+                        />
+                      )}
                   </div>
                   <div className='relative z-10'>
                       <h3 className="font-headline text-2xl font-bold text-white">{content.communityCard.title}</h3>

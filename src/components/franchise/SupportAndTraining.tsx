@@ -10,18 +10,13 @@ import { Skeleton } from '../ui/skeleton';
 import { siteContentData } from '@/lib/site-content';
 import { siteContentDataMs } from '@/lib/site-content-ms';
 import { useLanguage } from '../layout/LanguageProvider';
+import { useMediaAsset } from '@/lib/media';
 
 export default function SupportAndTraining() {
   const { language } = useLanguage();
   const content = language === 'ms' ? siteContentDataMs.franchise.support : siteContentData.franchise.support;
   const { title, subtitle, items, buttonText, buttonLink } = content;
-
-  // Temporary placeholder data
-  const trainingImage = {
-      imageUrl: "https://images.unsplash.com/photo-1563177197-e4f252a40fe8?w=800",
-      description: "A group of new franchisees during a hands-on barista training session.",
-      imageHint: "barista training"
-  };
+  const { asset: trainingImage, isLoading } = useMediaAsset('franchise-training');
 
   return (
     <section className="py-24 sm:py-32 bg-background">
@@ -29,14 +24,16 @@ export default function SupportAndTraining() {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <AnimateOnScroll animationType="slideInFromRight">
             <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-lg">
-                <Image
-                  src={trainingImage.imageUrl}
-                  alt={trainingImage.description}
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  className="object-cover"
-                  data-ai-hint={trainingImage.imageHint}
-                />
+                {isLoading || !trainingImage ? <Skeleton className="w-full h-full" /> : (
+                  <Image
+                    src={trainingImage.imageUrl}
+                    alt={trainingImage.description}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    className="object-cover"
+                    data-ai-hint={trainingImage.imageHint}
+                  />
+                )}
             </div>
           </AnimateOnScroll>
           <AnimateOnScroll animationType="slideInFromLeft" className="text-center lg:text-left">

@@ -1,6 +1,7 @@
 
 'use client';
 
+import { useMedia } from '@/lib/media';
 import LatestStories from '@/components/home/LatestStories';
 import NewsletterSignUp from '@/components/home/NewsletterSignUp';
 import WhoAreWe from '@/components/about/WhoAreWe';
@@ -69,19 +70,25 @@ const FounderMessage = ({ name, quote, imageUrl, imageHint, reverse = false }: {
     </div>
 );
 
-// Temporary data until media is seeded
-const tempImageData: { [key: string]: { url: string; hint: string } } = {
-    'milestone-beginnings': { url: 'https://images.unsplash.com/photo-1601288338087-61203c693fac?w=500', hint: 'cafe storefront' },
-    'milestone-recipes': { url: 'https://images.unsplash.com/photo-1583337757-5503b41460a5?w=500', hint: 'pastries' },
-    'milestone-innovation': { url: 'https://images.unsplash.com/photo-1627902520211-73c980850fe8?w=500', hint: 'coffee brewing' },
-    'milestone-community': { url: 'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=500', hint: 'community event' },
-    'milestone-future': { url: 'https://images.unsplash.com/photo-1509395239591-59a68c07889b?w=500', hint: 'coffee bean' },
-    'founder-hadi': { url: 'https://images.unsplash.com/photo-1557862921-37829c790f19?w=500', hint: 'portrait man' },
-    'founder-azad': { url: 'https://images.unsplash.com/photo-1533901567451-7a6e68d6cd8f?w=500', hint: 'founder' },
-};
+const MilestoneSkeleton = () => (
+    <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-center">
+      <Skeleton className="h-24" />
+      <Skeleton className="aspect-[4/3] rounded-2xl" />
+    </div>
+)
 
+const FounderSkeleton = () => (
+     <div className="grid md:grid-cols-3 gap-12 items-center">
+        <Skeleton className="aspect-square md:aspect-[3/4] rounded-2xl" />
+        <div className="md:col-span-2 space-y-4">
+            <Skeleton className="h-20" />
+            <Skeleton className="h-6 w-1/4" />
+        </div>
+    </div>
+)
 
 export default function AboutPage() {
+  const { data: media, isLoading: isLoadingMedia } = useMedia();
   const { language } = useLanguage();
   const content = language === 'ms' ? siteContentDataMs.about : siteContentData.about;
 
@@ -116,8 +123,10 @@ export default function AboutPage() {
               <div className="absolute left-1/2 -translate-x-1/2 h-full w-px bg-border hidden md:block"></div>
               
               <div className="space-y-24">
-                {content.milestones.items.map((milestone, index) => {
-                  const image = tempImageData[milestone.imageId];
+                {isLoadingMedia ? (
+                    [...Array(5)].map((_, i) => <MilestoneSkeleton key={i} />)
+                ) : content.milestones.items.map((milestone, index) => {
+                  const image = media?.find(m => m.id === milestone.imageId);
                   return image ? (
                     <div key={index} className="relative">
                         <div className="hidden md:block absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-accent ring-8 ring-background"></div>
@@ -125,8 +134,8 @@ export default function AboutPage() {
                             year={milestone.year}
                             title={milestone.title}
                             description={milestone.description}
-                            imageUrl={image.url}
-                            imageHint={image.hint}
+                            imageUrl={image.imageUrl}
+                            imageHint={image.imageHint}
                             reverse={index % 2 !== 0}
                         />
                     </div>
@@ -144,16 +153,23 @@ export default function AboutPage() {
             <h2 className="text-4xl md:text-5xl font-headline font-bold text-white inline-block underline decoration-primary decoration-4 underline-offset-8">{content.founders.title}</h2>
           </AnimateOnScroll>
           <div className="max-w-5xl mx-auto space-y-24">
+             {isLoadingMedia ? (
+                <>
+                    <FounderSkeleton />
+                    <FounderSkeleton />
+                </>
+            ) : (
+                <>
                 <AnimateOnScroll animationType="slideInFromLeft">
                 {(() => {
                     const founder = content.founders.items[0];
-                    const image = tempImageData[founder?.imageId];
+                    const image = media?.find(m => m.id === founder.imageId);
                     return (founder && image) ? (
                         <FounderMessage 
                             name={founder.name}
                             quote={founder.quote}
-                            imageUrl={image.url}
-                            imageHint={image.hint}
+                            imageUrl={image.imageUrl}
+                            imageHint={image.imageHint}
                         />
                     ) : null;
                 })()}
@@ -161,18 +177,20 @@ export default function AboutPage() {
                 <AnimateOnScroll animationType="slideInFromRight">
                 {(() => {
                     const founder = content.founders.items[1];
-                    const image = tempImageData[founder?.imageId];
+                    const image = media?.find(m => m.id === founder.imageId);
                     return (founder && image) ? (
                         <FounderMessage 
                             name={founder.name}
                             quote={founder.quote}
-                            imageUrl={image.url}
-                            imageHint={image.hint}
+                            imageUrl={image.imageUrl}
+                            imageHint={image.imageHint}
                             reverse
                         />
                     ) : null;
                 })()}
                 </AnimateOnScroll>
+                </>
+            )}
           </div>
         </div>
       </section>
