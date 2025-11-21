@@ -177,7 +177,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: metaTitle,
       description: metaDescription,
-      images: outlet.heroImage ? [outlet.heroImage] : [],
+      images: outlet.heroImage ? [{ url: outlet.heroImage, alt: metaTitle }] : [],
       url: `https://kopiduadarjat.com/${outlet.slug}`,
     },
   };
