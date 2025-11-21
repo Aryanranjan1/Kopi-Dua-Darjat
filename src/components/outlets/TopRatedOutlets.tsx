@@ -13,10 +13,12 @@ import type { Outlet } from '@/lib/types';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { ScrollArea } from '../ui/scroll-area';
 import { Skeleton } from '../ui/skeleton';
-import { getLocalized } from '@/lib/localization';
+import { useLanguage } from '../layout/LanguageProvider';
+import { getLocalized } from '@/lib/utils';
 
 const TopOutletCard = ({ outlet }: { outlet: Outlet }) => {
-    const localized = getLocalized(outlet, 'en');
+    const { language } = useLanguage();
+    const localized = getLocalized(outlet, language);
     return (
         <Card className="p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[#f3e5d3]/35 rounded-3xl">
             <div className="flex-1 overflow-hidden pr-2">

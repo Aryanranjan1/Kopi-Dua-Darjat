@@ -7,7 +7,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowUpRight, MapPin } from 'lucide-react';
 import Link from 'next/link';
-import { getLocalized } from '@/lib/localization';
+import { useLanguage } from '../layout/LanguageProvider';
+import { getLocalized } from '@/lib/utils';
 
 interface OutletShowcaseCardProps {
   outlet: Outlet & { distance?: number };
@@ -15,12 +16,14 @@ interface OutletShowcaseCardProps {
 }
 
 export default function OutletShowcaseCard({ outlet, userLocation }: OutletShowcaseCardProps) {
+  const { language } = useLanguage();
+  const localized = getLocalized(outlet, language);
+
   const directionsUrl = userLocation
     ? `https://www.google.com/maps/dir/?api=1&origin=${userLocation.latitude},${userLocation.longitude}&destination=${outlet.lat},${outlet.lng}`
     : `https://www.google.com/maps/search/?api=1&query=${outlet.lat},${outlet.lng}`;
 
   const imageToShow = outlet.cardImage || "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=500&auto=format&fit=crop";
-  const localized = getLocalized(outlet, 'en');
 
   return (
     <div className="p-1 h-full group">

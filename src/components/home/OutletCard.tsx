@@ -5,6 +5,8 @@ import type { Outlet } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Map, Pin } from 'lucide-react';
+import { useLanguage } from '../layout/LanguageProvider';
+import { getLocalized } from '@/lib/utils';
 
 interface OutletCardProps {
   outlet: Outlet & { distance?: number };
@@ -12,6 +14,9 @@ interface OutletCardProps {
 }
 
 export default function OutletCard({ outlet, userLocation }: OutletCardProps) {
+  const { language } = useLanguage();
+  const localized = getLocalized(outlet, language);
+  
   const directionsUrl = userLocation
     ? `https://www.google.com/maps/dir/?api=1&origin=${userLocation.latitude},${userLocation.longitude}&destination=${outlet.lat},${outlet.lng}`
     : `https://www.google.com/maps/search/?api=1&query=${outlet.lat},${outlet.lng}`;
@@ -21,9 +26,9 @@ export default function OutletCard({ outlet, userLocation }: OutletCardProps) {
       <div className="flex-1 w-full min-w-0 overflow-hidden">
         <h4 className="font-bold text-base text-foreground flex items-start">
             <Pin className="w-4 h-4 mr-2 text-accent shrink-0 mt-1" />
-            <span className="break-words">{outlet.name}</span>
+            <span className="break-words">{localized.name}</span>
         </h4>
-        <p className="text-sm text-muted-foreground pl-6 break-words">{outlet.address}</p>
+        <p className="text-sm text-muted-foreground pl-6 break-words">{localized.address}</p>
         {outlet.distance && (
           <p className="text-xs font-bold text-accent mt-1 pl-6">
             {outlet.distance.toFixed(1)} km away

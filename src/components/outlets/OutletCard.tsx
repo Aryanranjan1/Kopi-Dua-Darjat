@@ -1,3 +1,4 @@
+
 'use client';
 
 import type { Outlet } from '@/lib/types';
@@ -5,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Map, Pin, ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
+import { useLanguage } from '../layout/LanguageProvider';
+import { getLocalized } from '@/lib/utils';
 
 interface OutletCardProps {
   outlet: Outlet & { distance?: number };
@@ -12,6 +15,9 @@ interface OutletCardProps {
 }
 
 export default function OutletCard({ outlet, userLocation }: OutletCardProps) {
+  const { language } = useLanguage();
+  const localized = getLocalized(outlet, language);
+
   const directionsUrl = userLocation
     ? `https://www.google.com/maps/dir/?api=1&origin=${userLocation.latitude},${userLocation.longitude}&destination=${outlet.lat},${outlet.lng}`
     : `https://www.google.com/maps/search/?api=1&query=${outlet.lat},${outlet.lng}`;
@@ -22,9 +28,9 @@ export default function OutletCard({ outlet, userLocation }: OutletCardProps) {
         <Link href={`/outlets/${outlet.slug}`} className="flex-grow group">
           <h4 className="font-bold text-lg text-foreground flex items-center group-hover:text-accent transition-colors">
               <Pin className="w-5 h-5 mr-2 text-accent" />
-              {outlet.name}
+              {localized.name}
           </h4>
-          <p className="text-sm text-muted-foreground pl-7">{outlet.address}</p>
+          <p className="text-sm text-muted-foreground pl-7">{localized.address}</p>
           {outlet.distance && (
             <p className="text-sm font-bold text-accent mt-1 pl-7">
               {outlet.distance.toFixed(1)} km away
@@ -32,7 +38,7 @@ export default function OutletCard({ outlet, userLocation }: OutletCardProps) {
           )}
         </Link>
         <Button asChild size="icon" variant="ghost" className="rounded-full flex-shrink-0 bg-transparent hover:bg-primary border-2 border-foreground group/btn">
-          <a href={directionsUrl} target="_blank" rel="noopener noreferrer" aria-label={`Get directions to ${outlet.name}`}>
+          <a href={directionsUrl} target="_blank" rel="noopener noreferrer" aria-label={`Get directions to ${localized.name}`}>
             <ArrowUpRight className="w-5 h-5 text-foreground group-hover/btn:text-black" />
           </a>
         </Button>
