@@ -19,6 +19,8 @@ import { Input } from '@/components/ui/input';
 import { Search, Loader2 } from 'lucide-react';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useLanguage } from '@/components/layout/LanguageProvider';
+import { getLocalized } from '@/lib/utils';
 
 // export const metadata: Metadata = {
 //   title: 'FAQ',
@@ -46,6 +48,7 @@ const faqCategories = [
 export default function FaqPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const firestore = useFirestore();
+  const { language } = useLanguage();
   const faqQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'faq')) : null, [firestore]);
   const { data: faqItems, isLoading: isLoadingFaqs } = useCollection<FaqItem>(faqQuery);
 
@@ -57,11 +60,15 @@ export default function FaqPage() {
       return faqItems;
     }
     return faqItems.filter(
-      (item) =>
-        item.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.answer.toLowerCase().includes(searchTerm.toLowerCase())
+      (item) => {
+        const localized = getLocalized(item, language);
+        return (
+            localized.question?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            localized.answer?.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      }
     );
-  }, [searchTerm, faqItems]);
+  }, [searchTerm, faqItems, language]);
 
   const getItemsForCategory = (category: string) => {
     return filteredFaqItems.filter((item) => item.category === category);
@@ -150,20 +157,23 @@ export default function FaqPage() {
                     {/* Right Column: Accordion */}
                     <div className="lg:col-span-2">
                       <Accordion type="single" collapsible defaultValue={items[0]?.id}>
-                        {items.map((item) => (
-                          <AccordionItem
-                            key={item.id}
-                            value={item.id}
-                            className="border-b-2 border-border"
-                          >
-                            <AccordionTrigger className="text-lg text-left font-semibold text-foreground hover:no-underline py-6">
-                              {item.question}
-                            </AccordionTrigger>
-                            <AccordionContent className="text-base text-muted-foreground pb-6">
-                              {item.answer}
-                            </AccordionContent>
-                          </AccordionItem>
-                        ))}
+                        {items.map((item) => {
+                          const localized = getLocalized(item, language);
+                          return (
+                            <AccordionItem
+                              key={item.id}
+                              value={item.id}
+                              className="border-b-2 border-border"
+                            >
+                              <AccordionTrigger className="text-lg text-left font-semibold text-foreground hover:no-underline py-6">
+                                {localized.question}
+                              </AccordionTrigger>
+                              <AccordionContent className="text-base text-muted-foreground pb-6">
+                                {localized.answer}
+                              </AccordionContent>
+                            </AccordionItem>
+                          );
+                        })}
                       </Accordion>
                     </div>
                   </AnimateOnScroll>
