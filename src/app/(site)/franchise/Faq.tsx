@@ -3,7 +3,7 @@
 
 import { useMemo } from 'react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, query, where } from 'firebase/firestore';
+import { collection, query, where, limit } from 'firebase/firestore';
 import type { FaqItem } from '@/lib/types';
 import {
   Accordion,
@@ -11,22 +11,34 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
+import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { Loader2 } from 'lucide-react';
-import { useLanguage } from '@/components/layout/LanguageProvider';
+import { useLanguage } from '../layout/LanguageProvider';
 import { getLocalized } from '@/lib/utils';
+import { siteContentData } from '@/lib/site-content';
+import { siteContentDataMs } from '@/lib/site-content-ms';
 
 export default function Faq() {
   const firestore = useFirestore();
   const { language } = useLanguage();
+  const content = language === 'ms' ? siteContentDataMs.franchise.faq : siteContentData.franchise.faq;
 
+  // 1. Create a memoized and stable Firestore query
   const faqQuery = useMemoFirebase(
-    () => firestore ? query(collection(firestore, 'faq'), where('category', '==', 'Franchise')) : null,
+    () => firestore 
+      ? query(
+          collection(firestore, 'faq'), 
+          where('category', '==', 'Franchise'),
+          limit(4)
+        ) 
+      : null,
     [firestore]
   );
+
+  // 2. Fetch the data using the query
   const { data: faqItems, isLoading } = useCollection<FaqItem>(faqQuery);
 
-  // Memoize the localized data to prevent re-computation on every render
+  // 3. Create a memoized, localized version of the data *before* rendering
   const localizedFaqItems = useMemo(() => {
     if (!faqItems) return [];
     return faqItems.map(item => {
@@ -44,10 +56,10 @@ export default function Faq() {
       <div className="container mx-auto px-4">
         <AnimateOnScroll animationType="slideInFromBottom" className="text-center max-w-3xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-headline text-primary">
-            Frequently Asked Questions
+            {content.title}
           </h2>
           <p className="mt-4 text-lg text-white/70">
-            Have questions? We have answers. Here are some of the most common inquiries from potential franchisees.
+            {content.subtitle}
           </p>
         </AnimateOnScroll>
 
