@@ -12,17 +12,12 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Loader2, MessageSquare } from 'lucide-react';
 import { useLanguage } from '@/components/layout/LanguageProvider';
 import { getLocalized } from '@/lib/utils';
+import { useMediaAsset } from '@/lib/media';
 
 const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
   const { language } = useLanguage();
   const localized = getLocalized(testimonial, language);
-  
-  // Temporary placeholder for the logo
-  const companyLogo = {
-    imageUrl: '/image/1.svg', // Using the main logo as a placeholder
-    imageHint: 'company logo'
-  };
-  const isLoadingLogo = false;
+  const { asset: companyLogo, isLoading: isLoadingLogo } = useMediaAsset('logo-symbol');
 
   return (
       <Card className="bg-white border-zinc-200 rounded-3xl h-full shadow-sm flex flex-col">
@@ -46,7 +41,7 @@ const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
                <div className="flex items-center gap-2 border rounded-full px-3 py-1 text-sm">
                  <div className="w-12 h-12 relative">
                   {isLoadingLogo ? <Skeleton className="w-full h-full rounded-full" /> : companyLogo && (
-                    <Image src={companyLogo.imageUrl} alt="Company Logo" fill className="object-contain p-2 filter grayscale brightness-0 invert" data-ai-hint={companyLogo.imageHint} />
+                    <Image src={companyLogo.imageUrl} alt="Company Logo" fill className="object-contain p-2 filter grayscale" data-ai-hint={companyLogo.imageHint} />
                   )}
                  </div>
                  <span className="font-semibold text-zinc-600">{testimonial.company || 'KDD Franchise'}</span>

@@ -108,19 +108,70 @@ export async function masterSeed(firestore: Firestore): Promise<{ success: boole
         testimonials.forEach(t => { batch.set(doc(collection(firestore, 'testimonials')), t); createdCount++; });
         
         // --- Blogs ---
-        const blogs = [...Array(20)].map((_, i) => ({
-            slug: `blog-post-${i+1}`,
-            coverImage: { url: `https://picsum.photos/seed/blog-${i+1}/800/600`, alt: `Blog post ${i+1}` },
-            author: { name: 'KDD Team' },
-            category: ['News', 'Tips', 'Stories'][i % 3],
-            status: 'published',
-            isFeatured: i % 4 === 0,
-            translations: {
-                en: { title: `Amazing English Blog Post Title ${i+1}`, content: `<p>This is the full English content for the blog post, with lots of details.</p>`, excerpt: `This is the short English excerpt for blog post number ${i+1}.` },
-                ms: { title: `Tajuk Blog Bahasa Melayu Hebat ${i+1}`, content: `<p>Ini adalah kandungan penuh blog dalam Bahasa Melayu, dengan banyak perincian.</p>`, excerpt: `Ini adalah petikan ringkas Bahasa Melayu untuk catatan blog nombor ${i+1}.` }
+        const blogsData = [
+            {
+                slug: "the-story-behind-every-cup-why-great-coffee-matters",
+                author: { bio: "heyyyyyy", name: "Admin", photo: "https://images.unsplash.com/photo-1759376928130-415a2e369c3e?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" },
+                category: "Behind The Cup",
+                coverImage: { alt: "A barista pouring freshly brewed coffee", caption: "A perfect cup starts with passion.", url: "https://images.unsplash.com/photo-1762657424841-7b5166d5d54c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" },
+                isFeatured: true,
+                likes: 0,
+                seo: { description: "Discover the journey of great coffee — from farming and roasting to brewing and craft. Learn why every cup matters.", keywords: ["coffee", "kopi", "franchise"], title: "The Story Behind Every Cup | Why Great Coffee Matters" },
+                status: "published",
+                tags: ["coffee", "story", "tips"],
+                translations: {
+                    en: {
+                        content: "## The Story Behind Every Cup: Why Great Coffee Matters\n\nCoffee is more than just a drink — it's a ritual, a culture, and for many of us, a way to slow down and reconnect with the moment. Behind every cup, there is a journey that starts long before the aroma hits your nose.\n\n### 🌱 From Farm to Cup\n\nGreat coffee begins at the source. Farmers who hand-pick ripe cherries are the unsung heroes of every brew. Their dedication affects everything from flavour balance to aroma.\n\n### ☕ The Craft of Brewing\n\nBrewing is both art and science. The grind size, water temperature, and brewing time come together to shape the final taste. A small adjustment can turn a good cup into an unforgettable one.\n\n### 👨‍🍳 The Human Touch\n\nBehind every café counter is a barista who turns raw beans into a story. Their skill brings out the best in every roast and creates an experience that customers return for.\n\n### 💛 Why It All Matters\n\nGreat coffee connects people. Conversations happen. Ideas flow. Communities grow. So the next time you enjoy your cup, take a moment to appreciate the journey it took — from the farm to your hands. ",
+                        excerpt: "A deep dive into what makes a truly great cup of coffee — from beans and brewing to the people behind the craft.",
+                        title: "The Story Behind Every Cup: Why Great Coffee Matters"
+                    },
+                    ms: {
+                        content: "## Kisah di Sebalik Setiap Cawan: Mengapa Kopi Hebat Penting\n\nKopi bukan sekadar minuman — ia adalah ritual, budaya, dan bagi ramai, satu cara untuk berhenti seketika dan menikmati momen. Di sebalik setiap cawan, terdapat perjalanan panjang sebelum aromanya memenuhi udara.\n\n### 🌱 Dari Ladang ke Cawan\n\nKopi hebat bermula di sumbernya. Petani yang memilih biji kopi masak dengan teliti adalah wira yang jarang disebut. Dedikasi mereka mempengaruhi keseimbangan rasa dan aroma.\n\n### ☕ Seni Membancuh\n\nMembancuh kopi adalah seni dan sains. Saiz kisar, suhu air, dan masa bancuhan membentuk rasa akhir kopi. Sedikit perbezaan boleh mengubah kopi biasa menjadi sesuatu yang luar biasa.\n\n### 👨‍🍳 Sentuhan Manusia\n\nDi belakang kaunter kafe, barista memainkan peranan penting. Kemahiran mereka menghidupkan aroma dan rasa, menjadikan setiap cawan satu pengalaman.\n\n### 💛 Mengapa Semua Ini Penting\n\nKopi menyatukan manusia. Perbualan bermula. Idea tercetus. Komuniti terbina. Jadi, apabila anda menikmati secawan kopi, ambillah sedikit masa untuk menghargai perjalanan yang telah dilaluinya — dari ladang hingga ke tangan anda. ",
+                        excerpt: "Menjelajah perjalanan kopi — dari ladang hingga ke barista — dan mengapa setiap cawan membawa kisahnya sendiri.",
+                        title: "Kisah di Sebalik Setiap Cawan: Mengapa Kopi Hebat Penting"
+                    }
+                },
+                views: 0
             }
-        }));
-        blogs.forEach(blog => { batch.set(doc(firestore, 'blogs', blog.slug), blog); createdCount++; });
+        ];
+        
+        [...Array(14)].forEach((_, i) => {
+            blogsData.push({
+                slug: `sample-blog-post-${i + 2}`,
+                author: { bio: "A passionate writer at Kopi Dua Darjat.", name: "KDD Writer", photo: "https://i.pravatar.cc/150?img=1" },
+                category: ["Community", "How-To", "News"][i % 3],
+                coverImage: { alt: `A beautiful image for post ${i + 2}`, caption: "Coffee love", url: `https://picsum.photos/seed/blog-sample-${i+2}/800/600` },
+                isFeatured: i % 4 === 0,
+                likes: 0,
+                seo: { description: `Sample English SEO description for blog post ${i + 2}.`, keywords: ["sample", "blog"], title: `Sample English Blog Title ${i + 2}` },
+                status: "published",
+                tags: ["sample", "kopi"],
+                translations: {
+                    en: {
+                        content: `This is the sample English content for blog post number ${i + 2}. It's just a placeholder to show how it looks.`,
+                        excerpt: `A short and sweet English excerpt for sample blog post number ${i + 2}.`,
+                        title: `Sample English Blog Title ${i + 2}`
+                    },
+                    ms: {
+                        content: `Ini adalah contoh kandungan Bahasa Melayu untuk catatan blog nombor ${i + 2}. Ia hanyalah pemegang tempat untuk menunjukkan rupa bentuknya.`,
+                        excerpt: `Petikan ringkas Bahasa Melayu untuk contoh catatan blog nombor ${i + 2}.`,
+                        title: `Contoh Tajuk Blog Bahasa Melayu ${i + 2}`
+                    }
+                },
+                views: 0
+            });
+        });
+
+        blogsData.forEach(blog => {
+            const now = new Date();
+            batch.set(doc(firestore, 'blogs', blog.slug), {
+                ...blog,
+                createdAt: now,
+                updatedAt: now,
+                publishedAt: now,
+            });
+            createdCount++;
+        });
         
         // --- Social Feed ---
         [...Array(20)].forEach((_, i) => {
