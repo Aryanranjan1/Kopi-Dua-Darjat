@@ -47,7 +47,7 @@ const MenuPromotionsContent = () => {
 
                 const uniqueMenuItemIds = [...new Set(allMenuItemIds)];
                 
-                // Fetch all items in batches of 30, as 'in' query supports max 30
+                // Firestore 'in' queries are limited to 30 items. Batch the requests.
                 const itemPromises = [];
                 for (let i = 0; i < uniqueMenuItemIds.length; i += 30) {
                     const batchIds = uniqueMenuItemIds.slice(i, i + 30);
