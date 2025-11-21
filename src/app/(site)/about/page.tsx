@@ -2,8 +2,7 @@
 
 'use client';
 
-import type { Metadata } from 'next';
-import { useMediaAsset, useMedia } from '@/lib/media';
+import { useMedia } from '@/lib/media';
 import LatestStories from '@/components/home/LatestStories';
 import NewsletterSignUp from '@/components/home/NewsletterSignUp';
 import WhoAreWe from '@/components/about/WhoAreWe';
@@ -14,11 +13,8 @@ import TiltedCard from '@/components/animations/TiltedCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import StickyGallery from '@/components/about/StickyGallery';
 import { siteContentData } from '@/lib/site-content';
-
-// export const metadata: Metadata = {
-//   title: 'Our Story',
-//   description: 'Learn about the history and passion behind Kopi Dua Darjat.',
-// };
+import { siteContentDataMs } from '@/lib/site-content-ms';
+import { useLanguage } from '@/components/layout/LanguageProvider';
 
 const Milestone = ({
   year,
@@ -94,7 +90,8 @@ const FounderSkeleton = () => (
 
 export default function AboutPage() {
   const { data: media, isLoading: isLoadingMedia } = useMedia();
-  const content = siteContentData.about;
+  const { language } = useLanguage();
+  const content = language === 'ms' ? siteContentDataMs.about : siteContentData.about;
 
   return (
     <>
