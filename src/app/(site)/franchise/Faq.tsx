@@ -11,7 +11,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { AnimateOnScroll } from '../animations/AnimateOnScroll';
+import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import { Loader2 } from 'lucide-react';
 import { useLanguage } from '@/components/layout/LanguageProvider';
 import { getLocalized } from '@/lib/utils';
@@ -29,10 +29,14 @@ export default function Faq() {
   // Memoize the localized data to prevent re-computation on every render
   const localizedFaqItems = useMemo(() => {
     if (!faqItems) return [];
-    return faqItems.map(item => ({
-      ...item,
-      localized: getLocalized(item, language)
-    }));
+    return faqItems.map(item => {
+      const localized = getLocalized(item, language);
+      return {
+        id: item.id,
+        question: localized.question,
+        answer: localized.answer,
+      };
+    });
   }, [faqItems, language]);
 
   return (
@@ -57,10 +61,10 @@ export default function Faq() {
               {localizedFaqItems.map((item) => (
                   <AccordionItem key={item.id} value={item.id} className="bg-zinc-900 border-zinc-800 rounded-2xl px-6 border-none shadow-sm">
                     <AccordionTrigger className="text-lg font-headline text-left hover:no-underline text-white">
-                      {item.localized.question}
+                      {item.question}
                     </AccordionTrigger>
                     <AccordionContent className="text-white/60">
-                      {item.localized.answer}
+                      {item.answer}
                     </AccordionContent>
                   </AccordionItem>
                 )
