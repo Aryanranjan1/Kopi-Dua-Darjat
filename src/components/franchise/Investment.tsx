@@ -3,7 +3,6 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useMediaAsset } from '@/lib/media';
 import { Button } from '@/components/ui/button';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { Skeleton } from '../ui/skeleton';
@@ -12,10 +11,16 @@ import { siteContentDataMs } from '@/lib/site-content-ms';
 import { useLanguage } from '../layout/LanguageProvider';
 
 export default function Investment() {
-  const { asset: stallImage, isLoading } = useMediaAsset('franchise-stall');
   const { language } = useLanguage();
   const content = language === 'ms' ? siteContentDataMs.franchise.investment : siteContentData.franchise.investment;
   const { title, subtitle, content: investmentContent, buttonText, buttonLink } = content;
+
+  // Temporary placeholder data
+  const stallImage = {
+      imageUrl: "https://images.unsplash.com/photo-1733729233539-3f8641af1f49?w=800",
+      description: "A clean, modern Kopi Dua Darjat starter stall setup.",
+      imageHint: "coffee stall"
+  };
 
   return (
     <section className="py-24 sm:py-32 bg-background">
@@ -36,7 +41,6 @@ export default function Investment() {
 
           <AnimateOnScroll animationType="slideInFromRight">
             <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-lg">
-              {isLoading ? <Skeleton className="w-full h-full" /> : stallImage && (
                 <Image
                   src={stallImage.imageUrl}
                   alt={stallImage.description}
@@ -45,7 +49,6 @@ export default function Investment() {
                   className="object-cover"
                   data-ai-hint={stallImage.imageHint}
                 />
-              )}
             </div>
           </AnimateOnScroll>
         </div>

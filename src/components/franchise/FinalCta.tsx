@@ -3,7 +3,6 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useMediaAsset } from '@/lib/media';
 import { Button } from '@/components/ui/button';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { Skeleton } from '../ui/skeleton';
@@ -12,10 +11,16 @@ import { siteContentDataMs } from '@/lib/site-content-ms';
 import { useLanguage } from '../layout/LanguageProvider';
 
 export default function FinalCta() {
-  const { asset: ctaImage, isLoading } = useMediaAsset('franchise-cta');
   const { language } = useLanguage();
   const content = language === 'ms' ? siteContentDataMs.franchise.finalCta : siteContentData.franchise.finalCta;
   const { title, subtitle, buttonText, buttonLink } = content;
+
+  // Temporary placeholder data
+  const ctaImage = {
+      imageUrl: "https://images.unsplash.com/photo-1497515114629-f71d768fd07c?w=800",
+      description: "A cup of coffee on a wooden table.",
+      imageHint: "cup of coffee"
+  };
 
   return (
     <section className="bg-background">
@@ -40,16 +45,14 @@ export default function FinalCta() {
 
           {/* Right side: Image */}
           <div className="relative min-h-[50vh] lg:min-h-0">
-            {isLoading ? <Skeleton className="w-full h-full" /> : ctaImage && (
-              <Image
+            <Image
                 src={ctaImage.imageUrl}
                 alt={ctaImage.description}
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"
                 data-ai-hint={ctaImage.imageHint}
-              />
-            )}
+            />
           </div>
         </div>
       </div>

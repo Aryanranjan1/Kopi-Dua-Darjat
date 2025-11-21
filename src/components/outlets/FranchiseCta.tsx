@@ -5,27 +5,29 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
-import { useMediaAsset } from '@/lib/media';
 import { Skeleton } from '../ui/skeleton';
 
 export default function FranchiseCta() {
-    const { asset: bgImage, isLoading } = useMediaAsset('franchise-teaser');
+    // Temporary placeholder data
+    const bgImage = {
+        imageUrl: "https://images.unsplash.com/photo-1556740758-90de374c12ad?w=800",
+        description: "Image for the franchise teaser section.",
+        imageHint: "small business"
+    };
 
     return (
         <section className="relative py-24 sm:py-32 bg-black text-white">
-             {isLoading ? <Skeleton className="absolute inset-0" /> : bgImage && (
-                <div className="absolute inset-0 z-0">
-                <Image
-                    src={bgImage.imageUrl}
-                    alt={bgImage.description || "Franchise CTA background"}
-                    fill
-                    sizes="100vw"
-                    className="object-cover"
-                    data-ai-hint={bgImage.imageHint}
-                />
-                <div className="absolute inset-0 bg-black/70 z-10"></div>
-                </div>
-            )}
+            <div className="absolute inset-0 z-0">
+            <Image
+                src={bgImage.imageUrl}
+                alt={bgImage.description}
+                fill
+                sizes="100vw"
+                className="object-cover"
+                data-ai-hint={bgImage.imageHint}
+            />
+            <div className="absolute inset-0 bg-black/70 z-10"></div>
+            </div>
             <div className="container mx-auto px-6 relative z-20">
                  <AnimateOnScroll animationType='fadeIn'>
                     <div className="text-center">

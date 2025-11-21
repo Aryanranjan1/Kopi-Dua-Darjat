@@ -8,20 +8,25 @@ import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { useLanguage } from '../layout/LanguageProvider';
 import { siteContentData } from '@/lib/site-content';
 import { siteContentDataMs } from '@/lib/site-content-ms';
+import Image from 'next/image';
 
 export default function FranchiseHero() {
   const { language } = useLanguage();
   const content = language === 'ms' ? siteContentDataMs.franchise.hero : siteContentData.franchise.hero;
 
+  const bgImageUrl = "https://images.unsplash.com/photo-1740512376474-f34f5c8d542a?w=800";
+  const bgImageAlt = "Happy barista serving coffee";
+  const bgImageHint = "happy barista";
+
   return (
     <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-28 text-white overflow-hidden">
-        <video
-            autoPlay
-            loop
-            muted
-            playsInline
+        <Image
+            src={bgImageUrl}
+            alt={bgImageAlt}
+            fill
             className="absolute inset-0 w-full h-full object-cover z-0"
-            src="/video/bg1.mp4"
+            priority
+            data-ai-hint={bgImageHint}
         />
         <div className="absolute inset-0 bg-black/60 z-10"></div>
       <div className="container mx-auto px-4 relative z-20">

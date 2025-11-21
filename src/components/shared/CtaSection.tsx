@@ -3,19 +3,22 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useMediaAsset } from '@/lib/media';
 import { Button } from '@/components/ui/button';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import { ArrowRight } from 'lucide-react';
 import { Skeleton } from '../ui/skeleton';
 
 export function CtaSection() {
-  const { asset: bgImage, isLoading } = useMediaAsset('cta-bg');
+    // Temporary placeholder data
+  const bgImage = {
+      imageUrl: "https://images.unsplash.com/photo-1497515114629-f71d768fd07c?w=1080",
+      description: "A cup of coffee on a wooden table.",
+      imageHint: "cup of coffee"
+  };
 
   return (
     <section className="relative py-24 sm:py-32 text-white bg-black">
-      {isLoading ? <Skeleton className="absolute inset-0" /> : bgImage && (
-        <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0">
           <Image
             src={bgImage.imageUrl}
             alt={bgImage.description}
@@ -26,7 +29,6 @@ export function CtaSection() {
           />
            <div className="absolute inset-0 bg-black/60 z-10"></div>
         </div>
-      )}
       <div className="container mx-auto px-12 relative z-20">
         <div className="max-w-2xl text-center mx-auto">
           <AnimateOnScroll animationType="slideInFromBottom">

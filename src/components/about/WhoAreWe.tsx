@@ -1,15 +1,21 @@
+
 'use client';
 
 import Image from 'next/image';
-import { useMediaAsset } from '@/lib/media';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import TiltedCard from '../animations/TiltedCard';
 import { Skeleton } from '../ui/skeleton';
 import { siteContentData } from '@/lib/site-content';
 
 export default function WhoAreWe() {
-  const { asset: image, isLoading } = useMediaAsset('brewing-method');
   const { title, subtitle, content } = siteContentData.about.whoAreWe;
+  
+  // Temporary placeholder data
+  const image = {
+      imageUrl: "https://images.unsplash.com/photo-1627902520211-73c980850fe8?w=800",
+      description: "Image showing traditional coffee brewing.",
+      imageHint: "coffee brewing"
+  };
 
   return (
     <section className="py-24 sm:py-32">
@@ -17,16 +23,14 @@ export default function WhoAreWe() {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <AnimateOnScroll animationType="slideInFromLeft">
             <div className="relative aspect-video rounded-2xl overflow-hidden group">
-                {isLoading ? <Skeleton className="w-full h-full" /> : image && (
-                    <TiltedCard 
-                      imageSrc={image.imageUrl}
-                      altText={image.description}
-                      containerHeight="100%"
-                      imageWidth="100%"
-                      imageHeight="100%"
-                      captionText={image.description}
-                    />
-                )}
+                <TiltedCard 
+                  imageSrc={image.imageUrl}
+                  altText={image.description}
+                  containerHeight="100%"
+                  imageWidth="100%"
+                  imageHeight="100%"
+                  captionText={image.description}
+                />
             </div>
           </AnimateOnScroll>
           <AnimateOnScroll animationType="slideInFromRight" className="text-center lg:text-left">

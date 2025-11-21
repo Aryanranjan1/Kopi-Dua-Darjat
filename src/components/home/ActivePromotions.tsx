@@ -3,10 +3,9 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
-import { useMediaAsset } from '@/lib/media';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { Skeleton } from '../ui/skeleton';
 import { siteContentData } from '@/lib/site-content';
@@ -14,11 +13,15 @@ import { siteContentDataMs } from '@/lib/site-content-ms';
 import { useLanguage } from '../layout/LanguageProvider';
 
 export default function ActivePromotions() {
-  const { asset: communityImage, isLoading: isLoadingCommunity } = useMediaAsset('community-event-1');
-  const { asset: parallaxBg, isLoading: isLoadingParallax } = useMediaAsset('parallax-promo-bg');
-
   const { language } = useLanguage();
   const content = language === 'ms' ? siteContentDataMs.home.activePromotions : siteContentData.home.activePromotions;
+  
+  // Temporary placeholder data
+  const communityImage = {
+      imageUrl: "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyiMJ52MUSY_CNH9Dh1egxh9z3ttBk2sAVqVXPznavKOluy0nzFDfzdVPT9tUTJAB2nnC994eEYb4oql4r0pINfXu3oZS5ND36uF5ABl6UqUj_bN1aYsX0p9xeY9PN10zeH6yHADQ=w408-h544-k-no",
+      description: "People at a Kopi Dua Darjat community event.",
+      imageHint: "cafe community"
+  };
 
   return (
     <section className="py-24 sm:py-32 bg-black">
@@ -76,19 +79,17 @@ export default function ActivePromotions() {
             {/* Card 3: Stay Informed */}
             <AnimateOnScroll animationType="slideInFromRight" amount={0.5} delay={0.2}>
               <Card className="bg-zinc-900 shadow-lg rounded-3xl p-6 sm:p-8 flex flex-col justify-between min-h-[220px] sm:min-h-[210px] relative overflow-hidden">
-                  {isLoadingCommunity ? <Skeleton className="absolute bottom-0 right-0 h-full w-1/2"/> : communityImage && (
-                      <div className="absolute bottom-0 right-0 h-full w-1/2">
-                          <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900 to-transparent"></div>
-                          <Image
-                              src={communityImage.imageUrl}
-                              alt={communityImage.description}
-                              fill
-                              sizes="(max-width: 1024px) 50vw, 25vw"
-                              className="object-cover object-center z-[-1]"
-                              data-ai-hint={communityImage.imageHint}
-                          />
-                      </div>
-                  )}
+                  <div className="absolute bottom-0 right-0 h-full w-1/2">
+                      <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900 to-transparent"></div>
+                      <Image
+                          src={communityImage.imageUrl}
+                          alt={communityImage.description}
+                          fill
+                          sizes="(max-width: 1024px) 50vw, 25vw"
+                          className="object-cover object-center z-[-1]"
+                          data-ai-hint={communityImage.imageHint}
+                      />
+                  </div>
                   <div className='relative z-10'>
                       <h3 className="font-headline text-2xl font-bold text-white">{content.communityCard.title}</h3>
                       <p className="text-white/80 mt-2 max-w-[60%] text-sm sm:text-base">

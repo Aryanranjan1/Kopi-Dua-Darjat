@@ -5,7 +5,6 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useMediaAsset } from "@/lib/media";
 import { AnimateOnScroll } from "@/components/animations/AnimateOnScroll";
 import { useFirestore } from "@/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
@@ -17,12 +16,12 @@ import { Skeleton } from "../ui/skeleton";
 const emailSchema = z.string().email({ message: "Please enter a valid email." });
 
 export default function NewsletterSignUp({ disableAnimations = false }: { disableAnimations?: boolean }) {
-  // media hook
-  const { asset: bgImage, isLoading: isLoadingImage } = useMediaAsset("newsletter-background");
-
-  // local state for fallback switching
-  const [useFallback, setUseFallback] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
+  // Temporary placeholder data
+  const bgImage = {
+      imageUrl: "https://images.unsplash.com/photo-1506619216599-9d16d0903dfd?w=1080",
+      description: "A flat lay of different coffee cups.",
+      imageHint: "coffee"
+  };
 
   // firestore and UI
   const firestore = useFirestore();
@@ -30,14 +29,6 @@ export default function NewsletterSignUp({ disableAnimations = false }: { disabl
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  // If bgImage is undefined after load, fallback to local immediately
-  useEffect(() => {
-    if (!isLoadingImage && !bgImage) {
-      console.warn("[Newsletter] No bgImage found - using fallback.");
-      setUseFallback(true);
-    }
-  }, [isLoadingImage, bgImage]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -84,37 +75,19 @@ export default function NewsletterSignUp({ disableAnimations = false }: { disabl
   const wrapperProps = disableAnimations ? {} : { animationType: "slideInFromBottom" as const };
   const formWrapperProps = disableAnimations ? {} : { animationType: "fadeIn" as const, delay: 0.2 };
 
-  const remoteUrl = bgImage?.imageUrl;
-  // Use a known good image from the media library as the fallback.
-  const fallbackUrl = "https://images.unsplash.com/photo-1588253137728-1e4dd0fe9a93?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjYWZlJTIwaW50ZXJpb3J8ZW58MHx8fHwxNzYxOTgyODIwfDA&ixlib=rb-4.1.0&q=80&w=1080";
-
-  const handleImgError = () => {
-    if (!useFallback) {
-        console.warn("[Newsletter] Background image failed to load, switching to fallback.");
-        setUseFallback(true);
-    } else {
-        console.error("[Newsletter] Fallback image also failed to load.");
-    }
-  };
 
   return (
     <section className="relative py-24 sm:py-32 text-white">
       {/* Background layer */}
       <div className="absolute inset-0 z-[-20]">
-        {isLoadingImage && !imageLoaded ? (
-          <Skeleton className="w-full h-full" />
-        ) : (
-          <Image
-            src={useFallback ? fallbackUrl : remoteUrl || fallbackUrl}
-            alt={bgImage?.description || "newsletter background"}
-            fill
-            className="object-cover"
-            data-ai-hint={bgImage?.imageHint}
-            onError={handleImgError}
-            onLoadingComplete={() => setImageLoaded(true)}
-            unoptimized
-          />
-        )}
+        <Image
+          src={bgImage.imageUrl}
+          alt={bgImage.description}
+          fill
+          className="object-cover"
+          data-ai-hint={bgImage.imageHint}
+          unoptimized
+        />
       </div>
 
       {/* overlay */}

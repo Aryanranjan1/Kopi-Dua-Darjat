@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -5,31 +6,29 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Instagram, MapPin } from 'lucide-react';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
-import { useMediaAsset } from '@/lib/media';
 import { Skeleton } from '../ui/skeleton';
 
 export default function FooterCta() {
-    const { asset: bgImage, isLoading } = useMediaAsset('cta-bg');
-
-    const imageUrl = bgImage?.imageUrl || "https://images.unsplash.com/photo-1497515114629-f71d768fd07c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxOXx8Y29mZmVlfGVufDB8fHx8fDE3NjIwMDE0ODV8MA&ixlib=rb-4.1.0&q=80&w=1080";
-    const imageAlt = bgImage?.description || "A cup of coffee on a wooden table, representing Kopi Dua Darjat";
-    const imageHint = bgImage?.imageHint || "cup of coffee";
+    // Temporary placeholder data
+    const bgImage = {
+        imageUrl: "https://images.unsplash.com/photo-1497515114629-f71d768fd07c?w=1080",
+        description: "A cup of coffee on a wooden table, representing Kopi Dua Darjat",
+        imageHint: "cup of coffee"
+    };
 
     return (
         <section className="relative py-24 sm:py-32 bg-black text-white">
-            {isLoading ? <Skeleton className="absolute inset-0" /> : (
-                <div className="absolute inset-0 z-0">
-                    <Image
-                        src={imageUrl}
-                        alt={imageAlt}
-                        fill
-                        sizes="100vw"
-                        className="object-cover"
-                        data-ai-hint={imageHint}
-                    />
-                    <div className="absolute inset-0 bg-black/60 z-10"></div>
-                </div>
-            )}
+            <div className="absolute inset-0 z-0">
+                <Image
+                    src={bgImage.imageUrl}
+                    alt={bgImage.description}
+                    fill
+                    sizes="100vw"
+                    className="object-cover"
+                    data-ai-hint={bgImage.imageHint}
+                />
+                <div className="absolute inset-0 bg-black/60 z-10"></div>
+            </div>
             <div className="container mx-auto px-6 text-center relative z-20">
                 <AnimateOnScroll animationType='fadeIn'>
                     <h2 className="text-3xl md:text-4xl font-headline font-bold text-primary">
