@@ -17,6 +17,9 @@ import { CtaSection } from '@/components/shared/CtaSection';
 import { Pagination } from '@/components/shared/Pagination';
 import { useMediaAsset } from '@/lib/media';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useLanguage } from '@/components/layout/LanguageProvider';
+import { getLocalized } from '@/lib/utils';
+
 
 const POSTS_PER_PAGE = 6;
 
@@ -52,7 +55,11 @@ const HeroSection = () => {
     )
 }
 
-const FeaturedPost = ({ post }: { post: Blog }) => (
+const FeaturedPost = ({ post }: { post: Blog }) => {
+    const { language } = useLanguage();
+    const localizedPost = getLocalized(post, language);
+
+    return (
     <AnimateOnScroll animationType="fadeIn">
         <div className="container mx-auto px-6 pt-16 pb-12">
              <h2 className="text-3xl font-headline font-bold mb-8">Featured Post</h2>
@@ -60,7 +67,7 @@ const FeaturedPost = ({ post }: { post: Blog }) => (
                 <Link href={`/news/${post.slug}`} className="relative aspect-video rounded-lg overflow-hidden group">
                     <Image
                         src={post.coverImage.url}
-                        alt={post.coverImage.alt || post.title}
+                        alt={post.coverImage.alt || localizedPost.title || ''}
                         fill
                         sizes="(max-width: 768px) 100vw, 50vw"
                         className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -71,9 +78,9 @@ const FeaturedPost = ({ post }: { post: Blog }) => (
                 <div className="max-w-lg">
                     <p className="font-semibold text-accent text-sm">{post.category}</p>
                     <h3 className="text-2xl font-headline font-bold text-white mt-2 group-hover:text-primary transition-colors">
-                        <Link href={`/news/${post.slug}`}>{post.title}</Link>
+                        <Link href={`/news/${post.slug}`}>{localizedPost.title}</Link>
                     </h3>
-                    <p className="mt-4 text-base text-zinc-300 line-clamp-3">{post.excerpt}</p>
+                    <p className="mt-4 text-base text-zinc-300 line-clamp-3">{localizedPost.excerpt}</p>
                     <div className="flex items-center gap-4 text-xs text-zinc-400 mt-4">
                         <div className="flex items-center gap-1.5">
                             <Calendar className="w-3.5 h-3.5" />
@@ -93,16 +100,20 @@ const FeaturedPost = ({ post }: { post: Blog }) => (
             </div>
         </div>
     </AnimateOnScroll>
-);
+)};
 
-const ArticleCard = ({ post }: { post: Blog }) => (
+const ArticleCard = ({ post }: { post: Blog }) => {
+    const { language } = useLanguage();
+    const localizedPost = getLocalized(post, language);
+
+    return (
      <AnimateOnScroll animationType="fadeIn">
         <Link href={`/news/${post.slug}`} className="group block h-full">
             <div className="flex flex-col h-full bg-black text-white rounded-2xl p-6 transition-shadow hover:shadow-lg hover:shadow-primary/20">
                 <div className="relative aspect-video rounded-lg overflow-hidden mb-4">
                     <Image
                         src={post.coverImage.url}
-                        alt={post.title}
+                        alt={localizedPost.title || ''}
                         fill
                         sizes="(max-width: 768px) 100vw, 33vw"
                         className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -111,7 +122,7 @@ const ArticleCard = ({ post }: { post: Blog }) => (
                 </div>
                 <p className="font-semibold text-accent text-sm">{post.category}</p>
                 <h4 className="text-xl font-headline font-bold text-white mt-1 group-hover:text-primary transition-colors">
-                    {post.title}
+                    {localizedPost.title}
                 </h4>
                  <div className="flex items-center gap-4 text-xs text-zinc-400 mt-2">
                     <div className="flex items-center gap-1.5">
@@ -127,7 +138,7 @@ const ArticleCard = ({ post }: { post: Blog }) => (
             </div>
         </Link>
     </AnimateOnScroll>
-)
+)}
 
 
 function NewsPageClient() {
@@ -182,8 +193,8 @@ function NewsPageClient() {
 
         if (searchQuery) {
             posts = posts.filter(post =>
-                post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                post.excerpt.toLowerCase().includes(searchQuery.toLowerCase())
+                post.translations.en.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                post.translations.en.excerpt.toLowerCase().includes(searchQuery.toLowerCase())
             );
         }
 

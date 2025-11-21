@@ -13,9 +13,12 @@ import { CtaSection } from '@/components/shared/CtaSection';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
+import { useLanguage } from '@/components/layout/LanguageProvider';
+import { getLocalized } from '@/lib/utils';
 
 const RecommendedPosts = ({ currentPostId }: { currentPostId: string }) => {
     const firestore = useFirestore();
+    const { language } = useLanguage();
     const recommendedQuery = useMemoFirebase(
       () => firestore ? query(collection(firestore, 'blogs'), where('status', '==', 'published'), where('__name__', '!=', currentPostId), limit(3)) : null,
       [firestore, currentPostId]
@@ -38,12 +41,13 @@ const RecommendedPosts = ({ currentPostId }: { currentPostId: string }) => {
                             ))
                         ) : (
                         recommended?.map(post => {
+                            const localizedPost = getLocalized(post, language);
                             return (
                                  <Link key={post.id} href={`/news/${post.slug}`} className="group block">
                                     <div className="relative aspect-video rounded-2xl overflow-hidden mb-4">
                                         <Image
                                             src={post.coverImage.url}
-                                            alt={post.title}
+                                            alt={localizedPost.title || ''}
                                             fill
                                             sizes="(max-width: 768px) 100vw, 33vw"
                                             className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -52,7 +56,7 @@ const RecommendedPosts = ({ currentPostId }: { currentPostId: string }) => {
                                     </div>
                                     <p className="font-semibold text-accent text-sm">{post.category}</p>
                                     <h4 className="text-xl font-headline font-bold text-foreground mt-1 group-hover:text-primary transition-colors">
-                                        {post.title}
+                                        {localizedPost.title}
                                     </h4>
                                     <p className="text-xs text-muted-foreground mt-2">
                                         {post.publishedAt ? format(post.publishedAt.toDate(), 'PPP') : ''}
@@ -72,6 +76,7 @@ export default function NewsArticlePage() {
   const params = useParams();
   const slug = params.slug as string;
   const firestore = useFirestore();
+  const { language } = useLanguage();
 
   // Fetch document by its ID, which is the slug
   const postRef = useMemoFirebase(
@@ -104,6 +109,8 @@ export default function NewsArticlePage() {
     notFound();
   }
 
+  const localizedPost = getLocalized(post, language);
+
   return (
     <>
         <div className="bg-background text-foreground">
@@ -119,7 +126,7 @@ export default function NewsArticlePage() {
 
                     <p className="font-semibold text-accent">{post.category}</p>
                     <h1 className="mt-2 text-4xl md:text-5xl font-headline font-bold text-primary">
-                        {post.title}
+                        {localizedPost.title}
                     </h1>
                     
                     <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-muted-foreground">
@@ -146,7 +153,7 @@ export default function NewsArticlePage() {
                     <div className="relative aspect-video rounded-2xl overflow-hidden my-8 shadow-lg">
                     <Image
                         src={post.coverImage.url}
-                        alt={post.coverImage.alt || post.title}
+                        alt={post.coverImage.alt || localizedPost.title || ''}
                         fill
                         sizes="(max-width: 768px) 100vw, 50vw"
                         className="object-cover"
@@ -159,7 +166,7 @@ export default function NewsArticlePage() {
                 <AnimateOnScroll animationType="fadeIn" delay={0.3}>
                     <div 
                         className="prose prose-lg max-w-none text-foreground prose-headings:text-foreground prose-p:text-muted-foreground prose-a:text-accent hover:prose-a:text-accent/80 prose-strong:text-foreground prose-blockquote:border-accent prose-blockquote:text-muted-foreground prose-figcaption:text-center prose-figcaption:text-sm prose-figcaption:text-muted-foreground prose-img:rounded-xl prose-img:shadow-lg"
-                        dangerouslySetInnerHTML={{ __html: post.content }}
+                        dangerouslySetInnerHTML={{ __html: localizedPost.content || '' }}
                     />
                 </AnimateOnScroll>
                 </div>
