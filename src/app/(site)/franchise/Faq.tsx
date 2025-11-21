@@ -23,7 +23,6 @@ export default function Faq() {
   const { language } = useLanguage();
   const content = language === 'ms' ? siteContentDataMs.franchise.faq : siteContentData.franchise.faq;
 
-  // 1. Create a memoized and stable Firestore query
   const faqQuery = useMemoFirebase(
     () => firestore 
       ? query(
@@ -35,21 +34,7 @@ export default function Faq() {
     [firestore]
   );
 
-  // 2. Fetch the data using the query
   const { data: faqItems, isLoading } = useCollection<FaqItem>(faqQuery);
-
-  // 3. Create a memoized, localized version of the data *before* rendering
-  const localizedFaqItems = useMemo(() => {
-    if (!faqItems) return [];
-    return faqItems.map(item => {
-      const localized = getLocalized(item, language);
-      return {
-        id: item.id,
-        question: localized.question,
-        answer: localized.answer,
-      };
-    });
-  }, [faqItems, language]);
 
   return (
     <section className="py-24 sm:py-32 bg-black text-white">
@@ -70,17 +55,19 @@ export default function Faq() {
             </div>
           ) : (
             <Accordion type="single" collapsible className="w-full space-y-4">
-              {localizedFaqItems.map((item) => (
+              {faqItems?.map((item) => {
+                const localized = getLocalized(item, language);
+                return (
                   <AccordionItem key={item.id} value={item.id} className="bg-zinc-900 border-zinc-800 rounded-2xl px-6 border-none shadow-sm">
                     <AccordionTrigger className="text-lg font-headline text-left hover:no-underline text-white">
-                      {item.question}
+                      {localized.question}
                     </AccordionTrigger>
                     <AccordionContent className="text-white/60">
-                      {item.answer}
+                      {localized.answer}
                     </AccordionContent>
                   </AccordionItem>
                 )
-              )}
+              })}
             </Accordion>
           )}
         </AnimateOnScroll>
