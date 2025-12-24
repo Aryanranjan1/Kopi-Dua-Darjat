@@ -1,37 +1,82 @@
 
 'use client';
 
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { AlertTriangle, Database } from 'lucide-react';
-import MasterDataSeeder from './(components)/MasterDataSeeder';
-import MediaDataSeeder from './(components)/MediaDataSeeder';
-import BlogDataSeeder from './(components)/BlogDataSeeder';
-
+import { useFirestore } from '@/firebase';
+import { useToast } from '@/hooks/use-toast';
+import { Loader2, Database, AlertTriangle } from 'lucide-react';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { clearMenuAndOutlets } from '@/lib/seeder';
 
 export default function DataSeedingPage() {
+  const [isSeeding, setIsSeeding] = useState(false);
+  const firestore = useFirestore();
+  const { toast } = useToast();
+
+  const handleWipeData = async () => {
+    if (!firestore) {
+        toast({ title: 'Error', description: 'Firestore not available.', variant: 'destructive'});
+        return;
+    }
+    setIsSeeding(true);
+    toast({ title: 'Data Wipe Initiated...', description: 'Deleting all menu and outlet documents. This may take a moment.', duration: 5000 });
+    
+    const result = await clearMenuAndOutlets(firestore);
+    
+    if (result.success) {
+      toast({ title: 'Success!', description: result.message, duration: 8000 });
+    } else {
+      toast({ variant: 'destructive', title: 'Action Failed', description: result.message, duration: 8000 });
+      console.error("Data Wipe Error:", result.message);
+    }
+    setIsSeeding(false);
+  };
+
   return (
     <div className="space-y-8">
-       <h1 className="text-3xl font-headline font-bold text-white flex items-center gap-2"><Database />Data Seeding</h1>
+      <h1 className="text-3xl font-headline font-bold text-white flex items-center gap-2"><Database />Data Management</h1>
         
-        <Card className="bg-destructive/20 border-destructive text-destructive-foreground">
-            <CardHeader>
-                <CardTitle className="flex items-center gap-3">
-                    <AlertTriangle />
-                    Caution: Developer Use Only
-                </CardTitle>
-            </CardHeader>
-            <CardContent>
-                <p>
-                    These are powerful tools that can modify or delete large amounts of data. Use with extreme caution.
-                </p>
-            </CardContent>
-        </Card>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <MediaDataSeeder />
-            <BlogDataSeeder />
-            <MasterDataSeeder />
+      <Card className="bg-zinc-900 border-zinc-800 text-white">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2"><Database /> Wipe Menu & Outlet Data</CardTitle>
+        <CardDescription className="text-zinc-400">
+          This tool will permanently delete all documents from the 'menuItems', 'menuGroups', 'menuCategories', and 'outlets' collections.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="flex items-start gap-4 rounded-lg border border-destructive/50 bg-destructive/10 p-4">
+          <AlertTriangle className="h-6 w-6 text-destructive mt-1 flex-shrink-0" />
+          <div>
+            <h3 className="font-semibold text-destructive">Warning: Highly Destructive Action</h3>
+            <p className="text-sm text-destructive/80">
+              This will permanently delete all menu structure and outlet data. This action cannot be undone and will break parts of your website until new data is added.
+            </p>
+          </div>
         </div>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="destructive" className="mt-6 w-full" disabled={isSeeding}>
+              {isSeeding ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Trash2 className="mr-2 h-4 w-4" />}
+              Wipe All Menu & Outlet Data
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription className="text-zinc-400">
+                This will delete all menu items, categories, groups, and outlets. This action is irreversible.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
+              <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={handleWipeData}>Yes, I understand. Wipe all data.</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </CardContent>
+    </Card>
     </div>
   );
 }
