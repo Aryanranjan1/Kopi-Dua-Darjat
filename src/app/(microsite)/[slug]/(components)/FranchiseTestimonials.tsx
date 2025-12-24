@@ -48,7 +48,7 @@ const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
              <div className="flex items-center gap-2 border rounded-full px-3 py-1 text-sm">
                <div className="w-12 h-12 relative">
                 {isLoadingLogo ? <Skeleton className="w-full h-full rounded-full" /> : companyLogo && (
-                  <Image src={companyLogo.imageUrl} alt="Company Logo" fill className="object-contain p-2 filter grayscale brightness-0 invert" data-ai-hint={companyLogo.imageHint} />
+                  <Image src={companyLogo.imageUrl} alt="Company Logo" fill className="object-contain p-2 filter grayscale brightness-0 invert-0" data-ai-hint={companyLogo.imageHint} />
                 )}
                </div>
                <span className="font-semibold text-zinc-600">{testimonial.company || 'KDD Franchise'}</span>

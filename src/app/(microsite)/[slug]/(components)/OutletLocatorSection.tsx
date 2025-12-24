@@ -6,12 +6,17 @@ import type { Outlet } from '@/lib/types';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import { Clock, MapPin, Phone, Coffee } from 'lucide-react';
 import Image from 'next/image';
+import { useLanguage } from '@/components/layout/LanguageProvider';
+import { getLocalized } from '@/lib/utils';
 
 interface OutletLocatorSectionProps {
   currentOutlet: Outlet;
 }
 
 export default function OutletLocatorSection({ currentOutlet }: OutletLocatorSectionProps) {
+  const { language } = useLanguage();
+  const localizedOutlet = getLocalized(currentOutlet, language);
+
   // Use a fallback for lat/lng if not provided
   const lat = currentOutlet.lat || 3.1390; // Default to KL
   const lng = currentOutlet.lng || 101.6869;
@@ -27,16 +32,16 @@ export default function OutletLocatorSection({ currentOutlet }: OutletLocatorSec
                     Visit Us Today <Coffee className="h-10 w-10 text-primary" />
                 </h2>
                 <p className="mt-4 text-lg text-neutral-300">
-                    Escape the noise, grab your favourite brew, and feel the warmth of Kopi Dua Darjat at our {currentOutlet.name} outlet.
+                    Escape the noise, grab your favourite brew, and feel the warmth of Kopi Dua Darjat at our {localizedOutlet.name} outlet.
                 </p>
                 <div className="space-y-4 text-lg text-neutral-300 mt-8">
                     <div className="flex items-start gap-4">
                         <MapPin className="w-6 h-6 text-primary mt-1 flex-shrink-0" />
-                        <p>{currentOutlet.address}</p>
+                        <p>{localizedOutlet.address}</p>
                     </div>
                     <div className="flex items-start gap-4">
                         <Clock className="w-6 h-6 text-primary mt-1 flex-shrink-0" />
-                        <p>Open: {currentOutlet.hours}</p>
+                        <p>Open: {localizedOutlet.hours}</p>
                     </div>
                     {currentOutlet.phone && (
                         <div className="flex items-start gap-4">

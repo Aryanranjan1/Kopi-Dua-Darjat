@@ -2,7 +2,7 @@
 'use client';
 
 import { notFound } from 'next/navigation';
-import type { Outlet, MenuItem, Promotion, MenuCategory, SiteSettings, Blog, PublicInstaPost, ReviewDocument } from '@/lib/types';
+import type { Outlet, MenuItem, Promotion, MenuCategory, SiteSettings, Blog, PublicInstaPost, ReviewDocument, Testimonial } from '@/lib/types';
 
 import BrandStorySection from './(components)/BrandStorySection';
 import OutletLocatorSection from './(components)/OutletLocatorSection';
@@ -16,6 +16,7 @@ import PopularProductsCarousel from './(components)/PopularProductsCarousel';
 import CustomerReviews from './(components)/CustomerReviews';
 import { getLocalized } from '@/lib/utils';
 import { useLanguage } from '@/components/layout/LanguageProvider';
+import FranchiseTestimonials from './(components)/FranchiseTestimonials';
 
 
 // --- TYPES ---
@@ -29,11 +30,12 @@ interface PageData {
   siteSettings: SiteSettings;
   latestBlog: Blog | null;
   instaPosts: PublicInstaPost[];
+  testimonials: Testimonial[];
 }
 
 // MAIN CLIENT PAGE COMPONENT
 export default function MicrositePageClient(data: PageData) {
-  const { outlet, menuCategories, featuredItems, promotions, reviewData, siteSettings, allMenuItems, latestBlog, instaPosts } = data;
+  const { outlet, menuCategories, featuredItems, promotions, reviewData, siteSettings, allMenuItems, latestBlog, instaPosts, testimonials } = data;
   const { language } = useLanguage();
 
   if (!outlet) {
@@ -57,6 +59,7 @@ export default function MicrositePageClient(data: PageData) {
         {siteSettings && <BrandStorySection settings={siteSettings} />}
         <OutletLocatorSection currentOutlet={outlet} />
         {hasReviews && <CustomerReviews reviewData={reviewData} />}
+        {testimonials && testimonials.length > 0 && <FranchiseTestimonials testimonials={testimonials} />}
         <InstaExploreGrid />
         <Community />
         <LatestStories />

@@ -4,7 +4,7 @@ import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import MicrositePageClient from './MicrositePageClient';
-import type { Outlet, MenuItem, Promotion, MenuCategory, SiteSettings, Blog, PublicInstaPost, ReviewDocument, Review, Media } from '@/lib/types';
+import type { Outlet, MenuItem, Promotion, MenuCategory, SiteSettings, Blog, PublicInstaPost, ReviewDocument, Review, Media, Testimonial } from '@/lib/types';
 import { initializeServerSideFirebase } from '@/firebase/server-init';
 import { collection, getDocs, query, Timestamp, doc, getDoc, limit, orderBy, where } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -52,6 +52,9 @@ const MicrositePageSkeleton = () => (
 
 // --- SERVER-SIDE DATA FETCHING ---
 async function getMicrositeData(slug: string) {
+  if (!slug || typeof slug !== 'string') {
+    return { outlet: null };
+  }
   const { firestore } = initializeServerSideFirebase();
   
   const outletDocRef = doc(firestore, 'outlets', slug);
@@ -75,7 +78,8 @@ async function getMicrositeData(slug: string) {
     reviewDoc,
     mainSettings,
     latestBlogs,
-    instaFeed
+    instaFeed,
+    testimonials
   ] = await Promise.all([
     fetchCollection<MenuItem>(firestore, 'menuItems'),
     fetchCollection<MenuCategory>(firestore, 'menuCategories'),
@@ -83,7 +87,8 @@ async function getMicrositeData(slug: string) {
     getDoc(doc(firestore, 'reviews', outlet.id)).then(d => d.exists() ? d.data() as ReviewDocument : null),
     getDoc(doc(firestore, 'settings', 'main')).then(d => d.data() as SiteSettings),
     fetchCollection<Blog>(firestore, 'blogs', query(collection(firestore, 'blogs'), orderBy('publishedAt', 'desc'), limit(1))),
-    fetchCollection<PublicInstaPost>(firestore, 'public_insta_feed', query(collection(firestore, 'public_insta_feed'), orderBy('rank', 'asc'), limit(20)))
+    fetchCollection<PublicInstaPost>(firestore, 'public_insta_feed', query(collection(firestore, 'public_insta_feed'), orderBy('rank', 'asc'), limit(20))),
+    fetchCollection<Testimonial>(firestore, 'testimonials', query(collection(firestore, 'testimonials'), where('outletId', '==', outlet.id), limit(6)))
   ]);
   
   const outletMenuItems = allMenuItems.filter(item => 
@@ -107,6 +112,7 @@ async function getMicrositeData(slug: string) {
     siteSettings: mainSettings,
     latestBlog: latestBlogs.length > 0 ? latestBlogs[0] : null,
     instaPosts: instaFeed,
+    testimonials: testimonials,
   });
 }
 
