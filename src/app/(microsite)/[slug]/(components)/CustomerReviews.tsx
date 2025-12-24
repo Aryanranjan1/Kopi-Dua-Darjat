@@ -8,15 +8,18 @@ import { Star } from 'lucide-react';
 import { format, fromUnixTime } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
-import { cn } from '@/lib/utils';
+import { cn, getLocalized } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Timestamp } from 'firebase/firestore';
+import { useLanguage } from '@/components/layout/LanguageProvider';
 
 interface CustomerReviewsProps {
     reviewData: ReviewDocument;
 }
 
 const ReviewCard = ({ review }: { review: Review }) => {
+    const { language } = useLanguage();
+    const localizedReview = getLocalized(review, language);
     const isGoogleReview = review.source === 'google';
 
     // Handle both Firestore Timestamp object and raw seconds number
@@ -47,7 +50,7 @@ const ReviewCard = ({ review }: { review: Review }) => {
                     )}
                 </div>
                 <blockquote className="text-foreground/90 flex-grow my-2">
-                    “{review.text}”
+                    “{localizedReview.text}”
                 </blockquote>
                 <div className="border-t border-border pt-4 mt-auto">
                     <p className="font-semibold text-foreground text-sm">{review.author_name}</p>
