@@ -9,7 +9,7 @@ import LatestStories from '@/components/home/LatestStories';
 import NewsletterSignUp from '@/components/home/NewsletterSignUp';
 import WhoAreWe from '@/components/about/WhoAreWe';
 import Stats from '@/components/about/Stats';
-import { Check } from 'lucide-react';
+import { Check, Loader2 } from 'lucide-react';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import TiltedCard from '@/components/animations/TiltedCard';
 import { Skeleton } from '@/components/ui/skeleton';
