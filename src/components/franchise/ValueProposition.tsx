@@ -3,8 +3,6 @@
 
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { DollarSign, Award, Users, Megaphone, TrendingUp, CheckCircle } from 'lucide-react';
-import { useLanguage } from '@/components/layout/LanguageProvider';
-import { getLocalized } from '@/lib/utils';
 
 const iconMap: { [key: string]: React.ElementType } = {
     'Strong Brand Identity': Award,
@@ -20,10 +18,8 @@ const iconMap: { [key: string]: React.ElementType } = {
 };
 
 export default function ValueProposition({ content }: { content: any }) {
-  const { language } = useLanguage();
-  const localizedContent = getLocalized(content, language).franchise?.valueProposition;
-  
-  if (!localizedContent) return null;
+  if (!content) return null;
+  const localizedContent = content.franchise?.valueProposition;
   const { title, subtitle, features } = localizedContent;
 
   return (

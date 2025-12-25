@@ -9,16 +9,12 @@ import { ArrowRight } from 'lucide-react';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { Skeleton } from '../ui/skeleton';
 import { useMediaAsset } from '@/lib/media';
-import { useLanguage } from '@/components/layout/LanguageProvider';
-import { getLocalized } from '@/lib/utils';
 
 export default function ActivePromotions({ content }: { content: any }) {
-  const { language } = useLanguage();
-  const localizedContent = getLocalized(content, language).home?.activePromotions;
-  
   const { asset: communityImage, isLoading } = useMediaAsset('community-event-1');
 
-  if (!localizedContent) return null;
+  if (!content) return null;
+  const localizedContent = content.home?.activePromotions;
 
   return (
     <section className="py-24 sm:py-32 bg-black">

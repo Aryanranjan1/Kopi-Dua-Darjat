@@ -8,15 +8,12 @@ import { CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 import { Skeleton } from '../ui/skeleton';
 import { useMediaAsset } from '@/lib/media';
-import { useLanguage } from '@/components/layout/LanguageProvider';
-import { getLocalized } from '@/lib/utils';
 
 export default function SupportAndTraining({ content }: { content: any }) {
-  const { language } = useLanguage();
-  const localizedContent = getLocalized(content, language).franchise?.support;
   const { asset: trainingImage, isLoading } = useMediaAsset('franchise-training');
 
-  if (!localizedContent) return null;
+  if (!content) return null;
+  const localizedContent = content.franchise?.support;
   const { title, subtitle, items, buttonText, buttonLink } = localizedContent;
 
   return (

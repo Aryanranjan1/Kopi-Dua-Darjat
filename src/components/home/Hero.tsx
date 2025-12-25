@@ -10,13 +10,11 @@ import { Button } from '../ui/button';
 import { ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 import { useMediaQuery } from '@/hooks/use-media-query';
-import { useLanguage } from '@/components/layout/LanguageProvider';
-import { getLocalized } from '@/lib/utils';
 
 const DesktopHero = ({ content }: { content: any }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const h1Ref = useFitText<HTMLHeadingElement>(containerRef);
-  const { title, subtitle } = content;
+  const { title, subtitle } = content.home.hero;
 
   return (
     <>
@@ -92,7 +90,7 @@ const DesktopHero = ({ content }: { content: any }) => {
 };
 
 const MobileHero = ({ content }: { content: any }) => {
-  const { title, subtitle } = content;
+  const { title, subtitle } = content.home.hero;
 
   return (
     <div className="container mx-auto px-6 pt-24 pb-20 text-center">
@@ -121,14 +119,12 @@ const MobileHero = ({ content }: { content: any }) => {
 
 export default function Hero({ content }: { content: any }) {
   const isMobile = useMediaQuery('(max-width: 767px)');
-  const { language } = useLanguage();
-  const localizedContent = getLocalized(content, language).home?.hero;
   
-  if (!localizedContent) return <section className="relative w-full bg-primary overflow-hidden min-h-screen" />;
+  if (!content) return <section className="relative w-full bg-primary overflow-hidden min-h-screen" />;
 
   return (
     <section className="relative w-full bg-primary overflow-hidden min-h-screen">
-      {isMobile ? <MobileHero content={localizedContent} /> : <DesktopHero content={localizedContent} />}
+      {isMobile ? <MobileHero content={content} /> : <DesktopHero content={content} />}
     </section>
   );
 }

@@ -1,6 +1,7 @@
 
 import { initializeServerSideFirebase } from "@/firebase/server-init";
 import { getDoc, doc } from 'firebase/firestore';
+import type { LangCode } from "../types";
 
 /**
  * Fetches the entire site content object from Firestore, which contains both 'en' and 'ms' translations.

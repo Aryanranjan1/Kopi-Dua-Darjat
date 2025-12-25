@@ -14,15 +14,15 @@ import { getLocalized } from '@/lib/utils';
 
 export default function Community({ content }: { content: any }) {
   const { language } = useLanguage();
-  const localizedContent = getLocalized(content, language).home?.community;
   const firestore = useFirestore();
   const communityQuery = useMemoFirebase(
     () => firestore ? query(collection(firestore, 'community_items'), orderBy('displayOrder', 'asc')) : null,
     [firestore]
   );
   const { data: communityItems, isLoading } = useCollection<CommunityItem>(communityQuery);
-
-  if (!localizedContent) return null;
+  
+  if (!content) return null;
+  const localizedContent = content.home?.community;
   const { title, subtitle } = localizedContent;
 
   return (

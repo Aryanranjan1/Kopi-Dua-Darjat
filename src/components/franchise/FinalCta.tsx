@@ -7,15 +7,12 @@ import { Button } from '@/components/ui/button';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { Skeleton } from '../ui/skeleton';
 import { useMediaAsset } from '@/lib/media';
-import { useLanguage } from '@/components/layout/LanguageProvider';
-import { getLocalized } from '@/lib/utils';
 
 export default function FinalCta({ content }: { content: any }) {
-  const { language } = useLanguage();
-  const localizedContent = getLocalized(content, language).franchise?.finalCta;
   const { asset: ctaImage, isLoading } = useMediaAsset('franchise-cta');
 
-  if (!localizedContent) return null;
+  if (!content) return null;
+  const localizedContent = content.franchise?.finalCta;
   const { title, subtitle, buttonText, buttonLink } = localizedContent;
 
   return (

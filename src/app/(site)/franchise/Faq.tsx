@@ -19,6 +19,9 @@ import { getLocalized } from '@/lib/utils';
 export default function Faq({ content }: { content: any }) {
   const firestore = useFirestore();
   const { language } = useLanguage();
+  
+  if (!content) return null;
+  const localizedContent = content.franchise?.faq;
 
   const faqQuery = useMemoFirebase(
     () => firestore 
@@ -33,17 +36,18 @@ export default function Faq({ content }: { content: any }) {
 
   const { data: faqItems, isLoading } = useCollection<FaqItem>(faqQuery);
   
-  if (!content) return null;
+  if (!localizedContent) return null;
+  const { title, subtitle } = localizedContent;
 
   return (
     <section className="py-24 sm:py-32 bg-black text-white">
       <div className="container mx-auto px-4">
         <AnimateOnScroll animationType="slideInFromBottom" className="text-center max-w-3xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-headline text-primary">
-            {content.title}
+            {title}
           </h2>
           <p className="mt-4 text-lg text-white/70">
-            {content.subtitle}
+            {subtitle}
           </p>
         </AnimateOnScroll>
 

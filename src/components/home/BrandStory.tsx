@@ -5,16 +5,11 @@ import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { AnimateOnScroll } from "@/components/animations/AnimateOnScroll"
-import { useLanguage } from "../layout/LanguageProvider"
-import { getLocalized } from "@/lib/utils"
 
 export default function BrandStory({ content }: { content: any }) {
-  const { language } = useLanguage();
-  const localizedContent = getLocalized(content, language).home?.brandStory;
+  if (!content) return null;
 
-  if (!localizedContent) return null;
-
-  const { title, content: storyContent, buttonText, buttonLink } = localizedContent;
+  const { title, content: storyContent, buttonText, buttonLink } = content.home.brandStory;
 
   return (
     <section className="bg-[#F7F4EF] text-foreground overflow-hidden">

@@ -17,7 +17,9 @@ import { useLanguage } from '../layout/LanguageProvider';
 export default function LatestStories({ content }: { content: any }) {
     const firestore = useFirestore();
     const { language } = useLanguage();
-    const localizedContent = getLocalized(content, language).home?.latestStories;
+    
+    if (!content) return null;
+    const localizedContent = content.home?.latestStories;
 
     const blogsQuery = useMemoFirebase(
       () => firestore ? query(collection(firestore, 'blogs'), where('status', '==', 'published'), limit(10)) : null,

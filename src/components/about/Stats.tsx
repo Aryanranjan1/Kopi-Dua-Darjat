@@ -5,8 +5,6 @@ import { useEffect, useRef, useState } from 'react';
 import { useInView } from 'framer-motion';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { TrendingUp, Users, Award, MapPin } from 'lucide-react';
-import { useLanguage } from '@/components/layout/LanguageProvider';
-import { getLocalized } from '@/lib/utils';
 
 const AnimatedCounter = ({ to, duration = 2 }: { to: number; duration?: number }) => {
   const [count, setCount] = useState(0);
@@ -57,16 +55,14 @@ const StatItem = ({ icon: Icon, value, label, suffix }: { icon: React.ElementTyp
 )
 
 export default function Stats({ content }: { content: any }) {
-    const { language } = useLanguage();
-    const localizedContent = getLocalized(content, language).about;
 
-    if (!localizedContent || !localizedContent.stats) return null;
+    if (!content || !content.about?.stats) return null;
 
     return (
         <section className="py-24 bg-black">
             <AnimateOnScroll animationType='fadeIn' className="container mx-auto px-6">
                 <div className="grid grid-cols-3 gap-8">
-                    {localizedContent.stats.map((stat: any) => {
+                    {content.about.stats.map((stat: any) => {
                         const Icon = iconMap[stat.label] || TrendingUp;
                         return <StatItem key={stat.label} icon={Icon} {...stat} />;
                     })}

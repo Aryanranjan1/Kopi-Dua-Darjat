@@ -14,20 +14,24 @@ import Community from '@/components/home/Community';
 import LatestStories from '@/components/home/LatestStories';
 import NewsletterSignUp from '@/components/home/NewsletterSignUp';
 import InstaExploreGrid from '@/components/home/InstaExploreGrid';
+import { getServerLanguage } from '@/lib/getServerLanguage';
 
 export const revalidate = 60; // Revalidate the data every 60 seconds
 
 export default async function Home() {
   const allContent = await getSiteContent();
-
+  
   if (!allContent) {
     notFound();
   }
 
+  const lang = getServerLanguage();
+  const pageContent = allContent[lang];
+
   return (
     <div className="flex flex-col">
       <Suspense fallback={<div className="h-screen w-full bg-primary flex items-center justify-center"><Loader2 className="h-12 w-12 animate-spin text-foreground" /></div>}>
-        <Hero content={allContent} />
+        <Hero content={pageContent} />
       </Suspense>
       
       <Suspense fallback={<FeaturedDrinksSkeleton />}>
@@ -35,7 +39,7 @@ export default async function Home() {
       </Suspense>
 
       <Suspense fallback={<div className="h-screen w-full bg-black" />}>
-        <ActivePromotions content={allContent} />
+        <ActivePromotions content={pageContent} />
       </Suspense>
 
       <Suspense fallback={<div className="h-screen w-full bg-white" />}>
@@ -47,17 +51,17 @@ export default async function Home() {
       </Suspense>
 
       <Suspense fallback={<div className="h-screen w-full bg-background" />}>
-        <BrandStory content={allContent} />
+        <BrandStory content={pageContent} />
       </Suspense>
       
       <InstaExploreGrid />
 
       <Suspense fallback={<div className="h-screen w-full bg-white" />}>
-        <Community content={allContent} />
+        <Community content={pageContent} />
       </Suspense>
 
       <Suspense fallback={<div className="h-screen w-full bg-black" />}>
-        <LatestStories content={allContent} />
+        <LatestStories content={pageContent} />
       </Suspense>
 
       <NewsletterSignUp />
