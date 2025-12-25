@@ -12,7 +12,7 @@ import FranchiseModel from '@/components/franchise/FranchiseModel';
 import Investment from '@/components/franchise/Investment';
 import Testimonials from '@/app/(site)/franchise/Testimonials';
 import SupportAndTraining from '@/components/franchise/SupportAndTraining';
-import Faq from '@/components/franchise/Faq';
+import Faq from '@/app/(site)/franchise/Faq';
 import FinalCta from '@/components/franchise/FinalCta';
 
 
@@ -25,13 +25,13 @@ export const revalidate = 60; // Revalidate the data every 60 seconds
 
 export default async function FranchisePage() {
   const lang = getServerLanguage();
-  const content = await getSiteContent(lang);
+  const allContent = await getSiteContent();
 
-  if (!content) {
+  if (!allContent) {
     notFound();
   }
 
-  const franchiseContent = content.franchise;
+  const franchiseContent = allContent[lang]?.franchise;
   if (!franchiseContent) {
     notFound();
   }

@@ -20,13 +20,13 @@ export const revalidate = 60; // Revalidate the data every 60 seconds
 
 export default async function Home() {
   const lang = getServerLanguage();
-  const content = await getSiteContent(lang);
+  const content = await getSiteContent();
 
-  if (!content) {
+  if (!content || !content[lang]) {
     notFound();
   }
 
-  const homeContent = content.home;
+  const homeContent = content[lang].home;
   if (!homeContent) {
     notFound();
   }

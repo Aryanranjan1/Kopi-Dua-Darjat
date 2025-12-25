@@ -1,16 +1,14 @@
 
 import { initializeServerSideFirebase } from "@/firebase/server-init";
 import { getDoc, doc } from 'firebase/firestore';
-
-export type SiteLanguage = 'en' | 'ms';
+import type { LangCode } from "../types";
 
 /**
- * Fetches the site content for a specific language from Firestore using the Admin SDK.
+ * Fetches the entire site content object from Firestore, which contains both 'en' and 'ms' translations.
  * This function is intended for server-side use only.
- * @param lang - The language ('en' or 'ms') for which to fetch content.
- * @returns The content object for the specified language, or null if not found.
+ * @returns The entire content object from 'settings/content', or null if not found.
  */
-export async function getSiteContent(lang: SiteLanguage): Promise<any | null> {
+export async function getSiteContent(): Promise<any | null> {
   try {
     const { firestore } = initializeServerSideFirebase();
     const docRef = doc(firestore, 'settings', 'content');
@@ -21,15 +19,10 @@ export async function getSiteContent(lang: SiteLanguage): Promise<any | null> {
       return null;
     }
 
-    const allContent = docSnap.data();
-    
-    // Return the content for the specific language
-    return allContent?.[lang] || null;
+    return docSnap.data();
 
   } catch (error) {
-    console.error(`Error fetching site content for lang '${lang}':`, error);
-    // In a production scenario, you might want to handle this more gracefully,
-    // but for now, we'll return null and let the page show a 404.
+    console.error(`Error fetching site content:`, error);
     return null;
   }
 }

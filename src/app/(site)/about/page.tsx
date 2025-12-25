@@ -5,27 +5,31 @@ import { getSiteContent } from '@/lib/firestore/getSiteContent';
 import { getServerLanguage } from '@/lib/getServerLanguage';
 import { notFound } from 'next/navigation';
 
-import LatestStories from '@/components/home/LatestStories';
-import NewsletterSignUp from '@/components/home/NewsletterSignUp';
 import WhoAreWe from '@/components/about/WhoAreWe';
 import Stats from '@/components/about/Stats';
 import { Check, Loader2 } from 'lucide-react';
 import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import StickyGallery from '@/components/about/StickyGallery';
 import AboutMediaSections from '@/components/about/AboutMediaSections';
+import LatestStories from '@/components/home/LatestStories';
+import NewsletterSignUp from '@/components/home/NewsletterSignUp';
+
 
 export const revalidate = 60; // Revalidate the data every 60 seconds
 
 export default async function AboutPage() {
   const lang = getServerLanguage();
-  const content = await getSiteContent(lang);
+  const allContent = await getSiteContent();
 
-  if (!content) {
+  if (!allContent || !allContent[lang]) {
     notFound();
   }
 
+  const content = allContent[lang];
   const aboutContent = content.about;
-  if (!aboutContent) {
+  const homeContent = content.home;
+
+  if (!aboutContent || !homeContent) {
     notFound();
   }
 
@@ -82,7 +86,7 @@ export default async function AboutPage() {
       
       <StickyGallery />
     </div>
-    <LatestStories />
+    <LatestStories content={homeContent.latestStories} />
     <NewsletterSignUp />
     </>
   );

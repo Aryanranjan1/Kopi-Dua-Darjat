@@ -15,13 +15,10 @@ import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import { Loader2 } from 'lucide-react';
 import { useLanguage } from '@/components/layout/LanguageProvider';
 import { getLocalized } from '@/lib/utils';
-import { siteContentData } from '@/lib/site-content';
-import { siteContentDataMs } from '@/lib/site-content-ms';
 
-export default function Faq() {
+export default function Faq({ content }: { content: any }) {
   const firestore = useFirestore();
   const { language } = useLanguage();
-  const content = language === 'ms' ? siteContentDataMs.franchise.faq : siteContentData.franchise.faq;
 
   const faqQuery = useMemoFirebase(
     () => firestore 
@@ -35,6 +32,8 @@ export default function Faq() {
   );
 
   const { data: faqItems, isLoading } = useCollection<FaqItem>(faqQuery);
+  
+  if (!content) return null;
 
   return (
     <section className="py-24 sm:py-32 bg-black text-white">
