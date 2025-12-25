@@ -161,7 +161,6 @@ const LivingMosaicGallery = () => {
                     .col.active, .item.active { flex: 1; }
                 }
             `}</style>
-            <div className="section"><h1>Our Gallery</h1></div>
             <div className="gallery-container" id="mosaic" ref={containerRef}></div>
         </div>
     );
