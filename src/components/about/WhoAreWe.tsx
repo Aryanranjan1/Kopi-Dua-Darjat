@@ -5,11 +5,10 @@ import Image from 'next/image';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import TiltedCard from '../animations/TiltedCard';
 import { Skeleton } from '../ui/skeleton';
-import { siteContentData } from '@/lib/site-content';
 import { useMediaAsset } from '@/lib/media';
 
-export default function WhoAreWe() {
-  const { title, subtitle, content } = siteContentData.about.whoAreWe;
+export default function WhoAreWe({ content }: { content: any }) {
+  const { title, subtitle, content: whoAreWeContent } = content;
   const { asset: image, isLoading } = useMediaAsset('brewing-method');
   
   return (
@@ -38,7 +37,7 @@ export default function WhoAreWe() {
               {subtitle}
             </p>
             <p className="mt-4 text-muted-foreground">
-              {content}
+              {whoAreWeContent}
             </p>
           </AnimateOnScroll>
         </div>

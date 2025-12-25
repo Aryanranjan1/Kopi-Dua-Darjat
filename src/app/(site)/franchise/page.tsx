@@ -1,5 +1,11 @@
 
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
+import { getSiteContent } from '@/lib/firestore/getSiteContent';
+import { getServerLanguage } from '@/lib/getServerLanguage';
+import { notFound } from 'next/navigation';
+import { Loader2 } from 'lucide-react';
+
 import FranchiseHero from '@/components/franchise/FranchiseHero';
 import ValueProposition from '@/components/franchise/ValueProposition';
 import FranchiseModel from '@/components/franchise/FranchiseModel';
@@ -15,17 +21,33 @@ export const metadata: Metadata = {
   description: 'Join the Kopi Dua Darjat family. Learn more about our franchise opportunities.',
 };
 
-export default function FranchisePage() {
+export const revalidate = 60; // Revalidate the data every 60 seconds
+
+export default async function FranchisePage() {
+  const lang = getServerLanguage();
+  const content = await getSiteContent(lang);
+
+  if (!content) {
+    notFound();
+  }
+
+  const franchiseContent = content.franchise;
+  if (!franchiseContent) {
+    notFound();
+  }
+
   return (
     <div className="bg-black text-foreground">
-      <FranchiseHero />
-      <ValueProposition />
-      <FranchiseModel />
-      <Investment />
-      <Testimonials />
-      <SupportAndTraining />
-      <Faq />
-      <FinalCta />
+      <Suspense fallback={<div className="h-screen w-full bg-black flex items-center justify-center"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>}>
+        <FranchiseHero content={franchiseContent.hero} />
+        <ValueProposition content={franchiseContent.valueProposition} />
+        <FranchiseModel content={franchiseContent.franchiseModel} />
+        <Investment content={franchiseContent.investment} />
+        <Testimonials />
+        <SupportAndTraining content={franchiseContent.support} />
+        <Faq content={franchiseContent.faq} />
+        <FinalCta content={franchiseContent.finalCta} />
+      </Suspense>
     </div>
   );
 }

@@ -8,14 +8,10 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { Skeleton } from '../ui/skeleton';
-import { siteContentData } from '@/lib/site-content';
-import { siteContentDataMs } from '@/lib/site-content-ms';
-import { useLanguage } from '../layout/LanguageProvider';
 import { useMediaAsset } from '@/lib/media';
 
-export default function ActivePromotions() {
-  const { language } = useLanguage();
-  const content = language === 'ms' ? siteContentDataMs.home.activePromotions : siteContentData.home.activePromotions;
+export default function ActivePromotions({ content }: { content: any }) {
+  if (!content) return null;
   
   const { asset: communityImage, isLoading } = useMediaAsset('community-event-1');
 

@@ -10,15 +10,10 @@ import { Button } from '../ui/button';
 import { ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 import { useMediaQuery } from '@/hooks/use-media-query';
-import { siteContentData } from '@/lib/site-content';
-import { siteContentDataMs } from '@/lib/site-content-ms';
-import { useLanguage } from '../layout/LanguageProvider';
 
-const DesktopHero = () => {
+const DesktopHero = ({ content }: { content: any }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const h1Ref = useFitText<HTMLHeadingElement>(containerRef);
-  const { language } = useLanguage();
-  const content = language === 'ms' ? siteContentDataMs.home.hero : siteContentData.home.hero;
   const { title, subtitle } = content;
 
   return (
@@ -94,9 +89,7 @@ const DesktopHero = () => {
   );
 };
 
-const MobileHero = () => {
-  const { language } = useLanguage();
-  const content = language === 'ms' ? siteContentDataMs.home.hero : siteContentData.home.hero;
+const MobileHero = ({ content }: { content: any }) => {
   const { title, subtitle } = content;
 
   return (
@@ -124,12 +117,12 @@ const MobileHero = () => {
   );
 };
 
-export default function Hero() {
+export default function Hero({ content }: { content: any }) {
   const isMobile = useMediaQuery('(max-width: 767px)');
   
   return (
     <section className="relative w-full bg-primary overflow-hidden min-h-screen">
-      {isMobile ? <MobileHero /> : <DesktopHero />}
+      {isMobile ? <MobileHero content={content} /> : <DesktopHero content={content} />}
     </section>
   );
 }

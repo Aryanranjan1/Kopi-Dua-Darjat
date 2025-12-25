@@ -5,13 +5,8 @@ import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { AnimateOnScroll } from "@/components/animations/AnimateOnScroll"
-import { siteContentData } from "@/lib/site-content"
-import { siteContentDataMs } from "@/lib/site-content-ms"
-import { useLanguage } from "../layout/LanguageProvider"
 
-export default function BrandStory() {
-  const { language } = useLanguage();
-  const content = language === 'ms' ? siteContentDataMs.home.brandStory : siteContentData.home.brandStory;
+export default function BrandStory({ content }: { content: any }) {
   const { title, content: storyContent, buttonText, buttonLink } = content;
 
   return (

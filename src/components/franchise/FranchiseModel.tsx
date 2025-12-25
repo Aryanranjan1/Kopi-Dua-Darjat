@@ -3,9 +3,6 @@
 
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { FileText, UserCheck, Warehouse, Rocket, BarChart2 } from 'lucide-react';
-import { siteContentData } from '@/lib/site-content';
-import { siteContentDataMs } from '@/lib/site-content-ms';
-import { useLanguage } from '../layout/LanguageProvider';
 
 const iconMap: { [key: string]: React.ElementType } = {
     'Apply': FileText,
@@ -21,9 +18,8 @@ const iconMap: { [key: string]: React.ElementType } = {
 };
 
 
-export default function FranchiseModel() {
-  const { language } = useLanguage();
-  const content = language === 'ms' ? siteContentDataMs.franchise.franchiseModel : siteContentData.franchise.franchiseModel;
+export default function FranchiseModel({ content }: { content: any }) {
+  if (!content) return null;
   const { title, subtitle, steps } = content;
 
   return (
@@ -44,7 +40,7 @@ export default function FranchiseModel() {
               </svg>
             </div>
             <div className="relative flex flex-col gap-16">
-                {steps.map((step, index) => {
+                {steps.map((step: any, index: number) => {
                     const Icon = iconMap[step.title] || FileText;
                     const isEven = index % 2 === 0;
                     return (
@@ -75,7 +71,7 @@ export default function FranchiseModel() {
           <div className="relative">
               <div className="absolute top-0 bottom-0 left-8 w-px bg-black" aria-hidden="true"></div>
               <div className="space-y-12">
-                  {steps.map((step, index) => {
+                  {steps.map((step: any, index: number) => {
                       const Icon = iconMap[step.title] || FileText;
                       return (
                           <AnimateOnScroll key={index} animationType="fadeIn" delay={index * 0.1}>

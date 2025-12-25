@@ -5,17 +5,12 @@ import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { Plus } from 'lucide-react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
-import { siteContentData } from '@/lib/site-content';
-import { siteContentDataMs } from '@/lib/site-content-ms';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy } from 'firebase/firestore';
 import type { CommunityItem } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useLanguage } from '../layout/LanguageProvider';
 
-export default function Community() {
-  const { language } = useLanguage();
-  const content = language === 'ms' ? siteContentDataMs.home.community : siteContentData.home.community;
+export default function Community({ content }: { content: any }) {
   const { title, subtitle } = content;
 
   const firestore = useFirestore();

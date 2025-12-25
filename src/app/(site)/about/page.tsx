@@ -1,7 +1,10 @@
 
-'use client';
+import { Suspense } from 'react';
+import type { Metadata } from 'next';
+import { getSiteContent } from '@/lib/firestore/getSiteContent';
+import { getServerLanguage } from '@/lib/getServerLanguage';
+import { notFound } from 'next/navigation';
 
-import { useMedia } from '@/lib/media';
 import LatestStories from '@/components/home/LatestStories';
 import NewsletterSignUp from '@/components/home/NewsletterSignUp';
 import WhoAreWe from '@/components/about/WhoAreWe';
@@ -11,9 +14,10 @@ import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import TiltedCard from '@/components/animations/TiltedCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import StickyGallery from '@/components/about/StickyGallery';
-import { siteContentData } from '@/lib/site-content';
-import { siteContentDataMs } from '@/lib/site-content-ms';
-import { useLanguage } from '@/components/layout/LanguageProvider';
+import { useMedia } from '@/lib/media';
+
+
+export const revalidate = 60; // Revalidate the data every 60 seconds
 
 const Milestone = ({
   year,
@@ -87,31 +91,12 @@ const FounderSkeleton = () => (
     </div>
 )
 
-export default function AboutPage() {
+// Wrapper component to use client-side hook for media
+function AboutMediaDependentSections({ content }: { content: any }) {
   const { data: media, isLoading: isLoadingMedia } = useMedia();
-  const { language } = useLanguage();
-  const content = language === 'ms' ? siteContentDataMs.about : siteContentData.about;
 
   return (
     <>
-    <div className="bg-background text-foreground">
-      {/* Hero Section */}
-      <AnimateOnScroll animationType="fadeIn">
-        <section className="py-24 sm:py-32 text-center bg-primary">
-          <div className="container mx-auto px-6">
-            <h1 className="text-4xl md:text-6xl font-headline font-bold text-primary-foreground">
-              {content.hero.title}
-            </h1>
-            <p className="mt-4 text-lg md:text-xl max-w-3xl mx-auto text-primary-foreground/80">
-              {content.hero.subtitle}
-            </p>
-          </div>
-        </section>
-      </AnimateOnScroll>
-
-      <WhoAreWe />
-      <Stats />
-
       {/* Milestones Section */}
       <section className="py-24 sm:py-32">
         <div className="container mx-auto px-6">
@@ -125,7 +110,7 @@ export default function AboutPage() {
               <div className="space-y-24">
                 {isLoadingMedia ? (
                     [...Array(5)].map((_, i) => <MilestoneSkeleton key={i} />)
-                ) : content.milestones.items.map((milestone, index) => {
+                ) : content.milestones.items.map((milestone: any, index: number) => {
                   const image = media?.find(m => m.id === milestone.imageId);
                   return image ? (
                     <div key={index} className="relative">
@@ -194,6 +179,46 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+    </>
+  )
+}
+
+export default async function AboutPage() {
+  const lang = getServerLanguage();
+  const content = await getSiteContent(lang);
+
+  if (!content) {
+    notFound();
+  }
+
+  const aboutContent = content.about;
+  if (!aboutContent) {
+    notFound();
+  }
+
+  return (
+    <>
+    <div className="bg-background text-foreground">
+      {/* Hero Section */}
+      <AnimateOnScroll animationType="fadeIn">
+        <section className="py-24 sm:py-32 text-center bg-primary">
+          <div className="container mx-auto px-6">
+            <h1 className="text-4xl md:text-6xl font-headline font-bold text-primary-foreground">
+              {aboutContent.hero.title}
+            </h1>
+            <p className="mt-4 text-lg md:text-xl max-w-3xl mx-auto text-primary-foreground/80">
+              {aboutContent.hero.subtitle}
+            </p>
+          </div>
+        </section>
+      </AnimateOnScroll>
+
+      <WhoAreWe content={aboutContent.whoAreWe} />
+      <Stats content={aboutContent.stats} />
+
+      <Suspense fallback={<div className="h-screen w-full bg-background flex items-center justify-center"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>}>
+        <AboutMediaDependentSections content={aboutContent} />
+      </Suspense>
 
       {/* Vision & Mission Section */}
       <AnimateOnScroll animationType="fadeIn">
@@ -201,15 +226,15 @@ export default function AboutPage() {
           <div className="container mx-auto px-0">
               <div className="grid lg:grid-cols-2">
                   <div className="bg-primary text-primary-foreground p-12 lg:p-24 flex flex-col justify-center text-center lg:text-left">
-                      <h2 className="text-4xl md:text-5xl font-headline font-bold text-foreground">{content.visionMission.visionTitle}</h2>
+                      <h2 className="text-4xl md:text-5xl font-headline font-bold text-foreground">{aboutContent.visionMission.visionTitle}</h2>
                       <p className="mt-4 text-xl md:text-2xl font-serif text-foreground/80 max-w-md mx-auto lg:mx-0">
-                          {content.visionMission.visionText}
+                          {aboutContent.visionMission.visionText}
                       </p>
                   </div>
                   <div className="bg-background text-foreground p-12 lg:p-24">
-                      <h3 className="text-3xl font-headline font-bold text-accent mb-6">{content.visionMission.missionTitle}</h3>
+                      <h3 className="text-3xl font-headline font-bold text-accent mb-6">{aboutContent.visionMission.missionTitle}</h3>
                       <ul className="space-y-4">
-                          {content.visionMission.missionItems.map((item, index) => (
+                          {aboutContent.visionMission.missionItems.map((item: string, index: number) => (
                             <li key={index} className="flex items-start">
                                 <Check className="w-6 h-6 text-accent mr-3 mt-1 flex-shrink-0" />
                                 <span>{item}</span>

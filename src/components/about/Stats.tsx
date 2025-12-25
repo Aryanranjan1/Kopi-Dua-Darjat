@@ -1,10 +1,10 @@
+
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
 import { useInView } from 'framer-motion';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { TrendingUp, Users, Award, MapPin } from 'lucide-react';
-import { siteContentData } from '@/lib/site-content';
 
 const AnimatedCounter = ({ to, duration = 2 }: { to: number; duration?: number }) => {
   const [count, setCount] = useState(0);
@@ -51,14 +51,14 @@ const StatItem = ({ icon: Icon, value, label, suffix }: { icon: React.ElementTyp
     </div>
 )
 
-export default function Stats() {
-    const { stats } = siteContentData.about;
+export default function Stats({ content }: { content: any }) {
+    if (!content) return null;
 
     return (
         <section className="py-24 bg-black">
             <AnimateOnScroll animationType='fadeIn' className="container mx-auto px-6">
                 <div className="grid grid-cols-3 gap-8">
-                    {stats.map(stat => {
+                    {content.map((stat: any) => {
                         const Icon = iconMap[stat.label] || TrendingUp;
                         return <StatItem key={stat.label} icon={Icon} {...stat} />;
                     })}

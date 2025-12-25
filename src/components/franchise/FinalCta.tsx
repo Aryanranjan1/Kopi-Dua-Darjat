@@ -6,14 +6,9 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { Skeleton } from '../ui/skeleton';
-import { siteContentData } from '@/lib/site-content';
-import { siteContentDataMs } from '@/lib/site-content-ms';
-import { useLanguage } from '../layout/LanguageProvider';
 import { useMediaAsset } from '@/lib/media';
 
-export default function FinalCta() {
-  const { language } = useLanguage();
-  const content = language === 'ms' ? siteContentDataMs.franchise.finalCta : siteContentData.franchise.finalCta;
+export default function FinalCta({ content }: { content: any }) {
   const { title, subtitle, buttonText, buttonLink } = content;
 
   const { asset: ctaImage, isLoading } = useMediaAsset('franchise-cta');

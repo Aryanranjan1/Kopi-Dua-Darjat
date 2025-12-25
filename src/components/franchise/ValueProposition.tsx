@@ -2,11 +2,7 @@
 'use client';
 
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
-import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { DollarSign, Award, Users, Megaphone, TrendingUp, CheckCircle } from 'lucide-react';
-import { siteContentData } from '@/lib/site-content';
-import { siteContentDataMs } from '@/lib/site-content-ms';
-import { useLanguage } from '../layout/LanguageProvider';
 
 const iconMap: { [key: string]: React.ElementType } = {
     'Strong Brand Identity': Award,
@@ -21,9 +17,9 @@ const iconMap: { [key: string]: React.ElementType } = {
     'Potensi Pulangan Tinggi': TrendingUp,
 };
 
-export default function ValueProposition() {
-  const { language } = useLanguage();
-  const content = language === 'ms' ? siteContentDataMs.franchise.valueProposition : siteContentData.franchise.valueProposition;
+export default function ValueProposition({ content }: { content: any }) {
+  if (!content) return null;
+
   const { title, subtitle, features } = content;
 
   return (
@@ -41,7 +37,7 @@ export default function ValueProposition() {
             
             <AnimateOnScroll animationType="slideInFromRight">
                 <div className="space-y-8">
-                {features.map((feature, index) => {
+                {features.map((feature: any, index: number) => {
                     const Icon = iconMap[feature.title] || CheckCircle;
                     return (
                         <div key={index} className="flex items-start gap-4">
