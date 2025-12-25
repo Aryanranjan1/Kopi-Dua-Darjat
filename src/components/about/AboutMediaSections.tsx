@@ -82,10 +82,9 @@ const FounderSkeleton = () => (
 
 export default function AboutMediaSections({ content }: { content: any }) {
   const { data: media, isLoading: isLoadingMedia } = useMedia();
-  const { language } = useLanguage();
 
   if (!content) return null;
-  const aboutContent = content[language]?.about;
+  const aboutContent = content.about;
   if (!aboutContent) return null;
 
   return (
@@ -201,5 +200,3 @@ export default function AboutMediaSections({ content }: { content: any }) {
     </>
   )
 }
-
-    

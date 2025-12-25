@@ -10,11 +10,10 @@ import { useLanguage } from '../layout/LanguageProvider';
 
 export default function WhoAreWe({ content }: { content: any }) {
   const { asset: image, isLoading } = useMediaAsset('brewing-method');
-  const { language } = useLanguage();
 
   if (!content) return null;
 
-  const localizedContent = content[language]?.about?.whoAreWe;
+  const localizedContent = content.about?.whoAreWe;
   if (!localizedContent) return null;
 
   const { title, subtitle, content: whoAreWeContent } = localizedContent;
@@ -53,5 +52,3 @@ export default function WhoAreWe({ content }: { content: any }) {
     </section>
   );
 }
-
-    

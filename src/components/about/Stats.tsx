@@ -56,10 +56,9 @@ const StatItem = ({ icon: Icon, value, label, suffix }: { icon: React.ElementTyp
 )
 
 export default function Stats({ content }: { content: any }) {
-    const { language } = useLanguage();
     if (!content) return null;
     
-    const localizedContent = content[language]?.about?.stats;
+    const localizedContent = content.about?.stats;
     if (!localizedContent) return null;
 
     return (
@@ -75,5 +74,3 @@ export default function Stats({ content }: { content: any }) {
         </section>
     )
 }
-
-    
