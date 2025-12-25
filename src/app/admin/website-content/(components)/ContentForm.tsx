@@ -20,11 +20,11 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 // --- Schema Generation ---
 const createSchemaFromObject = (obj: any): z.ZodType<any> => {
   if (Array.isArray(obj)) {
-    if (obj.length > 0 && typeof obj[0] === 'object') {
+    if (obj.length > 0 && typeof obj[0] === 'object' && obj[0] !== null) {
       return z.array(createSchemaFromObject(obj[0])).optional();
     }
-    // Handle array of strings
-    return z.array(z.string()).optional();
+    // Handle array of strings or other primitives
+    return z.array(z.union([z.string(), z.number(), z.boolean()])).optional();
   }
   if (typeof obj === 'object' && obj !== null) {
     const shape: { [key: string]: z.ZodType<any> } = {};
@@ -33,7 +33,17 @@ const createSchemaFromObject = (obj: any): z.ZodType<any> => {
     }
     return z.object(shape);
   }
-  return z.string().optional().or(z.literal(''));
+  
+  // Handle primitives based on their type
+  switch (typeof obj) {
+    case 'number':
+      return z.coerce.number().optional();
+    case 'boolean':
+      return z.boolean().optional();
+    case 'string':
+    default:
+      return z.string().optional().or(z.literal(''));
+  }
 };
 
 const inputStyles = "bg-zinc-800 border-zinc-700 text-white focus-visible:ring-primary";
@@ -41,10 +51,14 @@ const inputStyles = "bg-zinc-800 border-zinc-700 text-white focus-visible:ring-p
 // --- Field Rendering Components ---
 
 const RenderField = ({ path, label }: { path: string; label: string }) => {
-    const { control } = useFormContext();
+    const { control, getFieldState, getValues } = useFormContext();
     const isTextArea = ['description', 'content', 'quote', 'subtitle', 'visionText', 'text'].some(keyword => label.toLowerCase().includes(keyword));
     const pathEn = `en.${path}`;
     const pathMs = `ms.${path}`;
+    
+    // Determine the type of the value to render the correct input
+    const valueEn = getValues(pathEn);
+    const fieldType = typeof valueEn === 'number' ? 'number' : 'text';
 
     const FieldComponent = isTextArea ? Textarea : Input;
 
@@ -55,14 +69,14 @@ const RenderField = ({ path, label }: { path: string; label: string }) => {
             <FormField control={control} name={pathEn} render={({ field }) => (
                 <FormItem>
                     <FormLabel className="text-xs text-zinc-400">English</FormLabel>
-                    <FormControl><FieldComponent {...field} value={field.value || ''} className={inputStyles} /></FormControl>
+                    <FormControl><FieldComponent type={fieldType} {...field} value={field.value ?? ''} className={inputStyles} /></FormControl>
                     <FormMessage />
                 </FormItem>
             )} />
             <FormField control={control} name={pathMs} render={({ field }) => (
                 <FormItem>
                     <FormLabel className="text-xs text-zinc-400">Malay</FormLabel>
-                    <FormControl><FieldComponent {...field} value={field.value || ''} className={inputStyles} /></FormControl>
+                    <FormControl><FieldComponent type={fieldType} {...field} value={field.value ?? ''} className={inputStyles} /></FormControl>
                     <FormMessage />
                 </FormItem>
             )} />
@@ -189,19 +203,21 @@ const RenderObjectFields = ({ path, data }: { path: string; data: any }) => {
                     if (value.length > 0 && typeof value[0] === 'string') {
                          return <StringArrayManager key={currentPath} path={currentPath} title={label} />;
                     }
-                    return <ObjectArrayManager 
-                              key={currentPath} 
-                              path={currentPath} 
-                              title={label} 
-                              newItemShape={value[0] || {}} 
-                              ItemComponent={({ index, onRemove }: { index: number, onRemove: () => void }) => (
-                                <div className="border border-zinc-700 p-4 rounded-lg space-y-4 relative">
-                                    <Button type="button" variant="destructive" size="icon" onClick={onRemove} className="absolute top-2 right-2 h-7 w-7"><Trash2 className="h-4 w-4" /></Button>
-                                    <h5 className="font-medium text-sm text-zinc-400">Item {index + 1}</h5>
-                                    <RenderObjectFields path={`${currentPath}[${index}]`} data={value[0]} />
-                                </div>
-                              )} 
-                           />
+                    if (value.length === 0 || typeof value[0] === 'object') {
+                        return <ObjectArrayManager 
+                                key={currentPath} 
+                                path={currentPath} 
+                                title={label} 
+                                newItemShape={value[0] || {}} 
+                                ItemComponent={({ index, onRemove }: { index: number, onRemove: () => void }) => (
+                                    <div className="border border-zinc-700 p-4 rounded-lg space-y-4 relative">
+                                        <Button type="button" variant="destructive" size="icon" onClick={onRemove} className="absolute top-2 right-2 h-7 w-7"><Trash2 className="h-4 w-4" /></Button>
+                                        <h5 className="font-medium text-sm text-zinc-400">Item {index + 1}</h5>
+                                        <RenderObjectFields path={`${currentPath}[${index}]`} data={value[0] || {}} />
+                                    </div>
+                                )} 
+                            />
+                    }
                 }
                 
                 if (typeof value === 'object' && value !== null) {
@@ -225,7 +241,6 @@ const RenderObjectFields = ({ path, data }: { path: string; data: any }) => {
         </>
     );
 };
-
 
 const ContentFormInner = ({ contentData }: { contentData: any }) => {
     const { en, ms } = contentData;
@@ -266,23 +281,25 @@ const ContentFormInner = ({ contentData }: { contentData: any }) => {
     return (
         <FormProvider {...formMethods}>
             <form onSubmit={formMethods.handleSubmit(onFormSubmit)} className="space-y-6">
-                <Accordion type="single" collapsible className="w-full space-y-4" defaultValue="home">
-                {Object.entries(en).map(([sectionKey, sectionData]) => (
-                    <AccordionItem key={sectionKey} value={sectionKey} className="bg-zinc-900 border-zinc-800 rounded-lg px-6">
-                    <AccordionTrigger className="text-xl font-headline hover:no-underline text-white">
-                        {sectionKey.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
-                    </AccordionTrigger>
-                    <AccordionContent className="space-y-6 pt-4">
-                        <RenderObjectFields path={sectionKey} data={sectionData} />
-                    </AccordionContent>
-                    </AccordionItem>
-                ))}
-                </Accordion>
-                <div className="flex justify-end pt-4">
-                <Button type="submit" disabled={formMethods.formState.isSubmitting}>
-                    {formMethods.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    Save Changes
-                </Button>
+                <ScrollArea className="h-[calc(100vh_-_250px)] pr-4">
+                    <Accordion type="single" collapsible className="w-full space-y-4" defaultValue="home">
+                    {Object.entries(en).map(([sectionKey, sectionData]) => (
+                        <AccordionItem key={sectionKey} value={sectionKey} className="bg-zinc-900 border-zinc-800 rounded-lg px-6">
+                        <AccordionTrigger className="text-xl font-headline hover:no-underline text-white">
+                            {sectionKey.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                        </AccordionTrigger>
+                        <AccordionContent className="space-y-6 pt-4">
+                            <RenderObjectFields path={sectionKey} data={sectionData} />
+                        </AccordionContent>
+                        </AccordionItem>
+                    ))}
+                    </Accordion>
+                </ScrollArea>
+                <div className="flex justify-end pt-4 border-t border-zinc-800">
+                    <Button type="submit" disabled={formMethods.formState.isSubmitting}>
+                        {formMethods.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        Save All Content
+                    </Button>
                 </div>
             </form>
         </FormProvider>
