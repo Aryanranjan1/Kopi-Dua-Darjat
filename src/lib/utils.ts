@@ -1,7 +1,7 @@
 
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-import type { Promotion, LangCode } from "./types";
+import type { Promotion, LangCode, Localized } from "./types";
 import { DEFAULT_LANGUAGE } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
@@ -25,16 +25,24 @@ export function getDiscountDisplay(promo: Promotion): string {
 
 /**
  * Retrieves the localized version of a field from a document.
- * @param doc The document containing the 'en' and 'ms' language objects.
- * @param lang The desired language code ('en' | 'ms').
- * @returns The content object for the specified language.
+ * Falls back to the default language if the requested language is not available.
+ * @param doc The document containing the translations field.
+ * @param lang The desired language code.
+ * @param fallbackLang The fallback language code.
+ * @returns The localized content, or an empty object if no translation is found.
  */
 export function getLocalized<T>(
-  doc: any,
+  doc: Localized<T>,
   lang: LangCode,
+  fallbackLang: LangCode = DEFAULT_LANGUAGE
 ): Partial<T> {
-  if (!doc) return {};
-
-  // Return the specific language object, defaulting to 'en'
-  return doc[lang] || doc[DEFAULT_LANGUAGE] || {};
+  if (!doc || !doc.translations) return {};
+  
+  if (doc.translations[lang]) {
+    return doc.translations[lang] as Partial<T>;
+  }
+  if (doc.translations[fallbackLang]) {
+    return doc.translations[fallbackLang] as Partial<T>;
+  }
+  return {};
 }
