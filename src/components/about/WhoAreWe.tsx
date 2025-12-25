@@ -6,10 +6,19 @@ import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import TiltedCard from '../animations/TiltedCard';
 import { Skeleton } from '../ui/skeleton';
 import { useMediaAsset } from '@/lib/media';
+import { useLanguage } from '@/components/layout/LanguageProvider';
+import { getLocalized } from '@/lib/utils';
 
 export default function WhoAreWe({ content }: { content: any }) {
-  const { title, subtitle, content: whoAreWeContent } = content;
+  const { language } = useLanguage();
+  const localizedContent = getLocalized(content, language).about;
+
   const { asset: image, isLoading } = useMediaAsset('brewing-method');
+
+  if (!localizedContent) return null;
+
+  const { title, subtitle, content: whoAreWeContent } = localizedContent.hero;
+  const { whoAreWe } = localizedContent;
   
   return (
     <section className="py-24 sm:py-32">
@@ -31,13 +40,13 @@ export default function WhoAreWe({ content }: { content: any }) {
           </AnimateOnScroll>
           <AnimateOnScroll animationType="slideInFromRight" className="text-center lg:text-left">
             <h2 className="text-4xl md:text-5xl font-headline font-bold text-foreground inline-block underline decoration-primary decoration-4 underline-offset-8">
-              {title}
+              {whoAreWe.title}
             </h2>
             <p className="mt-4 text-xl text-muted-foreground">
-              {subtitle}
+              {whoAreWe.subtitle}
             </p>
             <p className="mt-4 text-muted-foreground">
-              {whoAreWeContent}
+              {whoAreWe.content}
             </p>
           </AnimateOnScroll>
         </div>

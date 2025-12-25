@@ -10,6 +10,8 @@ import { Button } from '../ui/button';
 import { ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 import { useMediaQuery } from '@/hooks/use-media-query';
+import { useLanguage } from '@/components/layout/LanguageProvider';
+import { getLocalized } from '@/lib/utils';
 
 const DesktopHero = ({ content }: { content: any }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -119,10 +121,14 @@ const MobileHero = ({ content }: { content: any }) => {
 
 export default function Hero({ content }: { content: any }) {
   const isMobile = useMediaQuery('(max-width: 767px)');
+  const { language } = useLanguage();
+  const localizedContent = getLocalized(content, language).home?.hero;
   
+  if (!localizedContent) return <section className="relative w-full bg-primary overflow-hidden min-h-screen" />;
+
   return (
     <section className="relative w-full bg-primary overflow-hidden min-h-screen">
-      {isMobile ? <MobileHero content={content} /> : <DesktopHero content={content} />}
+      {isMobile ? <MobileHero content={localizedContent} /> : <DesktopHero content={localizedContent} />}
     </section>
   );
 }

@@ -17,6 +17,7 @@ import { useLanguage } from '../layout/LanguageProvider';
 export default function LatestStories({ content }: { content: any }) {
     const firestore = useFirestore();
     const { language } = useLanguage();
+    const localizedContent = getLocalized(content, language).home?.latestStories;
 
     const blogsQuery = useMemoFirebase(
       () => firestore ? query(collection(firestore, 'blogs'), where('status', '==', 'published'), limit(10)) : null,
@@ -24,8 +25,8 @@ export default function LatestStories({ content }: { content: any }) {
     );
     const { data: blogPosts, isLoading: isLoadingBlogs } = useCollection<Blog>(blogsQuery);
     
-    if (!content) return null;
-    const { title, buttonText, buttonLink } = content;
+    if (!localizedContent) return null;
+    const { title, buttonText, buttonLink } = localizedContent;
 
     const sortedBlogPosts = useMemo(() => {
         if (!blogPosts) return [];

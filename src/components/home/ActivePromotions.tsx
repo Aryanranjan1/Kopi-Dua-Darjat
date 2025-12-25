@@ -9,22 +9,27 @@ import { ArrowRight } from 'lucide-react';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { Skeleton } from '../ui/skeleton';
 import { useMediaAsset } from '@/lib/media';
+import { useLanguage } from '@/components/layout/LanguageProvider';
+import { getLocalized } from '@/lib/utils';
 
 export default function ActivePromotions({ content }: { content: any }) {
-  if (!content) return null;
+  const { language } = useLanguage();
+  const localizedContent = getLocalized(content, language).home?.activePromotions;
   
   const { asset: communityImage, isLoading } = useMediaAsset('community-event-1');
+
+  if (!localizedContent) return null;
 
   return (
     <section className="py-24 sm:py-32 bg-black">
       <div className="container mx-auto px-6 sm:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12 lg:mb-16">
           <AnimateOnScroll animationType="slideInFromLeft" className="lg:ml-8">
-            <h2 className="text-5xl md:text-7xl font-headline font-bold text-primary leading-tight" dangerouslySetInnerHTML={{ __html: content.title }} />
+            <h2 className="text-5xl md:text-7xl font-headline font-bold text-primary leading-tight" dangerouslySetInnerHTML={{ __html: localizedContent.title }} />
           </AnimateOnScroll>
           <AnimateOnScroll animationType="slideInFromRight">
             <p className="mt-4 text-base sm:text-lg text-white max-w-prose">
-              {content.subtitle}
+              {localizedContent.subtitle}
             </p>
           </AnimateOnScroll>
         </div>
@@ -52,17 +57,17 @@ export default function ActivePromotions({ content }: { content: any }) {
             <AnimateOnScroll animationType="slideInFromRight" amount={0.5} delay={0.1}>
               <Card className="bg-zinc-900 shadow-lg rounded-3xl p-6 sm:p-8 flex flex-col justify-between min-h-[220px] sm:min-h-[210px]">
                   <div>
-                      <h3 className="font-headline text-2xl font-bold text-white">{content.promoCard.title}</h3>
+                      <h3 className="font-headline text-2xl font-bold text-white">{localizedContent.promoCard.title}</h3>
                       <p className="text-white/80 mt-2 text-sm sm:text-base">
-                          {content.promoCard.subtitle}
+                          {localizedContent.promoCard.subtitle}
                       </p>
                   </div>
                   <div className="flex flex-wrap gap-4 mt-4">
                       <Button asChild variant="outline" className="border-accent text-accent hover:bg-accent hover:text-white bg-transparent rounded-full">
-                          <Link href={content.promoCard.button1Link}>{content.promoCard.button1Text} <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                          <Link href={localizedContent.promoCard.button1Link}>{localizedContent.promoCard.button1Text} <ArrowRight className="ml-2 h-4 w-4" /></Link>
                       </Button>
                       <Button asChild variant="outline" className="border-accent text-accent hover:bg-accent hover:text-white bg-transparent rounded-full">
-                          <Link href={content.promoCard.button2Link}>{content.promoCard.button2Text} <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                          <Link href={localizedContent.promoCard.button2Link}>{localizedContent.promoCard.button2Text} <ArrowRight className="ml-2 h-4 w-4" /></Link>
                       </Button>
                   </div>
               </Card>
@@ -85,14 +90,14 @@ export default function ActivePromotions({ content }: { content: any }) {
                       )}
                   </div>
                   <div className='relative z-10'>
-                      <h3 className="font-headline text-2xl font-bold text-white">{content.communityCard.title}</h3>
+                      <h3 className="font-headline text-2xl font-bold text-white">{localizedContent.communityCard.title}</h3>
                       <p className="text-white/80 mt-2 max-w-[60%] text-sm sm:text-base">
-                        {content.communityCard.subtitle}
+                        {localizedContent.communityCard.subtitle}
                       </p>
                   </div>
                   <div className="flex flex-wrap gap-4 mt-4 relative z-10">
                       <Button asChild className="bg-accent hover:bg-accent/90 text-accent-foreground rounded-full">
-                          <Link href={content.communityCard.buttonLink}>{content.communityCard.buttonText} <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                          <Link href={localizedContent.communityCard.buttonLink}>{localizedContent.communityCard.buttonText} <ArrowRight className="ml-2 h-4 w-4" /></Link>
                       </Button>
                   </div>
               </Card>

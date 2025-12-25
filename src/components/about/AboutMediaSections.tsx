@@ -6,6 +6,8 @@ import TiltedCard from '@/components/animations/TiltedCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useMedia } from '@/lib/media';
 import { Check } from 'lucide-react';
+import { useLanguage } from '@/components/layout/LanguageProvider';
+import { getLocalized } from '@/lib/utils';
 
 const Milestone = ({
   year,
@@ -81,6 +83,10 @@ const FounderSkeleton = () => (
 
 export default function AboutMediaSections({ content }: { content: any }) {
   const { data: media, isLoading: isLoadingMedia } = useMedia();
+  const { language } = useLanguage();
+  const aboutContent = getLocalized(content, language).about;
+
+  if (!aboutContent) return null;
 
   return (
     <>
@@ -88,7 +94,7 @@ export default function AboutMediaSections({ content }: { content: any }) {
       <section className="py-24 sm:py-32">
         <div className="container mx-auto px-6">
           <AnimateOnScroll animationType="slideInFromBottom" className="text-center max-w-3xl mx-auto mb-20">
-            <h2 className="text-4xl md:text-5xl font-headline font-bold text-foreground inline-block underline decoration-primary decoration-4 underline-offset-8">{content.milestones.title}</h2>
+            <h2 className="text-4xl md:text-5xl font-headline font-bold text-foreground inline-block underline decoration-primary decoration-4 underline-offset-8">{aboutContent.milestones.title}</h2>
           </AnimateOnScroll>
           <div className="max-w-5xl mx-auto relative">
               {/* Vertical Line */}
@@ -97,7 +103,7 @@ export default function AboutMediaSections({ content }: { content: any }) {
               <div className="space-y-24">
                 {isLoadingMedia ? (
                     [...Array(5)].map((_, i) => <MilestoneSkeleton key={i} />)
-                ) : content.milestones.items.map((milestone: any, index: number) => {
+                ) : aboutContent.milestones.items.map((milestone: any, index: number) => {
                   const image = media?.find(m => m.id === milestone.imageId);
                   return image ? (
                     <div key={index} className="relative">
@@ -122,7 +128,7 @@ export default function AboutMediaSections({ content }: { content: any }) {
       <section className="py-24 sm:py-32 bg-black text-white">
         <div className="container mx-auto px-6">
           <AnimateOnScroll animationType="slideInFromBottom" className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-4xl md:text-5xl font-headline font-bold text-white inline-block underline decoration-primary decoration-4 underline-offset-8">{content.founders.title}</h2>
+            <h2 className="text-4xl md:text-5xl font-headline font-bold text-white inline-block underline decoration-primary decoration-4 underline-offset-8">{aboutContent.founders.title}</h2>
           </AnimateOnScroll>
           <div className="max-w-5xl mx-auto space-y-24">
              {isLoadingMedia ? (
@@ -134,7 +140,7 @@ export default function AboutMediaSections({ content }: { content: any }) {
                 <>
                 <AnimateOnScroll animationType="slideInFromLeft">
                 {(() => {
-                    const founder = content.founders.items[0];
+                    const founder = aboutContent.founders.items[0];
                     const image = media?.find(m => m.id === founder.imageId);
                     return (founder && image) ? (
                         <FounderMessage 
@@ -148,7 +154,7 @@ export default function AboutMediaSections({ content }: { content: any }) {
                 </AnimateOnScroll>
                 <AnimateOnScroll animationType="slideInFromRight">
                 {(() => {
-                    const founder = content.founders.items[1];
+                    const founder = aboutContent.founders.items[1];
                     const image = media?.find(m => m.id === founder.imageId);
                     return (founder && image) ? (
                         <FounderMessage 
@@ -172,15 +178,15 @@ export default function AboutMediaSections({ content }: { content: any }) {
           <div className="container mx-auto px-0">
               <div className="grid lg:grid-cols-2">
                   <div className="bg-primary text-primary-foreground p-12 lg:p-24 flex flex-col justify-center text-center lg:text-left">
-                      <h2 className="text-4xl md:text-5xl font-headline font-bold text-foreground">{content.visionMission.visionTitle}</h2>
+                      <h2 className="text-4xl md:text-5xl font-headline font-bold text-foreground">{aboutContent.visionMission.visionTitle}</h2>
                       <p className="mt-4 text-xl md:text-2xl font-serif text-foreground/80 max-w-md mx-auto lg:mx-0">
-                          {content.visionMission.visionText}
+                          {aboutContent.visionMission.visionText}
                       </p>
                   </div>
                   <div className="bg-background text-foreground p-12 lg:p-24">
-                      <h3 className="text-3xl font-headline font-bold text-accent mb-6">{content.visionMission.missionTitle}</h3>
+                      <h3 className="text-3xl font-headline font-bold text-accent mb-6">{aboutContent.visionMission.missionTitle}</h3>
                       <ul className="space-y-4">
-                          {content.visionMission.missionItems.map((item: string, index: number) => (
+                          {aboutContent.visionMission.missionItems.map((item: string, index: number) => (
                             <li key={index} className="flex items-start">
                                 <Check className="w-6 h-6 text-accent mr-3 mt-1 flex-shrink-0" />
                                 <span>{item}</span>

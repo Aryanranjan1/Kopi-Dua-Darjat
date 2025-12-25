@@ -8,13 +8,17 @@ import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import Image from 'next/image';
 import { useMediaAsset } from '@/lib/media';
 import { Skeleton } from '../ui/skeleton';
+import { useLanguage } from '@/components/layout/LanguageProvider';
+import { getLocalized } from '@/lib/utils';
 
 export default function FranchiseHero({ content }: { content: any }) {
+  const { language } = useLanguage();
   const { asset: bgImage, isLoading } = useMediaAsset('franchise-hero');
+  const localizedContent = getLocalized(content, language).franchise?.hero;
 
-  if (!content) return <div className="h-[70vh] bg-black" />;
+  if (!localizedContent) return <div className="h-[70vh] bg-black" />;
 
-  const { badge, title, subtitle, primaryButtonText, primaryButtonLink, secondaryButtonText, secondaryButtonLink } = content;
+  const { badge, title, subtitle, primaryButtonText, primaryButtonLink, secondaryButtonText, secondaryButtonLink } = localizedContent;
 
   return (
     <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-28 text-white overflow-hidden">

@@ -25,37 +25,16 @@ export function getDiscountDisplay(promo: Promotion): string {
 
 /**
  * Retrieves the localized version of a field from a document.
- * It tries the requested language, then the fallback language, then the first available language,
- * and finally falls back to top-level fields for non-migrated documents.
- * @param doc The document containing the translations field or legacy top-level fields.
- * @param lang The desired language code.
- * @param fallbackLang The fallback language code.
- * @returns The localized content, or an empty object if no translation is found.
+ * @param doc The document containing the 'en' and 'ms' language objects.
+ * @param lang The desired language code ('en' | 'ms').
+ * @returns The content object for the specified language.
  */
 export function getLocalized<T>(
-  doc: any, // Use `any` to handle both new and legacy structures
+  doc: any,
   lang: LangCode,
-  fallbackLang: LangCode = DEFAULT_LANGUAGE
 ): Partial<T> {
   if (!doc) return {};
 
-  // 1. Try the requested language in the new `translations` structure
-  if (doc.translations?.[lang] && Object.keys(doc.translations[lang]).length > 0) {
-    return doc.translations[lang] as Partial<T>;
-  }
-
-  // 2. Try the fallback language in the new `translations` structure
-  if (doc.translations?.[fallbackLang]) {
-    return doc.translations[fallbackLang] as Partial<T>;
-  }
-
-  // 3. Fallback for documents that have not been migrated yet.
-  // This checks for common top-level fields to determine if it's a legacy document.
-  // @ts-ignore
-  if (doc.name || doc.title || doc.question || doc.quote || doc.content) {
-    return doc as Partial<T>;
-  }
-
-  // 4. If nothing else is found, return an empty object.
-  return {};
+  // Return the specific language object, defaulting to 'en'
+  return doc[lang] || doc[DEFAULT_LANGUAGE] || {};
 }
