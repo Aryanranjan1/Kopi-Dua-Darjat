@@ -4,7 +4,6 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { LangCode, DEFAULT_LANGUAGE } from '@/lib/types';
 import { useRouter } from 'next/navigation';
-import { usePathname } from 'next/navigation';
 
 interface LanguageContextType {
   language: LangCode;
@@ -16,7 +15,6 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguageState] = useState<LangCode>(DEFAULT_LANGUAGE);
   const router = useRouter();
-  const pathname = usePathname();
 
   useEffect(() => {
     // On mount, try to get the language from localStorage to set the initial UI state

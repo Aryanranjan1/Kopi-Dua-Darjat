@@ -5,6 +5,7 @@ import { AnimateOnScroll } from '@/components/animations/AnimateOnScroll';
 import TiltedCard from '@/components/animations/TiltedCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useMedia } from '@/lib/media';
+import { Check } from 'lucide-react';
 
 const Milestone = ({
   year,
@@ -165,6 +166,32 @@ export default function AboutMediaSections({ content }: { content: any }) {
           </div>
         </div>
       </section>
+       {/* Vision & Mission Section */}
+      <AnimateOnScroll animationType="fadeIn">
+        <section className="bg-background text-foreground">
+          <div className="container mx-auto px-0">
+              <div className="grid lg:grid-cols-2">
+                  <div className="bg-primary text-primary-foreground p-12 lg:p-24 flex flex-col justify-center text-center lg:text-left">
+                      <h2 className="text-4xl md:text-5xl font-headline font-bold text-foreground">{content.visionMission.visionTitle}</h2>
+                      <p className="mt-4 text-xl md:text-2xl font-serif text-foreground/80 max-w-md mx-auto lg:mx-0">
+                          {content.visionMission.visionText}
+                      </p>
+                  </div>
+                  <div className="bg-background text-foreground p-12 lg:p-24">
+                      <h3 className="text-3xl font-headline font-bold text-accent mb-6">{content.visionMission.missionTitle}</h3>
+                      <ul className="space-y-4">
+                          {content.visionMission.missionItems.map((item: string, index: number) => (
+                            <li key={index} className="flex items-start">
+                                <Check className="w-6 h-6 text-accent mr-3 mt-1 flex-shrink-0" />
+                                <span>{item}</span>
+                            </li>
+                          ))}
+                      </ul>
+                  </div>
+              </div>
+          </div>
+        </section>
+      </AnimateOnScroll>
     </>
   )
 }

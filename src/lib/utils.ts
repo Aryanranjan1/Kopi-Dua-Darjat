@@ -1,7 +1,7 @@
 
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-import type { Promotion, Localized, LangCode } from "./types";
+import type { Promotion, LangCode } from "./types";
 import { DEFAULT_LANGUAGE } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
@@ -40,7 +40,7 @@ export function getLocalized<T>(
   if (!doc) return {};
 
   // 1. Try the requested language in the new `translations` structure
-  if (doc.translations?.[lang]) {
+  if (doc.translations?.[lang] && Object.keys(doc.translations[lang]).length > 0) {
     return doc.translations[lang] as Partial<T>;
   }
 
