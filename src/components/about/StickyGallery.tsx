@@ -27,6 +27,7 @@ const GalleryColumn = ({ images, className }: { images: any[]; className?: strin
   </div>
 );
 
+// This component is no longer used but kept for reference if needed.
 const StickyGallery = () => {
   const { data: media, isLoading } = useMedia();
 
