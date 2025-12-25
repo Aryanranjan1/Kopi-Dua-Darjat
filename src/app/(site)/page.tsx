@@ -64,7 +64,7 @@ export default async function Home() {
       </Suspense>
 
       <Suspense fallback={<div className="h-screen w-full bg-black" />}>
-        <LatestStories />
+        <LatestStories content={homeContent.latestStories} />
       </Suspense>
 
       <NewsletterSignUp />
