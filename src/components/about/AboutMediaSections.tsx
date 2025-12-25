@@ -6,6 +6,7 @@ import TiltedCard from '@/components/animations/TiltedCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useMedia } from '@/lib/media';
 import { Check } from 'lucide-react';
+import { useLanguage } from '../layout/LanguageProvider';
 
 const Milestone = ({
   year,
@@ -81,8 +82,10 @@ const FounderSkeleton = () => (
 
 export default function AboutMediaSections({ content }: { content: any }) {
   const { data: media, isLoading: isLoadingMedia } = useMedia();
-  const aboutContent = content?.about;
+  const { language } = useLanguage();
 
+  if (!content) return null;
+  const aboutContent = content[language]?.about;
   if (!aboutContent) return null;
 
   return (
@@ -198,3 +201,5 @@ export default function AboutMediaSections({ content }: { content: any }) {
     </>
   )
 }
+
+    

@@ -18,7 +18,9 @@ import { getLocalized } from '@/lib/utils';
 export default function Faq({ content }: { content: any }) {
   const firestore = useFirestore();
   const { language } = useLanguage();
-  const localizedContent = getLocalized(content, language).franchise?.faq;
+  
+  if (!content) return null;
+  const localizedContent = content[language]?.franchise?.faq;
 
   const faqQuery = useMemoFirebase(
     () => firestore 
@@ -32,7 +34,7 @@ export default function Faq({ content }: { content: any }) {
   );
 
   const { data: faqItems, isLoading } = useCollection<FaqItem>(faqQuery);
-
+  
   if (!localizedContent) return null;
   const { title, subtitle } = localizedContent;
 
@@ -75,3 +77,5 @@ export default function Faq({ content }: { content: any }) {
     </section>
   );
 }
+
+    

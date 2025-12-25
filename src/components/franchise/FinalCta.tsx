@@ -7,12 +7,16 @@ import { Button } from '@/components/ui/button';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { Skeleton } from '../ui/skeleton';
 import { useMediaAsset } from '@/lib/media';
+import { useLanguage } from '../layout/LanguageProvider';
 
 export default function FinalCta({ content }: { content: any }) {
   const { asset: ctaImage, isLoading } = useMediaAsset('franchise-cta');
+  const { language } = useLanguage();
 
   if (!content) return null;
-  const localizedContent = content.franchise?.finalCta;
+  const localizedContent = content[language]?.franchise?.finalCta;
+  if (!localizedContent) return null;
+  
   const { title, subtitle, buttonText, buttonLink } = localizedContent;
 
   return (
@@ -54,3 +58,5 @@ export default function FinalCta({ content }: { content: any }) {
     </section>
   );
 }
+
+    

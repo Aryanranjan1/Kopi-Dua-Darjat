@@ -14,7 +14,6 @@ import Community from '@/components/home/Community';
 import LatestStories from '@/components/home/LatestStories';
 import NewsletterSignUp from '@/components/home/NewsletterSignUp';
 import InstaExploreGrid from '@/components/home/InstaExploreGrid';
-import { getServerLanguage } from '@/lib/getServerLanguage';
 
 export const revalidate = 60; // Revalidate the data every 60 seconds
 
@@ -25,13 +24,10 @@ export default async function Home() {
     notFound();
   }
 
-  const lang = getServerLanguage();
-  const pageContent = allContent[lang];
-
   return (
     <div className="flex flex-col">
       <Suspense fallback={<div className="h-screen w-full bg-primary flex items-center justify-center"><Loader2 className="h-12 w-12 animate-spin text-foreground" /></div>}>
-        <Hero content={pageContent} />
+        <Hero content={allContent} />
       </Suspense>
       
       <Suspense fallback={<FeaturedDrinksSkeleton />}>
@@ -39,7 +35,7 @@ export default async function Home() {
       </Suspense>
 
       <Suspense fallback={<div className="h-screen w-full bg-black" />}>
-        <ActivePromotions content={pageContent} />
+        <ActivePromotions content={allContent} />
       </Suspense>
 
       <Suspense fallback={<div className="h-screen w-full bg-white" />}>
@@ -51,20 +47,22 @@ export default async function Home() {
       </Suspense>
 
       <Suspense fallback={<div className="h-screen w-full bg-background" />}>
-        <BrandStory content={pageContent} />
+        <BrandStory content={allContent} />
       </Suspense>
       
       <InstaExploreGrid />
 
       <Suspense fallback={<div className="h-screen w-full bg-white" />}>
-        <Community content={pageContent} />
+        <Community content={allContent} />
       </Suspense>
 
       <Suspense fallback={<div className="h-screen w-full bg-black" />}>
-        <LatestStories content={pageContent} />
+        <LatestStories content={allContent} />
       </Suspense>
 
       <NewsletterSignUp />
     </div>
   );
 }
+
+    

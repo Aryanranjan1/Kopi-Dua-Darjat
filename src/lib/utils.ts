@@ -24,7 +24,7 @@ export function getDiscountDisplay(promo: Promotion): string {
 }
 
 /**
- * Retrieves the localized version of a field from a document.
+ * Retrieves the localized version of a field from a document that has a `translations` object.
  * Falls back to the default language if the requested language is not available.
  * @param doc The document containing the translations field.
  * @param lang The desired language code.
@@ -32,13 +32,13 @@ export function getDiscountDisplay(promo: Promotion): string {
  * @returns The localized content, or an empty object if no translation is found.
  */
 export function getLocalized<T>(
-  doc: Localized<T>,
+  doc: Localized<T> | null | undefined,
   lang: LangCode,
   fallbackLang: LangCode = DEFAULT_LANGUAGE
 ): Partial<T> {
   if (!doc || !doc.translations) return {};
   
-  if (doc.translations[lang]) {
+  if (doc.translations[lang] && Object.keys(doc.translations[lang]).length > 0) {
     return doc.translations[lang] as Partial<T>;
   }
   if (doc.translations[fallbackLang]) {
@@ -46,3 +46,5 @@ export function getLocalized<T>(
   }
   return {};
 }
+
+    

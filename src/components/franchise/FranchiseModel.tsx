@@ -3,6 +3,7 @@
 
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { FileText, UserCheck, Warehouse, Rocket, BarChart2 } from 'lucide-react';
+import { useLanguage } from '../layout/LanguageProvider';
 
 const iconMap: { [key: string]: React.ElementType } = {
     'Apply': FileText,
@@ -19,8 +20,12 @@ const iconMap: { [key: string]: React.ElementType } = {
 
 
 export default function FranchiseModel({ content }: { content: any }) {
+  const { language } = useLanguage();
   if (!content) return null;
-  const localizedContent = content.franchise?.franchiseModel;
+
+  const localizedContent = content[language]?.franchise?.franchiseModel;
+  if (!localizedContent) return null;
+
   const { title, subtitle, steps } = localizedContent;
 
   return (
@@ -96,3 +101,5 @@ export default function FranchiseModel({ content }: { content: any }) {
     </section>
   );
 }
+
+    

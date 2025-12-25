@@ -8,12 +8,16 @@ import { CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 import { Skeleton } from '../ui/skeleton';
 import { useMediaAsset } from '@/lib/media';
+import { useLanguage } from '../layout/LanguageProvider';
 
 export default function SupportAndTraining({ content }: { content: any }) {
   const { asset: trainingImage, isLoading } = useMediaAsset('franchise-training');
+  const { language } = useLanguage();
 
   if (!content) return null;
-  const localizedContent = content.franchise?.support;
+  const localizedContent = content[language]?.franchise?.support;
+  if (!localizedContent) return null;
+
   const { title, subtitle, items, buttonText, buttonLink } = localizedContent;
 
   return (
@@ -58,3 +62,5 @@ export default function SupportAndTraining({ content }: { content: any }) {
     </section>
   );
 }
+
+    

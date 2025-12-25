@@ -22,7 +22,8 @@ export default function Community({ content }: { content: any }) {
   const { data: communityItems, isLoading } = useCollection<CommunityItem>(communityQuery);
   
   if (!content) return null;
-  const localizedContent = content.home?.community;
+  const localizedContent = content[language]?.home?.community;
+  if (!localizedContent) return null;
   const { title, subtitle } = localizedContent;
 
   return (
@@ -95,3 +96,5 @@ export default function Community({ content }: { content: any }) {
     </section>
   );
 }
+
+    

@@ -7,12 +7,16 @@ import { Button } from '@/components/ui/button';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { Skeleton } from '../ui/skeleton';
 import { useMediaAsset } from '@/lib/media';
+import { useLanguage } from '../layout/LanguageProvider';
 
 export default function Investment({ content }: { content: any }) {
   const { asset: stallImage, isLoading } = useMediaAsset('franchise-stall');
+  const { language } = useLanguage();
   
   if (!content) return null;
-  const localizedContent = content.franchise?.investment;
+  const localizedContent = content[language]?.franchise?.investment;
+  if (!localizedContent) return null;
+
   const { title, subtitle, content: investmentContent, buttonText, buttonLink } = localizedContent;
 
   return (
@@ -51,3 +55,5 @@ export default function Investment({ content }: { content: any }) {
     </section>
   );
 }
+
+    

@@ -8,10 +8,14 @@ import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import Image from 'next/image';
 import { useMediaAsset } from '@/lib/media';
 import { Skeleton } from '../ui/skeleton';
+import { useLanguage } from '../layout/LanguageProvider';
 
 export default function FranchiseHero({ content }: { content: any }) {
   const { asset: bgImage, isLoading } = useMediaAsset('franchise-hero');
-  const localizedContent = content?.franchise?.hero;
+  const { language } = useLanguage();
+  
+  if (!content) return <div className="h-[70vh] bg-black" />;
+  const localizedContent = content[language]?.franchise?.hero;
 
   if (!localizedContent) return <div className="h-[70vh] bg-black" />;
 
@@ -56,3 +60,5 @@ export default function FranchiseHero({ content }: { content: any }) {
     </section>
   );
 }
+
+    

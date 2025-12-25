@@ -6,13 +6,18 @@ import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import TiltedCard from '../animations/TiltedCard';
 import { Skeleton } from '../ui/skeleton';
 import { useMediaAsset } from '@/lib/media';
+import { useLanguage } from '../layout/LanguageProvider';
 
 export default function WhoAreWe({ content }: { content: any }) {
   const { asset: image, isLoading } = useMediaAsset('brewing-method');
+  const { language } = useLanguage();
 
   if (!content) return null;
 
-  const { title, subtitle, content: whoAreWeContent } = content.about.whoAreWe;
+  const localizedContent = content[language]?.about?.whoAreWe;
+  if (!localizedContent) return null;
+
+  const { title, subtitle, content: whoAreWeContent } = localizedContent;
   
   return (
     <section className="py-24 sm:py-32">
@@ -48,3 +53,5 @@ export default function WhoAreWe({ content }: { content: any }) {
     </section>
   );
 }
+
+    

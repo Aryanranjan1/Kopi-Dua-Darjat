@@ -3,6 +3,7 @@
 
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { DollarSign, Award, Users, Megaphone, TrendingUp, CheckCircle } from 'lucide-react';
+import { useLanguage } from '../layout/LanguageProvider';
 
 const iconMap: { [key: string]: React.ElementType } = {
     'Strong Brand Identity': Award,
@@ -18,8 +19,12 @@ const iconMap: { [key: string]: React.ElementType } = {
 };
 
 export default function ValueProposition({ content }: { content: any }) {
+  const { language } = useLanguage();
   if (!content) return null;
-  const localizedContent = content.franchise?.valueProposition;
+
+  const localizedContent = content[language]?.franchise?.valueProposition;
+  if (!localizedContent) return null;
+
   const { title, subtitle, features } = localizedContent;
 
   return (
@@ -58,3 +63,5 @@ export default function ValueProposition({ content }: { content: any }) {
     </section>
   );
 }
+
+    

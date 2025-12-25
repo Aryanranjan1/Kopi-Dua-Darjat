@@ -10,11 +10,16 @@ import { Button } from '../ui/button';
 import { ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 import { useMediaQuery } from '@/hooks/use-media-query';
+import { useLanguage } from '../layout/LanguageProvider';
 
 const DesktopHero = ({ content }: { content: any }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const h1Ref = useFitText<HTMLHeadingElement>(containerRef);
-  const { title, subtitle } = content.home.hero;
+  const { language } = useLanguage();
+  const localizedContent = content[language]?.home?.hero;
+  
+  if (!localizedContent) return null;
+  const { title, subtitle } = localizedContent;
 
   return (
     <>
@@ -90,7 +95,10 @@ const DesktopHero = ({ content }: { content: any }) => {
 };
 
 const MobileHero = ({ content }: { content: any }) => {
-  const { title, subtitle } = content.home.hero;
+  const { language } = useLanguage();
+  const localizedContent = content[language]?.home?.hero;
+  if (!localizedContent) return null;
+  const { title, subtitle } = localizedContent;
 
   return (
     <div className="container mx-auto px-6 pt-24 pb-20 text-center">
@@ -128,3 +136,5 @@ export default function Hero({ content }: { content: any }) {
     </section>
   );
 }
+
+    

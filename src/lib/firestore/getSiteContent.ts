@@ -1,7 +1,6 @@
 
 import { initializeServerSideFirebase } from "@/firebase/server-init";
 import { getDoc, doc } from 'firebase/firestore';
-import type { LangCode } from "../types";
 
 /**
  * Fetches the entire site content object from Firestore, which contains both 'en' and 'ms' translations.
@@ -19,6 +18,7 @@ export async function getSiteContent(): Promise<any | null> {
       return null;
     }
 
+    // Return the whole document data which includes 'en' and 'ms' objects
     return docSnap.data();
 
   } catch (error) {
@@ -26,3 +26,5 @@ export async function getSiteContent(): Promise<any | null> {
     return null;
   }
 }
+
+    

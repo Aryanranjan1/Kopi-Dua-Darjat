@@ -13,7 +13,6 @@ import Testimonials from './Testimonials';
 import SupportAndTraining from '@/components/franchise/SupportAndTraining';
 import Faq from './Faq';
 import FinalCta from '@/components/franchise/FinalCta';
-import { getServerLanguage } from '@/lib/getServerLanguage';
 
 export const metadata: Metadata = {
   title: 'Franchise',
@@ -28,22 +27,21 @@ export default async function FranchisePage() {
   if (!allContent) {
     notFound();
   }
-  
-  const lang = getServerLanguage();
-  const pageContent = allContent[lang];
 
   return (
     <div className="bg-black text-foreground">
       <Suspense fallback={<div className="h-screen w-full bg-black flex items-center justify-center"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>}>
-        <FranchiseHero content={pageContent} />
-        <ValueProposition content={pageContent} />
-        <FranchiseModel content={pageContent} />
-        <Investment content={pageContent} />
+        <FranchiseHero content={allContent} />
+        <ValueProposition content={allContent} />
+        <FranchiseModel content={allContent} />
+        <Investment content={allContent} />
         <Testimonials />
-        <SupportAndTraining content={pageContent} />
-        <Faq content={pageContent} />
-        <FinalCta content={pageContent} />
+        <SupportAndTraining content={allContent} />
+        <Faq content={allContent} />
+        <FinalCta content={allContent} />
       </Suspense>
     </div>
   );
 }
+
+    

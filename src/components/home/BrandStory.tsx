@@ -5,11 +5,16 @@ import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { AnimateOnScroll } from "@/components/animations/AnimateOnScroll"
+import { useLanguage } from "../layout/LanguageProvider"
 
 export default function BrandStory({ content }: { content: any }) {
+  const { language } = useLanguage();
   if (!content) return null;
+  
+  const localizedContent = content[language]?.home?.brandStory;
+  if (!localizedContent) return null;
 
-  const { title, content: storyContent, buttonText, buttonLink } = content.home.brandStory;
+  const { title, content: storyContent, buttonText, buttonLink } = localizedContent;
 
   return (
     <section className="bg-[#F7F4EF] text-foreground overflow-hidden">
@@ -54,3 +59,5 @@ export default function BrandStory({ content }: { content: any }) {
     </section>
   )
 }
+
+    

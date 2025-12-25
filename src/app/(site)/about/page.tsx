@@ -10,7 +10,6 @@ import Stats from '@/components/about/Stats';
 import AboutMediaSections from '@/components/about/AboutMediaSections';
 import LatestStories from '@/components/home/LatestStories';
 import NewsletterSignUp from '@/components/home/NewsletterSignUp';
-import { getServerLanguage } from '@/lib/getServerLanguage';
 import StickyGallery from '@/components/about/StickyGallery';
 
 export const metadata: Metadata = {
@@ -26,25 +25,21 @@ export default async function AboutPage() {
   if (!allContent) {
     notFound();
   }
-  
-  const lang = getServerLanguage();
-  const pageContent = allContent[lang];
-
 
   return (
     <>
     <div className="bg-background text-foreground">
       {/* Hero Section */}
       <Suspense fallback={<div className="h-[40vh] w-full bg-primary" />}>
-        <WhoAreWe content={pageContent} />
+        <WhoAreWe content={allContent} />
       </Suspense>
 
       <Suspense fallback={<div className="h-[30vh] w-full bg-black" />}>
-        <Stats content={pageContent} />
+        <Stats content={allContent} />
       </Suspense>
 
       <Suspense fallback={<div className="h-screen w-full bg-background flex items-center justify-center"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>}>
-        <AboutMediaSections content={pageContent} />
+        <AboutMediaSections content={allContent} />
       </Suspense>
       
       <Suspense fallback={<div className="h-screen w-full bg-white" />}>
@@ -52,9 +47,11 @@ export default async function AboutPage() {
       </Suspense>
     </div>
     <Suspense fallback={<div className="h-[80vh] w-full bg-black" />}>
-      <LatestStories content={pageContent} />
+      <LatestStories content={allContent} />
     </Suspense>
     <NewsletterSignUp />
     </>
   );
 }
+
+    

@@ -19,7 +19,7 @@ export default function LatestStories({ content }: { content: any }) {
     const { language } = useLanguage();
     
     if (!content) return null;
-    const localizedContent = content.home?.latestStories;
+    const localizedContent = content[language]?.home?.latestStories;
 
     const blogsQuery = useMemoFirebase(
       () => firestore ? query(collection(firestore, 'blogs'), where('status', '==', 'published'), limit(10)) : null,
@@ -142,3 +142,5 @@ export default function LatestStories({ content }: { content: any }) {
         </section>
     );
 }
+
+    
