@@ -163,7 +163,6 @@ const LivingMosaicGallery = () => {
             `}</style>
             <div className="section"><h1>Our Gallery</h1></div>
             <div className="gallery-container" id="mosaic" ref={containerRef}></div>
-            <div className="section"><h1>Kopi Dua Darjat</h1></div>
         </div>
     );
 };
