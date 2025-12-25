@@ -1,6 +1,7 @@
 
 import { cookies } from 'next/headers';
 import type { LangCode } from './types';
+import { DEFAULT_LANGUAGE } from './types';
 
 /**
  * A server-side utility to get the current language from cookies.
@@ -14,5 +15,5 @@ export function getServerLanguage(): LangCode {
     return langCookie.value;
   }
 
-  return 'en'; // Default language
+  return DEFAULT_LANGUAGE;
 }
