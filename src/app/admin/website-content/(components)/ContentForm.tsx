@@ -1,7 +1,7 @@
 
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm, FormProvider, useFieldArray, useFormContext } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -13,6 +13,9 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Trash2, PlusCircle, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cloneDeep } from 'lodash';
+import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
+import { doc, setDoc } from 'firebase/firestore';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 // --- Schema Generation ---
 const createSchemaFromObject = (obj: any): z.ZodType<any> => {
@@ -68,7 +71,6 @@ const RenderField = ({ path, label }: { path: string; label: string }) => {
     );
 }
 
-// Specific component for handling arrays of strings
 const StringArrayManager = ({ path, title }: { path: string; title: string }) => {
     const { control, getValues, setValue } = useFormContext();
     const { toast } = useToast();
@@ -85,7 +87,7 @@ const StringArrayManager = ({ path, title }: { path: string; title: string }) =>
         <div className="space-y-4 p-4 border border-zinc-800 rounded-lg">
             <div className="flex justify-between items-center">
                 <h4 className="font-semibold capitalize text-lg text-primary">{title}</h4>
-                <Button type="button" onClick={handleCopy} size="sm" className="bg-yellow-400 text-black border border-black hover:bg-yellow-400">Copy EN to MS</Button>
+                <Button type="button" onClick={handleCopy} size="sm" className="bg-primary text-primary-foreground border border-black hover:bg-primary">Copy EN to MS</Button>
             </div>
             <div className="grid grid-cols-2 gap-4">
                  <FormField
@@ -157,7 +159,7 @@ const ObjectArrayManager = ({ path, title, newItemShape, ItemComponent }: { path
         <div className="space-y-4 p-4 border border-zinc-800 rounded-lg">
             <div className="flex justify-between items-center">
               <h4 className="font-semibold capitalize text-lg text-primary">{title}</h4>
-               <Button type="button" onClick={handleCopy} size="sm" className="bg-yellow-400 text-black border border-black hover:bg-yellow-400">Copy EN to MS</Button>
+               <Button type="button" onClick={handleCopy} size="sm" className="bg-primary text-primary-foreground border border-black hover:bg-primary">Copy EN to MS</Button>
             </div>
             <div className="space-y-4">
                 {fieldsEn.map((field, index) => (
@@ -184,11 +186,9 @@ const RenderObjectFields = ({ path, data }: { path: string; data: any }) => {
                 const label = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
                 
                 if (Array.isArray(value)) {
-                     // Check if it's an array of strings or objects
                     if (value.length > 0 && typeof value[0] === 'string') {
                          return <StringArrayManager key={currentPath} path={currentPath} title={label} />;
                     }
-                    // It's an array of objects
                     return <ObjectArrayManager 
                               key={currentPath} 
                               path={currentPath} 
@@ -213,7 +213,7 @@ const RenderObjectFields = ({ path, data }: { path: string; data: any }) => {
                                   const enValues = getValues(`en.${currentPath}`);
                                   setValue(`ms.${currentPath}`, cloneDeep(enValues));
                                   toast({ title: "Copied!", description: `Copied '${label}' from English to Malay.`});
-                              }} size="sm" className="bg-yellow-400 text-black border border-black hover:bg-yellow-400">Copy EN to MS</Button>
+                              }} size="sm" className="bg-primary text-primary-foreground border border-black hover:bg-primary">Copy EN to MS</Button>
                             </div>
                             <RenderObjectFields path={currentPath} data={value} />
                         </div>
@@ -226,45 +226,39 @@ const RenderObjectFields = ({ path, data }: { path: string; data: any }) => {
     );
 };
 
-// --- Main Form Component ---
-export default function ContentForm({ initialDataEn, initialDataMs }: { initialDataEn: any, initialDataMs: any }) {
+
+const ContentFormInner = ({ contentData }: { contentData: any }) => {
+    const { en, ms } = contentData;
+
     const combinedSchema = z.object({
-        en: createSchemaFromObject(initialDataEn),
-        ms: createSchemaFromObject(initialDataMs),
+        en: createSchemaFromObject(en),
+        ms: createSchemaFromObject(ms),
     });
 
     const formMethods = useForm({
         resolver: zodResolver(combinedSchema),
-        defaultValues: {
-            en: initialDataEn,
-            ms: initialDataMs,
-        },
+        values: { en, ms },
     });
+    
     const { toast } = useToast();
+    const firestore = useFirestore();
 
     const onFormSubmit = async (data: any) => {
+        if (!firestore) return;
+
         try {
-            const response = await fetch('/api/update-content', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data, null, 2),
-            });
-
-            if (!response.ok) {
-                const errorResult = await response.json();
-                throw new Error(errorResult.message || 'Failed to save content.');
-            }
-
+            const docRef = doc(firestore, 'settings', 'content');
+            await setDoc(docRef, data);
             toast({
                 title: 'Content Saved!',
-                description: 'Your changes have been written to the content file.',
+                description: 'Your changes have been saved to Firestore.',
             });
         } catch (error: any) {
             console.error("Error saving content:", error);
             toast({
                 variant: 'destructive',
                 title: 'Uh oh! Something went wrong.',
-                description: error.message || 'Could not save the content file.',
+                description: error.message || 'Could not save content to Firestore.',
             });
         }
     };
@@ -273,7 +267,7 @@ export default function ContentForm({ initialDataEn, initialDataMs }: { initialD
         <FormProvider {...formMethods}>
             <form onSubmit={formMethods.handleSubmit(onFormSubmit)} className="space-y-6">
                 <Accordion type="single" collapsible className="w-full space-y-4" defaultValue="home">
-                {Object.entries(initialDataEn).map(([sectionKey, sectionData]) => (
+                {Object.entries(en).map(([sectionKey, sectionData]) => (
                     <AccordionItem key={sectionKey} value={sectionKey} className="bg-zinc-900 border-zinc-800 rounded-lg px-6">
                     <AccordionTrigger className="text-xl font-headline hover:no-underline text-white">
                         {sectionKey.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
@@ -293,4 +287,24 @@ export default function ContentForm({ initialDataEn, initialDataMs }: { initialD
             </form>
         </FormProvider>
     );
+}
+
+// --- Main Form Component ---
+export default function ContentForm() {
+    const firestore = useFirestore();
+    const contentRef = useMemoFirebase(
+      () => (firestore ? doc(firestore, 'settings', 'content') : null),
+      [firestore]
+    );
+    const { data: contentData, isLoading } = useDoc<any>(contentRef);
+
+    if (isLoading) {
+        return <div className="flex justify-center items-center h-64"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
+    }
+
+    if (!contentData) {
+        return <div className="text-center text-red-500">Error: Could not load content from Firestore. Please ensure the 'content' document exists in the 'settings' collection.</div>;
+    }
+
+    return <ContentFormInner contentData={contentData} />;
 }
