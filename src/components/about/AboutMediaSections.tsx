@@ -6,7 +6,6 @@ import TiltedCard from '@/components/animations/TiltedCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useMedia } from '@/lib/media';
 import { Check } from 'lucide-react';
-import { useLanguage } from '../layout/LanguageProvider';
 
 const Milestone = ({
   year,

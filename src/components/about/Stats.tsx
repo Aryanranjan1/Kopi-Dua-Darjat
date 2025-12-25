@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from 'react';
 import { useInView } from 'framer-motion';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { TrendingUp, Users, Award, MapPin } from 'lucide-react';
-import { useLanguage } from '../layout/LanguageProvider';
 
 const AnimatedCounter = ({ to, duration = 2 }: { to: number; duration?: number }) => {
   const [count, setCount] = useState(0);

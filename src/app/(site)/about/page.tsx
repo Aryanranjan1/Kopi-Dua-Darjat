@@ -20,6 +20,7 @@ export default async function AboutPage() {
   }
 
   const content = allContent[lang];
+  const homeContent = content?.home || {};
 
   return (
     <>
@@ -40,7 +41,7 @@ export default async function AboutPage() {
         <AboutMediaSections content={content} />
         <LivingMosaicGallery />
       </div>
-      <LatestStories content={content} />
+      <LatestStories content={{[lang]: homeContent}} />
       <NewsletterSignUp />
     </>
   );

@@ -6,7 +6,6 @@ import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import TiltedCard from '../animations/TiltedCard';
 import { Skeleton } from '../ui/skeleton';
 import { useMediaAsset } from '@/lib/media';
-import { useLanguage } from '../layout/LanguageProvider';
 
 export default function WhoAreWe({ content }: { content: any }) {
   const { asset: image, isLoading } = useMediaAsset('brewing-method');
