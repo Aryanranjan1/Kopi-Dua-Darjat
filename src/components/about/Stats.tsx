@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useInView } from 'framer-motion';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { TrendingUp, Users, Award, MapPin } from 'lucide-react';
+import { useLanguage } from '../layout/LanguageProvider';
 
 const AnimatedCounter = ({ to, duration = 2 }: { to: number; duration?: number }) => {
   const [count, setCount] = useState(0);
@@ -55,9 +56,10 @@ const StatItem = ({ icon: Icon, value, label, suffix }: { icon: React.ElementTyp
 )
 
 export default function Stats({ content }: { content: any }) {
+    const { language } = useLanguage();
     if (!content) return null;
     
-    const localizedContent = content.about?.stats;
+    const localizedContent = content[language]?.about?.stats;
     if (!localizedContent) return null;
 
     return (
