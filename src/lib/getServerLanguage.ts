@@ -8,8 +8,7 @@ import type { SiteLanguage } from './firestore/getSiteContent';
  * @returns The current site language ('en' | 'ms').
  */
 export function getServerLanguage(): SiteLanguage {
-  const cookieStore = cookies();
-  const langCookie = cookieStore.get('lang'); // You can name your cookie anything, e.g., 'NEXT_LOCALE'
+  const langCookie = cookies().get('lang');
 
   if (langCookie && (langCookie.value === 'en' || langCookie.value === 'ms')) {
     return langCookie.value;
