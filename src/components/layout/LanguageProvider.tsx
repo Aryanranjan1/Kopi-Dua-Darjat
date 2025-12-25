@@ -19,21 +19,21 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname();
 
   useEffect(() => {
+    // On mount, try to get the language from localStorage to set the initial UI state
     const storedLanguage = localStorage.getItem('siteLanguage') as LangCode;
     if (storedLanguage && ['en', 'ms'].includes(storedLanguage)) {
       setLanguageState(storedLanguage);
-      document.cookie = `lang=${storedLanguage}; path=/; max-age=31536000`;
-    } else {
-      document.cookie = `lang=${DEFAULT_LANGUAGE}; path=/; max-age=31536000`;
     }
   }, []);
 
   const setLanguage = (lang: LangCode) => {
     setLanguageState(lang);
+    // Persist to localStorage for immediate UI updates on next visit
     localStorage.setItem('siteLanguage', lang);
-    document.cookie = `lang=${lang}; path=/; max-age=31536000`; // Set cookie for server
+    // Set a cookie that the server can read
+    document.cookie = `lang=${lang}; path=/; max-age=31536000`; // Expires in 1 year
     
-    // Use router.refresh() for App Router to re-fetch server components with new cookie
+    // Refresh the page to force a server-side re-render with the new cookie
     router.refresh();
   };
 
