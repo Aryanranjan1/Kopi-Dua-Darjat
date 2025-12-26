@@ -60,7 +60,7 @@ const PostTile = React.forwardRef<HTMLDivElement, { post: PublicInstaPost; onAct
                 <DropdownMenuContent onClick={(e) => e.stopPropagation()}>
                     <DropdownMenuItem onClick={() => onResize(post.id, 1, 1)}>Small (1x1)</DropdownMenuItem>
                     <DropdownMenuItem onClick={() => onResize(post.id, 1, 2)}>Tall (1x2)</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onResize(post.id, 2, 2)}>Large (2x2)</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onResize(post.id, 2, 2)}>Square (2x2)</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
               <Button size="icon" variant="ghost" className="h-7 w-7 bg-black/50 text-white hover:bg-black/80 hover:text-white" onClick={(e) => { e.stopPropagation(); onAction('pin', post.id, post.pinned); }}>
@@ -109,8 +109,8 @@ export default function SocialFeedManager() {
     useEffect(() => {
         if (posts) {
             const sorted = [...posts].sort((a,b) => (a.rank || Infinity) - (b.rank || Infinity));
-            const active = sorted.filter(p => (p.rank || 0) <= MAX_ACTIVE_POSTS && p.rank !== 0);
-            const passive = sorted.filter(p => (p.rank || 0) > MAX_ACTIVE_POSTS || p.rank === 0);
+            const active = sorted.filter(p => (p.rank || 0) > 0 && (p.rank || 0) <= MAX_ACTIVE_POSTS);
+            const passive = sorted.filter(p => (p.rank || 0) === 0 || (p.rank || 0) > MAX_ACTIVE_POSTS);
             
             setActivePosts(active);
             setPassivePosts(passive);
@@ -154,7 +154,19 @@ export default function SocialFeedManager() {
     };
 
     const handleLayoutChange = (newLayout: Layout[]) => {
-        setActiveLayout(newLayout);
+        // Sort the active posts based on the new layout's y and x coordinates
+        const sortedLayout = [...newLayout].sort((a, b) => {
+            if (a.y === b.y) {
+                return a.x - b.x;
+            }
+            return a.y - b.y;
+        });
+
+        const sortedPostIds = sortedLayout.map(l => l.i);
+        const sortedActivePosts = sortedPostIds.map(id => activePosts.find(p => p.id === id)).filter((p): p is PublicInstaPost => !!p);
+
+        setActivePosts(sortedActivePosts);
+        setActiveLayout(newLayout); // Keep the direct layout from the library for rendering
         setHasChanges(true);
     };
 
@@ -174,6 +186,7 @@ export default function SocialFeedManager() {
         if (!firestore) return;
         const batch = writeBatch(firestore);
         
+        // Use the re-ordered activePosts array to determine rank
         activePosts.forEach((post, index) => {
             const layoutItem = activeLayout.find(l => l.i === post.id);
             const postRef = doc(firestore, 'public_insta_feed', post.id);
@@ -186,7 +199,7 @@ export default function SocialFeedManager() {
         passivePosts.forEach((post, index) => {
              const postRef = doc(firestore, 'public_insta_feed', post.id);
              batch.update(postRef, {
-                 rank: MAX_ACTIVE_POSTS + index + 1
+                 rank: 0 // Set rank to 0 for passive posts
              });
         });
 
@@ -259,7 +272,7 @@ export default function SocialFeedManager() {
             </div>
            
             <div className="flex flex-col gap-8">
-                <div className="lg:col-span-2">
+                <div>
                     <h3 className="font-bold text-lg mb-2">Active Posts ({activePosts.length}/{MAX_ACTIVE_POSTS})</h3>
                      {isLoading ? (
                         <div className="flex justify-center items-center h-64"><Loader2 className="w-12 h-12 text-primary animate-spin" /></div>
