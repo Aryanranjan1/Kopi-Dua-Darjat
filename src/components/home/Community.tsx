@@ -65,7 +65,7 @@ export default function Community({ content }: { content: any }) {
               if (item.type === 'logo') {
                 return (
                   <AnimateOnScroll key={item.id} className={cn('relative aspect-square rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-center p-8', item.className)} delay={delay}>
-                    <Image src={item.imageUrl} alt={localizedItem.name || ''} width={150} height={40} className="object-contain filter grayscale" />
+                    {item.imageUrl && <Image src={item.imageUrl} alt={localizedItem.name || ''} width={150} height={40} className="object-contain filter grayscale" />}
                   </AnimateOnScroll>
                 );
               }
