@@ -70,8 +70,8 @@ const CommunityItemForm = ({ item, onSuccess }: { item?: CommunityItem; onSucces
       role: item?.role || '',
       bgColor: item?.bgColor || '',
       textColor: item?.textColor || 'text-black',
-      className: item?.className?.split(' ').filter(c => c.startsWith('sm:col-span-')).join(' ') || '',
-      rowSpan: item?.className?.split(' ').filter(c => c.startsWith('sm:row-span-')).join(' ') || '',
+      className: item?.className?.split(' ').filter(c => c.startsWith('col-span-')).join(' ') || '',
+      rowSpan: item?.className?.split(' ').filter(c => c.startsWith('row-span-')).join(' ') || '',
     },
   });
   
@@ -184,10 +184,10 @@ const CommunityItemForm = ({ item, onSuccess }: { item?: CommunityItem; onSucces
 
              <div className="grid grid-cols-2 gap-4">
               <FormField control={formMethods.control} name="className" render={({ field }) => (
-                <FormItem><FormLabel>Column Span</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} placeholder="e.g. sm:col-span-1" /></FormControl><FormMessage /></FormItem>
+                <FormItem><FormLabel>Column Span</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} placeholder="e.g. col-span-1" /></FormControl><FormMessage /></FormItem>
               )} />
               <FormField control={formMethods.control} name="rowSpan" render={({ field }) => (
-                <FormItem><FormLabel>Row Span</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} placeholder="e.g. sm:row-span-1" /></FormControl><FormMessage /></FormItem>
+                <FormItem><FormLabel>Row Span</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles} placeholder="e.g. row-span-1" /></FormControl><FormMessage /></FormItem>
               )} />
              </div>
           </div>

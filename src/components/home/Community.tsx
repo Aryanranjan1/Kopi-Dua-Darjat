@@ -44,7 +44,7 @@ export default function Community({ content }: { content: any }) {
             {[...Array(8)].map((_, i) => <Skeleton key={i} className="aspect-square rounded-2xl bg-gray-200" />)}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 grid-flow-dense">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 auto-rows-fr gap-4 md:gap-6 grid-flow-dense">
             {communityItems?.map((item, index) => {
               const delay = (index % 4) * 0.1;
               const localizedItem = getLocalized(item, language);
@@ -72,7 +72,7 @@ export default function Community({ content }: { content: any }) {
               }
               if (item.type === 'quote') {
                 return (
-                  <AnimateOnScroll key={item.id} className={cn('rounded-2xl p-6 sm:p-8 flex flex-col justify-between', item.bgColor, item.textColor, item.className, item.className?.includes('sm:col-span-2') ? 'aspect-[2/1]' : 'aspect-square')} delay={delay}>
+                  <AnimateOnScroll key={item.id} className={cn('rounded-2xl p-6 sm:p-8 flex flex-col justify-between', item.bgColor, item.textColor, item.className, item.className?.includes('col-span-2') ? 'aspect-[2/1]' : 'aspect-square')} delay={delay}>
                     <div>
                       <p className="text-4xl font-serif">"</p>
                       <p className="text-base md:text-lg font-medium">{localizedItem.quote}</p>
