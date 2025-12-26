@@ -14,12 +14,13 @@ import SupportAndTraining from '@/components/franchise/SupportAndTraining';
 import Faq from './Faq';
 import FinalCta from '@/components/franchise/FinalCta';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: 'Franchise',
   description: 'Join the Kopi Dua Darjat family. Learn more about our franchise opportunities.',
 };
-
-export const revalidate = 60; // Revalidate the data every 60 seconds
 
 export default async function FranchisePage() {
   const allContent = await getSiteContent();
@@ -43,5 +44,3 @@ export default async function FranchisePage() {
     </div>
   );
 }
-
-    
