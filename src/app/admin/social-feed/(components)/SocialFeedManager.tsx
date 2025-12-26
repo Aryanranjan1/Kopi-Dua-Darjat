@@ -17,11 +17,12 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import SocialPostForm from './SocialPostForm';
+import { cn } from '@/lib/utils';
 
-const PostTile = ({ post, onAction, onEdit }: { post: PublicInstaPost; onAction: (action: 'delete' | 'pin' | 'visible', postId: string, currentStatus?: boolean) => void; onEdit: (post: PublicInstaPost) => void; }) => {
-    const isVideo = post.mediaType === 'VIDEO';
+
+const PostTile = ({ post, className, onAction, onEdit }: { post: PublicInstaPost; className: string; onAction: (action: 'delete' | 'pin' | 'visible', postId: string, currentStatus?: boolean) => void; onEdit: (post: PublicInstaPost) => void; }) => {
     return (
-        <div className={`relative group overflow-hidden bg-zinc-800 ${isVideo ? 'aspect-[9/16]' : 'aspect-square'}`} onClick={() => onEdit(post)}>
+        <div className={cn('relative group overflow-hidden bg-zinc-800', className)} onClick={() => onEdit(post)}>
              {post.mediaType === 'VIDEO' ? (
                 <video src={post.mediaUrl} autoPlay muted loop playsInline className="w-full h-full object-cover" />
             ) : (
@@ -190,10 +191,20 @@ export default function SocialFeedManager() {
                     <Loader2 className="w-12 h-12 text-primary animate-spin" />
                 </div>
             ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                    {filteredPosts.map(post => (
-                        <PostTile key={post.id} post={post} onAction={handleAction} onEdit={handleEdit} />
-                    ))}
+                <div className="grid grid-cols-3 gap-[2px] sm:gap-[3px] grid-flow-dense">
+                    {filteredPosts.map((post, i) => {
+                       const isReel = post.mediaType === 'VIDEO';
+                       // A more robust pattern for placing larger tiles to avoid gaps
+                       const isBig = i % 11 === 0 || i % 11 === 7;
+
+                       const spanClasses = isBig
+                        ? 'col-span-2 row-span-2'
+                        : isReel
+                        ? 'row-span-2'
+                        : '';
+                        
+                       return <PostTile key={post.id} post={post} className={spanClasses} onAction={handleAction} onEdit={handleEdit} />;
+                    })}
                 </div>
             )}
             {filteredPosts.length === 0 && !isLoading && (
