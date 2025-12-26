@@ -9,42 +9,56 @@ import type { PublicInstaPost } from '@/lib/types';
 import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import { Responsive, WidthProvider, Layout } from 'react-grid-layout';
+import 'react-grid-layout/css/styles.css';
+import 'react-resizable/css/styles.css';
 
-const PostItem = ({ post, className }: { post: PublicInstaPost; className: string }) => {
+const ResponsiveGridLayout = WidthProvider(Responsive);
+
+const PostItem = React.forwardRef<HTMLDivElement, { post: PublicInstaPost; style?: React.CSSProperties, className?: string }>(({ post, style, className, ...props }, ref) => {
   const isReel = post.mediaType === 'VIDEO';
   
   return (
-    <a
-      href={post.permalink}
-      target="_blank"
-      rel="noopener noreferrer"
+    <div
+      ref={ref}
+      style={style}
       className={cn('relative group overflow-hidden', className)}
+      {...props}
     >
-      {isReel ? (
-        <video
-          src={post.mediaUrl}
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-        />
-      ) : (
-        <img
-          src={post.mediaUrl}
-          alt={post.caption || `Instagram post by ${post.username}`}
-          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-        />
-      )}
-      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition flex items-end p-3">
-        <div className="opacity-0 group-hover:opacity-100 transition text-white text-xs">
-          <p className="font-semibold">@{post.username}</p>
-          <p className="line-clamp-2">{post.caption}</p>
+      <a
+        href={post.permalink}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block w-full h-full"
+      >
+        {isReel ? (
+          <video
+            src={post.mediaUrl}
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+        ) : (
+          <img
+            src={post.mediaUrl}
+            alt={post.caption || `Instagram post by ${post.username}`}
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+        )}
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition flex items-end p-3">
+          <div className="opacity-0 group-hover:opacity-100 transition text-white text-xs">
+            <p className="font-semibold">@{post.username}</p>
+            <p className="line-clamp-2">{post.caption}</p>
+          </div>
         </div>
-      </div>
-    </a>
+      </a>
+    </div>
   );
-};
+});
+PostItem.displayName = 'PostItem';
+
 
 export default function InstaExploreGrid() {
   const firestore = useFirestore();
@@ -65,6 +79,31 @@ export default function InstaExploreGrid() {
     if (!posts) return [];
     return posts.filter(post => post.visible);
   }, [posts]);
+  
+  const GRID_COLS = { lg: 3, md: 3, sm: 3, xs: 2, xxs: 1 };
+
+  const layouts = useMemo(() => {
+    const newLayouts: { [key: string]: Layout[] } = {};
+    Object.keys(GRID_COLS).forEach(bp => {
+      newLayouts[bp] = visiblePosts.map((post, index) => {
+        const postLayout = post.layouts?.[bp as keyof typeof post.layouts];
+        if (postLayout) {
+          return { ...postLayout, i: post.id, static: true };
+        }
+        // Fallback layout
+        const cols = GRID_COLS[bp as keyof typeof GRID_COLS];
+        return {
+          i: post.id,
+          x: (index % cols),
+          y: Math.floor(index / cols),
+          w: 1,
+          h: 1,
+          static: true,
+        };
+      });
+    });
+    return newLayouts;
+  }, [visiblePosts]);
 
   return (
     <section className="bg-black w-full">
@@ -75,13 +114,21 @@ export default function InstaExploreGrid() {
                 </div>
                 ) : visiblePosts && visiblePosts.length > 0 ? (
                 <div className="bg-neutral-950/80 overflow-hidden relative">
-                    <div className="grid grid-cols-3 gap-[2px] sm:gap-[3px] grid-flow-dense">
-                        {visiblePosts.map((post) => {
-                           const layout = post.layout || { w: 1, h: 1 };
-                           const spanClasses = `col-span-${layout.w} row-span-${layout.h}`;
-                           return <PostItem key={post.id} post={post} className={spanClasses} />;
-                        })}
-                    </div>
+                     <ResponsiveGridLayout
+                        className="layout"
+                        layouts={layouts}
+                        breakpoints={GRID_COLS}
+                        cols={GRID_COLS}
+                        rowHeight={300}
+                        isDraggable={false}
+                        isResizable={false}
+                        compactType="vertical"
+                        margin={[3, 3]}
+                    >
+                        {visiblePosts.map((post) => (
+                           <PostItem key={post.id} post={post} />
+                        ))}
+                    </ResponsiveGridLayout>
                     <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/70 to-transparent pointer-events-none z-10" />
                     <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20">
                          <Button asChild variant="outline" className="rounded-full border-white/50 bg-white text-black hover:bg-white/80 hover:text-black">
