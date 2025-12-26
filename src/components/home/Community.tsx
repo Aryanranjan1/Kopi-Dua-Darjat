@@ -11,6 +11,7 @@ import type { CommunityItem } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useLanguage } from '@/components/layout/LanguageProvider';
 import { getLocalized } from '@/lib/utils';
+import { Logo } from '../layout/Logo';
 
 export default function Community({ content }: { content: any }) {
   const { language } = useLanguage();
@@ -65,7 +66,7 @@ export default function Community({ content }: { content: any }) {
               if (item.type === 'logo') {
                 return (
                   <AnimateOnScroll key={item.id} className={cn('relative aspect-square rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-center p-8', item.className)} delay={delay}>
-                    {item.imageUrl && <Image src={item.imageUrl} alt={localizedItem.name || ''} width={150} height={40} className="object-contain filter grayscale" />}
+                    <Image src={item.imageUrl || '/image/1.svg'} alt={localizedItem.name || 'Company Logo'} width={150} height={40} className="object-contain filter grayscale" />
                   </AnimateOnScroll>
                 );
               }
