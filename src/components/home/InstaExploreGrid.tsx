@@ -12,8 +12,8 @@ import Link from 'next/link';
 
 const PostItem = React.forwardRef<HTMLDivElement, { post: PublicInstaPost; className?: string }>(({ post, className, ...props }, ref) => {
   const isReel = post.mediaType === 'VIDEO';
-  const colSpan = post.layout?.w === 2 ? 'sm:col-span-2' : 'sm:col-span-1';
-  const rowSpan = post.layout?.h === 2 ? 'sm:row-span-2' : 'sm:row-span-1';
+  const colSpan = post.layout?.w === 2 ? 'col-span-2' : 'col-span-1';
+  const rowSpan = post.layout?.h === 2 ? 'row-span-2' : 'row-span-1';
 
   return (
     <div
@@ -89,7 +89,7 @@ export default function InstaExploreGrid() {
             <Loader2 className="w-12 h-12 text-primary animate-spin" />
           </div>
         ) : visiblePosts && visiblePosts.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 grid-flow-dense gap-1 md:gap-2 auto-rows-fr">
+          <div className="grid grid-cols-3 grid-flow-dense gap-1 md:gap-2 auto-rows-fr">
             {visiblePosts.map((post) => (
               <PostItem key={post.id} post={post} />
             ))}
