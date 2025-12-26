@@ -89,7 +89,7 @@ export default function InstaExploreGrid() {
             <Loader2 className="w-12 h-12 text-primary animate-spin" />
           </div>
         ) : visiblePosts && visiblePosts.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 grid-flow-dense gap-1 md:gap-2 grid-rows-[repeat(8,minmax(0,1fr))]">
+          <div className="grid grid-cols-2 sm:grid-cols-3 grid-flow-dense gap-1 md:gap-2 auto-rows-fr">
             {visiblePosts.map((post) => (
               <PostItem key={post.id} post={post} />
             ))}
