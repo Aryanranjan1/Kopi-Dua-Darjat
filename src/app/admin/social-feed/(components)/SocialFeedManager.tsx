@@ -8,7 +8,7 @@ import type { PublicInstaPost } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Search, Trash, Pin, PinOff, Eye, EyeOff, PlusCircle, Database, Save, ArrowDown, ArrowUp } from 'lucide-react';
+import { Loader2, Search, Trash, Pin, PinOff, Eye, EyeOff, PlusCircle, Database, Save, ArrowDown, ArrowUp, ArrowLeft, Ruler } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import SocialPostForm from './SocialPostForm';
 import { cn } from '@/lib/utils';
@@ -16,18 +16,18 @@ import { Responsive, WidthProvider, Layout } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const GRID_COLS = { lg: 3, md: 3, sm: 3, xs: 2, xxs: 1 };
 const GRID_ROW_HEIGHT = 150;
 const MAX_ACTIVE_POSTS = 21;
-const MAX_ACTIVE_IMAGES = 18;
-const MAX_ACTIVE_VIDEOS = 3;
 
 
-const PostTile = React.forwardRef<HTMLDivElement, { post: PublicInstaPost; onAction: (action: 'delete' | 'pin' | 'visible', postId: string, currentStatus?: boolean) => void; onEdit: (post: PublicInstaPost) => void, className?: string }>(
-  ({ post, onAction, onEdit, className, ...props }, ref) => {
+const PostTile = React.forwardRef<HTMLDivElement, { post: PublicInstaPost; onAction: (action: 'delete' | 'pin' | 'visible', postId: string, currentStatus?: boolean) => void; onEdit: (post: PublicInstaPost) => void; onResize: (postId: string, w: number, h: number) => void; className?: string }>(
+  ({ post, onAction, onEdit, onResize, className, ...props }, ref) => {
   return (
       <div ref={ref} {...props} className={cn('group overflow-hidden bg-zinc-800 cursor-pointer', className)}>
           {post.mediaType === 'VIDEO' ? (
@@ -42,6 +42,18 @@ const PostTile = React.forwardRef<HTMLDivElement, { post: PublicInstaPost; onAct
           </div>
 
           <div className="absolute top-1 right-1 flex flex-col gap-1">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button size="icon" variant="ghost" className="h-7 w-7 bg-black/50 text-white hover:bg-black/80 hover:text-white" onClick={(e) => e.stopPropagation()}>
+                        <Ruler className="h-4 w-4" />
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent onClick={(e) => e.stopPropagation()}>
+                    <DropdownMenuItem onClick={() => onResize(post.id, 1, 1)}>Small (1x1)</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onResize(post.id, 1, 2)}>Tall (1x2)</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onResize(post.id, 2, 2)}>Large (2x2)</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
               <Button size="icon" variant="ghost" className="h-7 w-7 bg-black/50 text-white hover:bg-black/80 hover:text-white" onClick={(e) => { e.stopPropagation(); onAction('pin', post.id, post.pinned); }}>
                   {post.pinned ? <PinOff className="h-4 w-4" /> : <Pin className="h-4 w-4" />}
               </Button>
@@ -60,7 +72,6 @@ const PostTile = React.forwardRef<HTMLDivElement, { post: PublicInstaPost; onAct
           {post.pinned && (
               <Pin className="absolute top-2 left-2 h-5 w-5 text-white bg-black/50 p-1 rounded-full" />
           )}
-          <div className="react-resizable-handle" />
       </div>
   );
 });
@@ -75,7 +86,7 @@ export default function SocialFeedManager() {
     const [selectedPost, setSelectedPost] = useState<PublicInstaPost | undefined>(undefined);
     
     const feedQuery = useMemoFirebase(
-        () => firestore ? query(collection(firestore, 'public_insta_feed'), orderBy('rank', 'asc')) : null,
+        () => firestore ? query(collection(firestore, 'public_insta_feed')) : null,
         [firestore]
     );
     const { data: posts, isLoading } = useCollection<PublicInstaPost>(feedQuery);
@@ -87,18 +98,25 @@ export default function SocialFeedManager() {
 
     useEffect(() => {
         if (posts) {
-            const active = posts.filter(p => p.rank <= MAX_ACTIVE_POSTS);
-            const passive = posts.filter(p => p.rank > MAX_ACTIVE_POSTS);
+            const sorted = [...posts].sort((a,b) => a.rank - b.rank);
+            const active = sorted.slice(0, MAX_ACTIVE_POSTS);
+            const passive = sorted.slice(MAX_ACTIVE_POSTS);
             
             setActivePosts(active);
             setPassivePosts(passive);
 
-            const initialLayout = active.map(p => p.layout ? { ...p.layout, i: p.id } : {
-                i: p.id,
-                x: (p.rank - 1) % GRID_COLS.lg,
-                y: Math.floor((p.rank - 1) / GRID_COLS.lg),
-                w: 1,
-                h: p.mediaType === 'VIDEO' ? 2 : 1,
+            const initialLayout = active.map((p, index) => {
+                if (p.layout) {
+                    return { ...p.layout, i: p.id };
+                }
+                // Fallback layout logic if none exists
+                return {
+                    i: p.id,
+                    x: (index % GRID_COLS.lg),
+                    y: Math.floor(index / GRID_COLS.lg),
+                    w: 1,
+                    h: p.mediaType === 'VIDEO' ? 2 : 1,
+                };
             });
             setActiveLayout(initialLayout);
         }
@@ -108,9 +126,18 @@ export default function SocialFeedManager() {
         if (!firestore) return;
         const postRef = doc(firestore, 'public_insta_feed', postId);
         try {
-            if (action === 'delete') { await writeBatch(firestore).delete(postRef).commit(); toast({ title: 'Post Deleted' }); }
-            else if (action === 'pin') { await writeBatch(firestore).update(postRef, { pinned: !currentStatus }).commit(); toast({ title: currentStatus ? 'Post Unpinned' : 'Post Pinned' }); }
-            else if (action === 'visible') { await writeBatch(firestore).update(postRef, { visible: !currentStatus }).commit(); toast({ title: currentStatus ? 'Post Hidden' : 'Post Visible' }); }
+            if (action === 'delete') { 
+                await writeBatch(firestore).delete(postRef).commit(); 
+                toast({ title: 'Post Deleted' }); 
+            }
+            else if (action === 'pin') { 
+                await writeBatch(firestore).update(postRef, { pinned: !currentStatus }).commit(); 
+                toast({ title: currentStatus ? 'Post Unpinned' : 'Post Pinned' }); 
+            }
+            else if (action === 'visible') { 
+                await writeBatch(firestore).update(postRef, { visible: !currentStatus }).commit(); 
+                toast({ title: currentStatus ? 'Post Hidden' : 'Post Visible' }); 
+            }
         } catch (error: any) {
             toast({ variant: 'destructive', title: 'Action Failed', description: error.message });
         }
@@ -121,20 +148,42 @@ export default function SocialFeedManager() {
         setHasChanges(true);
     };
 
+    const handleResizePost = (postId: string, w: number, h: number) => {
+        setActiveLayout(prevLayout => {
+            return prevLayout.map(item => {
+                if (item.i === postId) {
+                    return { ...item, w, h };
+                }
+                return item;
+            });
+        });
+        setHasChanges(true);
+    };
+
     const handleSaveLayout = async () => {
         if (!firestore) return;
         const batch = writeBatch(firestore);
         
-        activeLayout.forEach(item => {
+        // Update layout and rank for active posts
+        activeLayout.forEach((item, index) => {
             const postRef = doc(firestore, 'public_insta_feed', item.i);
             batch.update(postRef, {
+                rank: index + 1,
                 layout: { x: item.x, y: item.y, w: item.w, h: item.h }
             });
         });
 
+        // Update rank for passive posts
+        passivePosts.forEach((post, index) => {
+             const postRef = doc(firestore, 'public_insta_feed', post.id);
+             batch.update(postRef, {
+                 rank: MAX_ACTIVE_POSTS + index + 1
+             });
+        });
+
         try {
             await batch.commit();
-            toast({ title: "Layout Saved", description: "Your grid layout has been updated." });
+            toast({ title: "Layout and Ranks Saved", description: "Your changes have been successfully saved." });
             setHasChanges(false);
         } catch (error: any) {
              toast({ variant: 'destructive', title: 'Save Failed', description: error.message });
@@ -142,22 +191,26 @@ export default function SocialFeedManager() {
     };
 
     const moveToActive = (post: PublicInstaPost) => {
-        let newActivePosts = [...activePosts, post];
-        let newPassivePosts = passivePosts.filter(p => p.id !== post.id);
-
-        if (newActivePosts.length > MAX_ACTIVE_POSTS) {
-            const postToMove = newActivePosts.shift();
-            if(postToMove) newPassivePosts.unshift(postToMove);
+        const postToMoveOut = activePosts.length >= MAX_ACTIVE_POSTS ? activePosts[activePosts.length - 1] : null;
+        
+        const newPassive = passivePosts.filter(p => p.id !== post.id);
+        if (postToMoveOut) {
+            newPassive.unshift(postToMoveOut);
         }
+        
+        const newActive = [...activePosts.filter(p => p.id !== postToMoveOut?.id), post];
 
-        setActivePosts(newActivePosts);
-        setPassivePosts(newPassivePosts);
+        setActivePosts(newActive);
+        setPassivePosts(newPassive);
         setHasChanges(true);
     };
 
     const moveToPassive = (post: PublicInstaPost) => {
-        setActivePosts(activePosts.filter(p => p.id !== post.id));
-        setPassivePosts([post, ...passivePosts]);
+        const newActive = activePosts.filter(p => p.id !== post.id);
+        const newPassive = [post, ...passivePosts];
+
+        setActivePosts(newActive);
+        setPassivePosts(newPassive);
         setHasChanges(true);
     };
 
@@ -167,11 +220,13 @@ export default function SocialFeedManager() {
         return passivePosts.filter(p => p.username.toLowerCase().includes(searchQuery.toLowerCase()));
     }, [passivePosts, searchQuery]);
 
+    const activePostsMap = useMemo(() => new Map(activePosts.map(p => [p.id, p])), [activePosts]);
+    
     return (
         <div>
             {hasChanges && (
                  <div className="flex justify-end mb-4">
-                    <Button onClick={handleSaveLayout}><Save className="mr-2 h-4 w-4" /> Save Layout</Button>
+                    <Button onClick={handleSaveLayout}><Save className="mr-2 h-4 w-4" /> Save Layout & Ranks</Button>
                 </div>
             )}
            
@@ -188,9 +243,10 @@ export default function SocialFeedManager() {
                             rowHeight={GRID_ROW_HEIGHT}
                             onLayoutChange={handleLayoutChange}
                         >
-                            {activePosts.map(post => (
-                                <PostTile key={post.id} post={post} onAction={handleAction} onEdit={setSelectedPost} />
-                            ))}
+                            {activeLayout.map(item => {
+                                const post = activePostsMap.get(item.i);
+                                return post ? <PostTile key={post.id} post={post} onAction={handleAction} onEdit={setSelectedPost} onResize={handleResizePost} /> : null
+                            })}
                         </ResponsiveGridLayout>
                     )}
                 </div>
@@ -214,7 +270,13 @@ export default function SocialFeedManager() {
                                     <p className="text-sm font-semibold truncate">{post.username}</p>
                                     <p className="text-xs text-zinc-400 truncate">{post.caption || "No caption"}</p>
                                 </div>
-                                <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => moveToActive(post)}><ArrowUp className="h-4 w-4"/></Button>
+                                {activePosts.length < MAX_ACTIVE_POSTS ? (
+                                    <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => moveToActive(post)}><ArrowLeft className="h-4 w-4"/></Button>
+                                ) : (
+                                    <Button size="icon" variant="ghost" className="h-8 w-8" disabled>
+                                        <ArrowLeft className="h-4 w-4 text-zinc-600"/>
+                                    </Button>
+                                )}
                             </div>
                          ))}
                         </div>
