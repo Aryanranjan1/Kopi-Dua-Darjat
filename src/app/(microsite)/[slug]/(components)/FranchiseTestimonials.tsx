@@ -19,10 +19,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useLanguage } from '@/components/layout/LanguageProvider';
 import { getLocalized } from '@/lib/utils';
 import { useMediaAsset } from '@/lib/media';
+import { Logo } from '@/components/layout/Logo';
 
 const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
-  const { asset: companyLogo, isLoading: isLoadingLogo } = useMediaAsset('logo-symbol');
-
   const { language } = useLanguage();
   const localized = getLocalized(testimonial, language);
 
@@ -46,10 +45,8 @@ const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
               </div>
             </div>
              <div className="flex items-center gap-2 border rounded-full px-3 py-1 text-sm">
-               <div className="w-12 h-12 relative">
-                {isLoadingLogo ? <Skeleton className="w-full h-full rounded-full" /> : companyLogo && (
-                  <Image src={companyLogo.imageUrl} alt="Company Logo" fill className="object-contain p-2 filter grayscale brightness-0 invert-0" data-ai-hint={companyLogo.imageHint} />
-                )}
+               <div className="w-12 h-12 relative p-2">
+                <Logo className="filter grayscale" />
                </div>
                <span className="font-semibold text-zinc-600">{testimonial.company || 'KDD Franchise'}</span>
              </div>
