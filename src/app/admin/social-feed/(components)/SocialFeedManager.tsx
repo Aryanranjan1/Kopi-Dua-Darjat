@@ -8,7 +8,7 @@ import type { PublicInstaPost } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Search, Trash, Pin, PinOff, Eye, EyeOff, PlusCircle, Database, Save, ArrowDown, ArrowUp, ArrowLeft, Ruler } from 'lucide-react';
+import { Loader2, Search, Trash, Pin, PinOff, Eye, EyeOff, PlusCircle, Database, Save, ArrowDown, ArrowUp, ArrowLeft, Ruler, Edit, Move } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import SocialPostForm from './SocialPostForm';
 import { cn } from '@/lib/utils';
@@ -26,21 +26,30 @@ const GRID_ROW_HEIGHT = 150;
 const MAX_ACTIVE_POSTS = 21;
 
 
-const PostTile = React.forwardRef<HTMLDivElement, { post: PublicInstaPost; onAction: (action: 'delete' | 'pin' | 'visible', postId: string, currentStatus?: boolean) => void; onEdit: (post: PublicInstaPost) => void; onResize: (postId: string, w: number, h: number) => void; className?: string }>(
-  ({ post, onAction, onEdit, onResize, className, ...props }, ref) => {
+const PostTile = React.forwardRef<HTMLDivElement, { post: PublicInstaPost; onAction: (action: 'delete' | 'pin' | 'visible', postId: string, currentStatus?: boolean) => void; onEdit: (post: PublicInstaPost) => void; onResize: (postId: string, w: number, h: number) => void; className?: string; isAdjustmentMode: boolean }>(
+  ({ post, onAction, onEdit, onResize, className, isAdjustmentMode, ...props }, ref) => {
   return (
-      <div ref={ref} {...props} className={cn('group overflow-hidden bg-zinc-800 cursor-pointer', className)}>
+      <div 
+        ref={ref} 
+        {...props} 
+        className={cn(
+            'group overflow-hidden bg-zinc-800', 
+            isAdjustmentMode ? 'cursor-move' : 'cursor-pointer',
+            className
+        )}
+        onClick={() => !isAdjustmentMode && onEdit(post)}
+      >
           {post.mediaType === 'VIDEO' ? (
-              <video src={post.mediaUrl} autoPlay muted loop playsInline className="w-full h-full object-cover" />
+              <video src={post.mediaUrl} autoPlay muted loop playsInline className="w-full h-full object-contain" />
           ) : (
-              <img src={post.mediaUrl} alt={post.caption || 'Instagram post'} className="w-full h-full object-cover" />
+              <img src={post.mediaUrl} alt={post.caption || 'Instagram post'} className="w-full h-full object-contain" />
           )}
 
-          <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center p-2 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300" onClick={() => onEdit(post)}>
+          <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center p-2 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
               <span className="text-white text-sm font-bold">@{post.username}</span>
               <span className="text-white text-xs mt-1 font-mono">ID: {post.id}</span>
           </div>
-
+            
           <div className="absolute top-1 right-1 flex flex-col gap-1">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -60,17 +69,20 @@ const PostTile = React.forwardRef<HTMLDivElement, { post: PublicInstaPost; onAct
               <Button size="icon" variant="ghost" className="h-7 w-7 bg-black/50 text-white hover:bg-black/80 hover:text-white" onClick={(e) => { e.stopPropagation(); onAction('visible', post.id, post.visible); }}>
                   {post.visible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </Button>
+               <Button size="icon" variant="ghost" className="h-7 w-7 bg-black/50 text-white hover:bg-black/80 hover:text-white" onClick={(e) => { e.stopPropagation(); onEdit(post); }}>
+                <Edit className="h-4 w-4" />
+              </Button>
               <Button size="icon" variant="destructive" className="h-7 w-7 bg-red-600/80 hover:bg-red-500" onClick={(e) => { e.stopPropagation(); onAction('delete', post.id); }}>
                   <Trash className="h-4 w-4" />
               </Button>
           </div>
           {!post.visible && (
-              <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
+              <div className="absolute inset-0 bg-black/70 flex items-center justify-center pointer-events-none">
                   <EyeOff className="h-10 w-10 text-zinc-500" />
               </div>
           )}
           {post.pinned && (
-              <Pin className="absolute top-2 left-2 h-5 w-5 text-white bg-black/50 p-1 rounded-full" />
+              <Pin className="absolute top-2 left-2 h-5 w-5 text-white bg-black/50 p-1 rounded-full pointer-events-none" />
           )}
       </div>
   );
@@ -95,12 +107,13 @@ export default function SocialFeedManager() {
     const [passivePosts, setPassivePosts] = useState<PublicInstaPost[]>([]);
     const [activePosts, setActivePosts] = useState<PublicInstaPost[]>([]);
     const [hasChanges, setHasChanges] = useState(false);
+    const [isAdjustmentMode, setIsAdjustmentMode] = useState(false);
 
     useEffect(() => {
         if (posts) {
-            const sorted = [...posts].sort((a,b) => a.rank - b.rank);
-            const active = sorted.slice(0, MAX_ACTIVE_POSTS);
-            const passive = sorted.slice(MAX_ACTIVE_POSTS);
+            const sorted = [...posts].sort((a,b) => (a.rank || Infinity) - (b.rank || Infinity));
+            const active = sorted.filter(p => (p.rank || 0) <= MAX_ACTIVE_POSTS && p.rank !== 0);
+            const passive = sorted.filter(p => (p.rank || 0) > MAX_ACTIVE_POSTS || p.rank === 0);
             
             setActivePosts(active);
             setPassivePosts(passive);
@@ -164,16 +177,15 @@ export default function SocialFeedManager() {
         if (!firestore) return;
         const batch = writeBatch(firestore);
         
-        // Update layout and rank for active posts
-        activeLayout.forEach((item, index) => {
-            const postRef = doc(firestore, 'public_insta_feed', item.i);
+        activePosts.forEach((post, index) => {
+            const layoutItem = activeLayout.find(l => l.i === post.id);
+            const postRef = doc(firestore, 'public_insta_feed', post.id);
             batch.update(postRef, {
                 rank: index + 1,
-                layout: { x: item.x, y: item.y, w: item.w, h: item.h }
+                layout: layoutItem ? { x: layoutItem.x, y: layoutItem.y, w: layoutItem.w, h: layoutItem.h } : post.layout
             });
         });
 
-        // Update rank for passive posts
         passivePosts.forEach((post, index) => {
              const postRef = doc(firestore, 'public_insta_feed', post.id);
              batch.update(postRef, {
@@ -191,14 +203,23 @@ export default function SocialFeedManager() {
     };
 
     const moveToActive = (post: PublicInstaPost) => {
-        const postToMoveOut = activePosts.length >= MAX_ACTIVE_POSTS ? activePosts[activePosts.length - 1] : null;
-        
-        const newPassive = passivePosts.filter(p => p.id !== post.id);
-        if (postToMoveOut) {
-            newPassive.unshift(postToMoveOut);
+        if(activePosts.length >= MAX_ACTIVE_POSTS) {
+            toast({ variant: 'destructive', title: 'Active Posts Limit Reached', description: `You can only have ${MAX_ACTIVE_POSTS} active posts.` });
+            return;
         }
-        
-        const newActive = [...activePosts.filter(p => p.id !== postToMoveOut?.id), post];
+
+        const newPassive = passivePosts.filter(p => p.id !== post.id);
+        const newActive = [...activePosts, post];
+
+        // Add to layout
+        const newLayoutItem: Layout = {
+            i: post.id,
+            x: (activePosts.length % GRID_COLS.lg),
+            y: Infinity, // place at the bottom
+            w: 1,
+            h: 1
+        };
+        setActiveLayout([...activeLayout, newLayoutItem]);
 
         setActivePosts(newActive);
         setPassivePosts(newPassive);
@@ -209,6 +230,7 @@ export default function SocialFeedManager() {
         const newActive = activePosts.filter(p => p.id !== post.id);
         const newPassive = [post, ...passivePosts];
 
+        setActiveLayout(activeLayout.filter(l => l.i !== post.id));
         setActivePosts(newActive);
         setPassivePosts(newPassive);
         setHasChanges(true);
@@ -224,11 +246,19 @@ export default function SocialFeedManager() {
     
     return (
         <div>
-            {hasChanges && (
-                 <div className="flex justify-end mb-4">
+            <div className="flex justify-between items-center mb-4">
+                <Button 
+                    onClick={() => setIsAdjustmentMode(!isAdjustmentMode)} 
+                    variant={isAdjustmentMode ? 'default' : 'outline'}
+                    className={cn(isAdjustmentMode && 'bg-accent hover:bg-accent/90')}
+                >
+                    <Move className="mr-2 h-4 w-4" />
+                    {isAdjustmentMode ? 'Exit Adjustment Mode' : 'Adjust Layout'}
+                </Button>
+                {hasChanges && (
                     <Button onClick={handleSaveLayout}><Save className="mr-2 h-4 w-4" /> Save Layout & Ranks</Button>
-                </div>
-            )}
+                )}
+            </div>
            
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2">
@@ -237,16 +267,24 @@ export default function SocialFeedManager() {
                         <div className="flex justify-center items-center h-64"><Loader2 className="w-12 h-12 text-primary animate-spin" /></div>
                     ) : (
                         <ResponsiveGridLayout
-                            className="layout"
+                            className={cn("layout rounded-lg", isAdjustmentMode && "bg-zinc-900/50 ring-2 ring-accent ring-dashed")}
                             layouts={{ lg: activeLayout }}
                             cols={GRID_COLS}
                             rowHeight={GRID_ROW_HEIGHT}
                             onLayoutChange={handleLayoutChange}
+                            isDraggable={isAdjustmentMode}
+                            isResizable={isAdjustmentMode}
                         >
-                            {activeLayout.map(item => {
-                                const post = activePostsMap.get(item.i);
-                                return post ? <PostTile key={post.id} post={post} onAction={handleAction} onEdit={setSelectedPost} onResize={handleResizePost} /> : null
-                            })}
+                            {activePosts.map(post => (
+                                <PostTile 
+                                    key={post.id} 
+                                    post={post} 
+                                    onAction={handleAction} 
+                                    onEdit={setSelectedPost} 
+                                    onResize={handleResizePost} 
+                                    isAdjustmentMode={isAdjustmentMode}
+                                />
+                            ))}
                         </ResponsiveGridLayout>
                     )}
                 </div>
@@ -265,15 +303,15 @@ export default function SocialFeedManager() {
                         <div className="space-y-2">
                          {filteredPassivePosts.map(post => (
                             <div key={post.id} className="flex items-center gap-2 p-2 bg-zinc-800 rounded-md">
-                                <img src={post.mediaUrl} alt="" className="w-10 h-10 object-cover rounded"/>
-                                <div className="flex-grow">
+                                <img src={post.mediaUrl} alt="" className="w-10 h-10 object-contain rounded"/>
+                                <div className="flex-grow overflow-hidden">
                                     <p className="text-sm font-semibold truncate">{post.username}</p>
                                     <p className="text-xs text-zinc-400 truncate">{post.caption || "No caption"}</p>
                                 </div>
                                 {activePosts.length < MAX_ACTIVE_POSTS ? (
-                                    <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => moveToActive(post)}><ArrowLeft className="h-4 w-4"/></Button>
+                                    <Button size="icon" variant="ghost" className="h-8 w-8 shrink-0" onClick={() => moveToActive(post)}><ArrowLeft className="h-4 w-4"/></Button>
                                 ) : (
-                                    <Button size="icon" variant="ghost" className="h-8 w-8" disabled>
+                                    <Button size="icon" variant="ghost" className="h-8 w-8 shrink-0" disabled>
                                         <ArrowLeft className="h-4 w-4 text-zinc-600"/>
                                     </Button>
                                 )}
@@ -284,17 +322,17 @@ export default function SocialFeedManager() {
                 </div>
             </div>
 
-            <Dialog open={isDialogOpen || !!selectedPost} onOpenChange={(open) => { if(!open) { setIsDialogOpen(false); setSelectedPost(undefined); }}}>
+            <Dialog open={!!selectedPost} onOpenChange={(open) => { if(!open) { setSelectedPost(undefined); }}}>
                 <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-lg">
                 <DialogHeader>
-                    <DialogTitle>{selectedPost ? 'Edit Social Post' : 'Add New Social Post'}</DialogTitle>
+                    <DialogTitle>Edit Social Post</DialogTitle>
                      <DialogDescription>
-                        Manually add or edit a post for the social feed.
+                        Manually edit a post for the social feed.
                     </DialogDescription>
                 </DialogHeader>
                 <SocialPostForm 
                     post={selectedPost}
-                    onSuccess={() => { setIsDialogOpen(false); setSelectedPost(undefined); }}
+                    onSuccess={() => { setSelectedPost(undefined); }}
                 />
                 </DialogContent>
             </Dialog>
