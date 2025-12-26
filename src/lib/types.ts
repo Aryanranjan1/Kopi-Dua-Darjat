@@ -1,4 +1,5 @@
 
+
 import { Timestamp } from "firebase/firestore";
 
 // --- CORE MULTILINGUAL TYPES ---

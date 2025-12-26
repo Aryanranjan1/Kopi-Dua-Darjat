@@ -8,7 +8,7 @@ import type { PublicInstaPost } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Search, Trash, Pin, PinOff, Eye, EyeOff, PlusCircle, Database, Save, ArrowDown, ArrowUp, ArrowLeft, Ruler, Edit, Move } from 'lucide-react';
+import { Loader2, Search, Trash, Pin, PinOff, Eye, EyeOff, Move, Ruler, Save, ArrowLeft } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import SocialPostForm from './SocialPostForm';
 import { cn } from '@/lib/utils';
@@ -69,10 +69,7 @@ const PostTile = React.forwardRef<HTMLDivElement, { post: PublicInstaPost; onAct
               <Button size="icon" variant="ghost" className="h-7 w-7 bg-black/50 text-white hover:bg-black/80 hover:text-white" onClick={(e) => { e.stopPropagation(); onAction('visible', post.id, post.visible); }}>
                   {post.visible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </Button>
-               <Button size="icon" variant="ghost" className="h-7 w-7 bg-black/50 text-white hover:bg-black/80 hover:text-white" onClick={(e) => { e.stopPropagation(); onEdit(post); }}>
-                <Edit className="h-4 w-4" />
-              </Button>
-              <Button size="icon" variant="destructive" className="h-7 w-7 bg-red-600/80 hover:bg-red-500" onClick={(e) => { e.stopPropagation(); onAction('delete', post.id); }}>
+               <Button size="icon" variant="destructive" className="h-7 w-7 bg-red-600/80 hover:bg-red-500" onClick={(e) => { e.stopPropagation(); onAction('delete', post.id); }}>
                   <Trash className="h-4 w-4" />
               </Button>
           </div>
@@ -241,8 +238,6 @@ export default function SocialFeedManager() {
         if (!passivePosts) return [];
         return passivePosts.filter(p => p.username.toLowerCase().includes(searchQuery.toLowerCase()));
     }, [passivePosts, searchQuery]);
-
-    const activePostsMap = useMemo(() => new Map(activePosts.map(p => [p.id, p])), [activePosts]);
     
     return (
         <div>
@@ -250,7 +245,10 @@ export default function SocialFeedManager() {
                 <Button 
                     onClick={() => setIsAdjustmentMode(!isAdjustmentMode)} 
                     variant={isAdjustmentMode ? 'default' : 'outline'}
-                    className={cn(isAdjustmentMode && 'bg-accent hover:bg-accent/90')}
+                    className={cn(
+                      "text-white border-zinc-700 hover:bg-zinc-800",
+                      isAdjustmentMode ? 'bg-accent text-accent-foreground hover:bg-accent/90' : 'bg-zinc-900 hover:text-white'
+                    )}
                 >
                     <Move className="mr-2 h-4 w-4" />
                     {isAdjustmentMode ? 'Exit Adjustment Mode' : 'Adjust Layout'}
@@ -260,7 +258,7 @@ export default function SocialFeedManager() {
                 )}
             </div>
            
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="flex flex-col gap-8">
                 <div className="lg:col-span-2">
                     <h3 className="font-bold text-lg mb-2">Active Posts ({activePosts.length}/{MAX_ACTIVE_POSTS})</h3>
                      {isLoading ? (

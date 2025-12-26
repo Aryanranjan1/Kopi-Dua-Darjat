@@ -33,7 +33,7 @@ const PostItem = ({ post, className }: { post: PublicInstaPost; className: strin
         <img
           src={post.mediaUrl}
           alt={post.caption || `Instagram post by ${post.username}`}
-          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
         />
       )}
       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition flex items-end p-3">
@@ -76,17 +76,9 @@ export default function InstaExploreGrid() {
                 ) : visiblePosts && visiblePosts.length > 0 ? (
                 <div className="bg-neutral-950/80 overflow-hidden relative">
                     <div className="grid grid-cols-3 gap-[2px] sm:gap-[3px] grid-flow-dense">
-                        {visiblePosts.map((post, i) => {
-                           const isReel = post.mediaType === 'VIDEO';
-                           // A more robust pattern for placing larger tiles to avoid gaps
-                           const isBig = i === 0 || i === 7;
-
-                           const spanClasses = isBig
-                            ? 'col-span-2 row-span-2'
-                            : isReel
-                            ? 'row-span-2'
-                            : '';
-                            
+                        {visiblePosts.map((post) => {
+                           const layout = post.layout || { w: 1, h: 1 };
+                           const spanClasses = `col-span-${layout.w} row-span-${layout.h}`;
                            return <PostItem key={post.id} post={post} className={spanClasses} />;
                         })}
                     </div>
