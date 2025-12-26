@@ -44,7 +44,7 @@ export default function Community({ content }: { content: any }) {
             {[...Array(8)].map((_, i) => <Skeleton key={i} className="aspect-square rounded-2xl bg-gray-200" />)}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 grid-flow-dense">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 md:grid-rows-3 gap-4 md:gap-6 grid-flow-dense">
             {communityItems?.map((item, index) => {
               const delay = (index % 4) * 0.1;
               const localizedItem = getLocalized(item, language);
