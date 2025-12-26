@@ -9,7 +9,7 @@ service cloud.firestore {
 
     match /public_insta_feed/{docId} {
       allow read: if true;
-      allow write, delete: if isAdmin();
+      allow write, delete, update: if isAdmin();
     }
 
     match /settings/{docId} {

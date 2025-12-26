@@ -308,6 +308,12 @@ export interface PublicInstaPost {
   pinned: boolean;
   source: 'scraper' | 'manual' | 'graph';
   rank: number;
+  layout?: {
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+  }
 }
 
 export interface InstagramSyncSettings {
