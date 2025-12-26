@@ -10,6 +10,8 @@ import LatestStories from '@/components/home/LatestStories';
 import NewsletterSignUp from '@/components/home/NewsletterSignUp';
 import LivingMosaicGallery from '@/components/about/LivingMosaicGallery';
 
+export const revalidate = 60; // Revalidate the data every 60 seconds
+
 export default async function AboutPage() {
   const allContent = await getSiteContent();
 
