@@ -18,7 +18,7 @@ const PostItem = React.forwardRef<HTMLDivElement, { post: PublicInstaPost; class
   return (
     <div
       ref={ref}
-      className={cn('relative group aspect-square overflow-hidden', colSpan, rowSpan, className)}
+      className={cn('relative group overflow-hidden', colSpan, rowSpan, className)}
       {...props}
     >
       <a
