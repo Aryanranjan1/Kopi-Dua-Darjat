@@ -1,6 +1,7 @@
 
 'use client';
 
+import { useMemo } from 'react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, where, limit } from 'firebase/firestore';
 import type { FaqItem } from '@/lib/types';
@@ -20,7 +21,7 @@ export default function Faq({ content }: { content: any }) {
   const { language } = useLanguage();
   
   if (!content) return null;
-  const localizedContent = content[language]?.franchise?.faq;
+  const localizedContent = content.franchise?.faq;
 
   const faqQuery = useMemoFirebase(
     () => firestore 
