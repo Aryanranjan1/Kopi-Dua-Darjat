@@ -6,75 +6,34 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useFirestore } from '@/firebase';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Database, AlertTriangle, Trash2, Instagram, Users } from 'lucide-react';
+import { Loader2, Database, AlertTriangle, MessageSquareQuote } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { clearMenuAndOutlets, seedSocialMediaPosts, seedCommunityItems } from '@/lib/seeder';
-import socialMediaSeedData from './social-media-seed.json';
-import communityItemsSeedData from './community-items-seed.json';
-
+import { seedFaqAndTestimonials } from '@/lib/seeder';
+import faqSeedData from './faq-seed.json';
+import testimonialsSeedData from './testimonials-seed.json';
 
 export default function DataSeedingPage() {
   const [isSeeding, setIsSeeding] = useState(false);
-  const [isSocialSeeding, setIsSocialSeeding] = useState(false);
-  const [isCommunitySeeding, setIsCommunitySeeding] = useState(false);
   const firestore = useFirestore();
   const { toast } = useToast();
 
-  const handleWipeData = async () => {
+  const handleSeedData = async () => {
     if (!firestore) {
         toast({ title: 'Error', description: 'Firestore not available.', variant: 'destructive'});
         return;
     }
     setIsSeeding(true);
-    toast({ title: 'Data Wipe Initiated...', description: 'Deleting all menu and outlet documents. This may take a moment.', duration: 5000 });
+    toast({ title: 'Data Seeding Initiated...', description: 'Wiping and re-seeding FAQs and Testimonials. This may take a moment.', duration: 5000 });
     
-    const result = await clearMenuAndOutlets(firestore);
+    const result = await seedFaqAndTestimonials(firestore, faqSeedData, testimonialsSeedData);
     
     if (result.success) {
       toast({ title: 'Success!', description: result.message, duration: 8000 });
     } else {
       toast({ variant: 'destructive', title: 'Action Failed', description: result.message, duration: 8000 });
-      console.error("Data Wipe Error:", result.message);
+      console.error("Data Seeding Error:", result.error);
     }
     setIsSeeding(false);
-  };
-
-  const handleSeedSocialData = async () => {
-    if (!firestore) {
-        toast({ title: 'Error', description: 'Firestore not available.', variant: 'destructive'});
-        return;
-    }
-    setIsSocialSeeding(true);
-    toast({ title: 'Social Feed Seeding Initiated...', description: 'Wiping and re-seeding social posts. This may take a moment.', duration: 5000 });
-    
-    const result = await seedSocialMediaPosts(firestore, socialMediaSeedData);
-    
-    if (result.success) {
-      toast({ title: 'Success!', description: `Successfully seeded ${result.count} social media posts.`, duration: 8000 });
-    } else {
-      toast({ variant: 'destructive', title: 'Action Failed', description: result.error || 'An unknown error occurred.', duration: 8000 });
-      console.error("Social Media Seeding Error:", result.error);
-    }
-    setIsSocialSeeding(false);
-  };
-  
-  const handleSeedCommunityData = async () => {
-    if (!firestore) {
-        toast({ title: 'Error', description: 'Firestore not available.', variant: 'destructive'});
-        return;
-    }
-    setIsCommunitySeeding(true);
-    toast({ title: 'Community Grid Seeding Initiated...', description: 'Wiping and re-seeding community items. This may take a moment.', duration: 5000 });
-    
-    const result = await seedCommunityItems(firestore, communityItemsSeedData);
-    
-    if (result.success) {
-      toast({ title: 'Success!', description: `Successfully seeded ${result.count} community grid items.`, duration: 8000 });
-    } else {
-      toast({ variant: 'destructive', title: 'Action Failed', description: result.error || 'An unknown error occurred.', duration: 8000 });
-      console.error("Community Grid Seeding Error:", result.error);
-    }
-    setIsCommunitySeeding(false);
   };
 
 
@@ -84,9 +43,9 @@ export default function DataSeedingPage() {
         
       <Card className="bg-zinc-900 border-zinc-800 text-white">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2"><Database /> Wipe Menu & Outlet Data</CardTitle>
+          <CardTitle className="flex items-center gap-2"><MessageSquareQuote /> FAQ & Testimonials Seeder</CardTitle>
           <CardDescription className="text-zinc-400">
-            This tool will permanently delete all documents from the 'menuItems', 'menuGroups', 'menuCategories', and 'outlets' collections.
+            This tool will permanently delete all documents from the 'faq' and 'testimonials' collections and re-populate them with fresh sample data.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -95,113 +54,32 @@ export default function DataSeedingPage() {
             <div>
               <h3 className="font-semibold text-destructive">Warning: Highly Destructive Action</h3>
               <p className="text-sm text-destructive/80">
-                This will permanently delete all menu structure and outlet data. This action cannot be undone and will break parts of your website until new data is added.
+                This will permanently delete all FAQs and testimonials. This action cannot be undone. Use this to reset your content to the provided sample data.
               </p>
             </div>
           </div>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant="destructive" className="mt-6 w-full" disabled={isSeeding}>
-                {isSeeding ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Trash2 className="mr-2 h-4 w-4" />}
-                Wipe All Menu & Outlet Data
+              <Button variant="destructive" className="mt-6 w-full sm:w-auto" disabled={isSeeding}>
+                {isSeeding ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Database className="mr-2 h-4 w-4" />}
+                Wipe & Re-seed FAQs and Testimonials
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
               <AlertDialogHeader>
                 <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                 <AlertDialogDescription className="text-zinc-400">
-                  This will delete all menu items, categories, groups, and outlets. This action is irreversible.
+                  This will delete all existing FAQs and testimonials and replace them with the sample set.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
-                <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={handleWipeData}>Yes, I understand. Wipe all data.</AlertDialogAction>
+                <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={handleSeedData}>Yes, wipe and re-seed</AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
         </CardContent>
       </Card>
-      
-      <Card className="bg-zinc-900 border-zinc-800 text-white">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2"><Instagram /> Social Media Post Seeder</CardTitle>
-          <CardDescription className="text-zinc-400">
-            This tool will wipe the 'public_insta_feed' collection and re-populate it with a fresh set of sample data.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-start gap-4 rounded-lg border border-destructive/50 bg-destructive/10 p-4">
-            <AlertTriangle className="h-6 w-6 text-destructive mt-1 flex-shrink-0" />
-            <div>
-              <h3 className="font-semibold text-destructive">Warning: Highly Destructive Action</h3>
-              <p className="text-sm text-destructive/80">
-                This will permanently delete all current posts in your social feed and replace them with the sample data. This action cannot be undone.
-              </p>
-            </div>
-          </div>
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant="destructive" className="mt-6 w-full" disabled={isSocialSeeding}>
-                {isSocialSeeding ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Database className="mr-2 h-4 w-4" />}
-                Wipe & Re-seed Social Feed
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription className="text-zinc-400">
-                  This will delete all existing social media posts and replace them with the sample set.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
-                <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={handleSeedSocialData}>Yes, wipe and re-seed</AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </CardContent>
-      </Card>
-      
-      <Card className="bg-zinc-900 border-zinc-800 text-white">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2"><Users /> Community Grid Seeder</CardTitle>
-          <CardDescription className="text-zinc-400">
-            This tool will wipe the 'community_items' collection and re-populate it with a fresh set of sample data with a correct layout.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-start gap-4 rounded-lg border border-destructive/50 bg-destructive/10 p-4">
-            <AlertTriangle className="h-6 w-6 text-destructive mt-1 flex-shrink-0" />
-            <div>
-              <h3 className="font-semibold text-destructive">Warning: Highly Destructive Action</h3>
-              <p className="text-sm text-destructive/80">
-                This will permanently delete all current items in your community grid and replace them with the sample data.
-              </p>
-            </div>
-          </div>
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant="destructive" className="mt-6 w-full" disabled={isCommunitySeeding}>
-                {isCommunitySeeding ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Database className="mr-2 h-4 w-4" />}
-                Wipe & Re-seed Community Grid
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription className="text-zinc-400">
-                  This will delete all existing community items and replace them with the sample set.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
-                <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={handleSeedCommunityData}>Yes, wipe and re-seed</AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </CardContent>
-      </Card>
-
     </div>
   );
 }
