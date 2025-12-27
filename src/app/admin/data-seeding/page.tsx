@@ -28,6 +28,8 @@ export default function DataSeedingPage() {
     
     if (result.success) {
       toast({ title: 'Success!', description: result.message, duration: 8000 });
+      // Force a hard reload to ensure all components re-fetch the new data
+      window.location.reload();
     } else {
       toast({ variant: 'destructive', title: 'Action Failed', description: result.message, duration: 8000 });
       console.error("Data Seeding Error:", result.error);
@@ -82,5 +84,3 @@ export default function DataSeedingPage() {
     </div>
   );
 }
-
-    
