@@ -1,7 +1,7 @@
 
 'use client';
 
-import { collection, writeBatch, getDocs, doc, Firestore, query } from 'firebase/firestore';
+import { collection, writeBatch, getDocs, doc, Firestore, query, serverTimestamp } from 'firebase/firestore';
 
 export async function seedFaqAndTestimonials(
   firestore: Firestore, 
@@ -34,7 +34,7 @@ export async function seedFaqAndTestimonials(
     // Seed new Testimonial data
     testimonialData.forEach(testimonial => {
       const docRef = doc(testimonialsCollection);
-      batch.set(docRef, testimonial);
+      batch.set(docRef, { ...testimonial, createdAt: serverTimestamp() });
     });
 
     await batch.commit();
