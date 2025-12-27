@@ -6,11 +6,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useFirestore } from '@/firebase';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Database, AlertTriangle, MessageSquareQuote } from 'lucide-react';
+import { Loader2, Database, AlertTriangle, BookOpen } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { seedFaqAndTestimonials } from '@/lib/seeder';
-import faqSeedData from './faq-seed.json';
-import testimonialsSeedData from './testimonials-seed.json';
+import { seedBlogs } from '@/lib/seeder';
+import blogSeedData from './blog-seed.json';
 
 export default function DataSeedingPage() {
   const [isSeeding, setIsSeeding] = useState(false);
@@ -23,9 +22,9 @@ export default function DataSeedingPage() {
         return;
     }
     setIsSeeding(true);
-    toast({ title: 'Data Seeding Initiated...', description: 'Wiping and re-seeding FAQs and Testimonials. This may take a moment.', duration: 5000 });
+    toast({ title: 'Blog Seeding Initiated...', description: 'Wiping and re-seeding all posts. This may take a moment.', duration: 5000 });
     
-    const result = await seedFaqAndTestimonials(firestore, faqSeedData, testimonialsSeedData);
+    const result = await seedBlogs(firestore, blogSeedData);
     
     if (result.success) {
       toast({ title: 'Success!', description: result.message, duration: 8000 });
@@ -43,9 +42,9 @@ export default function DataSeedingPage() {
         
       <Card className="bg-zinc-900 border-zinc-800 text-white">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2"><MessageSquareQuote /> FAQ & Testimonials Seeder</CardTitle>
+          <CardTitle className="flex items-center gap-2"><BookOpen /> Blog Posts Seeder</CardTitle>
           <CardDescription className="text-zinc-400">
-            This tool will permanently delete all documents from the 'faq' and 'testimonials' collections and re-populate them with fresh sample data.
+            This tool will permanently delete all documents from the 'blogs' collection and re-populate them with fresh sample data.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -54,7 +53,7 @@ export default function DataSeedingPage() {
             <div>
               <h3 className="font-semibold text-destructive">Warning: Highly Destructive Action</h3>
               <p className="text-sm text-destructive/80">
-                This will permanently delete all FAQs and testimonials. This action cannot be undone. Use this to reset your content to the provided sample data.
+                This will permanently delete all blog posts. This action cannot be undone. Use this to reset your content to the provided sample data.
               </p>
             </div>
           </div>
@@ -62,14 +61,14 @@ export default function DataSeedingPage() {
             <AlertDialogTrigger asChild>
               <Button variant="destructive" className="mt-6 w-full sm:w-auto" disabled={isSeeding}>
                 {isSeeding ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Database className="mr-2 h-4 w-4" />}
-                Wipe & Re-seed FAQs and Testimonials
+                Wipe & Re-seed Blog Posts
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
               <AlertDialogHeader>
                 <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                 <AlertDialogDescription className="text-zinc-400">
-                  This will delete all existing FAQs and testimonials and replace them with the sample set.
+                  This will delete all existing blog posts and replace them with the sample set.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
@@ -83,3 +82,5 @@ export default function DataSeedingPage() {
     </div>
   );
 }
+
+    
