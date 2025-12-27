@@ -16,29 +16,28 @@ export async function seedFaqAndTestimonials(
   const testimonialsCollection = collection(firestore, 'testimonials');
 
   try {
-    const writeBatch = firestore ? writeBatch(firestore) : null;
-    if (!writeBatch) throw new Error("Batch could not be created.");
+    const batch = writeBatch(firestore);
 
     // Clear existing data
     const existingFaqs = await getDocs(faqCollection);
-    existingFaqs.forEach(doc => writeBatch.delete(doc.ref));
+    existingFaqs.forEach(doc => batch.delete(doc.ref));
 
     const existingTestimonials = await getDocs(testimonialsCollection);
-    existingTestimonials.forEach(doc => writeBatch.delete(doc.ref));
+    existingTestimonials.forEach(doc => batch.delete(doc.ref));
 
     // Seed new FAQ data
     faqData.forEach(faq => {
       const docRef = doc(faqCollection);
-      writeBatch.set(docRef, faq);
+      batch.set(docRef, faq);
     });
 
     // Seed new Testimonial data
     testimonialData.forEach(testimonial => {
       const docRef = doc(testimonialsCollection);
-      writeBatch.set(docRef, testimonial);
+      batch.set(docRef, testimonial);
     });
 
-    await writeBatch.commit();
+    await batch.commit();
     return { success: true, message: `Successfully seeded ${faqData.length} FAQs and ${testimonialData.length} testimonials.` };
 
   } catch (error) {
