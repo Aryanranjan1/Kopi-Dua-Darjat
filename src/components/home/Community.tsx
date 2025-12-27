@@ -75,7 +75,7 @@ export default function Community({ content }: { content: any }) {
                   <AnimateOnScroll key={item.id} className={cn('rounded-2xl p-6 sm:p-8 flex flex-col justify-between', item.bgColor, item.textColor, item.className, item.className?.includes('col-span-2') ? 'aspect-[2/1]' : 'aspect-square')} delay={delay}>
                     <div>
                       <p className="text-4xl font-serif">"</p>
-                      <p className="text-base md:text-lg font-medium">{localizedItem.quote}</p>
+                      <p className="text-base md:text-lg font-medium">{item.quote || localizedItem.quote}</p>
                     </div>
                     <div className="mt-4 flex justify-between items-end">
                       <div className="max-w-[80%]">

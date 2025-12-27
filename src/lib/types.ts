@@ -162,6 +162,7 @@ export type CommunityItem = {
     id: string;
     type: 'portrait' | 'logo' | 'quote';
     imageUrl: string;
+    quote?: string;
     bgColor?: string;
     textColor?: string;
     className: string;
