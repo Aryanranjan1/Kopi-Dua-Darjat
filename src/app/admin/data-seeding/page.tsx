@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -5,15 +6,17 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useFirestore } from '@/firebase';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Database, AlertTriangle, Trash2, Instagram } from 'lucide-react';
+import { Loader2, Database, AlertTriangle, Trash2, Instagram, Users } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { clearMenuAndOutlets, seedSocialMediaPosts } from '@/lib/seeder';
+import { clearMenuAndOutlets, seedSocialMediaPosts, seedCommunityItems } from '@/lib/seeder';
 import socialMediaSeedData from './social-media-seed.json';
+import communityItemsSeedData from './community-items-seed.json';
 
 
 export default function DataSeedingPage() {
   const [isSeeding, setIsSeeding] = useState(false);
   const [isSocialSeeding, setIsSocialSeeding] = useState(false);
+  const [isCommunitySeeding, setIsCommunitySeeding] = useState(false);
   const firestore = useFirestore();
   const { toast } = useToast();
 
@@ -53,6 +56,25 @@ export default function DataSeedingPage() {
       console.error("Social Media Seeding Error:", result.error);
     }
     setIsSocialSeeding(false);
+  };
+  
+  const handleSeedCommunityData = async () => {
+    if (!firestore) {
+        toast({ title: 'Error', description: 'Firestore not available.', variant: 'destructive'});
+        return;
+    }
+    setIsCommunitySeeding(true);
+    toast({ title: 'Community Grid Seeding Initiated...', description: 'Wiping and re-seeding community items. This may take a moment.', duration: 5000 });
+    
+    const result = await seedCommunityItems(firestore, communityItemsSeedData);
+    
+    if (result.success) {
+      toast({ title: 'Success!', description: `Successfully seeded ${result.count} community grid items.`, duration: 8000 });
+    } else {
+      toast({ variant: 'destructive', title: 'Action Failed', description: result.error || 'An unknown error occurred.', duration: 8000 });
+      console.error("Community Grid Seeding Error:", result.error);
+    }
+    setIsCommunitySeeding(false);
   };
 
 
@@ -134,6 +156,46 @@ export default function DataSeedingPage() {
               <AlertDialogFooter>
                 <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
                 <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={handleSeedSocialData}>Yes, wipe and re-seed</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </CardContent>
+      </Card>
+      
+      <Card className="bg-zinc-900 border-zinc-800 text-white">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2"><Users /> Community Grid Seeder</CardTitle>
+          <CardDescription className="text-zinc-400">
+            This tool will wipe the 'community_items' collection and re-populate it with a fresh set of sample data with a correct layout.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-start gap-4 rounded-lg border border-destructive/50 bg-destructive/10 p-4">
+            <AlertTriangle className="h-6 w-6 text-destructive mt-1 flex-shrink-0" />
+            <div>
+              <h3 className="font-semibold text-destructive">Warning: Highly Destructive Action</h3>
+              <p className="text-sm text-destructive/80">
+                This will permanently delete all current items in your community grid and replace them with the sample data.
+              </p>
+            </div>
+          </div>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive" className="mt-6 w-full" disabled={isCommunitySeeding}>
+                {isCommunitySeeding ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Database className="mr-2 h-4 w-4" />}
+                Wipe & Re-seed Community Grid
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription className="text-zinc-400">
+                  This will delete all existing community items and replace them with the sample set.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel className="bg-transparent border-zinc-700 hover:bg-zinc-800">Cancel</AlertDialogCancel>
+                <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={handleSeedCommunityData}>Yes, wipe and re-seed</AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>

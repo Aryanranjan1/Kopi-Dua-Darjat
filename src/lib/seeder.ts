@@ -1,7 +1,8 @@
+
 'use client';
 
 import { collection, writeBatch, getDocs, doc, Firestore, query } from 'firebase/firestore';
-import type { PublicInstaPost } from './types';
+import type { CommunityItem, PublicInstaPost } from './types';
 
 async function clearCollections(firestore: Firestore, collectionNames: string[]): Promise<{ success: boolean; message: string }> {
   if (!firestore) {
@@ -77,6 +78,39 @@ export async function seedSocialMediaPosts(firestore: Firestore, postsData: any[
     return { success: true, count };
   } catch (error) {
     console.error("Error seeding social media posts: ", error);
+    return { success: false, count: 0, error: (error as Error).message };
+  }
+}
+
+
+export async function seedCommunityItems(firestore: Firestore, itemsData: any[]): Promise<{ success: boolean, count: number, error?: string }> {
+  if (!firestore) {
+    return { success: false, count: 0, error: 'Firestore is not initialized.' };
+  }
+
+  const communityItemsCollection = collection(firestore, 'community_items');
+
+  try {
+    // 1. Clear existing items
+    const existingDocsSnapshot = await getDocs(communityItemsCollection);
+    const deleteBatch = writeBatch(firestore);
+    existingDocsSnapshot.forEach(doc => deleteBatch.delete(doc.ref));
+    await deleteBatch.commit();
+    
+    // 2. Seed new items
+    const seedBatch = writeBatch(firestore);
+    let count = 0;
+
+    itemsData.forEach((item) => {
+      const docRef = doc(communityItemsCollection, item.id);
+      seedBatch.set(docRef, item);
+      count++;
+    });
+
+    await seedBatch.commit();
+    return { success: true, count };
+  } catch (error) {
+    console.error("Error seeding community items: ", error);
     return { success: false, count: 0, error: (error as Error).message };
   }
 }
