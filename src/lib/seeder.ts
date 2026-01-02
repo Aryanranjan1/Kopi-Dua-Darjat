@@ -10,9 +10,9 @@ export async function seedSiteSettings(firestore: Firestore) {
     brand: {
       name: 'Kopi Dua Darjat',
       tagline: 'Antara Warisan & Artisan.',
-      favicon: null,
-      primaryColor: null,
-      accentColor: null,
+      favicon: '', 
+      primaryColor: '',
+      accentColor: '',
     },
     founders: [],
     contact: {
@@ -43,7 +43,7 @@ export async function seedSiteSettings(firestore: Firestore) {
       defaultTitle: 'Kopi Dua Darjat - Antara Warisan & Artisan',
       defaultDescription: 'Experience the perfect blend of heritage and artisan coffee. 50+ outlets serving quality Kopi Kampung from RM3.',
       keywords: ['Kopi Dua Darjat', 'kopi kampung', 'artisan coffee', 'malaysian cafe', 'franchise kopi'],
-      defaultImageId: null,
+      defaultImageId: '',
     },
     lastUpdated: serverTimestamp(),
     updatedBy: 'system-seed',
@@ -51,4 +51,3 @@ export async function seedSiteSettings(firestore: Firestore) {
 
   await setDoc(settingsRef, settingsData, { merge: true });
 }
-
