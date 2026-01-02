@@ -1,4 +1,6 @@
 
+'use client';
+
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import ContactForm from '@/components/contact/ContactForm';
@@ -7,13 +9,17 @@ import InteractiveMap from '@/components/home/InteractiveMap';
 import { Card } from '@/components/ui/card';
 import { CtaSection } from '@/components/shared/CtaSection';
 import { Facebook, Instagram, Music2 } from 'lucide-react';
+import { useSettings } from '@/components/layout/SettingsProvider';
+import { Skeleton } from '@/components/ui/skeleton';
 
-export const metadata: Metadata = {
-  title: 'Contact Us',
-  description: 'Get in touch with Kopi Dua Darjat for inquiries, partnerships, or feedback.',
-};
+// export const metadata: Metadata = {
+//   title: 'Contact Us',
+//   description: 'Get in touch with Kopi Dua Darjat for inquiries, partnerships, or feedback.',
+// };
 
 export default function ContactPage() {
+  const { settings, isLoading } = useSettings();
+
   return (
     <>
       <div className="bg-zinc-900 text-white">
@@ -55,17 +61,19 @@ export default function ContactPage() {
 
                  <div className="bg-transparent border border-zinc-700 text-white p-4 rounded-2xl flex items-center justify-center gap-8">
                     <h3 className="font-headline text-xl font-semibold text-primary">Follow Us</h3>
-                    <div className="flex items-center gap-4">
-                        <Link href="#" className="hover:opacity-80 transition-opacity">
-                            <Facebook className="h-6 w-6 text-primary" />
-                        </Link>
-                        <Link href="#" className="hover:opacity-80 transition-opacity">
-                            <Instagram className="h-6 w-6 text-primary" />
-                        </Link>
-                        <Link href="#" className="hover:opacity-80 transition-opacity">
-                           <Music2 className="h-6 w-6 text-primary" />
-                        </Link>
-                    </div>
+                    {isLoading ? (
+                      <div className="flex items-center gap-4">
+                        <Skeleton className="h-6 w-6 rounded-full" />
+                        <Skeleton className="h-6 w-6 rounded-full" />
+                        <Skeleton className="h-6 w-6 rounded-full" />
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-4">
+                        {settings?.socials?.facebook && <Link href={settings.socials.facebook} className="hover:opacity-80 transition-opacity"><Facebook className="h-6 w-6 text-primary" /></Link>}
+                        {settings?.socials?.instagram && <Link href={settings.socials.instagram} className="hover:opacity-80 transition-opacity"><Instagram className="h-6 w-6 text-primary" /></Link>}
+                        {settings?.socials?.tiktok && <Link href={settings.socials.tiktok} className="hover:opacity-80 transition-opacity"><Music2 className="h-6 w-6 text-primary" /></Link>}
+                      </div>
+                    )}
                  </div>
 
                  <Card className="overflow-hidden shadow-lg rounded-2xl aspect-video border-zinc-800">
