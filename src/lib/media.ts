@@ -26,7 +26,7 @@ export async function seedMediaData(firestore: any): Promise<{ success: boolean,
     }
 
     const checkPromises = idChunks.map(chunk => 
-      getDocs(query(mediaCollectionRef, where('id', 'in', chunk)))
+      getDocs(query(mediaCollectionRef, where('__name__', 'in', chunk)))
     );
 
     const snapshots = await Promise.all(checkPromises);
@@ -39,7 +39,7 @@ export async function seedMediaData(firestore: any): Promise<{ success: boolean,
     const itemsToSeed = originalMediaData.placeholderImages.filter(item => !existingIds.has(item.id));
     
     if (itemsToSeed.length === 0) {
-      return { success: true, count: 0, message: "Media assets are already up to date." };
+      return { success: true, count: 0, message: "All media assets from JSON already exist in Firestore." };
     }
 
     const batch = writeBatch(firestore);
@@ -52,7 +52,7 @@ export async function seedMediaData(firestore: any): Promise<{ success: boolean,
     });
 
     await batch.commit();
-    return { success: true, count };
+    return { success: true, count, message: `Successfully seeded ${count} new media items.` };
   } catch (error) {
     console.error("Error seeding media data: ", error);
     return { success: false, count: 0, error: (error as Error).message };
@@ -63,20 +63,6 @@ export async function seedMediaData(firestore: any): Promise<{ success: boolean,
 // Hook to get all media assets
 export function useMedia() {
   const firestore = useFirestore();
-  const { toast } = useToast();
-
-  useEffect(() => {
-    if (firestore) {
-      seedMediaData(firestore).then(result => {
-        if (result.success && result.count > 0) {
-          console.log(`Seeded ${result.count} media items.`);
-        }
-        if (result.error) {
-          console.error("Media Seeding Error:", result.error);
-        }
-      });
-    }
-  }, [firestore, toast]);
   
   const mediaQuery = useMemoFirebase(
     () => (firestore ? query(collection(firestore, 'media')) : null),
@@ -106,4 +92,3 @@ export async function updateMediaUrl(firestore: any, id: string, newUrl: string)
     return { success: false, error: (error as Error).message };
   }
 }
-
