@@ -18,7 +18,7 @@ export default function FooterCta() {
         imageHint: "cup of coffee"
     };
 
-    const instagramUrl = settings?.socials?.find(s => s.name.toLowerCase() === 'instagram')?.url || '#';
+    const instagramUrl = settings?.socials?.instagram || '#';
 
     return (
         <section className="relative py-24 sm:py-32 bg-black text-white">
