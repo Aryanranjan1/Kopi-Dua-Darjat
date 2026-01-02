@@ -51,3 +51,5 @@ export async function seedSiteSettings(firestore: Firestore) {
 
   await setDoc(settingsRef, settingsData, { merge: true });
 }
+
+    

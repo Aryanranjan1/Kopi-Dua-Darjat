@@ -90,23 +90,44 @@ export default function SettingsForm() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     values: settingsData ? {
-        ...settingsData,
         brand: {
-            ...settingsData.brand,
+            name: settingsData.brand?.name || '',
+            favicon: settingsData.brand?.favicon || '',
+            tagline: settingsData.brand?.tagline || '',
+            primaryColor: settingsData.brand?.primaryColor || '',
+            accentColor: settingsData.brand?.accentColor || '',
         },
-        founders: settingsData.founders?.map(f => ({ ...f, imageId: f.imageId || '' })) || [],
-        meta: {
-            ...settingsData.meta,
-            keywords: settingsData.meta?.keywords?.join(', '),
-            defaultImageId: settingsData.meta?.defaultImageId || '',
+        founders: settingsData.founders?.map(f => ({ ...f, imageId: f.imageId || '', quote: f.quote || '' })) || [],
+        contact: {
+            email: settingsData.contact?.email || '',
+            phone: settingsData.contact?.phone || '',
+            address: settingsData.contact?.address || '',
+            googleMapsLink: settingsData.contact?.googleMapsLink || '',
+            businessHours: settingsData.contact?.businessHours || '',
+        },
+        socials: {
+            instagram: settingsData.socials?.instagram || '',
+            facebook: settingsData.socials?.facebook || '',
+            tiktok: settingsData.socials?.tiktok || '',
+            youtube: settingsData.socials?.youtube || '',
+            whatsapp: settingsData.socials?.whatsapp || '',
         },
         automation: {
-            ...settingsData.automation,
+            instagramSyncEnabled: settingsData.automation?.instagramSyncEnabled || false,
             instagramApiKey: settingsData.automation?.instagramApiKey || '',
+            marketingEngineEnabled: settingsData.automation?.marketingEngineEnabled || false,
             marketingApiKey: settingsData.automation?.marketingApiKey || '',
+            analyticsEnabled: settingsData.automation?.analyticsEnabled || false,
             analyticsApiKey: settingsData.automation?.analyticsApiKey || '',
+            appCheckEnforced: settingsData.automation?.appCheckEnforced ?? true,
             recaptchaSiteKey: settingsData.automation?.recaptchaSiteKey || '',
-        }
+        },
+        meta: {
+            defaultTitle: settingsData.meta?.defaultTitle || '',
+            defaultDescription: settingsData.meta?.defaultDescription || '',
+            keywords: Array.isArray(settingsData.meta?.keywords) ? settingsData.meta.keywords.join(', ') : settingsData.meta?.keywords || '',
+            defaultImageId: settingsData.meta?.defaultImageId || '',
+        },
     } : undefined,
     defaultValues: {
         brand: { name: '', tagline: '' },
@@ -184,10 +205,10 @@ export default function SettingsForm() {
                             <FormItem><FormLabel className="text-white">Brand Name</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
                         )}/>
                         <FormField control={form.control} name="brand.tagline" render={({ field }) => (
-                            <FormItem><FormLabel className="text-white">Tagline</FormLabel><FormControl><Input {...field} className={inputStyles}/></FormControl><FormMessage/></FormItem>
+                            <FormItem><FormLabel className="text-white">Tagline</FormLabel><FormControl><Input {...field} value={field.value || ''} className={inputStyles}/></FormControl><FormMessage/></FormItem>
                         )}/>
                          <FormField control={form.control} name="brand.favicon" render={({ field }) => (
-                            <FormItem><FormLabel className="text-white">Favicon</FormLabel><FormControl><Textarea placeholder="<svg>...</svg>" {...field} className={`${inputStyles} font-mono`} rows={5} /></FormControl><FormDescription>Paste raw SVG code for the site icon.</FormDescription><FormMessage/></FormItem>
+                            <FormItem><FormLabel className="text-white">Favicon</FormLabel><FormControl><Textarea placeholder="<svg>...</svg>" {...field} value={field.value || ''} className={`${inputStyles} font-mono`} rows={5} /></FormControl><FormDescription>Paste raw SVG code for the site icon.</FormDescription><FormMessage/></FormItem>
                         )}/>
                     </CardContent>
                 </Card>
@@ -216,7 +237,7 @@ export default function SettingsForm() {
                                         <FormMessage /></FormItem>
                                     )} />
                                     <FormField control={form.control} name={`founders.${index}.quote`} render={({ field }) => (
-                                        <FormItem><FormLabel className="text-white">Quote</FormLabel><FormControl><Textarea {...field} className={inputStyles} /></FormControl><FormMessage /></FormItem>
+                                        <FormItem><FormLabel className="text-white">Quote</FormLabel><FormControl><Textarea {...field} value={field.value || ''} className={inputStyles} /></FormControl><FormMessage /></FormItem>
                                     )} />
                                     <Button type="button" variant="destructive" size="icon" className="absolute top-4 right-4" onClick={() => remove(index)}><Trash2 className="h-4 w-4" /></Button>
                                 </div>
@@ -340,3 +361,4 @@ export default function SettingsForm() {
   );
 }
 
+    
