@@ -7,14 +7,18 @@ import { Button } from '@/components/ui/button';
 import { Instagram, MapPin } from 'lucide-react';
 import { AnimateOnScroll } from '../animations/AnimateOnScroll';
 import { Skeleton } from '../ui/skeleton';
+import { useSettings } from '../layout/SettingsProvider';
 
 export default function FooterCta() {
+    const { settings, isLoading } = useSettings();
     // Temporary placeholder data
     const bgImage = {
         imageUrl: "https://images.unsplash.com/photo-1497515114629-f71d768fd07c?w=1080",
         description: "A cup of coffee on a wooden table, representing Kopi Dua Darjat",
         imageHint: "cup of coffee"
     };
+
+    const instagramUrl = settings?.socials?.find(s => s.name.toLowerCase() === 'instagram')?.url || '#';
 
     return (
         <section className="relative py-24 sm:py-32 bg-black text-white">
@@ -45,7 +49,7 @@ export default function FooterCta() {
                             </Link>
                         </Button>
                         <Button asChild size="lg" variant="outline" className="rounded-full border-white/80 bg-white/90 text-black hover:bg-white hover:text-black">
-                            <a href="#" target="_blank" rel="noopener noreferrer">
+                            <a href={instagramUrl} target="_blank" rel="noopener noreferrer">
                                 <Instagram className="mr-2 h-5 w-5" />
                                 Follow Us
                             </a>
